@@ -1,18 +1,18 @@
 import { createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 export interface Map {
-  mapOptions: {
-    center: [number, number];
-    resolution: number;
-    rotation: number;
-  }
+  position: { 
+  lat: number;
+  lon: number;
+  resolution: number;
+  },
 }
 
 const initialState: Map = {
- mapOptions: {
-    center: [0, 0],
+  position: {
+    lat: 0,
+    lon: 0,
     resolution: 3550,
-    rotation: 0
   }
 }
 
@@ -20,11 +20,12 @@ const mapComponentSlice = createSlice({
   name: 'map',
   initialState,
   reducers: {
-    setLocation: (state, action: PayloadAction<[number, number]>) => {
-      state.mapOptions.center = action.payload
+    setPosition: (state, action: PayloadAction<{lat: number, lon: number}>) => {
+      state.position.lat = action.payload.lat
+      state.position.lon = action.payload.lon
     }
   }
 })
 
-export const { setLocation } = mapComponentSlice.actions
+export const { setPosition } = mapComponentSlice.actions
 export default mapComponentSlice.reducer
