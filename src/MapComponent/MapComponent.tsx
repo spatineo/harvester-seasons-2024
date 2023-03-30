@@ -1,10 +1,11 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { Box, Typography } from '@mui/material'
-import { useRootDispatch } from '../store/hooks';
-import { setLocation } from './MapComponentSlice';
+import { useRootDispatch, useAppSelector } from '../store/hooks';
+import { setPosition } from './MapComponentSlice';
 import MapContext from './MapContext';
 import * as ol from "ol"
 import { defaults as defaultControls } from "ol/control";
+import proj4 from 'proj4'
 import 'ol/ol.css';
 
 const styles = {
@@ -36,23 +37,27 @@ interface MapProps {
   children: React.ReactNode
   resolution: number
   center: [number, number]
-  rotation: number
 }
+
+proj4.defs('EPSG:3067', '+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs')
+proj4.defs('EPSG:4326', '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs')
+proj4.defs("EPSG:3857","+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs +type=crs");
+
 
 const MapComponent: React.FC<MapProps> = ({
   children,
   resolution,
   center,
-  rotation
 }) => {
  
   const mapRef = useRef();
   const [map, setMap] = useState<any>(null);
   const dispatch = useRootDispatch()
+  const mapState = useAppSelector(state => state.mapState)
   
   useEffect(() => {
     let options = {
-      view: new ol.View({ resolution, center, rotation }),
+      view: new ol.View({ resolution, center }),
       layers: [],
       controls: defaultControls(),
       overlays: []
@@ -70,7 +75,8 @@ const MapComponent: React.FC<MapProps> = ({
       navigator.geolocation.getCurrentPosition((position) => {
         const lon = position.coords.longitude
         const lat = position.coords.latitude
-        dispatch(setLocation([lon, lat]))
+        console.log('how many times geolocation runs')
+        dispatch(setPosition({lat, lon}))
         },(error) => {
           console.log(error.code, 'error from geolocation', error.message)
         }
@@ -78,9 +84,14 @@ const MapComponent: React.FC<MapProps> = ({
     } else {
       console.log("Application cannot access your location");
     }
+  },[])
 
+  useEffect(() => {
     if (!map) return;
-      map.getView().setCenter(center)
+    
+    const centered = [mapState.position.lon,mapState.position.lat]
+    const convertedCoord = proj4('EPSG:4326', 'EPSG:3857', centered)
+      map.getView().setCenter(convertedCoord)
   }, [center])
 
   return (
