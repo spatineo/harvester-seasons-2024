@@ -30,55 +30,11 @@ function MainViewComponent() {
   const latlonPoint = "64.22728,27.72846"
   const now = new Date();
 
-  const startYear = now.getUTCFullYear();
-  let startMonth: any = now.getUTCMonth() + 1;
-  let startDay: any = now.getUTCDate();
-  if (startMonth < 10) {
-      startMonth = '0' + startMonth;
-  }
-  if (startDay < 10) {
-      startDay = '0' + startDay;
-  }
+  let lon = mapState.position.lon
+  let lat = mapState.position.lat
 
-  const startDate_smartobs: any = new Date();
-  
-  startDate_smartobs.setDate(startDate_smartobs.getUTCDate() - 10);
-  
-  let startMonth_smartobs = startDate_smartobs.getUTCMonth() + 1;
-  if (startMonth_smartobs < 10) {
-      startMonth_smartobs = '0' + startMonth_smartobs;
-  }
-  const dateString_smartobs = startDate_smartobs.getUTCFullYear().toString() + startMonth_smartobs + startDate_smartobs.getUTCDate();
-  
-
- /*  let dateString = startYear + '-' + startMonth + '-' + startDay + '/P7M';
-  const dateString_origintime = startYear.toString() + startMonth + startDay + '0000';
-  const dataUrl2 = "https://sm.harvesterseasons.com/timeseries?latlon=" + latlonPoint + "&param=utctime," + SHensemble2 + "&starttime=" + dateString_smartobs + "T000000Z&endtime=" + dateString_origintime + "&timestep=1440&format=json&precision=full&tz=utc&timeformat=xml";
-
-  const url ="https://sm.harvesterseasons.com/timeseries?latlon=" + latlonPoint + "&param=" + param1 + "," + param2 + "," + param3 + "," + param4 + "&starttime=data&endtime=data&timestep=data&format=json&precision=full&source=grid&timeformat=xml&origintime=" + dateString_origintime
-
-  useEffect(() => {
-   axios.get(dataUrl2).then(response => { 
-     //console.log("response", response)
-     if(response.status === 200){
-       const g = response.data
-       //setGraphData(g)
-     }
-    })
-  }, [])
- */
-
-    let lon = Number(mapState.mapOptions.center[0].toFixed())
-    let lat = Number(mapState.mapOptions.center[1].toFixed())
-
-   
     // latlon=64,27
-
-
   useEffect(() => {
-    
-    console.log(lon/* 25 */, lat/* 60 */)
-
     try {
       if(lon > 0 && lat > 0){
         const url = `https://sm.harvesterseasons.com/timeseries?latlon=${lat},${lon}&param=utctime,VSW-M3M3:ECBSF:5022:9:7:0:0,VSW-M3M3:ECBSF:5022:9:7:0:1,
@@ -151,16 +107,20 @@ function MainViewComponent() {
         <br/>
         <HeadingComponent />
         <br/>
-        {graphData && 
+        <Box>
+        {graphData.length > 0 ?
           <GraphComponent 
             option={option} 
             onEvents={{
               'mouseover': onMouseover,
               'globalout': onGlobalout,
             }} 
-          />}
-
-        <MapComponent resolution={mapState.mapOptions.resolution} center={mapState.mapOptions.center} rotation={mapState.mapOptions.rotation}>
+          /> 
+         :
+          <Box sx={{textAlign: 'center', marginBottom: '4rem'}}>...Loading graph data</Box>
+          }
+        </Box>
+        <MapComponent resolution={mapState.position.resolution} center={[mapState.position.lon, mapState.position.lat]}>
           {/* <BaseControl /> */}
           <Layer>
             <TileLayer zIndex={0} sources={{
@@ -170,9 +130,6 @@ function MainViewComponent() {
             }}  />
           </Layer>
         </MapComponent>
-
-
-        
         <GraphComponent option={{}} onEvents={{}}  />
       </Container>
     </div>
