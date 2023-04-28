@@ -1,3 +1,7 @@
 .App {
-  
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+div[_echarts_instance_="ec_1682325606774"] > div  > canvas{
+  border: 1px solid black !important
 }
