@@ -11,7 +11,7 @@
   padding: 2px;
 }
 .ol-map > .ol-viewport {
-  width: 88% !important;
+  width: 100% !important;
   margin: auto;
 }
 
@@ -22,4 +22,18 @@
 .ol-full-screen {
   top: .5em;
   right: .5em;
+}
+
+
+#select {
+  font-size: .85em;
+  margin: 1em 0;
+ 
+}
+
+#select p {
+  margin: 0;
+  width: 50%;
+  height: 50%;
+  border: 1px solid black;
 }
