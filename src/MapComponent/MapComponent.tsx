@@ -4,9 +4,13 @@ import { useRootDispatch, useAppSelector } from '../store/hooks';
 import { setPosition } from './MapComponentSlice';
 import MapContext from './MapContext';
 import * as ol from "ol"
-import { defaults as defaultControls } from "ol/control";
+import { defaults as defaultControls} from "ol/control";
+
 import LayerSwitcher from 'ol-layerswitcher';
 import proj4 from 'proj4'
+import 'ol-ext/dist/ol-ext.css';
+import "rc-slider/assets/index.css";
+
 
 const styles = {
   mapTextContainer: {
@@ -15,13 +19,15 @@ const styles = {
     margin: 'auto',
     paddingLeft: '0px',
     width: '88%',
-    border: '1px solid black'
+    fontFamily: 'Roboto',
   },
   innerBoxStyle: {
     display: 'flex', 
     flexDirection: 'row', 
     justifyContent: 'space-between',
     alignItems: 'center',
+    fontFamily: 'Roboto',
+    marginTop: '0.8rem'
   },
   box: {
     width: '0.7rem', 
@@ -58,7 +64,7 @@ const MapComponent: React.FC<MapProps> = ({
   const mapState = useAppSelector(state => state.mapState)
   
   useEffect(() => {
-      
+    
     let options = {
       view: new ol.View({ resolution, center }),
       layers: [],
@@ -67,8 +73,8 @@ const MapComponent: React.FC<MapProps> = ({
     };
 
     let mapObject: any = new ol.Map(options);
-    
     mapObject.setTarget(mapRef.current);
+   
     setMap(mapObject);
     return () => mapObject.setTarget(undefined);
   }, [mapRef]);
@@ -91,16 +97,54 @@ const MapComponent: React.FC<MapProps> = ({
 
   useEffect(() => {
     if (!map) return;
-    
+  
     const centered = [mapState.position.lon,mapState.position.lat]
     const convertedCoord = proj4('EPSG:4326', 'EPSG:3857', centered)
-      map.getView().setCenter(convertedCoord)
+    map.getView().setCenter(convertedCoord)
+
   }, [center])
 
+  
+  /*
+    // Run on the timeline
+    var running: any = false; 
+    var start = new Date('2015');
+    var end = new Date('2016');
+    function go(next: any) {
+      var date = tline.getDate('start');
+      if (running) clearTimeout(running);
+      if (!next) {
+        // stop
+        if (date>start && date<end && running) {
+          running = false;
+          tline.element.classList.remove('running');
+          return;
+        }
+        if (date > end) {
+          date = start;
+        }
+      }
+      if (date > end) {
+        tline.element.classList.remove('running');
+        return;
+      }
+      if (date < start) {
+        date = start;
+      }
+      // 1 day
+      date = new Date(date.getTime() + 24*60*60*1000);
+      tline.setDate(date, { anim:false });
+      // next
+      tline.element.classList.add('running');
+      running = setTimeout(function() { go(true); }, 100);
+    }
+  }, [map])
+ */
   return (
     <MapContext.Provider value={{map}}>
       <Box ref={mapRef} className="ol-map">
         {children}
+        <div id="select"></div>
       </Box>
       <Box sx={styles.mapTextContainer}>
         <Box sx={styles.innerBoxStyle}>
