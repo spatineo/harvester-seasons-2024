@@ -5,7 +5,7 @@ import MapContext from "../MapComponent/MapContext";
 import { BaseLayerOptions } from 'ol-layerswitcher';
 import OSM from 'ol/source/OSM';
 import TileSource from "ol/source/Tile";
-//import OLTileLayer from "ol/layer/Tile";
+import Timeline from "ol-ext/control/Timeline";
 import LayerTile from "ol/layer/Tile";
 import proj4 from 'proj4'
 
@@ -32,8 +32,12 @@ const TileLayer: React.FC<TileLayerProps> = ({ source }) => {
       className: 'class'
     } as BaseLayerOptions)
 
+ 
+   
+
     map.addLayer(tileLayer)
     // tileLayer.setZIndex(zIndex);
+ 
   
     map.on('click', (e: any) => {
       const centered = [e.coordinate[0],e.coordinate[1]]
@@ -41,6 +45,8 @@ const TileLayer: React.FC<TileLayerProps> = ({ source }) => {
       
       dispatch(setPosition({lat: reversedCoord[1], lon: reversedCoord[0]}))
     });;
+
+   
     return () => {
       if (map) {
         map.removeLayer(tileLayer);
