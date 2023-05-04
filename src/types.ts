@@ -8,12 +8,14 @@ export interface Parameter {
   title?: string
 }
 
+export interface StartEndTimeSpan {
+  start_time: string
+  end_time: string
+  time_step: number
+}
+
 export interface GlobalStateProps {
-   startEndTimeSpan: {
-    start_time: string
-    end_time: string
-    time_step: number
-  }
+   startEndTimeSpan: StartEndTimeSpan
    trafficabilityData: []
    soilWetnessData: [] 
    soilTemperatureData: []
