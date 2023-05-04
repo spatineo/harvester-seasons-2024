@@ -1,13 +1,98 @@
-import React, { useState, FC, useEffect} from 'react'
-import { Box, Typography} from '@mui/material'
+import React, { useState, FC, useEffect, useRef} from 'react'
+import * as echarts from "echarts"
+import { EChartOption  } from 'echarts'
+import { Box, Typography } from '@mui/material'
 import GraphComponent from '../GraphComponent/GraphComponent'
 import { useAppSelector } from '../store/hooks'
 import { RootState } from '../store/store'
 
 const TraficabilityGraphComponent: FC = () => {
+  const graphRef= useRef<HTMLDivElement>(null)
   const [summer, setSummer] = useState<string>('')
   const [winter, setWinter] = useState<string>('')
   const trafficability = useAppSelector((state: RootState) => state.global.trafficabilityData)
+
+  useEffect(() => {
+    if(!graphRef.current && !trafficability) {
+      throw Error('No graph ref available')
+    }
+    const graph = echarts.init(graphRef.current!, undefined, {
+      height: '180',
+    })
+
+    const trafficabilityDate = () => {
+      return trafficability.map((traffic: {[key: string]: string | number}) => {
+       /*  const date = new Date(traffic.utctime).toUTCString()
+        return date.substring(7, 17) */
+        const modifiedDate = new Date(traffic.utctime).toDateString()
+        return modifiedDate.substring(3)
+      })
+    }
+
+    const trafficabilityOptionData: EChartOption = {
+      dataset: {
+      source: [
+        [...trafficabilityDate()],
+        [`${summer}` ? `${summer} summer` : 'Summer Index', ...summerIndex()],
+        [`${winter}` ? `${winter} winter` : "Winter Index", ...winterIndex1()],
+      ]
+    },
+    legend: {},
+    grid: {
+      height: '80px'
+    },
+    tooltip: {
+      trigger: 'axis'
+    },
+    yAxis: {
+      name: 'Traficability',
+      nameLocation: 'middle',
+      nameTextStyle: {
+        padding: 18
+      }
+    },
+    xAxis: {
+      type: "category",
+      axisLabel: {
+        //formatter: (d: any) => moment(d).format('DD.MM'),
+       // interval: 24,
+      },
+    },
+    series: [{
+      type: "line",
+      seriesLayoutBy: "row",
+      areaStyle: {
+        color: 'rgb(192, 203, 204)'
+      }
+    },
+    {
+      type: "line",
+      seriesLayoutBy: "row",
+     
+    }]
+    }
+  
+    
+    graph.setOption(trafficabilityOptionData)
+  
+    
+    graph.getZr().on('click', function(params){
+      console.log(params)
+      var pointInPixel = [params.offsetX, params.offsetY];
+      var pointInGrid = graph.convertFromPixel({gridIndex: 0}, pointInPixel);
+      const xAxis = graph.getOption().xAxis;
+      const xAxisData = (Array.isArray(xAxis) ? xAxis[0] : xAxis)?.data
+      const xValue = xAxisData !== undefined && xAxisData[pointInGrid[0]];
+      console.log(xAxisData)
+      console.log(`Clicked on x-axis value ${xValue}`);
+    })
+
+    return () => {
+      if(graph){
+        graph.dispose()
+      }
+    }
+  }, [graphRef, trafficability])
 
   const trafficabilityDate = () => {
       return trafficability.map((traffic: {[key: string]: string | number}) => {
@@ -122,7 +207,9 @@ const TraficabilityGraphComponent: FC = () => {
   
     return (
       <Box>
-        <GraphComponent 
+        <Box ref={graphRef}>
+        </Box>
+       {/*  <GraphComponent 
           option={trafficabilityOptionData} 
           onEvents={{
             mouseover: (event: any) => { 
@@ -132,9 +219,12 @@ const TraficabilityGraphComponent: FC = () => {
             mouseout: (event: any) => {
               setSummer('')
               setWinter('')
+            },
+            click: (event: any) => {
+              console.log(event)
             }
           }} 
-      />
+      /> */}
       </Box>
     )
   }
