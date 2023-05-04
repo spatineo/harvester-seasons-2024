@@ -3,13 +3,18 @@ import { Box } from '@mui/material'
 import GraphComponent from '../GraphComponent/GraphComponent'
 import { HarvesterChartProps } from '../types'
 
-
 const HarvesterSeasons:FC<HarvesterChartProps> = ({
-  option
+  option,
+  handleClick
 }) => {
   return (
     <Box>
-      <GraphComponent onEvents={{}} option={option} />
+      <GraphComponent 
+        onEvents={{
+        click: handleClick
+       }} 
+       option={option} 
+      />
     </Box>
   )
 }
