@@ -1,21 +1,17 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Typography } from '@mui/material'
 import { useAppSelector } from '../store/hooks'
 import { RootState } from '../store/store'
-import GraphComponent from '../GraphComponent/GraphComponent'
 import HarvesterSeasons from '../HarvesterChartComponent/HarvesterSeasons'
-import { HarvesterChartProps } from '../types'
 
 const Graphs = () => {
   const soilTemperatureData = useAppSelector((state: RootState) => state.global.soilTemperatureData)
   const snowHHeightData = useAppSelector((state: RootState) => state.global.snowHeight)
-  const soilWetnessData = useAppSelector((state: RootState) => state.global.snowHeight)
+  const soilWetnessData = useAppSelector((state: RootState) => state.global.soilWetnessData)
   const [data, setData] = useState<{soilWetness: [],soilTemperature: [], snowHeight: []}>({soilWetness: [], soilTemperature: [], snowHeight: []})
-  const [dataValues, setDataValues] = useState<{}>({})
   const [error, setError] = useState<string>('')
   const dateMarker = new Date().toDateString()
 
- 
   useEffect(() => {
     if(!soilTemperatureData && snowHHeightData && soilTemperatureData) return;
       setData({
@@ -23,7 +19,7 @@ const Graphs = () => {
         soilTemperature: soilTemperatureData,
         snowHeight: snowHHeightData
       })
-  }, [soilTemperatureData])
+  }, [soilTemperatureData, soilWetnessData, snowHHeightData])
 
   const soilWetnessDate = () => {
       return data.soilWetness.map((d: any) => {
@@ -42,13 +38,13 @@ const Graphs = () => {
         [...data.soilWetness.map((data: any) => data['DIFF{VSW-M3M3:ECBSF:5022:9:7:0:1;-0.0305470526218414}'])],
         [...data.soilWetness.map((data: any) => data['DIFF{VSW-M3M3:ECBSF:5022:9:7:0:2;-0.0306599736213684}'])],
         [...data.soilWetness.map((data: any) => data['DIFF{VSW-M3M3:ECBSF:5022:9:7:0:3; -0.007231593132019}'])],
-        [...data.snowHeight.map((data: any) => data['DIFF{VSW-M3M3:ECBSF:5022:9:7:0:4;-0.0304692387580872}'])],
-        [...data.snowHeight.map((data: any) => data['SWVL2-M3M3:SMARTMET:5015'])],
-        [...data.snowHeight.map((data: any) => data['VSW-M3M3:ECBSF:5022:9:7:0:0'])],
-        [...data.snowHeight.map((data: any) => data['VSW-M3M3:ECBSF:5022:9:7:0:1'])],
-        [...data.snowHeight.map((data: any) => data['VSW-M3M3:ECBSF:5022:9:7:0:2'])],
-        [...data.snowHeight.map((data: any) => data['VSW-M3M3:ECBSF:5022:9:7:0:3'])],
-        [...data.snowHeight.map((data: any) => data['VSW-M3M3:ECBSF:5022:9:7:0:4'])],
+        [...data.soilWetness.map((data: any) => data['DIFF{VSW-M3M3:ECBSF:5022:9:7:0:4;-0.0304692387580872}'])],
+        [...data.soilWetness.map((data: any) => data['SWVL2-M3M3:SMARTMET:5015'])],
+        [...data.soilWetness.map((data: any) => data['VSW-M3M3:ECBSF:5022:9:7:0:0'])],
+        [...data.soilWetness.map((data: any) => data['VSW-M3M3:ECBSF:5022:9:7:0:1'])],
+        [...data.soilWetness.map((data: any) => data['VSW-M3M3:ECBSF:5022:9:7:0:2'])],
+        [...data.soilWetness.map((data: any) => data['VSW-M3M3:ECBSF:5022:9:7:0:3'])],
+        [...data.soilWetness.map((data: any) => data['VSW-M3M3:ECBSF:5022:9:7:0:4'])],
       ]
     },
     legend: {},
@@ -505,16 +501,34 @@ const Graphs = () => {
       )
     } else {
       return <div>
-       {/*   <GraphComponent option={soilWetnessOption} onEvents={{}} data={[]} />
-         <GraphComponent option={soilTemperatureOption} onEvents={{}} data={[]} />
-         <GraphComponent option={snowHeightOption} onEvents={{}} data={[]} /> */}
+          <HarvesterSeasons 
+          parameters={[]}
+          data={data.soilWetness} 
+          starttime={0} 
+          endtime={0} 
+          timestep={0} 
+          option={soilWetnessOption} 
+          handleClick={(data) => console.log('click', data) }
+         />
+           <HarvesterSeasons 
+          parameters={[]} 
+          data={data.soilTemperature} 
+          starttime={0} 
+          endtime={0} 
+          timestep={0} 
+          option={soilTemperatureOption} 
+          handleClick={() => console.log('click') }
+         />
+        <HarvesterSeasons 
+          parameters={[]} 
+          data={data.snowHeight} 
+          starttime={0} 
+          endtime={0} 
+          timestep={0} 
+          option={snowHeightOption} 
+          handleClick={(data: any) => console.log('click', data.event.offsetX) }
+         />
 
-
-         <HarvesterSeasons parameters={[]} data={data.soilTemperature} starttime={0} endtime={0} timestep={0} option={soilTemperatureOption} />
-         <HarvesterSeasons parameters={[]} data={data.soilWetness} option={soilWetnessOption} starttime={0} endtime={0} timestep={0} />
-         <HarvesterSeasons parameters={[]} data={data.snowHeight} option={snowHeightOption} starttime={0} endtime={0} timestep={0} />
-
-         
       </div>
     }
   }
