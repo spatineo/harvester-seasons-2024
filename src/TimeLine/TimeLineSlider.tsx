@@ -1,61 +1,166 @@
-import React, { useRef, useEffect} from "react"
+import React, { useRef, useEffect, useState} from "react"
 import * as echarts from "echarts"
 import { Box } from "@mui/material"
+import { useAppSelector } from "../store/hooks";
+import { RootState } from "../store/store";
+
+interface TimelineControlStyle {
+  itemSize?: number;
+  itemGap?: number;
+  normal?: {
+    color?: string;
+    borderColor?: string;
+    borderWidth?: number;
+    borderType?: string;
+    shadowBlur?: number;
+    shadowColor?: string;
+    shadowOffsetX?: number;
+    shadowOffsetY?: number;
+  };
+  emphasis?: {
+    color?: string;
+    borderColor?: string;
+    borderWidth?: number;
+    borderType?: string;
+    shadowBlur?: number;
+    shadowColor?: string;
+    shadowOffsetX?: number;
+    shadowOffsetY?: number;
+  };
+}
 
 const TimelineSlider = () => {
-  const chartRef = useRef<HTMLDivElement>(null)
+  const timelineRef = useRef<HTMLDivElement>(null)
+  const snowHHeightData = useAppSelector((state: RootState) => state.global.snowHeight)
+  const [data, setData] = useState<string[]>([])
+  const [timelineGraph, setTimelineGraph] = useState<any>(null)
+
+  const dateFunc = (arr: []) => {
+    let data: string[] = []
+    arr.forEach((elements: {utctime: string}) => {
+      data.push(elements.utctime)
+    })
+    return data
+  }
+
+
+  useEffect(() =>{
+    const options = {}
+    const option: echarts.EChartsOption = {
+      timeline: {
+        data: data,
+        autoPlay: false,
+        playInterval: 1000,
+        left: 'center',
+        bottom: 0,
+        width: '100%',
+        height: '50%',
+        label: {
+          position: 'bottom',
+          show: true,
+          interval: 2,
+          rotate: 0,
+          color: '#333',
+          fontWeight: 'normal',
+          fontSize: 12,
+          align: 'center',
+          formatter: function(value: any) {return  new Date(value).toLocaleDateString(undefined, {
+            month: 'long', year: 'numeric'
+          })}
+        },
+      controlStyle: {
+        position: 'left',
+        showPlayBtn: true,
+        showPrevBtn: true,
+        showNextBtn: true,
+        itemSize: 18,
+        itemGap: 8,
+        normal: {
+          color: '#333'
+        },
+        emphasis: {
+          color: '#1e90ff'
+        }
+      } as TimelineControlStyle
+      },
+      
+    
+  options: [
+      {
+          title: {
+              text: '2023-04-02'
+          },
+          
+      },
+      {
+        title: {
+            text: '2023-04-03'
+        },
+        
+    },
+      {
+          title: {
+              text: '2023-05'
+          },
+          
+      },
+      {
+          title: {
+              text: '2023-06'
+          },
+          
+      },
+      {
+        title: {
+            text: '2023-07'
+        },
+        
+    }
+  ]
+  };
+
+  if(timelineGraph){
+    timelineGraph.setOption(option as echarts.EChartOption<echarts.EChartOption.Series>, true)
+   }
+
+   if(timelineGraph){timelineGraph.on('timelinechanged', function (params: any) {
+    const value = params.currentIndex; // get the index of the current data point
+    const timelineData = option?.timeline?.data;
+    if(timelineData){
+      console.log(`Value at index ${value}: ${timelineData[value]}`)
+    }
+    
+  });}
+  }, [timelineGraph, data])
 
   useEffect(() => {
-    console.log(echarts)
-    if(!chartRef) {
+    if(!timelineRef.current) {
       throw Error('Echarts not available')
       }
-    const chart = echarts.init(chartRef.current!, undefined, {
-      height: '50',
-    })
-
-    chart.setOption({
-      timeline: {
-        type: 'time'
-,        data: [
-          '2023-04-01',
-          '2023-05-01',
-          '2023-06-01',
-          '2023-07-01',
-          '2023-08-01',
-          '2023-09-01',
-        ],
-        label: {
-          formatter: function(value: string){
-            return echarts.time.format('yyyy-MM-dd', new Date(value).toDateString().substring(3), true, 'UTC');
-
-          }
-        },
-        formatter: (value: any, index: any) => {
-          console.log(value, 'formatter')
-        }
+      if(!snowHHeightData) {
+        throw Error('No snow height data')
+      } else {
+       const tmp = dateFunc(snowHHeightData)
+       setData(tmp)
       }
+    
+    const timeline: any = echarts.init(timelineRef.current!, undefined, {
+      height: '70',
     })
+
+    setTimelineGraph(timeline)
+
+
     return () => {
-      if(chart){
-        chart.dispose()
+      if(timeline){
+        timeline.dispose()
       }
     }
-  })
-  const option = {
-    timeline: {
-  
-      //loop: false,      
-      axisType: 'category',
-      show: true,
-      autoPlay: false,
-      playInterval: 1500,
-      data: ['2023', '2024', '2025']         
-  },    
-  }
+  }, [timelineRef, snowHHeightData])
+
   return (
-    <div ref={chartRef} >
-    </div>
+    <Box ref={timelineRef} >
+    </Box>
   )
 }
 
