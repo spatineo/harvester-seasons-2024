@@ -5,6 +5,7 @@ export interface HarvesterChartProps  {
   starttime: number
   endtime: number
   timestep: number
+  handleClick: (data: {value: []}) => void
 }
 
 export interface Parameter {
@@ -25,5 +26,7 @@ export interface GlobalStateProps {
    checked: boolean,
    parameters: {
     snowHeight: Parameter[]
+    soilTemperature: Parameter[]
+    soilWetness: Parameter[]
    }
  }
