@@ -4,6 +4,7 @@ import *  as utils from './utils'
 
 const intialEndDateSixMonths = utils.addSixMonths(new Date(), 6).toISOString()
 const initialStartDate = new Date().toISOString()
+const soilTemperaturCodeArray = utils.soilTemperatureCode([])
 
 const initialState: GlobalStateProps = {
   startEndTimeSpan: {
@@ -17,15 +18,40 @@ const initialState: GlobalStateProps = {
   snowHeight: [],
   checked: false,
   parameters: {
+    soilWetness: [
+      {code: 'DIFF{VSW-M3M3:ECBSF:5022:9:7:0:0;-0.0305226445198059}'},
+      {code: 'DIFF{VSW-M3M3:ECBSF:5022:9:7:0:1;-0.0305470526218414}'},
+      {code: 'DIFF{VSW-M3M3:ECBSF:5022:9:7:0:2;-0.0306599736213684}'},
+      {code: 'DIFF{VSW-M3M3:ECBSF:5022:9:7:0:3;-0.007231593132019}'},
+      {code: 'DIFF{VSW-M3M3:ECBSF:5022:9:7:0:4;-0.0304692387580872}'},
+      {code: 'SWVL2-M3M3:SMARTMET:5015'},
+      {code: 'VSW-M3M3:ECBSF:5022:9:7:0:0'},
+      {code: 'VSW-M3M3:ECBSF:5022:9:7:0:1'},
+      {code: 'VSW-M3M3:ECBSF:5022:9:7:0:2'},
+      {code: 'VSW-M3M3:ECBSF:5022:9:7:0:3'},
+      {code: 'VSW-M3M3:ECBSF:5022:9:7:0:4'}
+    ],
+    soilTemperature: [
+      {code: 'K2C{TSOIL-K:ECBSF:::7:1:0}'},
+      ...soilTemperaturCodeArray,
+    ], 
     snowHeight: [
-      {
-        code: 'DIFF{VSW-M3M3:ECBSF:5022:9:7:0:0;-0.0305226445198059}'
-      },
-      {
-        code: ''}
+      {code: 'DIFF{SD-M:ECBSF::1:0:1:0;-0.0640000104904175}'},
+      {code: 'DIFF{SD-M:ECBSF::1:0:3:1;-0.0640000104904175}'},
+      {code: 'DIFF{SD-M:ECBSF::1:0:3:2;0.0141249895095825}'},
+      {code: 'DIFF{SD-M:ECBSF::1:0:3:3;-0.0640000104904175}'},
+      {code: 'DIFF{SD-M:ECBSF::1:0:1:0;-0.0640000104904175}'},
+      {code: 'DIFF{SD-M:ECBSF::1:0:3:4;-0.0171250104904175}'},
+      {code: 'HSNOW-M:SMARTOBS:13:4'},
+      {code: 'SD-M:ECBSF::1:0:1:0'},
+      {code: 'SD-M:ECBSF::1:0:3:1'},
+      {code: 'SD-M:ECBSF::1:0:3:2'},
+      {code: 'SD-M:ECBSF::1:0:3:3'},
+      {code: 'SD-M:ECBSF::1:0:3:4'},
     ]
   }
 }
+
 const globalSlice = createSlice({
   name: 'global',
   initialState,
