@@ -9,12 +9,14 @@ const HarvesterSeasons:FC<HarvesterChartProps> = ({
 }) => {
   return (
     <Box>
+      {option ? 
       <GraphComponent 
         onEvents={{
         click: handleClick
        }} 
        option={option} 
-      />
+      /> : <span>No data available</span>
+      }
     </Box>
   )
 }

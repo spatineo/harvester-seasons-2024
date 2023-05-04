@@ -1,10 +1,5 @@
 export interface HarvesterChartProps  {
-  parameters: []
-  data: []
   option: {}
-  starttime: number
-  endtime: number
-  timestep: number
   handleClick: (data: {value: []}) => void
 }
 
