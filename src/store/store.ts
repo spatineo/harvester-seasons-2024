@@ -26,8 +26,9 @@ export const store = configureStore({
     global: globalSlice
   },
   middleware: [sagaMiddleware],
-  devTools: process.env.NODE_ENV !== 'production',
+  devTools: import.meta.env.NODE_ENV !== 'production',
 })
+
 
 sagaMiddleware.run(rootSaga)
 
