@@ -9,6 +9,9 @@ import { Box } from '@mui/material';
 import { useAppSelector } from '../store/hooks';
 import { RootState } from '../store/store';
 
+export interface Time {
+	utctime: string;
+}
 interface TimelineControlStyle {
 	itemSize?: number;
 	itemGap?: number;
@@ -39,21 +42,28 @@ const TimelineSlider = () => {
 	const snowHHeightData = useAppSelector(
 		(state: RootState) => state.global.snowHeight
 	);
-	const [data, setData] = useState<string[]>([]);
+	const [data, setData] = useState<Time[]>([]);
 	const [timelineGraph, setTimelineGraph] = useState<any>(null);
 
-	const dateFunc = (arr: []) => {
+	const dateFunc = (arr: Time[]) => {
 		const date: string[] = [];
 		arr.forEach((elements: { utctime: string }) => {
 			date.push(elements.utctime);
 		});
-		return data;
+		return date;
 	};
 
 	useEffect(() => {
+		if (snowHHeightData.length > 0) {
+			setData(snowHHeightData);
+		}
+	}, [snowHHeightData]);
+
+	useEffect(() => {
+		const date: any = dateFunc(data);
 		const option: echarts.EChartsOption = {
 			timeline: {
-				data,
+				data: date,
 				autoPlay: false,
 				playInterval: 1000,
 				left: 'center',
@@ -131,7 +141,9 @@ const TimelineSlider = () => {
 		if (timelineGraph) {
 			timelineGraph.on('timelinechanged', function (params: any) {
 				const value = params.currentIndex; // get the index of the current data point
+				console.log('graph for time line');
 				const timelineData = option?.timeline?.data;
+				console.log(timelineData, 'timeline data check');
 				if (timelineData) {
 					// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 					window.console.log(`Value at index ${value}: ${timelineData[value]}`);
@@ -144,13 +156,6 @@ const TimelineSlider = () => {
 		if (!timelineRef.current) {
 			throw Error('Echarts not available');
 		}
-		if (!snowHHeightData) {
-			throw Error('No snow height data');
-		} else {
-			const tmp = dateFunc(snowHHeightData);
-			setData(tmp);
-		}
-
 		const timeline: any = echarts.init(timelineRef.current, undefined, {
 			height: '70',
 		});
@@ -162,7 +167,7 @@ const TimelineSlider = () => {
 				timeline.dispose();
 			}
 		};
-	}, [timelineRef, snowHHeightData]);
+	}, [timelineRef]);
 
 	return <Box ref={timelineRef}></Box>;
 };
