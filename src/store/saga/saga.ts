@@ -10,6 +10,7 @@ import * as constants from '../constants';
 import * as utils from '../../utils';
 import { RootState } from '../store';
 import { Parameter, StartEndTimeSpan } from '../../types';
+import { mapActions } from '../../MapComponent/MapComponentSlice';
 
 const timeSeriesServiceURL = 'https://desm.harvesterseasons.com/timeseries';
 export interface TimeSpan {
@@ -17,6 +18,15 @@ export interface TimeSpan {
 	end_time: string;
 	time_step: number;
 }
+
+export function* setUserLocation({
+	payload,
+}: ReturnType<typeof mapActions.setPosition>): SagaIterator {
+	yield put({ type: constants.TRAFFICABILITY_API });
+	yield put({ type: constants.SOILTEMPERATUE_API });
+	yield put({ type: constants.SOILWETNESS_API });
+}
+
 export function* triggerCheckUpdate({
 	payload,
 }: ReturnType<typeof actions.setCheckedButton>): SagaIterator {
@@ -27,7 +37,7 @@ export function* triggerCheckUpdate({
 			actions.setTimeEndStartSpan({
 				start_time: new Date().toISOString(),
 				end_time: tenYearsTimeSpan,
-				time_step: 10080, // one week
+				time_step: 1440, // one week
 			})
 		);
 		yield put({ type: constants.TRAFFICABILITY_API });
@@ -50,16 +60,16 @@ export function* triggerCheckUpdate({
 	}
 }
 
-function asStartEndTimeSpan(value: StartEndTimeSpan): StartEndTimeSpan {
-	const startEndTimeSpan = value;
-	return startEndTimeSpan;
-}
-
 export function* fetchTrafficabilityDataSaga({
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	payload,
 }: ReturnType<typeof actions.setTrafficabilityData>): SagaIterator {
-	const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
+	const userLocation = yield select(
+		(state: RootState) => state.mapState.position
+	);
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+	console.log(userLocation.lon, 'user');
+	const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		yield select((state: RootState) => state.global.startEndTimeSpan)
 	);
@@ -70,6 +80,9 @@ export function* fetchTrafficabilityDataSaga({
 	const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
 	const modifiedEndDate = new Date(startEndTimeSpan.end_time).toISOString();
 
+	const lonlat = `${Number(userLocation.lon).toFixed(2)},${Number(
+		userLocation.lat
+	).toFixed(2)}`;
 	try {
 		const response = yield call(
 			// eslint-disable-next-line @typescript-eslint/unbound-method
@@ -77,7 +90,7 @@ export function* fetchTrafficabilityDataSaga({
 			timeSeriesServiceURL,
 			{
 				params: {
-					latlon: '64,27',
+					latlon: `${lonlat}`,
 					param:
 						'utctime,' + parameters.map((p: Parameter) => p.code).join(','),
 					starttime: modifiedStartDate,
@@ -128,7 +141,7 @@ export function* soilTemperatureDataSaga({
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	payload,
 }: ReturnType<typeof actions.setSoilTemperatureData>): SagaIterator {
-	const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
+	const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		yield select((state: RootState) => state.global.startEndTimeSpan)
 	);
@@ -157,7 +170,7 @@ export function* soilTemperatureDataSaga({
 export function* fetchSoilWetnessDataSaga({
 	payload,
 }: ReturnType<typeof actions.setSoilWetnessData>): SagaIterator {
-	const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
+	const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		yield select((state: RootState) => state.global.startEndTimeSpan)
 	);
@@ -187,7 +200,7 @@ export function* fetchSoilWetnessDataSaga({
 export function* fetchSnowHeightDataSaga({
 	payload,
 }: ReturnType<typeof actions.setSnowHeightData>): SagaIterator {
-	const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
+	const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		yield select((state: RootState) => state.global.startEndTimeSpan)
 	);
@@ -214,6 +227,7 @@ export function* fetchSnowHeightDataSaga({
 }
 
 export function* watchHarvesterRequests(): SagaIterator {
+	yield takeLatest('POSITION', setUserLocation);
 	yield takeLatest(actions.setCheckedButton.type, triggerCheckUpdate);
 	yield takeLatest(constants.TRAFFICABILITY_API, fetchTrafficabilityDataSaga);
 	yield takeLatest(constants.SOILWETNESS_API, fetchSoilWetnessDataSaga);
