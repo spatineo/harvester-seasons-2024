@@ -1,4 +1,4 @@
-import { Parameter } from './types';
+import { Parameter, StartEndTimeSpan } from './types';
 
 export function addTenYears(date: Date, years: number) {
 	date.setFullYear(date.getFullYear() + years);
@@ -17,4 +17,14 @@ export function soilTemperatureCode(arr: Parameter[]) {
 		});
 	}
 	return arr;
+}
+
+export function getValueFromRedux(value: StartEndTimeSpan): StartEndTimeSpan {
+	const startEndTimeSpan = value;
+	return startEndTimeSpan;
+}
+
+export function asStartEndTimeSpan(value: StartEndTimeSpan): StartEndTimeSpan {
+	const startEndTimeSpan = value;
+	return startEndTimeSpan;
 }
