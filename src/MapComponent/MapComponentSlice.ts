@@ -24,11 +24,13 @@ const mapComponentSlice = createSlice({
 			state,
 			action: PayloadAction<{ lat: number; lon: number }>
 		) => {
+			console.log(action);
 			state.position.lat = action.payload.lat;
 			state.position.lon = action.payload.lon;
 		},
 	},
 });
 
-export const { setPosition } = mapComponentSlice.actions;
+export const mapActions = { ...mapComponentSlice.actions };
 export default mapComponentSlice.reducer;
+export type ReduxActions = ReturnType<typeof mapActions.setPosition>;
