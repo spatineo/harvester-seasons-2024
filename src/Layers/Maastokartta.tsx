@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable import/no-named-as-default-member */
 import { useEffect, useContext } from 'react';
-import { setPosition } from '../MapComponent/MapComponentSlice';
+import { mapActions } from '../MapComponent/MapComponentSlice';
 import { useRootDispatch } from '../store/hooks';
 import MapContext from '../MapComponent/MapContext';
 import { BaseLayerOptions } from 'ol-layerswitcher';
@@ -48,7 +48,9 @@ const TileLayer: React.FC<TileLayerProps> = ({ source }) => {
 			const centered = [e.coordinate[0], e.coordinate[1]];
 			const reversedCoord = proj4('EPSG:3857', 'EPSG:4326', centered);
 
-			dispatch(setPosition({ lat: reversedCoord[1], lon: reversedCoord[0] }));
+			dispatch(
+				mapActions.setPosition({ lat: reversedCoord[1], lon: reversedCoord[0] })
+			);
 		});
 
 		return () => {
