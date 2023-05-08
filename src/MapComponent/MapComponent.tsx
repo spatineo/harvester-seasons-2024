@@ -6,11 +6,11 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { useRootDispatch, useAppSelector } from '../store/hooks';
-import { setPosition } from './MapComponentSlice';
+import { mapActions } from './MapComponentSlice';
 import MapContext from './MapContext';
 import * as ol from 'ol';
 import { defaults as defaultControls } from 'ol/control';
-
+import * as constants from '../store/constants';
 import LayerSwitcher from 'ol-layerswitcher';
 import proj4 from 'proj4';
 import 'ol-ext/dist/ol-ext.css';
@@ -89,7 +89,7 @@ const MapComponent: React.FC<MapProps> = ({ children, resolution, center }) => {
 					const lon = position.coords.longitude;
 					const lat = position.coords.latitude;
 
-					dispatch(setPosition({ lat, lon }));
+					dispatch(mapActions.setPosition({ lat, lon }));
 				},
 				(error) => {
 					console.log(error.code, 'error from geolocation', error.message);
@@ -106,7 +106,8 @@ const MapComponent: React.FC<MapProps> = ({ children, resolution, center }) => {
 		const centered = [mapState.position.lon, mapState.position.lat];
 		const convertedCoord = proj4('EPSG:4326', 'EPSG:3857', centered);
 		map.getView().setCenter(convertedCoord);
-	}, [center]);
+		dispatch({ type: constants.POSITION });
+	}, [center, mapState]);
 
 	return (
 		<MapContext.Provider value={{ map }}>
