@@ -28,3 +28,11 @@ export interface GlobalStateProps {
 		soilWetness: Parameter[];
 	};
 }
+
+export interface Map {
+	position: {
+		lat: number;
+		lon: number;
+		resolution: number;
+	};
+}
