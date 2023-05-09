@@ -60,8 +60,35 @@ export function* triggerCheckUpdate({
 	}
 }
 
+function createTimeSeriesQueryParameters(
+	startEndTimeSpan: StartEndTimeSpan,
+	parameters: Parameter[]
+) {
+	const userLocation = store.getState();
+	const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
+	const modifiedEndDate = new Date(startEndTimeSpan.end_time).toISOString();
+
+	const lonlat = `${Math.trunc(userLocation.mapState.position.lat)},${Math.trunc(
+		userLocation.mapState.position.lon
+	)}`;
+	console.log(lonlat);
+	return {
+		params: {
+			latlon: `${lonlat}`,
+			param: 'utctime,' + parameters.map((p) => p.code).join(','),
+			starttime: modifiedStartDate,
+			endtime: modifiedEndDate,
+			timestep: startEndTimeSpan.time_step,
+			format: 'json',
+			source: 'grid',
+			tz: 'utc',
+			timeformat: 'xml',
+			precision: 'full',
+		},
+	};
+}
+
 export function* fetchTrafficabilityDataSaga({
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	payload,
 }: ReturnType<typeof actions.setTrafficabilityData>): SagaIterator {
 	const userLocation = yield select((state: RootState) => state.mapState.position);
@@ -107,36 +134,7 @@ export function* fetchTrafficabilityDataSaga({
 	}
 }
 
-function createTimeSeriesQueryParameters(
-	startEndTimeSpan: StartEndTimeSpan,
-	parameters: Parameter[]
-) {
-	const userLocation = store.getState();
-	const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
-	const modifiedEndDate = new Date(startEndTimeSpan.end_time).toISOString();
-
-	const lonlat = `${Math.trunc(userLocation.mapState.position.lat)},${Math.trunc(
-		userLocation.mapState.position.lon
-	)}`;
-	console.log(lonlat);
-	return {
-		params: {
-			latlon: `${lonlat}`,
-			param: 'utctime,' + parameters.map((p) => p.code).join(','),
-			starttime: modifiedStartDate,
-			endtime: modifiedEndDate,
-			timestep: startEndTimeSpan.time_step,
-			format: 'json',
-			source: 'grid',
-			tz: 'utc',
-			timeformat: 'xml',
-			precision: 'full',
-		},
-	};
-}
-
 export function* soilTemperatureDataSaga({
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	payload,
 }: ReturnType<typeof actions.setSoilTemperatureData>): SagaIterator {
 	const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
@@ -204,7 +202,7 @@ export function* fetchSnowHeightDataSaga({
 			createTimeSeriesQueryParameters(startEndTimeSpan, parameters)
 		);
 		if (response.status === 200) {
-			console.log(response.data);
+			console.log(response.data, 'snow height in saga');
 			const tmp = response.data;
 			yield put(actions.setSnowHeightData(tmp));
 		}
