@@ -15,9 +15,7 @@ const TraficabilityGraphComponent: FC = () => {
 	const graphRef = useRef<HTMLDivElement>(null);
 	const [summer, setSummer] = useState<string>('');
 	const [winter, setWinter] = useState<string>('');
-	const trafficability = useAppSelector(
-		(state: RootState) => state.global.trafficabilityData
-	);
+	const trafficability = useAppSelector((state: RootState) => state.global.trafficabilityData);
 
 	useEffect(() => {
 		if (!graphRef.current && !trafficability) {
@@ -28,14 +26,12 @@ const TraficabilityGraphComponent: FC = () => {
 		});
 
 		const trafficabilityDate = () => {
-			return trafficability.map(
-				(traffic: { [key: string]: string | number }) => {
-					/*  const date = new Date(traffic.utctime).toUTCString()
+			return trafficability.map((traffic: { [key: string]: string | number }) => {
+				/*  const date = new Date(traffic.utctime).toUTCString()
         return date.substring(7, 17) */
-					const modifiedDate = new Date(traffic.utctime).toDateString();
-					return modifiedDate.substring(3);
-				}
-			);
+				const modifiedDate = new Date(traffic.utctime).toDateString();
+				return modifiedDate.substring(3);
+			});
 		};
 
 		const summerIndex = () => {
@@ -68,8 +64,7 @@ const TraficabilityGraphComponent: FC = () => {
 			} else {
 				return trafficability.map((winterData: any) => {
 					let winter1;
-					const param3 =
-						'HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}';
+					const param3 = 'HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}';
 					const param8 = 'ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}';
 					const param4ensemble = `ensover{0.4;0.9;DIFF{SD-M:ECBSF::1:0:1:0;-0.2220000624656677};DIFF{SD-M:ECBSF::1:0:3:1;-0.3626250624656677};
 					DIFF{SD-M:ECBSF::1:0:3:2;-0.2845000624656677};DIFF{SD-M:ECBSF::1:0:3:3;-0.2532500624656677};DIFF{SD-M:ECBSF::1:0:3:4;-0.2220000624656677};
@@ -91,10 +86,7 @@ const TraficabilityGraphComponent: FC = () => {
 					DIFF{SD-M:ECBSF::1:0:3:50;-0.3157500624656677}}`;
 					if (winterData[param8] !== null) {
 						winter1 = Math.max(winterData[param3], winterData[param8]);
-					} else if (
-						winterData[param3] !== null ||
-						winterData[param4ensemble] !== null
-					) {
+					} else if (winterData[param3] !== null || winterData[param4ensemble] !== null) {
 						winter1 = Math.max(winterData[param3], winterData[param4ensemble]);
 					} else {
 						winter1 = 'nan';
@@ -109,10 +101,7 @@ const TraficabilityGraphComponent: FC = () => {
 				source: [
 					[...trafficabilityDate()],
 					[`${summer}` ? `${summer} summer` : 'Summer Index', ...summerIndex()],
-					[
-						`${winter}` ? `${winter} winter` : 'Winter Index',
-						...winterIndex1(),
-					],
+					[`${winter}` ? `${winter} winter` : 'Winter Index', ...winterIndex1()],
 				],
 			},
 			legend: {},
@@ -156,10 +145,7 @@ const TraficabilityGraphComponent: FC = () => {
 		graph.getZr().on('click', function (params) {
 			console.log(params);
 			const pointInPixel = [params.offsetX, params.offsetY];
-			const pointInGrid = graph.convertFromPixel(
-				{ gridIndex: 0 },
-				pointInPixel
-			);
+			const pointInGrid = graph.convertFromPixel({ gridIndex: 0 }, pointInPixel);
 			const xAxis = graph.getOption().xAxis;
 			const xAxisData = (Array.isArray(xAxis) ? xAxis[0] : xAxis)?.data;
 			const xValue = xAxisData !== undefined && xAxisData[pointInGrid[0]];

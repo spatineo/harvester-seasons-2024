@@ -20,11 +20,7 @@ const mapComponentSlice = createSlice({
 	name: 'map',
 	initialState,
 	reducers: {
-		setPosition: (
-			state,
-			action: PayloadAction<{ lat: number; lon: number }>
-		) => {
-			console.log(action);
+		setPosition: (state, action: PayloadAction<{ lat: number; lon: number }>) => {
 			state.position.lat = action.payload.lat;
 			state.position.lon = action.payload.lon;
 		},

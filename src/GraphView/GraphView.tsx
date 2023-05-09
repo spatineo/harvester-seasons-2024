@@ -15,29 +15,17 @@ const Graphs = () => {
 	const soilTemperatureData = useAppSelector(
 		(state: RootState) => state.global.soilTemperatureData
 	);
-	const snowHeightData = useAppSelector(
-		(state: RootState) => state.global.snowHeight
-	);
-	const soilWetnessData = useAppSelector(
-		(state: RootState) => state.global.soilWetnessData
-	);
-	const graphParameters = useAppSelector(
-		(state: RootState) => state.global.parameters
-	);
+	const snowHeightData = useAppSelector((state: RootState) => state.global.snowHeight);
+	const soilWetnessData = useAppSelector((state: RootState) => state.global.soilWetnessData);
+	const graphParameters = useAppSelector((state: RootState) => state.global.parameters);
 
 	const [soilWetnessOption, setSoilWetnessOption] = useState<any>(null);
 	const [soilTemperatureOption, setSoilTemperatureOption] = useState<any>(null);
 	const [snowHeightOption, setSnowHeightOption] = useState<any>(null);
 
-	const dateMarker = new Date(
-		new Date().getTime() + 1000 * 60 * 60 * 24 * 7
-	).toDateString();
+	const dateMarker = new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 7).toDateString();
 
-	function createOptions(
-		opts: GraphOptions,
-		parameters: Parameter[],
-		values: []
-	) {
+	function createOptions(opts: GraphOptions, parameters: Parameter[], values: []) {
 		const source = () => {
 			return [
 				[
@@ -148,10 +136,7 @@ const Graphs = () => {
 				option={soilWetnessOption}
 				handleClick={(data) => console.log('click', data)}
 			/>
-			<HarvesterSeasons
-				option={soilTemperatureOption}
-				handleClick={() => console.log('click')}
-			/>
+			<HarvesterSeasons option={soilTemperatureOption} handleClick={() => console.log('click')} />
 			<HarvesterSeasons
 				option={snowHeightOption}
 				handleClick={(data: any) => console.log('click', data)}

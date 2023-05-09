@@ -15,10 +15,7 @@ interface TileLayerProps {
 	source: TileSource;
 }
 
-proj4.defs(
-	'EPSG:3067',
-	'+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs'
-);
+proj4.defs('EPSG:3067', '+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
 proj4.defs('EPSG:4326', '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs');
 proj4.defs(
 	'EPSG:3857',
@@ -48,9 +45,7 @@ const TileLayer: React.FC<TileLayerProps> = ({ source }) => {
 			const centered = [e.coordinate[0], e.coordinate[1]];
 			const reversedCoord = proj4('EPSG:3857', 'EPSG:4326', centered);
 
-			dispatch(
-				mapActions.setPosition({ lat: reversedCoord[1], lon: reversedCoord[0] })
-			);
+			dispatch(mapActions.setPosition({ lat: reversedCoord[1], lon: reversedCoord[0] }));
 		});
 
 		return () => {

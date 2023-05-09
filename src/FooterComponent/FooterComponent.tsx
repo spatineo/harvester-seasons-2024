@@ -34,11 +34,7 @@ const FooterComponent: FC = () => {
 	return (
 		<Box sx={footerStyle.container}>
 			<Box>
-				<Link
-					href="https://harvesterseasons.com/"
-					target="_blank"
-					sx={footerStyle.link}
-				>
+				<Link href="https://harvesterseasons.com/" target="_blank" sx={footerStyle.link}>
 					<Button>
 						<Typography sx={footerStyle.text}>Harvester Seasons</Typography>
 					</Button>

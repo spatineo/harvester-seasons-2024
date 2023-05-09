@@ -44,10 +44,7 @@ const initialState: GlobalStateProps = {
 			{ code: 'VSW-M3M3:ECBSF:5022:9:7:0:3' },
 			{ code: 'VSW-M3M3:ECBSF:5022:9:7:0:4' },
 		],
-		soilTemperature: [
-			{ code: 'K2C{TSOIL-K:ECBSF:::7:1:0}' },
-			...soilTemperaturCodeArray,
-		],
+		soilTemperature: [{ code: 'K2C{TSOIL-K:ECBSF:::7:1:0}' }, ...soilTemperaturCodeArray],
 		snowHeight: [
 			{ code: 'DIFF{SD-M:ECBSF::1:0:1:0;-0.0640000104904175}' },
 			{ code: 'DIFF{SD-M:ECBSF::1:0:3:1;-0.0640000104904175}' },

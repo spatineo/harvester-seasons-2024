@@ -39,9 +39,7 @@ interface TimelineControlStyle {
 
 const TimelineSlider = () => {
 	const timelineRef = useRef<HTMLDivElement>(null);
-	const snowHHeightData = useAppSelector(
-		(state: RootState) => state.global.snowHeight
-	);
+	const snowHHeightData = useAppSelector((state: RootState) => state.global.snowHeight);
 	const [data, setData] = useState<Time[]>([]);
 	const [timelineGraph, setTimelineGraph] = useState<any>(null);
 
@@ -132,10 +130,7 @@ const TimelineSlider = () => {
 		};
 
 		if (timelineGraph) {
-			timelineGraph.setOption(
-				option as echarts.EChartOption<echarts.EChartOption.Series>,
-				true
-			);
+			timelineGraph.setOption(option as echarts.EChartOption<echarts.EChartOption.Series>, true);
 		}
 
 		if (timelineGraph) {

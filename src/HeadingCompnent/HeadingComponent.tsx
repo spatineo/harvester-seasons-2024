@@ -32,10 +32,7 @@ const HeadingCompoment: React.FC = () => {
 					<Box component="img" src={logo} sx={{ width: '20rem' }} />
 				</Box>
 				<Box>
-					<ListItemButton
-						onClick={handleClick}
-						style={{ paddingLeft: '0px', width: '26%' }}
-					>
+					<ListItemButton onClick={handleClick} style={{ paddingLeft: '0px', width: '26%' }}>
 						{open ? <ExpandLess /> : <ExpandMore />}{' '}
 						{languages.info[information.en as keyof LanguageOptions]}
 					</ListItemButton>
@@ -43,9 +40,7 @@ const HeadingCompoment: React.FC = () => {
 						<Box sx={{ width: '80%', margin: '2rem auto' }}>
 							<Box component="img" src={testimonial} sx={{ width: '80%' }} />
 						</Box>
-						<Box>
-							{languages.overviewBody[information.en as keyof LanguageOptions]}
-						</Box>
+						<Box>{languages.overviewBody[information.en as keyof LanguageOptions]}</Box>
 					</Collapse>
 				</Box>
 			</Box>
