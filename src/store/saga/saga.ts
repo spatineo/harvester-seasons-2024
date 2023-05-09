@@ -25,6 +25,7 @@ export function* setUserLocation({
 	yield put({ type: constants.TRAFFICABILITY_API });
 	yield put({ type: constants.SOILTEMPERATUE_API });
 	yield put({ type: constants.SOILWETNESS_API });
+	yield put({ type: constants.SNOWHEIGHT_API });
 }
 
 export function* triggerCheckUpdate({
@@ -202,7 +203,6 @@ export function* fetchSnowHeightDataSaga({
 			createTimeSeriesQueryParameters(startEndTimeSpan, parameters)
 		);
 		if (response.status === 200) {
-			console.log(response.data, 'snow height in saga');
 			const tmp = response.data;
 			yield put(actions.setSnowHeightData(tmp));
 		}
