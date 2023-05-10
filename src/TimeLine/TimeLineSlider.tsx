@@ -59,7 +59,7 @@ const TimelineSlider = () => {
 
 	useEffect(() => {
 		const date: any = dateFunc(data);
-		const option: echarts.EChartsOption = {
+		const option: any = {
 			timeline: {
 				data: date,
 				autoPlay: false,
