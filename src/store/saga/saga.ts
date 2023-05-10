@@ -69,9 +69,7 @@ function createTimeSeriesQueryParameters(
 	const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
 	const modifiedEndDate = new Date(startEndTimeSpan.end_time).toISOString();
 
-	const lonlat = `${Math.trunc(userLocation.mapState.position.lat)},${Math.trunc(
-		userLocation.mapState.position.lon
-	)}`;
+	const lonlat = `${userLocation.mapState.position.lat},${userLocation.mapState.position.lon}`;
 	console.log(lonlat);
 	return {
 		params: {
@@ -103,7 +101,8 @@ export function* fetchTrafficabilityDataSaga({
 	const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
 	const modifiedEndDate = new Date(startEndTimeSpan.end_time).toISOString();
 
-	const lonlat = `${Math.trunc(userLocation.lon)},${Math.trunc(userLocation.lat)}`;
+	// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+	const lonlat = `${userLocation.lon},${userLocation.lat}`;
 	try {
 		const response = yield call(
 			// eslint-disable-next-line @typescript-eslint/unbound-method
