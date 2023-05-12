@@ -13,8 +13,6 @@ import { defaults as defaultControls } from 'ol/control';
 import * as constants from '../store/constants';
 import LayerSwitcher from 'ol-layerswitcher';
 import proj4 from 'proj4';
-import 'ol-ext/dist/ol-ext.css';
-import 'rc-slider/assets/index.css';
 
 const styles = {
 	mapTextContainer: {
@@ -89,11 +87,11 @@ const MapComponent: React.FC<MapProps> = ({ children, resolution, center }) => {
 					dispatch(mapActions.setPosition({ lat, lon }));
 				},
 				(error) => {
-					console.log(error.code, 'error from geolocation', error.message);
+					window.console.log(error.code, 'error from geolocation', error.message);
 				}
 			);
 		} else {
-			console.log('Application cannot access your location');
+			window.console.log('Application cannot access your location');
 		}
 	}, []);
 
