@@ -16,6 +16,7 @@ import { Map } from '../types';
 import * as constants from '../store/constants';
 import { RootState } from '../store/store';
 import '../Map.css';
+import LocationMarkerLayer from '../Layers/LocationMarker';
 
 const HarvesterMap: FC = () => {
 	const mapState: Map = useAppSelector((state: RootState) => state.mapState);
@@ -72,6 +73,7 @@ const HarvesterMap: FC = () => {
 							})
 						}
 					/>
+					<LocationMarkerLayer />
 				</Layer>
 			</MapComponent>
 		</Box>
