@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable import/default */
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Box } from '@mui/material';
 import * as echarts from 'echarts';
 import { useAppSelector } from '../store/hooks';
@@ -18,7 +18,6 @@ export interface Time {
 }
 
 const Graphs = () => {
-	const [date, setDate] = useState<string[]>([]);
 	const soilTemperatureData = useAppSelector(
 		(state: RootState) => state.global.soilTemperatureData
 	);
@@ -43,84 +42,85 @@ const Graphs = () => {
 		return d;
 	};
 
-	function createOptions(opts: GraphOptions, parameters: Parameter[], values: [], mark: string) {
-		const source = () => {
-			return [
-				[
-					...values.map((value: { utctime: string }) => {
-						const modifiedDate = new Date(value.utctime).toDateString();
-						return modifiedDate.substring(3);
+	const createOptions = useCallback(
+		(opts: GraphOptions, parameters: Parameter[], values: [], mark: string) => {
+			const source = () => {
+				return [
+					[
+						...values.map((value: { utctime: string }) => {
+							const modifiedDate = new Date(value.utctime).toDateString();
+							return modifiedDate.substring(3);
+						}),
+					],
+					...parameters.map((p) => {
+						return values.map((value) => value[p.code]);
 					}),
-				],
-				...parameters.map((p) => {
-					return values.map((value) => value[p.code]);
-				}),
-			];
-		};
+				];
+			};
 
-		return {
-			dataset: {
-				source: source(),
-			},
-			legend: null,
-			grid: {},
-			tooltip: {
-				show: false,
-				trigger: 'axis',
-			},
-			yAxis: {
-				name: opts.title,
-				nameLocation: 'middle',
-				nameTextStyle: {
-					padding: 14,
+			return {
+				animationThreshold: 10,
+				dataset: {
+					source: source(),
 				},
-			},
-			xAxis: {
-				type: 'category',
-				axisTick: {
+				legend: null,
+				grid: {},
+				tooltip: {
 					show: false,
+					trigger: 'axis',
 				},
-			},
-			series: [
-				{
-					label: {
+				yAxis: {
+					name: opts.title,
+					nameLocation: 'middle',
+					nameTextStyle: {
+						padding: 14,
+					},
+				},
+				xAxis: {
+					type: 'category',
+					axisTick: {
 						show: false,
 					},
-					type: 'line',
-					seriesLayoutBy: 'row',
-					markLine: {
-						data: [
-							{
-								// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-								xAxis: mark,
-								name: '',
-								type: 'min',
-								label: { show: false },
-							},
-						],
-						symbol: 'none',
-						lineStyle: {
-							type: 'solid',
-							width: 3,
-							arrow: 'none',
-						},
-					},
 				},
-				...parameters.map((p) => {
-					return {
+				series: [
+					{
+						label: {
+							show: false,
+						},
 						type: 'line',
 						seriesLayoutBy: 'row',
-					};
-				}),
-			],
-		};
-	}
-
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+						markLine: {
+							data: [
+								{
+									// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+									xAxis: mark,
+									name: '',
+									type: 'min',
+									label: { show: false },
+								},
+							],
+							symbol: 'none',
+							lineStyle: {
+								type: 'solid',
+								width: 3,
+								arrow: 'none',
+							},
+						},
+					},
+					...parameters.map((p) => {
+						return {
+							type: 'line',
+							seriesLayoutBy: 'row',
+						};
+					}),
+				],
+			};
+		},
+		[]
+	);
 
 	useEffect(() => {
 		const dateValue: any = dateFunc(data);
-		console.log(dateValue, 'date value');
 		const option: any = {
 			timeline: {
 				data: dateValue,
@@ -132,7 +132,7 @@ const Graphs = () => {
 				height: '50%',
 				label: {
 					position: 'bottom',
-					show: true,
+					show: false,
 					interval: 2,
 					rotate: 0,
 					color: '#333',
@@ -140,7 +140,10 @@ const Graphs = () => {
 					fontSize: 12,
 					align: 'center',
 					formatter(value: string | number) {
-						return new Date(value).toDateString().substring(3);
+						return new Date(value).toLocaleDateString(undefined, {
+							month: 'long',
+							year: 'numeric',
+						});
 					},
 				},
 				controlStyle: {
@@ -158,34 +161,6 @@ const Graphs = () => {
 					},
 				} as TimelineControlStyle,
 			},
-
-			/* options: [
-				{
-					title: {
-						text: '2023-04-02',
-					},
-				},
-				{
-					title: {
-						text: '2023-04-03',
-					},
-				},
-				{
-					title: {
-						text: '2023-05',
-					},
-				},
-				{
-					title: {
-						text: '2023-06',
-					},
-				},
-				{
-					title: {
-						text: '2023-07',
-					},
-				},
-			], */
 		};
 
 		if (timelineGraph) {
@@ -196,9 +171,7 @@ const Graphs = () => {
 			timelineGraph.on('timelinechanged', function (params: any) {
 				const value = params.currentIndex; // get the index of the current data point
 				const timelineData = option?.timeline?.data;
-				if (timelineData) {
-					// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-					window.console.log(`Value at index ${value}: ${timelineData[value]}`);
+				if (timelineData[value]) {
 					// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 					setMarkLineValue(`${timelineData[value]}`);
 				}
@@ -224,7 +197,13 @@ const Graphs = () => {
 	}, [timelineRef]);
 
 	useEffect(() => {
-		if (soilTemperatureData && !markLineValue !== undefined) {
+		if (snowHeightData) {
+			setData(snowHeightData);
+		}
+	}, [snowHeightData]);
+
+	useEffect(() => {
+		if (soilTemperatureData) {
 			const tmp = createOptions(
 				{ title: 'Soil Temperature' },
 				graphParameters.soilTemperature,
@@ -256,7 +235,6 @@ const Graphs = () => {
 				markLineValue
 			);
 			setSnowHeightOption(tmp);
-			setData(snowHeightData);
 		}
 	}, [snowHeightData, graphParameters.snowHeight, markLineValue]);
 
