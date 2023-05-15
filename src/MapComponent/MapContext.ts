@@ -3,7 +3,7 @@ import React, { createContext } from 'react';
 import { Map } from 'ol';
 
 interface MapContextType {
-    map?: Map
+    map: Map | null
 }
 
 const MapContext = createContext({} as MapContextType);

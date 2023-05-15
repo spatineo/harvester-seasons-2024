@@ -6,11 +6,11 @@ export interface MapPosition {
 	resolution: number;
 }
 
-export interface Map {
+export interface MapState {
 	position: MapPosition;
 }
 
-const initialState: Map = {
+const initialState: MapState = {
 	position: {
 		lat: null,
 		lon: null,

@@ -20,7 +20,6 @@ import LocationMarkerLayer from '../Layers/LocationMarker';
 import OSMLayer from '../Layers/OSMLayer';
 
 const HarvesterMap: FC = () => {
-	const mapState: Map = useAppSelector((state: RootState) => state.mapState);
 	const dispatch = useRootDispatch();
 
 	useEffect(() => {
@@ -32,10 +31,7 @@ const HarvesterMap: FC = () => {
 
 	return (
 		<Box>
-			<MapComponent
-				resolution={mapState.position.resolution}
-				center={[mapState.position.lon, mapState.position.lat]}
-			>
+			<MapComponent>
 				<Layer>
 					<OSMLayer />
 					<Taustakartta
