@@ -72,6 +72,15 @@ const LocationMarkerLayer: React.FC = () => {
 
 		source.clear();
 
+		// No point in adding anything if no position selected yet
+		if (
+			position.lon === undefined ||
+			position.lon === null ||
+			position.lat === undefined ||
+			position.lat === null
+		)
+			return;
+
 		const format = new GeoJSON();
 
 		// Add center point

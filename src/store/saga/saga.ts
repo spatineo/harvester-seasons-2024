@@ -10,7 +10,7 @@ import * as constants from '../constants';
 import * as utils from '../../utils';
 import { RootState, store } from '../store';
 import { Parameter, StartEndTimeSpan } from '../../types';
-import { mapActions } from '../../MapComponent/MapComponentSlice';
+import { MapPosition, mapActions } from '../../MapComponent/MapComponentSlice';
 
 const timeSeriesServiceURL = 'https://desm.harvesterseasons.com/timeseries';
 export interface TimeSpan {
@@ -31,7 +31,6 @@ export function* setUserLocation({
 export function* triggerCheckUpdate({
 	payload,
 }: ReturnType<typeof actions.setCheckedButton>): SagaIterator {
-	//const checked = yield select((state) => state.global.checked);
 	if (payload !== false) {
 		const tenYearsTimeSpan = utils.addTenYears(new Date(), 10).toISOString();
 		yield put(
@@ -63,14 +62,13 @@ export function* triggerCheckUpdate({
 
 function createTimeSeriesQueryParameters(
 	startEndTimeSpan: StartEndTimeSpan,
-	parameters: Parameter[]
+	parameters: Parameter[],
+	userLocation: MapPosition
 ) {
-	const userLocation = store.getState();
 	const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
 	const modifiedEndDate = new Date(startEndTimeSpan.end_time).toISOString();
 
-	const lonlat = `${userLocation.mapState.position.lat},${userLocation.mapState.position.lon}`;
-	console.log(lonlat);
+	const lonlat = `${userLocation.lat || 'N/A'},${userLocation.lon || 'N/A'}`;
 	return {
 		params: {
 			latlon: `${lonlat}`,
@@ -91,6 +89,9 @@ export function* fetchTrafficabilityDataSaga({
 	payload,
 }: ReturnType<typeof actions.setTrafficabilityData>): SagaIterator {
 	const userLocation = yield select((state: RootState) => state.mapState.position);
+	if (userLocation.lon === null || userLocation.lon === undefined) {
+		return;
+	}
 	const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
 		yield select((state: RootState) => state.global.startEndTimeSpan)
 	);
@@ -134,9 +135,11 @@ export function* fetchTrafficabilityDataSaga({
 	}
 }
 
-export function* soilTemperatureDataSaga({
-	payload,
-}: ReturnType<typeof actions.setSoilTemperatureData>): SagaIterator {
+export function* soilTemperatureDataSaga(): SagaIterator {
+	const userLocation = store.getState().mapState.position;
+	if (userLocation.lon === null || userLocation.lon === undefined) {
+		return;
+	}
 	const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
 		yield select((state: RootState) => state.global.startEndTimeSpan)
 	);
@@ -146,7 +149,7 @@ export function* soilTemperatureDataSaga({
 		const response = yield call(
 			axios.get,
 			timeSeriesServiceURL,
-			createTimeSeriesQueryParameters(startEndTimeSpan, parameters)
+			createTimeSeriesQueryParameters(startEndTimeSpan, parameters, userLocation)
 		);
 		if (response.status === 200) {
 			const tmp = response.data;
@@ -160,9 +163,11 @@ export function* soilTemperatureDataSaga({
 	}
 }
 
-export function* fetchSoilWetnessDataSaga({
-	payload,
-}: ReturnType<typeof actions.setSoilWetnessData>): SagaIterator {
+export function* fetchSoilWetnessDataSaga(): SagaIterator {
+	const userLocation = store.getState().mapState.position;
+	if (userLocation.lon === null || userLocation.lon === undefined) {
+		return;
+	}
 	const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
 		yield select((state: RootState) => state.global.startEndTimeSpan)
 	);
@@ -172,7 +177,7 @@ export function* fetchSoilWetnessDataSaga({
 		const response = yield call(
 			axios.get,
 			timeSeriesServiceURL,
-			createTimeSeriesQueryParameters(startEndTimeSpan, parameters)
+			createTimeSeriesQueryParameters(startEndTimeSpan, parameters, userLocation)
 		);
 		if (response.status === 200) {
 			const tmp = response.data;
@@ -187,9 +192,10 @@ export function* fetchSoilWetnessDataSaga({
 	}
 }
 
-export function* fetchSnowHeightDataSaga({
-	payload,
-}: ReturnType<typeof actions.setSnowHeightData>): SagaIterator {
+export function* fetchSnowHeightDataSaga(): SagaIterator {
+	const userLocation = store.getState().mapState.position;
+	if (userLocation.lon === null || userLocation.lon === undefined) return;
+
 	const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
 		yield select((state: RootState) => state.global.startEndTimeSpan)
 	);
@@ -199,7 +205,7 @@ export function* fetchSnowHeightDataSaga({
 		const response = yield call(
 			axios.get,
 			timeSeriesServiceURL,
-			createTimeSeriesQueryParameters(startEndTimeSpan, parameters)
+			createTimeSeriesQueryParameters(startEndTimeSpan, parameters, userLocation)
 		);
 		if (response.status === 200) {
 			const tmp = response.data;

@@ -83,6 +83,8 @@ const MapComponent: React.FC<MapProps> = ({ children, resolution, center }) => {
 	}, [mapRef]);
 
 	useEffect(() => {
+		if (!map) return;
+
 		if ('geolocation' in navigator) {
 			navigator.geolocation.getCurrentPosition(
 				(position) => {
@@ -98,16 +100,15 @@ const MapComponent: React.FC<MapProps> = ({ children, resolution, center }) => {
 		} else {
 			window.console.log('Application cannot access your location');
 		}
-	}, []);
+	}, [map]);
 
 	useEffect(() => {
-		if (!map) return;
+		if (!map || center[0] === undefined || center[0] === null) return;
 
-		const centered = [mapState.position.lon, mapState.position.lat];
-		const convertedCoord = proj4('EPSG:4326', 'EPSG:3857', centered);
+		const convertedCoord = proj4('EPSG:4326', 'EPSG:3857', center);
 		map.getView().setCenter(convertedCoord);
 		dispatch({ type: constants.POSITION });
-	}, [center, mapState]);
+	}, [map, center]);
 
 	return (
 		<MapContext.Provider value={{ map }}>
