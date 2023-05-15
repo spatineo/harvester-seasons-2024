@@ -16,6 +16,7 @@ import { Map } from '../types';
 import * as constants from '../store/constants';
 import { RootState } from '../store/store';
 import '../Map.css';
+import OSMLayer from '../Layers/OSMLayer';
 
 const HarvesterMap: FC = () => {
 	const mapState: Map = useAppSelector((state: RootState) => state.mapState);
@@ -35,6 +36,7 @@ const HarvesterMap: FC = () => {
 				center={[mapState.position.lon, mapState.position.lat]}
 			>
 				<Layer>
+					<OSMLayer />
 					<Taustakartta
 						source={
 							new VectorSource({
