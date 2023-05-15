@@ -6,13 +6,14 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { useRootDispatch, useAppSelector } from '../store/hooks';
-import { mapActions } from './MapComponentSlice';
+import { MapPosition, mapActions } from './MapComponentSlice';
 import MapContext from './MapContext';
 import * as ol from 'ol';
 import { defaults as defaultControls } from 'ol/control';
 import * as constants from '../store/constants';
 import LayerSwitcher from 'ol-layerswitcher';
 import proj4 from 'proj4';
+import { RootState } from '../store/store';
 
 const styles = {
 	mapTextContainer: {
@@ -45,8 +46,6 @@ const styles = {
 
 interface MapProps {
 	children: React.ReactNode;
-	resolution: number;
-	center: [number, number];
 }
 
 proj4.defs('EPSG:3067', '+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
@@ -56,15 +55,15 @@ proj4.defs(
 	'+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs +type=crs'
 );
 
-const MapComponent: React.FC<MapProps> = ({ children, resolution, center }) => {
+const MapComponent: React.FC<MapProps> = ({ children }) => {
 	const mapRef = useRef();
 	const [map, setMap] = useState<ol.Map | null>(null);
 	const dispatch = useRootDispatch();
-	const mapState = useAppSelector((state) => state.mapState);
+	const position: MapPosition = useAppSelector((state: RootState) => state.mapState.position);
 
 	useEffect(() => {
 		const options = {
-			view: new ol.View({ resolution, center }),
+			view: new ol.View({ resolution: 3550 }),
 			layers: [],
 			controls: defaultControls().extend([new LayerSwitcher()]),
 			overlays: [],
@@ -83,11 +82,13 @@ const MapComponent: React.FC<MapProps> = ({ children, resolution, center }) => {
 	}, [mapRef]);
 
 	useEffect(() => {
+		if (!map) return;
+
 		if ('geolocation' in navigator) {
 			navigator.geolocation.getCurrentPosition(
-				(position) => {
-					const lon = position.coords.longitude;
-					const lat = position.coords.latitude;
+				(pos) => {
+					const lon = pos.coords.longitude;
+					const lat = pos.coords.latitude;
 
 					dispatch(mapActions.setPosition({ lat, lon }));
 				},
@@ -98,16 +99,23 @@ const MapComponent: React.FC<MapProps> = ({ children, resolution, center }) => {
 		} else {
 			window.console.log('Application cannot access your location');
 		}
-	}, []);
+	}, [map]);
 
 	useEffect(() => {
-		if (!map) return;
+		if (
+			!map ||
+			position.lon === undefined ||
+			position.lon === null ||
+			position.lat === undefined ||
+			position.lat === null
+		) {
+			return;
+		}
 
-		const centered = [mapState.position.lon, mapState.position.lat];
-		const convertedCoord = proj4('EPSG:4326', 'EPSG:3857', centered);
+		const convertedCoord = proj4('EPSG:4326', 'EPSG:3857', [position.lon, position.lat]);
 		map.getView().setCenter(convertedCoord);
 		dispatch({ type: constants.POSITION });
-	}, [center, mapState]);
+	}, [map, position]);
 
 	return (
 		<MapContext.Provider value={{ map }}>

@@ -24,7 +24,7 @@ proj4.defs(
 
 // eslint-disable-next-line react/prop-types
 const TileLayer: React.FC<TileLayerProps> = ({ source }) => {
-	const { map } = useContext<any>(MapContext);
+	const { map } = useContext(MapContext);
 
 	useEffect(() => {
 		if (!map) return;

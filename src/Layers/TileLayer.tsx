@@ -13,7 +13,7 @@ interface TileLayerProps {
 
 const TileLayer: React.FC<TileLayerProps> = ({ source }) => {
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-	const { map } = useContext<any>(MapContext);
+	const { map } = useContext(MapContext);
 
 	useEffect(() => {
 		if (!map) return;
@@ -28,9 +28,7 @@ const TileLayer: React.FC<TileLayerProps> = ({ source }) => {
 
 		map.addLayer(tileLayer);
 		return () => {
-			if (map) {
-				map.removeLayer(tileLayer);
-			}
+			map.removeLayer(tileLayer);
 		};
 	}, [map]);
 	return null;

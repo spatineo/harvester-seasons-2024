@@ -1,17 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export interface Map {
-	position: {
-		lat: number;
-		lon: number;
-		resolution: number;
-	};
+export interface MapPosition {
+	lat: number | null;
+	lon: number | null;
+	resolution: number;
 }
 
-const initialState: Map = {
+export interface MapState {
+	position: MapPosition;
+}
+
+const initialState: MapState = {
 	position: {
-		lat: 0,
-		lon: 0,
+		lat: null,
+		lon: null,
 		resolution: 3550,
 	},
 };

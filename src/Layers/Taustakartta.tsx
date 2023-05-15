@@ -10,6 +10,7 @@ import MapContext from '../MapComponent/MapContext';
 import Fill from 'ol/style/Fill';
 import Style from 'ol/style/Style';
 import { Color } from 'ol/color';
+import { Feature } from 'ol';
 
 interface OSMLayerProps {
 	source: VectorSource;
@@ -23,7 +24,7 @@ const style = new Style({
 
 // eslint-disable-next-line react/prop-types
 const Taustakartta: React.FC<OSMLayerProps> = ({ source }) => {
-	const { map } = useContext<any>(MapContext);
+	const { map } = useContext(MapContext);
 
 	useEffect(() => {
 		if (!map) return;
@@ -32,20 +33,18 @@ const Taustakartta: React.FC<OSMLayerProps> = ({ source }) => {
 			title: 'Taustakartta',
 			type: 'base',
 			source,
-			style: (feature: any) => {
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+			style: (feature: Feature) => {
 				const color: Color = feature.get('COLOR') || '#eeeeee';
-				style.getFill().setColor(color);
-				return style;
+				const tmp = style.clone();
+				tmp.getFill().setColor(color);
+				return tmp;
 			},
 		} as BaseLayerOptions);
 
 		map.addLayer(vectorLayer);
 
 		return () => {
-			if (map) {
-				map.removeLayer(vectorLayer);
-			}
+			map.removeLayer(vectorLayer);
 		};
 	}, [map]);
 
