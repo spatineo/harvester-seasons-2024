@@ -1,6 +1,11 @@
 // eslint-disable-next-line import/default
 import React, { createContext } from 'react';
+import { Map } from 'ol';
 
-const MapContext = createContext(null as unknown);
+interface MapContextType {
+    map?: Map
+}
+
+const MapContext = createContext({} as MapContextType);
 
 export default MapContext;

@@ -8,52 +8,57 @@ import VectorLayer from 'ol/layer/Vector';
 import MapContext from '../MapComponent/MapContext';
 import Fill from 'ol/style/Fill';
 import Style from 'ol/style/Style';
-import { Color } from 'ol/color';
 import { RootState } from '../store/store';
 import { useAppSelector } from '../store/hooks';
 import { MapPosition } from '../MapComponent/MapComponentSlice';
 import VectorSource from 'ol/source/Vector';
-import { Feature } from 'ol';
-import { Point } from 'ol/geom';
-import proj4 from 'proj4';
-import { Icon } from 'ol/style';
+import GeoJSON from 'ol/format/GeoJSON';
 
-const style = new Style({
-	fill: new Fill({
-		color: '#eeeeee',
+import { Icon, Stroke } from 'ol/style';
+
+import * as turf from '@turf/turf';
+
+const CIRCLE_RADIUS_METERS = 1000;
+
+const iconStyle = new Style({
+	image: new Icon({
+		anchor: [0.5, 1],
+		scale: 0.3,
+		anchorXUnits: 'fraction',
+		anchorYUnits: 'fraction',
+		src: 'src/assets/map-pin-icon.svg',
 	}),
 });
 
-const iconStyle = new Style({
-    image: new Icon({
-      anchor: [.5, 1],
-      scale: .3,
-      anchorXUnits: 'fraction',
-      anchorYUnits: 'fraction',
-      src: 'src/assets/map-pin-icon.svg',
-    }),
-  });
+const circleStyle = new Style({
+	fill: new Fill({
+		color: 'rgba(20, 20, 100, .3)',
+	}),
+	stroke: new Stroke({
+		color: 'rgba(20, 20, 100, .9)',
+	}),
+});
 
 // eslint-disable-next-line react/prop-types
 const LocationMarkerLayer: React.FC = () => {
-	const { map } = useContext<any>(MapContext);
-    const [ source, setSource] = useState<VectorSource | null>(null);
-    const position : MapPosition = useAppSelector((state: RootState) => state.mapState.position);
+	const { map } = useContext(MapContext);
+	const [source, setSource] = useState<VectorSource | null>(null);
+	const position: MapPosition = useAppSelector((state: RootState) => state.mapState.position);
 
 	useEffect(() => {
 		if (!map) return;
 
-        const source = new VectorSource();
+		const src = new VectorSource();
 
 		const layer = new VectorLayer({
 			title: 'Location marker',
-            source,
-			style: (feature: any) => iconStyle,
-            zIndex: 1000
+			source: src,
+			style: () => [iconStyle, circleStyle],
+			zIndex: 1000,
 		} as BaseLayerOptions);
 
 		map.addLayer(layer);
-        setSource(source);
+		setSource(src);
 
 		return () => {
 			if (map) {
@@ -62,18 +67,29 @@ const LocationMarkerLayer: React.FC = () => {
 		};
 	}, [map]);
 
-    useEffect(() => {
-        if (!source) return;
+	useEffect(() => {
+		if (!source || !map) return;
 
-        source.clear();
+		source.clear();
 
-        const coords = [position.lon, position.lat];
-		const convertedCoords = proj4('EPSG:4326', 'EPSG:3857', coords);
+		const format = new GeoJSON();
 
-        source.addFeature(new Feature({
-            geometry: new Point(convertedCoords)
-        }));
-    }, [position, source])
+		// Add center point
+		const center = [position.lon, position.lat];
+
+		const point = format.readFeature(turf.point(center));
+		point.getGeometry()?.transform('EPSG:4326', 'EPSG:3857');
+
+		source.addFeature(point);
+
+		// Add a circle around the point
+		const circle = format.readFeature(
+			turf.circle(center, CIRCLE_RADIUS_METERS, { steps: 24, units: 'meters' })
+		);
+		circle.getGeometry()?.transform('EPSG:4326', 'EPSG:3857');
+
+		source.addFeature(circle);
+	}, [position, source]);
 
 	return null;
 };
