@@ -6,8 +6,9 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as echarts from 'echarts';
 import { Box } from '@mui/material';
-import { useAppSelector } from '../store/hooks';
+import { useAppSelector, useRootDispatch } from '../store/hooks';
 import { RootState } from '../store/store';
+import { timelineActions } from './TimelineSlice';
 
 export interface Time {
 	utctime: string;
@@ -42,6 +43,7 @@ const TimelineSlider = () => {
 	const snowHHeightData = useAppSelector((state: RootState) => state.global.snowHeight);
 	const [data, setData] = useState<Time[]>([]);
 	const [timelineGraph, setTimelineGraph] = useState<any>(null);
+	const dispatch = useRootDispatch();
 
 	const dateFunc = (arr: Time[]) => {
 		const date: string[] = [];
@@ -99,34 +101,6 @@ const TimelineSlider = () => {
 					},
 				} as TimelineControlStyle,
 			},
-
-			options: [
-				{
-					title: {
-						text: '2023-04-02',
-					},
-				},
-				{
-					title: {
-						text: '2023-04-03',
-					},
-				},
-				{
-					title: {
-						text: '2023-05',
-					},
-				},
-				{
-					title: {
-						text: '2023-06',
-					},
-				},
-				{
-					title: {
-						text: '2023-07',
-					},
-				},
-			],
 		};
 
 		if (timelineGraph) {
@@ -136,12 +110,12 @@ const TimelineSlider = () => {
 		if (timelineGraph) {
 			timelineGraph.on('timelinechanged', function (params: any) {
 				const value = params.currentIndex; // get the index of the current data point
-				console.log('graph for time line');
 				const timelineData = option?.timeline?.data;
-				console.log(timelineData, 'timeline data check');
-				if (timelineData) {
+				if (timelineData[value]) {
 					// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-					window.console.log(`Value at index ${value}: ${timelineData[value]}`);
+					// window.console.log(`Value at index ${value}: ${timelineData[value]}`);
+					// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+					dispatch(timelineActions.setValue(`${timelineData[value]}`));
 				}
 			});
 		}

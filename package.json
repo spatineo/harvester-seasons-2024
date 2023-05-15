@@ -35,7 +35,6 @@
   "devDependencies": {
     "@types/echarts": "^4.9.17",
     "@types/jquery": "^3.5.16",
-    "@types/ol-ext": "npm:@siedlerchr/types-ol-ext@^3.1.0",
     "@types/proj4": "^2.5.2",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
