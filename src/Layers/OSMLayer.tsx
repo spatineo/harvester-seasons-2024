@@ -11,7 +11,7 @@ import { OSM } from 'ol/source';
 
 // eslint-disable-next-line react/prop-types
 const OSMLayer: React.FC = () => {
-	const { map } = useContext<any>(MapContext);
+	const { map } = useContext(MapContext);
 
 	useEffect(() => {
 		if (!map) return;

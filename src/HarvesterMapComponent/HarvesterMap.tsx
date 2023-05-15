@@ -1,7 +1,5 @@
 /* eslint-disable import/default */
-import React, { FC, useEffect } from 'react';
 import { Box } from '@mui/material';
-import { useAppSelector, useRootDispatch } from '../store/hooks';
 import MapComponent from '../MapComponent/MapComponent';
 import Layer from '../Layers/Layers';
 import Maastokartta from '../Layers/Maastokartta';
@@ -12,23 +10,12 @@ import XYZ from 'ol/source/XYZ';
 import VectorSource from 'ol/source/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
 import * as olSource from 'ol/source';
-import { Map } from '../types';
-import * as constants from '../store/constants';
-import { RootState } from '../store/store';
 import '../Map.css';
 import LocationMarkerLayer from '../Layers/LocationMarker';
 import OSMLayer from '../Layers/OSMLayer';
+import React from 'react';
 
-const HarvesterMap: FC = () => {
-	const dispatch = useRootDispatch();
-
-	useEffect(() => {
-		dispatch({ type: constants.TRAFFICABILITY_API });
-		dispatch({ type: constants.SOILWETNESS_API });
-		dispatch({ type: constants.SOILTEMPERATUE_API });
-		dispatch({ type: constants.SNOWHEIGHT_API });
-	}, []);
-
+const HarvesterMap: React.FC = () => {
 	return (
 		<Box>
 			<MapComponent>
