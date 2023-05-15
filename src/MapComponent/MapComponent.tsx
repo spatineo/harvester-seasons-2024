@@ -60,7 +60,7 @@ proj4.defs(
 
 const MapComponent: React.FC<MapProps> = ({ children, resolution, center }) => {
 	const mapRef = useRef();
-	const [map, setMap] = useState<any>(null);
+	const [map, setMap] = useState<ol.Map | null>(null);
 	const dispatch = useRootDispatch();
 	const mapState = useAppSelector((state) => state.mapState);
 
@@ -72,8 +72,13 @@ const MapComponent: React.FC<MapProps> = ({ children, resolution, center }) => {
 			overlays: [],
 		};
 
-		const mapObject: any = new ol.Map(options);
+		const mapObject: ol.Map = new ol.Map(options);
 		mapObject.setTarget(mapRef.current);
+
+		mapObject.on('click', (e: ol.MapBrowserEvent<MouseEvent>) => {
+			const coord = proj4('EPSG:3857', 'EPSG:4326', e.coordinate);
+			dispatch(mapActions.setPosition({ lat: coord[1], lon: coord[0] }));
+		});
 
 		setMap(mapObject);
 		return () => mapObject.setTarget(undefined);
