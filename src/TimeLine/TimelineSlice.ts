@@ -1,20 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface TimelineProp {
-	value: any;
+	value: string;
 }
 
 const initialState: TimelineProp = {
-	value: '',
+	value: '2023-05-15T00:00:00',
 };
 
 const timelineSlice = createSlice({
 	name: 'timeline',
 	initialState,
 	reducers: {
-		setValue: (state, action: PayloadAction<any>) => {
-			console.log(action.payload);
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+		setValue: (state, action: PayloadAction<string>) => {
 			state.value = action.payload;
 		},
 	},
