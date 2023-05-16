@@ -5,7 +5,7 @@ export interface TimelineProp {
 }
 
 const initialState: TimelineProp = {
-	value: '2023-05-15T00:00:00',
+	value: '',
 };
 
 const timelineSlice = createSlice({
@@ -13,6 +13,7 @@ const timelineSlice = createSlice({
 	initialState,
 	reducers: {
 		setValue: (state, action: PayloadAction<string>) => {
+			console.log(action.payload);
 			state.value = action.payload;
 		},
 	},
