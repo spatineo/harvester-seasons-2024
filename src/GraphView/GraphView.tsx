@@ -9,6 +9,7 @@ import { useAppSelector } from '../store/hooks';
 import { RootState } from '../store/store';
 import { Parameter, TimelineControlStyle } from '../types';
 import HarvesterSeasons from '../HarvesterChartComponent/HarvesterSeasons';
+import { getDatesForDuration } from '../utils';
 
 interface GraphOptions {
 	title: string;
@@ -30,17 +31,11 @@ const Graphs = () => {
 	const timelineRef = useRef<HTMLDivElement>(null);
 	const [timelineGraph, setTimelineGraph] = useState<any>(null);
 	const [data, setData] = useState<Time[]>([]);
-	const dateMarker = new Date('2023-05-31').toDateString().substring(3);
-	const [markLineValue, setMarkLineValue] = useState<string>(dateMarker);
+	const start = new Date();
+	start.setDate(start.getUTCDate() + 10);
 
-	const dateFunc = (arr: Time[]) => {
-		const d: string[] = [];
-		arr.forEach((elements: { utctime: string }) => {
-			const formattedDate = new Date(elements.utctime).toDateString().substring(3);
-			d.push(formattedDate);
-		});
-		return d;
-	};
+	const dateMarker = new Date(start).toDateString().substring(3);
+	const [markLineValue, setMarkLineValue] = useState<string>(dateMarker);
 
 	const createOptions = useCallback(
 		(opts: GraphOptions, parameters: Parameter[], values: [], mark: string) => {
@@ -120,7 +115,7 @@ const Graphs = () => {
 	);
 
 	useEffect(() => {
-		const dateValue: any = dateFunc(data);
+		const dateValue: Array<string> = getDatesForDuration(new Date(), 6, true);
 		const option: any = {
 			timeline: {
 				data: dateValue,
@@ -204,6 +199,7 @@ const Graphs = () => {
 
 	useEffect(() => {
 		if (soilTemperatureData) {
+			console.log(markLineValue);
 			const tmp = createOptions(
 				{ title: 'Soil Temperature' },
 				graphParameters.soilTemperature,
