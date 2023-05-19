@@ -59,6 +59,7 @@ const initialState: GlobalStateProps = {
 			{ code: 'HSNOW-M:SMARTOBS:13:4' },
 		],
 	},
+	graphLabels: utils.initialLabels({}),
 };
 
 const globalSlice = createSlice({
