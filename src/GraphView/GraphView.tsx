@@ -24,6 +24,7 @@ const Graphs = () => {
 	const snowHeightData = useAppSelector((state: RootState) => state.global.snowHeight);
 	const soilWetnessData = useAppSelector((state: RootState) => state.global.soilWetnessData);
 	const graphParameters = useAppSelector((state: RootState) => state.global.parameters);
+	const labels = useAppSelector((state: RootState) => state.global.graphLabels);
 	const [soilWetnessOption, setSoilWetnessOption] = useState<any>(null);
 	const [soilTemperatureOption, setSoilTemperatureOption] = useState<any>(null);
 	const [snowHeightOption, setSnowHeightOption] = useState<any>(null);
@@ -32,6 +33,7 @@ const Graphs = () => {
 	const [data, setData] = useState<Time[]>([]);
 	const dateMarker = new Date('2023-05-31').toDateString().substring(3);
 	const [markLineValue, setMarkLineValue] = useState<string>(dateMarker);
+	const [labelValue, setLabelValue] = useState<number[]>([]);
 
 	const dateFunc = (arr: Time[]) => {
 		const d: string[] = [];
@@ -238,21 +240,72 @@ const Graphs = () => {
 		}
 	}, [snowHeightData, graphParameters.snowHeight, markLineValue]);
 
+	const graphLabels = () => {
+		/* 	const keys = Object.keys(labels);
+
+		return (
+			<Box sx={{ width: '90%', margin: 'auto', fontFamily: 'monospace' }}>
+				{keys.map((key) => (
+					<Box key={key} component="span">
+						{labels[key] === '' ? `${key}` : key}
+					</Box>
+				))}
+			</Box>
+		); */
+		if (labelValue.length > 0) {
+			return (
+				<Box sx={{ display: '-ms-flexbox', flexDirection: 'row' }} component="span">
+					{labelValue.map((value: number, index: number) => (
+						<Box
+							component="span"
+							key={index}
+							sx={{ fontFamily: 'Helvetica, monospace', fontWeight: '200', fontSize: '0.8rem' }}
+						>
+							{index !== 0 ? `SH-${index}: ${(value % 1).toFixed(2)} ` : `${value}: `}
+						</Box>
+					))}
+				</Box>
+			);
+		} else {
+			return null;
+		}
+	};
+
 	return (
 		<Box>
 			<Box>{markLineValue}</Box>
 			<Box ref={timelineRef}></Box>
+			<Box sx={{ width: '80%', margin: 'auto' }}>{graphLabels()}</Box>
 			<HarvesterSeasons
 				option={soilWetnessOption}
 				handleClick={(d) => window.console.log('click', d)}
+				handleOnmouseEnter={(params) => {
+					window.console.log('mouseenter', params);
+					const paramsValue = params.value;
+					setLabelValue(paramsValue);
+				}}
+				handleOnmouseLeave={(params: { value: [] }) => {
+					setLabelValue([]);
+					window.console.log('mouseleave', params);
+				}}
 			/>
 			<HarvesterSeasons
 				option={soilTemperatureOption}
 				handleClick={() => window.console.log('click')}
+				handleOnmouseEnter={(params) => window.console.log('mouseenter', params.value)}
+				handleOnmouseLeave={function (params: { value: [] }): void {
+					setLabelValue([]);
+					window.console.log('mouseleave', params);
+				}}
 			/>
 			<HarvesterSeasons
 				option={snowHeightOption}
 				handleClick={(d: any) => window.console.log('click', d)}
+				handleOnmouseEnter={() => window.console.log('mouseenter')}
+				handleOnmouseLeave={function (params: { value: [] }): void {
+					setLabelValue([]);
+					window.console.log('mouseleave', params);
+				}}
 			/>
 		</Box>
 	);
