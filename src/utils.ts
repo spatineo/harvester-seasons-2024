@@ -28,3 +28,10 @@ export function asStartEndTimeSpan(value: StartEndTimeSpan): StartEndTimeSpan {
 	const startEndTimeSpan = value;
 	return startEndTimeSpan;
 }
+
+export function initialLabels(obj: { [key: string]: number | string }) {
+	for (let i = 1; i <= 50; i++) {
+		obj[`SH-${i}`] = '';
+	}
+	return obj;
+}
