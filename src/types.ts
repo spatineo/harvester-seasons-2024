@@ -1,6 +1,8 @@
 export interface HarvesterChartProps {
 	option: {};
 	handleClick: (data: { value: [] }) => void;
+	handleOnmouseEnter: (data: { value: [] }) => void;
+	handleOnmouseLeave: (data: { value: [] }) => void;
 }
 
 export interface Parameter {
@@ -26,6 +28,9 @@ export interface GlobalStateProps {
 		snowHeight: Parameter[];
 		soilTemperature: Parameter[];
 		soilWetness: Parameter[];
+	};
+	graphLabels: {
+		[key: string]: number | string;
 	};
 }
 
