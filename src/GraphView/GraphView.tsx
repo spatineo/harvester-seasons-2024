@@ -21,9 +21,10 @@ const Graphs = () => {
 	const soilTemperatureData = useAppSelector(
 		(state: RootState) => state.global.soilTemperatureData
 	);
+	const checked = useAppSelector((state: RootState) => state.global.checked);
+	const graphParameters = useAppSelector((state: RootState) => state.global.parameters);
 	const snowHeightData = useAppSelector((state: RootState) => state.global.snowHeight);
 	const soilWetnessData = useAppSelector((state: RootState) => state.global.soilWetnessData);
-	const graphParameters = useAppSelector((state: RootState) => state.global.parameters);
 	const [soilWetnessOption, setSoilWetnessOption] = useState<any>(null);
 	const [soilTemperatureOption, setSoilTemperatureOption] = useState<any>(null);
 	const [snowHeightOption, setSnowHeightOption] = useState<any>(null);
@@ -204,39 +205,84 @@ const Graphs = () => {
 
 	useEffect(() => {
 		if (soilTemperatureData) {
-			const tmp = createOptions(
-				{ title: 'Soil Temperature' },
-				graphParameters.soilTemperature,
-				soilTemperatureData,
-				markLineValue
-			);
-			setSoilTemperatureOption(tmp);
+			if (!checked) {
+				const tmp = createOptions(
+					{ title: 'Soil Temperature' },
+					graphParameters.sixMonthParams.soilTemperature,
+					soilTemperatureData,
+					markLineValue
+				);
+				setSoilTemperatureOption(tmp);
+			} else {
+				const tmp = createOptions(
+					{ title: 'Soil Temperature' },
+					graphParameters.tenYearParams.soilTemperature,
+					soilTemperatureData,
+					markLineValue
+				);
+				setSoilTemperatureOption(tmp);
+			}
 		}
-	}, [soilTemperatureData, graphParameters.soilTemperature, markLineValue]);
+	}, [
+		soilTemperatureData,
+		graphParameters.tenYearParams.soilTemperature,
+		graphParameters.sixMonthParams.soilTemperature,
+		markLineValue,
+	]);
 
 	useEffect(() => {
 		if (soilWetnessData) {
+			if (!checked) {
+				const tmp = createOptions(
+					{ title: 'Soil Wetness' },
+					graphParameters.sixMonthParams.soilWetness,
+					soilWetnessData,
+					markLineValue
+				);
+				setSoilWetnessOption(tmp);
+			}
+		} else {
 			const tmp = createOptions(
 				{ title: 'Soil Wetness' },
-				graphParameters.soilWetness,
+				graphParameters.tenYearParams.soilWetness,
 				soilWetnessData,
 				markLineValue
 			);
 			setSoilWetnessOption(tmp);
 		}
-	}, [soilWetnessData, graphParameters.soilWetness, markLineValue]);
+	}, [
+		soilWetnessData,
+		graphParameters.tenYearParams.soilWetness,
+		graphParameters.sixMonthParams.soilWetness,
+		markLineValue,
+	]);
 
 	useEffect(() => {
 		if (snowHeightData) {
-			const tmp = createOptions(
-				{ title: 'Snow Height' },
-				graphParameters.snowHeight,
-				snowHeightData,
-				markLineValue
-			);
-			setSnowHeightOption(tmp);
+			if (!checked) {
+				const tmp = createOptions(
+					{ title: 'Snow Height' },
+					graphParameters.sixMonthParams.snowHeight,
+					snowHeightData,
+					markLineValue
+				);
+				setSnowHeightOption(tmp);
+			} else {
+				const tmp = createOptions(
+					{ title: 'Snow Height' },
+					graphParameters.tenYearParams.snowHeight,
+					snowHeightData,
+					markLineValue
+				);
+				setSnowHeightOption(tmp);
+			}
 		}
-	}, [snowHeightData, graphParameters.snowHeight, markLineValue]);
+	}, [
+		snowHeightData,
+		graphParameters.tenYearParams.snowHeight,
+		graphParameters.sixMonthParams.snowHeight,
+		markLineValue,
+	]);
 
 	return (
 		<Box>
