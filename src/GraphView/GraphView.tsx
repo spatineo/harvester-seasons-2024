@@ -9,6 +9,7 @@ import { useAppSelector } from '../store/hooks';
 import { RootState } from '../store/store';
 import { Parameter, TimelineControlStyle } from '../types';
 import HarvesterSeasons from '../HarvesterChartComponent/HarvesterSeasons';
+import { initialLabels } from '../utils';
 
 interface GraphOptions {
 	title: string;
@@ -241,17 +242,6 @@ const Graphs = () => {
 	}, [snowHeightData, graphParameters.snowHeight, markLineValue]);
 
 	const graphLabels = () => {
-		/* 	const keys = Object.keys(labels);
-
-		return (
-			<Box sx={{ width: '90%', margin: 'auto', fontFamily: 'monospace' }}>
-				{keys.map((key) => (
-					<Box key={key} component="span">
-						{labels[key] === '' ? `${key}` : key}
-					</Box>
-				))}
-			</Box>
-		); */
 		if (labelValue.length > 0) {
 			return (
 				<Box sx={{ display: '-ms-flexbox', flexDirection: 'row' }} component="span">
@@ -275,7 +265,25 @@ const Graphs = () => {
 		<Box>
 			<Box>{markLineValue}</Box>
 			<Box ref={timelineRef}></Box>
-			<Box sx={{ width: '80%', margin: 'auto' }}>{graphLabels()}</Box>
+			<Box sx={{ width: '80%', margin: 'auto' }}>
+				{graphLabels()
+					? graphLabels()
+					: Object.entries(initialLabels({})).map(([key, value]) => (
+							<Box
+								key={key}
+								sx={{
+									display: '-ms-flexbox',
+									flexDirection: 'row',
+									fontFamily: 'Helvetica, monospace',
+									fontWeight: '200',
+									fontSize: '0.8rem',
+								}}
+								component="span"
+							>
+								{key}: {value}
+							</Box>
+					  ))}
+			</Box>
 			<HarvesterSeasons
 				option={soilWetnessOption}
 				handleClick={(d) => window.console.log('click', d)}
@@ -292,7 +300,11 @@ const Graphs = () => {
 			<HarvesterSeasons
 				option={soilTemperatureOption}
 				handleClick={() => window.console.log('click')}
-				handleOnmouseEnter={(params) => window.console.log('mouseenter', params.value)}
+				handleOnmouseEnter={(params) => {
+					window.console.log('mouseenter', params.value);
+					const paramsValue = params.value;
+					setLabelValue(paramsValue);
+				}}
 				handleOnmouseLeave={function (params: { value: [] }): void {
 					setLabelValue([]);
 					window.console.log('mouseleave', params);
@@ -301,7 +313,11 @@ const Graphs = () => {
 			<HarvesterSeasons
 				option={snowHeightOption}
 				handleClick={(d: any) => window.console.log('click', d)}
-				handleOnmouseEnter={() => window.console.log('mouseenter')}
+				handleOnmouseEnter={(params) => {
+					window.console.log('mouseenter');
+					const paramsValue = params.value;
+					setLabelValue(paramsValue);
+				}}
 				handleOnmouseLeave={function (params: { value: [] }): void {
 					setLabelValue([]);
 					window.console.log('mouseleave', params);
