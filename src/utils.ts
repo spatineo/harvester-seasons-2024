@@ -29,7 +29,7 @@ export function asStartEndTimeSpan(value: StartEndTimeSpan): StartEndTimeSpan {
 	return startEndTimeSpan;
 }
 
-export function initialLabels(obj: { [key: string]: number | string }) {
+export function initialLabels(obj: { [key: string]: string }) {
 	for (let i = 1; i <= 50; i++) {
 		obj[`SH-${i}`] = '';
 	}
