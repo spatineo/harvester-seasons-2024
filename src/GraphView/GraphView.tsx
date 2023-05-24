@@ -33,8 +33,8 @@ const Graphs = () => {
 	const timelineRef = useRef<HTMLDivElement>(null);
 	const [timelineGraph, setTimelineGraph] = useState<any>(null);
 	const [data, setData] = useState<Time[]>([]);
-	const dateMarker = new Date('2023-05-31').toDateString().substring(3);
-	const [markLineValue, setMarkLineValue] = useState<string>(dateMarker);
+	const start = new Date();
+	start.setDate(start.getUTCDate() + 10);
 
 	const createOptions = useCallback(
 		(opts: GraphOptions, parameters: Parameter[], values: [], mark: string) => {

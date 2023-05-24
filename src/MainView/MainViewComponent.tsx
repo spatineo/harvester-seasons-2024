@@ -21,7 +21,7 @@ function MainViewComponent() {
 	}, []);
 
 	return (
-		<div>
+		<Box>
 			<Container maxWidth="lg">
 				<br />
 				<HeadingComponent />
@@ -37,7 +37,7 @@ function MainViewComponent() {
 				<br />
 				<FooterComponent />
 			</Container>
-		</div>
+		</Box>
 	);
 }
 export default MainViewComponent;

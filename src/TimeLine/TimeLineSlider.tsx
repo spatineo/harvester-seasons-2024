@@ -9,6 +9,7 @@ import { Box } from '@mui/material';
 import { useAppSelector, useRootDispatch } from '../store/hooks';
 import { RootState } from '../store/store';
 import { timelineActions } from './TimelineSlice';
+import { getDatesForDuration } from '../utils';
 
 export interface Time {
 	utctime: string;
@@ -60,7 +61,7 @@ const TimelineSlider = () => {
 	}, [snowHHeightData]);
 
 	useEffect(() => {
-		const date: any = dateFunc(data);
+		const date: Array<string> = getDatesForDuration(new Date(), 6, true);
 		const option: any = {
 			timeline: {
 				data: date,
@@ -72,7 +73,7 @@ const TimelineSlider = () => {
 				height: '50%',
 				label: {
 					position: 'bottom',
-					show: true,
+					show: false,
 					interval: 2,
 					rotate: 0,
 					color: '#333',

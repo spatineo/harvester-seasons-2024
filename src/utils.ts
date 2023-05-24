@@ -32,11 +32,21 @@ export function asStartEndTimeSpan(value: StartEndTimeSpan): StartEndTimeSpan {
 export function getDatesForDuration(startDate: Date, duration: number, isMonths: boolean) {
 	const result = [];
 	const currentDate = new Date(startDate);
-	const daysPerUnit = isMonths ? 30 : 365;
-	const numDays = duration * daysPerUnit;
 
-	for (let i = 0; i < numDays; i++) {
-		const dateString = currentDate.toISOString().slice(0, 10);
+	const endDate = new Date(startDate);
+
+	if (isMonths) {
+		endDate.setMonth(endDate.getMonth() + duration);
+	} else {
+		endDate.setMonth(endDate.getMonth() + duration * 12);
+	}
+
+	while (currentDate <= endDate) {
+		const year = currentDate.getFullYear();
+		const month = currentDate.toLocaleString('default', { month: 'short' });
+		const day = currentDate.getDate();
+		const dateString = `${month} ${day} ${year}`;
+
 		result.push(dateString);
 		currentDate.setDate(currentDate.getDate() + 1);
 	}
