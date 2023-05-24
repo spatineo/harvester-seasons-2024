@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -22,9 +23,10 @@ const Graphs = () => {
 	const soilTemperatureData = useAppSelector(
 		(state: RootState) => state.global.soilTemperatureData
 	);
+	const checked = useAppSelector((state: RootState) => state.global.checked);
+	const graphParameters = useAppSelector((state: RootState) => state.global.parameters);
 	const snowHeightData = useAppSelector((state: RootState) => state.global.snowHeight);
 	const soilWetnessData = useAppSelector((state: RootState) => state.global.soilWetnessData);
-	const graphParameters = useAppSelector((state: RootState) => state.global.parameters);
 	const [soilWetnessOption, setSoilWetnessOption] = useState<any>(null);
 	const [soilTemperatureOption, setSoilTemperatureOption] = useState<any>(null);
 	const [snowHeightOption, setSnowHeightOption] = useState<any>(null);
@@ -34,30 +36,15 @@ const Graphs = () => {
 	const start = new Date();
 	start.setDate(start.getUTCDate() + 10);
 
-	const dateMarker = new Date(start).toDateString().substring(3);
-	const [markLineValue, setMarkLineValue] = useState<string>(dateMarker);
-
 	const createOptions = useCallback(
 		(opts: GraphOptions, parameters: Parameter[], values: [], mark: string) => {
-			const source = () => {
-				return [
-					[
-						...values.map((value: { utctime: string }) => {
-							const modifiedDate = new Date(value.utctime).toDateString();
-							return modifiedDate.substring(3);
-						}),
-					],
-					...parameters.map((p) => {
-						return values.map((value) => value[p.code]);
-					}),
-				];
-			};
-
+			const marked = new Date(mark).toISOString();
 			return {
-				animationThreshold: 10,
-				dataset: {
+				animationThreshold: 1,
+				/* dataset: {
 					source: source(),
-				},
+					dimension: ['timestamp'],
+				}, */
 				legend: null,
 				grid: {},
 				tooltip: {
@@ -72,10 +59,7 @@ const Graphs = () => {
 					},
 				},
 				xAxis: {
-					type: 'category',
-					axisTick: {
-						show: false,
-					},
+					type: 'time',
 				},
 				series: [
 					{
@@ -88,7 +72,7 @@ const Graphs = () => {
 							data: [
 								{
 									// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-									xAxis: mark,
+									xAxis: marked,
 									name: '',
 									type: 'min',
 									label: { show: false },
@@ -102,10 +86,15 @@ const Graphs = () => {
 							},
 						},
 					},
-					...parameters.map((p) => {
+					...parameters.map((p: { code: string }) => {
+						const codes = p.code;
 						return {
 							type: 'line',
 							seriesLayoutBy: 'row',
+							data: values.map((d: { utctime: string; [key: string]: string }) => {
+								// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+								return [d.utctime, d[codes]];
+							}),
 						};
 					}),
 				],
@@ -115,7 +104,9 @@ const Graphs = () => {
 	);
 
 	useEffect(() => {
-		const dateValue: Array<string> = getDatesForDuration(new Date(), 6, true);
+		const result = new Date();
+		result.setDate(result.getDate() + 2);
+		const dateValue: Array<string> = getDatesForDuration(result, 6, true);
 		const option: any = {
 			timeline: {
 				data: dateValue,
@@ -134,12 +125,6 @@ const Graphs = () => {
 					fontWeight: 'normal',
 					fontSize: 12,
 					align: 'center',
-					formatter(value: string | number) {
-						return new Date(value).toLocaleDateString(undefined, {
-							month: 'long',
-							year: 'numeric',
-						});
-					},
 				},
 				controlStyle: {
 					position: 'left',
@@ -198,40 +183,65 @@ const Graphs = () => {
 	}, [snowHeightData]);
 
 	useEffect(() => {
-		if (soilTemperatureData) {
-			const tmp = createOptions(
-				{ title: 'Soil Temperature' },
-				graphParameters.soilTemperature,
-				soilTemperatureData,
-				markLineValue
-			);
-			setSoilTemperatureOption(tmp);
+		if (soilWetnessData || soilTemperatureData || snowHeightData) {
+			if (!checked) {
+				const soilWetness = createOptions(
+					{ title: 'Soil Wetness' },
+					graphParameters.sixMonthParams.soilWetness,
+					soilWetnessData,
+					markLineValue
+				);
+				const soilTemperature = createOptions(
+					{ title: 'Soil Temperature' },
+					graphParameters.sixMonthParams.soilTemperature,
+					soilTemperatureData,
+					markLineValue
+				);
+				const snowHeight = createOptions(
+					{ title: 'Snow Height' },
+					graphParameters.sixMonthParams.snowHeight,
+					snowHeightData,
+					markLineValue
+				);
+				setSoilWetnessOption(soilWetness);
+				setSnowHeightOption(snowHeight);
+				setSoilTemperatureOption(soilTemperature);
+			} else {
+				const soilWetness = createOptions(
+					{ title: 'Soil Wetness' },
+					graphParameters.tenYearParams.soilWetness,
+					soilWetnessData,
+					markLineValue
+				);
+				const soilTemperature = createOptions(
+					{ title: 'Soil Temperature' },
+					graphParameters.tenYearParams.soilTemperature,
+					soilTemperatureData,
+					markLineValue
+				);
+				const snowHeight = createOptions(
+					{ title: 'Snow Height' },
+					graphParameters.tenYearParams.snowHeight,
+					snowHeightData,
+					markLineValue
+				);
+				setSnowHeightOption(snowHeight);
+				setSoilTemperatureOption(soilTemperature);
+				setSoilWetnessOption(soilWetness);
+			}
 		}
-	}, [soilTemperatureData, graphParameters.soilTemperature, markLineValue]);
-
-	useEffect(() => {
-		if (soilWetnessData) {
-			const tmp = createOptions(
-				{ title: 'Soil Wetness' },
-				graphParameters.soilWetness,
-				soilWetnessData,
-				markLineValue
-			);
-			setSoilWetnessOption(tmp);
-		}
-	}, [soilWetnessData, graphParameters.soilWetness, markLineValue]);
-
-	useEffect(() => {
-		if (snowHeightData) {
-			const tmp = createOptions(
-				{ title: 'Snow Height' },
-				graphParameters.snowHeight,
-				snowHeightData,
-				markLineValue
-			);
-			setSnowHeightOption(tmp);
-		}
-	}, [snowHeightData, graphParameters.snowHeight, markLineValue]);
+	}, [
+		soilWetnessData,
+		snowHeightData,
+		soilTemperatureData,
+		graphParameters.sixMonthParams.soilWetness,
+		graphParameters.sixMonthParams.soilTemperature,
+		graphParameters.sixMonthParams.snowHeight,
+		graphParameters.tenYearParams.soilTemperature,
+		graphParameters.tenYearParams.snowHeight,
+		graphParameters.tenYearParams.soilWetness,
+		markLineValue,
+	]);
 
 	return (
 		<Box>

@@ -32,6 +32,7 @@ export function asStartEndTimeSpan(value: StartEndTimeSpan): StartEndTimeSpan {
 export function getDatesForDuration(startDate: Date, duration: number, isMonths: boolean) {
 	const result = [];
 	const currentDate = new Date(startDate);
+
 	const endDate = new Date(startDate);
 
 	if (isMonths) {
@@ -49,5 +50,6 @@ export function getDatesForDuration(startDate: Date, duration: number, isMonths:
 		result.push(dateString);
 		currentDate.setDate(currentDate.getDate() + 1);
 	}
+
 	return result;
 }
