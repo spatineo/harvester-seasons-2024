@@ -12,14 +12,16 @@ import { Parameter, TimelineControlStyle } from '../types';
 import HarvesterSeasons from '../HarvesterChartComponent/HarvesterSeasons';
 import { getDatesForDuration } from '../utils';
 
+
 interface GraphOptions {
-	title: string;
+  title: string;
 }
 export interface Time {
 	utctime: string;
 }
 
 const Graphs = () => {
+
 	const soilTemperatureData = useAppSelector(
 		(state: RootState) => state.global.soilTemperatureData
 	);
