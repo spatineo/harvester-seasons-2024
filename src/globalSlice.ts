@@ -103,6 +103,7 @@ const initialState: GlobalStateProps = {
 			],
 		},
 	},
+	graphLabels: utils.initialLabels({}),
 };
 
 const globalSlice = createSlice({

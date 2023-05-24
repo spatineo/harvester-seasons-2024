@@ -10,8 +10,7 @@ import { useAppSelector } from '../store/hooks';
 import { RootState } from '../store/store';
 import { Parameter, TimelineControlStyle } from '../types';
 import HarvesterSeasons from '../HarvesterChartComponent/HarvesterSeasons';
-import { getDatesForDuration } from '../utils';
-
+import { initialLabels, getDatesForDuration  } from '../utils';
 
 interface GraphOptions {
   title: string;
@@ -29,14 +28,19 @@ const Graphs = () => {
 	const graphParameters = useAppSelector((state: RootState) => state.global.parameters);
 	const snowHeightData = useAppSelector((state: RootState) => state.global.snowHeight);
 	const soilWetnessData = useAppSelector((state: RootState) => state.global.soilWetnessData);
+	const labels = useAppSelector((state: RootState) => state.global.graphLabels);
+
 	const [soilWetnessOption, setSoilWetnessOption] = useState<any>(null);
 	const [soilTemperatureOption, setSoilTemperatureOption] = useState<any>(null);
 	const [snowHeightOption, setSnowHeightOption] = useState<any>(null);
 	const timelineRef = useRef<HTMLDivElement>(null);
 	const [timelineGraph, setTimelineGraph] = useState<any>(null);
 	const [data, setData] = useState<Time[]>([]);
+	const [labelValue, setLabelValue] = useState<number[]>([]);
+
 	const start = new Date();
 	start.setDate(start.getUTCDate() + 10);
+  const [markLineValue, setMarkLineValue] = useState<string>(start);
 
 	const createOptions = useCallback(
 		(opts: GraphOptions, parameters: Parameter[], values: [], mark: string) => {
@@ -175,12 +179,6 @@ const Graphs = () => {
 	}, [timelineRef]);
 
 	useEffect(() => {
-		if (snowHeightData) {
-			setData(snowHeightData);
-		}
-	}, [snowHeightData]);
-
-	useEffect(() => {
 		if (soilWetnessData || soilTemperatureData || snowHeightData) {
 			if (!checked) {
 				const soilWetness = createOptions(
@@ -241,13 +239,82 @@ const Graphs = () => {
 		markLineValue,
 	]);
 
+	const graphLabels = () => {
+		if (labelValue.length > 0) {
+			return (
+				<Box sx={{ display: '-ms-flexbox', flexDirection: 'row' }} component="span">
+					{labelValue.map((value: number, index: number) => (
+						<Box
+							component="span"
+							key={index}
+							sx={{ fontFamily: 'Helvetica, monospace', fontWeight: '200', fontSize: '0.8rem' }}
+						>
+							{index !== 0 ? `SH-${index}: ${(value % 1).toFixed(2)} ` : `${value}: `}
+						</Box>
+					))}
+				</Box>
+			);
+		} else {
+			return null;
+		}
+	};
+
 	return (
 		<Box>
 			<Box>{markLineValue}</Box>
 			<Box ref={timelineRef}></Box>
-			<HarvesterSeasons option={soilWetnessOption} handleClick={(d) => {}} />
-			<HarvesterSeasons option={soilTemperatureOption} handleClick={() => {}} />
-			<HarvesterSeasons option={snowHeightOption} handleClick={(d: any) => {}} />
+			<Box sx={{ width: '80%', margin: 'auto' }}>
+				{graphLabels()
+					? graphLabels()
+					: Object.entries(initialLabels({})).map(([key, value]) => (
+							<Box
+								key={key}
+								sx={{
+									display: '-ms-flexbox',
+									flexDirection: 'row',
+									fontFamily: 'Helvetica, monospace',
+									fontWeight: '200',
+									fontSize: '0.8rem',
+								}}
+								component="span"
+							>
+								{key}: {value}
+							</Box>
+					  ))}
+			</Box>
+			<HarvesterSeasons
+				option={soilWetnessOption}
+				handleClick={(d) => {}}
+				handleOnmouseEnter={(params) => {
+					const paramsValue = params.value;
+					setLabelValue(paramsValue);
+				}}
+				handleOnmouseLeave={(params: { value: [] }) => {
+					setLabelValue([]);
+				}}
+			/>
+			<HarvesterSeasons
+				option={soilTemperatureOption}
+				handleClick={() => {}}
+				handleOnmouseEnter={(params) => {
+					const paramsValue = params.value;
+					setLabelValue(paramsValue);
+				}}
+				handleOnmouseLeave={function (params: { value: [] }): void {
+					setLabelValue([]);
+				}}
+			/>
+			<HarvesterSeasons
+				option={snowHeightOption}
+				handleClick={(d: any) => {}
+				handleOnmouseEnter={(params) => {
+					const paramsValue = params.value;
+					setLabelValue(paramsValue);
+				}}
+				handleOnmouseLeave={function (params: { value: [] }): void {
+					setLabelValue([]);
+				}}
+			/>
 		</Box>
 	);
 };
