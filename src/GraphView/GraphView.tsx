@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -22,9 +23,10 @@ const Graphs = () => {
 	const soilTemperatureData = useAppSelector(
 		(state: RootState) => state.global.soilTemperatureData
 	);
+	const checked = useAppSelector((state: RootState) => state.global.checked);
+	const graphParameters = useAppSelector((state: RootState) => state.global.parameters);
 	const snowHeightData = useAppSelector((state: RootState) => state.global.snowHeight);
 	const soilWetnessData = useAppSelector((state: RootState) => state.global.soilWetnessData);
-	const graphParameters = useAppSelector((state: RootState) => state.global.parameters);
 	const [soilWetnessOption, setSoilWetnessOption] = useState<any>(null);
 	const [soilTemperatureOption, setSoilTemperatureOption] = useState<any>(null);
 	const [snowHeightOption, setSnowHeightOption] = useState<any>(null);
@@ -181,40 +183,65 @@ const Graphs = () => {
 	}, [snowHeightData]);
 
 	useEffect(() => {
-		if (soilTemperatureData) {
-			const tmp = createOptions(
-				{ title: 'Soil Temperature' },
-				graphParameters.soilTemperature,
-				soilTemperatureData,
-				markLineValue
-			);
-			setSoilTemperatureOption(tmp);
+		if (soilWetnessData || soilTemperatureData || snowHeightData) {
+			if (!checked) {
+				const soilWetness = createOptions(
+					{ title: 'Soil Wetness' },
+					graphParameters.sixMonthParams.soilWetness,
+					soilWetnessData,
+					markLineValue
+				);
+				const soilTemperature = createOptions(
+					{ title: 'Soil Temperature' },
+					graphParameters.sixMonthParams.soilTemperature,
+					soilTemperatureData,
+					markLineValue
+				);
+				const snowHeight = createOptions(
+					{ title: 'Snow Height' },
+					graphParameters.sixMonthParams.snowHeight,
+					snowHeightData,
+					markLineValue
+				);
+				setSoilWetnessOption(soilWetness);
+				setSnowHeightOption(snowHeight);
+				setSoilTemperatureOption(soilTemperature);
+			} else {
+				const soilWetness = createOptions(
+					{ title: 'Soil Wetness' },
+					graphParameters.tenYearParams.soilWetness,
+					soilWetnessData,
+					markLineValue
+				);
+				const soilTemperature = createOptions(
+					{ title: 'Soil Temperature' },
+					graphParameters.tenYearParams.soilTemperature,
+					soilTemperatureData,
+					markLineValue
+				);
+				const snowHeight = createOptions(
+					{ title: 'Snow Height' },
+					graphParameters.tenYearParams.snowHeight,
+					snowHeightData,
+					markLineValue
+				);
+				setSnowHeightOption(snowHeight);
+				setSoilTemperatureOption(soilTemperature);
+				setSoilWetnessOption(soilWetness);
+			}
 		}
-	}, [soilTemperatureData, graphParameters.soilTemperature, markLineValue]);
-
-	useEffect(() => {
-		if (soilWetnessData) {
-			const tmp = createOptions(
-				{ title: 'Soil Wetness' },
-				graphParameters.soilWetness,
-				soilWetnessData,
-				markLineValue
-			);
-			setSoilWetnessOption(tmp);
-		}
-	}, [soilWetnessData, graphParameters.soilWetness, markLineValue]);
-
-	useEffect(() => {
-		if (snowHeightData) {
-			const tmp = createOptions(
-				{ title: 'Snow Height' },
-				graphParameters.snowHeight,
-				snowHeightData,
-				markLineValue
-			);
-			setSnowHeightOption(tmp);
-		}
-	}, [snowHeightData, graphParameters.snowHeight, markLineValue]);
+	}, [
+		soilWetnessData,
+		snowHeightData,
+		soilTemperatureData,
+		graphParameters.sixMonthParams.soilWetness,
+		graphParameters.sixMonthParams.soilTemperature,
+		graphParameters.sixMonthParams.snowHeight,
+		graphParameters.tenYearParams.soilTemperature,
+		graphParameters.tenYearParams.snowHeight,
+		graphParameters.tenYearParams.soilWetness,
+		markLineValue,
+	]);
 
 	return (
 		<Box>

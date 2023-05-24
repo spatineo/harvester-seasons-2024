@@ -95,9 +95,10 @@ export function* fetchTrafficabilityDataSaga({
 	const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
 		yield select((state: RootState) => state.global.startEndTimeSpan)
 	);
-	const parameters: Parameter[] = yield select(
-		(state: RootState) => state.global.parameters.trafficability
-	);
+	const checked = yield select((state: RootState) => state.global.checked);
+	const parameters: Parameter[] = checked
+		? yield select((state: RootState) => state.global.parameters.tenYearParams.trafficability)
+		: select((state: RootState) => state.global.parameters.sixMonthParams.trafficability);
 
 	const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
 	const modifiedEndDate = new Date(startEndTimeSpan.end_time).toISOString();
@@ -143,7 +144,10 @@ export function* soilTemperatureDataSaga(): SagaIterator {
 	const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
 		yield select((state: RootState) => state.global.startEndTimeSpan)
 	);
-	const parameters = yield select((state: RootState) => state.global.parameters.soilTemperature);
+	const checked = yield select((state: RootState) => state.global.checked);
+	const parameters = checked
+		? yield select((state: RootState) => state.global.parameters.tenYearParams.soilTemperature)
+		: yield select((state: RootState) => state.global.parameters.sixMonthParams.soilTemperature);
 
 	try {
 		const response = yield call(
@@ -171,7 +175,10 @@ export function* fetchSoilWetnessDataSaga(): SagaIterator {
 	const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
 		yield select((state: RootState) => state.global.startEndTimeSpan)
 	);
-	const parameters = yield select((state: RootState) => state.global.parameters.soilWetness);
+	const checked = yield select((state: RootState) => state.global.checked);
+	const parameters = checked
+		? yield select((state: RootState) => state.global.parameters.tenYearParams.soilWetness)
+		: yield select((state: RootState) => state.global.parameters.sixMonthParams.soilWetness);
 
 	try {
 		const response = yield call(
@@ -199,7 +206,10 @@ export function* fetchSnowHeightDataSaga(): SagaIterator {
 	const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
 		yield select((state: RootState) => state.global.startEndTimeSpan)
 	);
-	const parameters = yield select((state: RootState) => state.global.parameters.snowHeight);
+	const checked = yield select((state: RootState) => state.global.checked);
+	const parameters = checked
+		? yield select((state: RootState) => state.global.parameters.tenYearParams.snowHeight)
+		: yield select((state: RootState) => state.global.parameters.sixMonthParams.snowHeight);
 
 	try {
 		const response = yield call(
