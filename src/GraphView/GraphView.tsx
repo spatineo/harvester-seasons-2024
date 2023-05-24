@@ -39,10 +39,6 @@ const Graphs = () => {
 			const marked = new Date(mark).toISOString();
 			return {
 				animationThreshold: 1,
-				/* dataset: {
-					source: source(),
-					dimension: ['timestamp'],
-				}, */
 				legend: null,
 				grid: {},
 				tooltip: {
