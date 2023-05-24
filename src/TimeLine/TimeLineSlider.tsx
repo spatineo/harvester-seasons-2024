@@ -113,8 +113,6 @@ const TimelineSlider = () => {
 				const timelineData = option?.timeline?.data;
 				if (timelineData[value]) {
 					// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-					// window.console.log(`Value at index ${value}: ${timelineData[value]}`);
-					// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 					dispatch(timelineActions.setValue(`${timelineData[value]}`));
 				}
 			});
