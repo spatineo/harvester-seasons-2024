@@ -36,20 +36,6 @@ const Graphs = () => {
 
 	const createOptions = useCallback(
 		(opts: GraphOptions, parameters: Parameter[], values: [], mark: string) => {
-			/* const source = () => {
-				return [
-					[
-						...values.map((value: { utctime: string }) => {
-							const modifiedDate = new Date(value.utctime).toDateString();
-							return modifiedDate.substring(3);
-						}),
-					],
-					...parameters.map((p) => {
-						return values.map((value) => value[p.code]);
-					}),
-				];
-			}; */
-
 			const marked = new Date(mark).toISOString();
 			return {
 				animationThreshold: 1,
