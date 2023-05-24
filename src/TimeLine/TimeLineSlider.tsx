@@ -6,9 +6,14 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as echarts from 'echarts';
 import { Box } from '@mui/material';
-import { useAppSelector } from '../store/hooks';
+import { useAppSelector, useRootDispatch } from '../store/hooks';
 import { RootState } from '../store/store';
+import { timelineActions } from './TimelineSlice';
+import { getDatesForDuration } from '../utils';
 
+export interface Time {
+	utctime: string;
+}
 interface TimelineControlStyle {
 	itemSize?: number;
 	itemGap?: number;
@@ -36,24 +41,30 @@ interface TimelineControlStyle {
 
 const TimelineSlider = () => {
 	const timelineRef = useRef<HTMLDivElement>(null);
-	const snowHHeightData = useAppSelector(
-		(state: RootState) => state.global.snowHeight
-	);
-	const [data, setData] = useState<string[]>([]);
+	const snowHHeightData = useAppSelector((state: RootState) => state.global.snowHeight);
+	const [data, setData] = useState<Time[]>([]);
 	const [timelineGraph, setTimelineGraph] = useState<any>(null);
+	const dispatch = useRootDispatch();
 
-	const dateFunc = (arr: []) => {
+	const dateFunc = (arr: Time[]) => {
 		const date: string[] = [];
 		arr.forEach((elements: { utctime: string }) => {
 			date.push(elements.utctime);
 		});
-		return data;
+		return date;
 	};
 
 	useEffect(() => {
-		const option: echarts.EChartsOption = {
+		if (snowHHeightData.length > 0) {
+			setData(snowHHeightData);
+		}
+	}, [snowHHeightData]);
+
+	useEffect(() => {
+		const date: Array<string> = getDatesForDuration(new Date(), 6, true);
+		const option: any = {
 			timeline: {
-				data,
+				data: date,
 				autoPlay: false,
 				playInterval: 1000,
 				left: 'center',
@@ -62,7 +73,7 @@ const TimelineSlider = () => {
 				height: '50%',
 				label: {
 					position: 'bottom',
-					show: true,
+					show: false,
 					interval: 2,
 					rotate: 0,
 					color: '#333',
@@ -91,50 +102,19 @@ const TimelineSlider = () => {
 					},
 				} as TimelineControlStyle,
 			},
-
-			options: [
-				{
-					title: {
-						text: '2023-04-02',
-					},
-				},
-				{
-					title: {
-						text: '2023-04-03',
-					},
-				},
-				{
-					title: {
-						text: '2023-05',
-					},
-				},
-				{
-					title: {
-						text: '2023-06',
-					},
-				},
-				{
-					title: {
-						text: '2023-07',
-					},
-				},
-			],
 		};
 
 		if (timelineGraph) {
-			timelineGraph.setOption(
-				option as echarts.EChartOption<echarts.EChartOption.Series>,
-				true
-			);
+			timelineGraph.setOption(option as echarts.EChartOption<echarts.EChartOption.Series>, true);
 		}
 
 		if (timelineGraph) {
 			timelineGraph.on('timelinechanged', function (params: any) {
 				const value = params.currentIndex; // get the index of the current data point
 				const timelineData = option?.timeline?.data;
-				if (timelineData) {
+				if (timelineData[value]) {
 					// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-					window.console.log(`Value at index ${value}: ${timelineData[value]}`);
+					dispatch(timelineActions.setValue(`${timelineData[value]}`));
 				}
 			});
 		}
@@ -144,13 +124,6 @@ const TimelineSlider = () => {
 		if (!timelineRef.current) {
 			throw Error('Echarts not available');
 		}
-		if (!snowHHeightData) {
-			throw Error('No snow height data');
-		} else {
-			const tmp = dateFunc(snowHHeightData);
-			setData(tmp);
-		}
-
 		const timeline: any = echarts.init(timelineRef.current, undefined, {
 			height: '70',
 		});
@@ -162,7 +135,7 @@ const TimelineSlider = () => {
 				timeline.dispose();
 			}
 		};
-	}, [timelineRef, snowHHeightData]);
+	}, [timelineRef]);
 
 	return <Box ref={timelineRef}></Box>;
 };

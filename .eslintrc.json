@@ -36,9 +36,6 @@
   "rules": {
         "import/no-extraneous-dependencies": [
           "error",
-          {
-            "devDependencies": true
-          }
         ],
     "linebreak-style": "off",
     "@typescript-eslint/no-explicit-any": "warn",

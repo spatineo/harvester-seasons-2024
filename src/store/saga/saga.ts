@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/unbound-method */
@@ -8,8 +9,9 @@ import { SagaIterator } from 'redux-saga';
 import { actions } from '../../globalSlice';
 import * as constants from '../constants';
 import * as utils from '../../utils';
-import { RootState } from '../store';
+import { RootState, store } from '../store';
 import { Parameter, StartEndTimeSpan } from '../../types';
+import { MapPosition, mapActions } from '../../MapComponent/MapComponentSlice';
 
 const timeSeriesServiceURL = 'https://desm.harvesterseasons.com/timeseries';
 export interface TimeSpan {
@@ -17,17 +19,26 @@ export interface TimeSpan {
 	end_time: string;
 	time_step: number;
 }
+
+export function* setUserLocation({
+	payload,
+}: ReturnType<typeof mapActions.setPosition>): SagaIterator {
+	yield put({ type: constants.TRAFFICABILITY_API });
+	yield put({ type: constants.SOILTEMPERATUE_API });
+	yield put({ type: constants.SOILWETNESS_API });
+	yield put({ type: constants.SNOWHEIGHT_API });
+}
+
 export function* triggerCheckUpdate({
 	payload,
 }: ReturnType<typeof actions.setCheckedButton>): SagaIterator {
-	//const checked = yield select((state) => state.global.checked);
 	if (payload !== false) {
 		const tenYearsTimeSpan = utils.addTenYears(new Date(), 10).toISOString();
 		yield put(
 			actions.setTimeEndStartSpan({
 				start_time: new Date().toISOString(),
 				end_time: tenYearsTimeSpan,
-				time_step: 10080, // one week
+				time_step: 1440, // one week
 			})
 		);
 		yield put({ type: constants.TRAFFICABILITY_API });
@@ -50,26 +61,51 @@ export function* triggerCheckUpdate({
 	}
 }
 
-function asStartEndTimeSpan(value: StartEndTimeSpan): StartEndTimeSpan {
-	const startEndTimeSpan = value;
-	return startEndTimeSpan;
+function createTimeSeriesQueryParameters(
+	startEndTimeSpan: StartEndTimeSpan,
+	parameters: Parameter[],
+	userLocation: MapPosition
+) {
+	const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
+	const modifiedEndDate = new Date(startEndTimeSpan.end_time).toISOString();
+
+	const lonlat = `${userLocation.lat || 'N/A'},${userLocation.lon || 'N/A'}`;
+	return {
+		params: {
+			latlon: `${lonlat}`,
+			param: 'utctime,' + parameters.map((p) => p.code).join(','),
+			starttime: modifiedStartDate,
+			endtime: modifiedEndDate,
+			timestep: startEndTimeSpan.time_step,
+			format: 'json',
+			source: 'grid',
+			tz: 'utc',
+			timeformat: 'xml',
+			precision: 'full',
+		},
+	};
 }
 
 export function* fetchTrafficabilityDataSaga({
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	payload,
 }: ReturnType<typeof actions.setTrafficabilityData>): SagaIterator {
-	const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+	const userLocation = yield select((state: RootState) => state.mapState.position);
+	if (userLocation.lon === null || userLocation.lon === undefined) {
+		return;
+	}
+	const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
 		yield select((state: RootState) => state.global.startEndTimeSpan)
 	);
-	const parameters: Parameter[] = yield select(
-		(state: RootState) => state.global.parameters.trafficability
-	);
+	const checked = yield select((state: RootState) => state.global.checked);
+	const parameters: Parameter[] = checked
+		? yield select((state: RootState) => state.global.parameters.tenYearParams.trafficability)
+		: select((state: RootState) => state.global.parameters.sixMonthParams.trafficability);
 
 	const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
 	const modifiedEndDate = new Date(startEndTimeSpan.end_time).toISOString();
 
+	// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+	const lonlat = `${userLocation.lon},${userLocation.lat}`;
 	try {
 		const response = yield call(
 			// eslint-disable-next-line @typescript-eslint/unbound-method
@@ -77,9 +113,8 @@ export function* fetchTrafficabilityDataSaga({
 			timeSeriesServiceURL,
 			{
 				params: {
-					latlon: '64,27',
-					param:
-						'utctime,' + parameters.map((p: Parameter) => p.code).join(','),
+					latlon: `${lonlat}`,
+					param: 'utctime,' + parameters.map((p: Parameter) => p.code).join(','),
 					starttime: modifiedStartDate,
 					endtime: modifiedEndDate,
 					timestep: startEndTimeSpan.time_step,
@@ -97,50 +132,29 @@ export function* fetchTrafficabilityDataSaga({
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
 			const errorMessage: string | [] = error.message;
-			window.console.log(errorMessage);
+			window.console.error(errorMessage);
 		}
 	}
 }
 
-function createTimeSeriesQueryParameters(
-	startEndTimeSpan: StartEndTimeSpan,
-	parameters: Parameter[]
-) {
-	const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
-	const modifiedEndDate = new Date(startEndTimeSpan.end_time).toISOString();
-	return {
-		params: {
-			latlon: '64,27',
-			param: 'utctime,' + parameters.map((p) => p.code).join(','),
-			starttime: modifiedStartDate,
-			endtime: modifiedEndDate,
-			timestep: startEndTimeSpan.time_step,
-			format: 'json',
-			source: 'grid',
-			tz: 'utc',
-			timeformat: 'xml',
-			precision: 'full',
-		},
-	};
-}
-
-export function* soilTemperatureDataSaga({
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	payload,
-}: ReturnType<typeof actions.setSoilTemperatureData>): SagaIterator {
-	const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+export function* soilTemperatureDataSaga(): SagaIterator {
+	const userLocation = store.getState().mapState.position;
+	if (userLocation.lon === null || userLocation.lon === undefined) {
+		return;
+	}
+	const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
 		yield select((state: RootState) => state.global.startEndTimeSpan)
 	);
-	const parameters = yield select(
-		(state: RootState) => state.global.parameters.soilTemperature
-	);
+	const checked = yield select((state: RootState) => state.global.checked);
+	const parameters = checked
+		? yield select((state: RootState) => state.global.parameters.tenYearParams.soilTemperature)
+		: yield select((state: RootState) => state.global.parameters.sixMonthParams.soilTemperature);
 
 	try {
 		const response = yield call(
 			axios.get,
 			timeSeriesServiceURL,
-			createTimeSeriesQueryParameters(startEndTimeSpan, parameters)
+			createTimeSeriesQueryParameters(startEndTimeSpan, parameters, userLocation)
 		);
 		if (response.status === 200) {
 			const tmp = response.data;
@@ -149,27 +163,29 @@ export function* soilTemperatureDataSaga({
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
 			const errorMessage: string | [] = error.message;
-			window.console.log(errorMessage);
+			window.console.error(errorMessage);
 		}
 	}
 }
 
-export function* fetchSoilWetnessDataSaga({
-	payload,
-}: ReturnType<typeof actions.setSoilWetnessData>): SagaIterator {
-	const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+export function* fetchSoilWetnessDataSaga(): SagaIterator {
+	const userLocation = store.getState().mapState.position;
+	if (userLocation.lon === null || userLocation.lon === undefined) {
+		return;
+	}
+	const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
 		yield select((state: RootState) => state.global.startEndTimeSpan)
 	);
-	const parameters = yield select(
-		(state: RootState) => state.global.parameters.soilWetness
-	);
+	const checked = yield select((state: RootState) => state.global.checked);
+	const parameters = checked
+		? yield select((state: RootState) => state.global.parameters.tenYearParams.soilWetness)
+		: yield select((state: RootState) => state.global.parameters.sixMonthParams.soilWetness);
 
 	try {
 		const response = yield call(
 			axios.get,
 			timeSeriesServiceURL,
-			createTimeSeriesQueryParameters(startEndTimeSpan, parameters)
+			createTimeSeriesQueryParameters(startEndTimeSpan, parameters, userLocation)
 		);
 		if (response.status === 200) {
 			const tmp = response.data;
@@ -179,27 +195,28 @@ export function* fetchSoilWetnessDataSaga({
 		window.console.error(error);
 		if (axios.isAxiosError(error)) {
 			const errorMessage: string | [] = error.message;
-			window.console.log(errorMessage);
+			window.console.error(errorMessage);
 		}
 	}
 }
 
-export function* fetchSnowHeightDataSaga({
-	payload,
-}: ReturnType<typeof actions.setSnowHeightData>): SagaIterator {
-	const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+export function* fetchSnowHeightDataSaga(): SagaIterator {
+	const userLocation = store.getState().mapState.position;
+	if (userLocation.lon === null || userLocation.lon === undefined) return;
+
+	const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
 		yield select((state: RootState) => state.global.startEndTimeSpan)
 	);
-	const parameters = yield select(
-		(state: RootState) => state.global.parameters.snowHeight
-	);
+	const checked = yield select((state: RootState) => state.global.checked);
+	const parameters = checked
+		? yield select((state: RootState) => state.global.parameters.tenYearParams.snowHeight)
+		: yield select((state: RootState) => state.global.parameters.sixMonthParams.snowHeight);
 
 	try {
 		const response = yield call(
 			axios.get,
 			timeSeriesServiceURL,
-			createTimeSeriesQueryParameters(startEndTimeSpan, parameters)
+			createTimeSeriesQueryParameters(startEndTimeSpan, parameters, userLocation)
 		);
 		if (response.status === 200) {
 			const tmp = response.data;
@@ -208,12 +225,13 @@ export function* fetchSnowHeightDataSaga({
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
 			const errorMessage: string | [] = error.message;
-			window.console.log(errorMessage);
+			window.console.error(errorMessage);
 		}
 	}
 }
 
 export function* watchHarvesterRequests(): SagaIterator {
+	yield takeLatest(constants.POSITION, setUserLocation);
 	yield takeLatest(actions.setCheckedButton.type, triggerCheckUpdate);
 	yield takeLatest(constants.TRAFFICABILITY_API, fetchTrafficabilityDataSaga);
 	yield takeLatest(constants.SOILWETNESS_API, fetchSoilWetnessDataSaga);

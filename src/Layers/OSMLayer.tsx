@@ -1,37 +1,36 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable react/prop-types */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable import/no-named-as-default-member */
 import { useEffect, useContext } from 'react';
 import MapContext from '../MapComponent/MapContext';
 import { BaseLayerOptions } from 'ol-layerswitcher';
-import TileSource from 'ol/source/Tile';
 import LayerTile from 'ol/layer/Tile';
+import { OSM } from 'ol/source';
 
-interface TileLayerProps {
-	source: TileSource;
-}
 
-const TileLayer: React.FC<TileLayerProps> = ({ source }) => {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+// eslint-disable-next-line react/prop-types
+const OSMLayer: React.FC = () => {
 	const { map } = useContext(MapContext);
 
 	useEffect(() => {
 		if (!map) return;
 
 		const tileLayer = new LayerTile({
-			title: 'TileLayer',
+			title: 'OSM',
 			type: 'base',
-			visible: true,
-			source,
-			className: 'class',
+			source: new OSM(),
 		} as BaseLayerOptions);
 
 		map.addLayer(tileLayer);
+
 		return () => {
-			map.removeLayer(tileLayer);
+			if (map) {
+				map.removeLayer(tileLayer);
+			}
 		};
 	}, [map]);
 	return null;
 };
 
-export default TileLayer;
+export default OSMLayer;

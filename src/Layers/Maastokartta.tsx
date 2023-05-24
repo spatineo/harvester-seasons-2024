@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable import/no-named-as-default-member */
 import { useEffect, useContext } from 'react';
-import { setPosition } from '../MapComponent/MapComponentSlice';
+import { mapActions } from '../MapComponent/MapComponentSlice';
 import { useRootDispatch } from '../store/hooks';
 import MapContext from '../MapComponent/MapContext';
 import { BaseLayerOptions } from 'ol-layerswitcher';
@@ -15,10 +15,7 @@ interface TileLayerProps {
 	source: TileSource;
 }
 
-proj4.defs(
-	'EPSG:3067',
-	'+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs'
-);
+proj4.defs('EPSG:3067', '+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
 proj4.defs('EPSG:4326', '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs');
 proj4.defs(
 	'EPSG:3857',
@@ -27,8 +24,7 @@ proj4.defs(
 
 // eslint-disable-next-line react/prop-types
 const TileLayer: React.FC<TileLayerProps> = ({ source }) => {
-	const { map } = useContext<any>(MapContext);
-	const dispatch = useRootDispatch();
+	const { map } = useContext(MapContext);
 
 	useEffect(() => {
 		if (!map) return;
@@ -42,14 +38,6 @@ const TileLayer: React.FC<TileLayerProps> = ({ source }) => {
 		} as BaseLayerOptions);
 
 		map.addLayer(tileLayer);
-		// tileLayer.setZIndex(zIndex);
-
-		map.on('click', (e: any) => {
-			const centered = [e.coordinate[0], e.coordinate[1]];
-			const reversedCoord = proj4('EPSG:3857', 'EPSG:4326', centered);
-
-			dispatch(setPosition({ lat: reversedCoord[1], lon: reversedCoord[0] }));
-		});
 
 		return () => {
 			if (map) {

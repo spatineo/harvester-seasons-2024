@@ -22,9 +22,50 @@ export interface GlobalStateProps {
 	snowHeight: [];
 	checked: boolean;
 	parameters: {
-		trafficability: Parameter[];
-		snowHeight: Parameter[];
-		soilTemperature: Parameter[];
-		soilWetness: Parameter[];
+		sixMonthParams: {
+			trafficability: Parameter[];
+			snowHeight: Parameter[];
+			soilTemperature: Parameter[];
+			soilWetness: Parameter[];
+		};
+		tenYearParams: {
+			trafficability: Parameter[];
+			snowHeight: Parameter[];
+			soilTemperature: Parameter[];
+			soilWetness: Parameter[];
+		};
+	};
+}
+
+export interface Map {
+	position: {
+		lat: number;
+		lon: number;
+		resolution: number;
+	};
+}
+
+export interface TimelineControlStyle {
+	itemSize?: number;
+	itemGap?: number;
+	normal?: {
+		color?: string;
+		borderColor?: string;
+		borderWidth?: number;
+		borderType?: string;
+		shadowBlur?: number;
+		shadowColor?: string;
+		shadowOffsetX?: number;
+		shadowOffsetY?: number;
+	};
+	emphasis?: {
+		color?: string;
+		borderColor?: string;
+		borderWidth?: number;
+		borderType?: string;
+		shadowBlur?: number;
+		shadowColor?: string;
+		shadowOffsetX?: number;
+		shadowOffsetY?: number;
 	};
 }
