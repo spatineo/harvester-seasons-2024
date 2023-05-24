@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -204,83 +205,63 @@ const Graphs = () => {
 	}, [snowHeightData]);
 
 	useEffect(() => {
-		if (soilTemperatureData) {
+		if (soilWetnessData || soilTemperatureData || snowHeightData) {
 			if (!checked) {
-				const tmp = createOptions(
-					{ title: 'Soil Temperature' },
-					graphParameters.sixMonthParams.soilTemperature,
-					soilTemperatureData,
-					markLineValue
-				);
-				setSoilTemperatureOption(tmp);
-			} else {
-				const tmp = createOptions(
-					{ title: 'Soil Temperature' },
-					graphParameters.tenYearParams.soilTemperature,
-					soilTemperatureData,
-					markLineValue
-				);
-				setSoilTemperatureOption(tmp);
-			}
-		}
-	}, [
-		soilTemperatureData,
-		graphParameters.tenYearParams.soilTemperature,
-		graphParameters.sixMonthParams.soilTemperature,
-		markLineValue,
-	]);
-
-	useEffect(() => {
-		if (soilWetnessData) {
-			if (!checked) {
-				const tmp = createOptions(
+				const soilWetness = createOptions(
 					{ title: 'Soil Wetness' },
 					graphParameters.sixMonthParams.soilWetness,
 					soilWetnessData,
 					markLineValue
 				);
-				setSoilWetnessOption(tmp);
-			}
-		} else {
-			const tmp = createOptions(
-				{ title: 'Soil Wetness' },
-				graphParameters.tenYearParams.soilWetness,
-				soilWetnessData,
-				markLineValue
-			);
-			setSoilWetnessOption(tmp);
-		}
-	}, [
-		soilWetnessData,
-		graphParameters.tenYearParams.soilWetness,
-		graphParameters.sixMonthParams.soilWetness,
-		markLineValue,
-	]);
-
-	useEffect(() => {
-		if (snowHeightData) {
-			if (!checked) {
-				const tmp = createOptions(
+				const soilTemperature = createOptions(
+					{ title: 'Soil Temperature' },
+					graphParameters.sixMonthParams.soilTemperature,
+					soilTemperatureData,
+					markLineValue
+				);
+				const snowHeight = createOptions(
 					{ title: 'Snow Height' },
 					graphParameters.sixMonthParams.snowHeight,
 					snowHeightData,
 					markLineValue
 				);
-				setSnowHeightOption(tmp);
+				setSoilWetnessOption(soilWetness);
+				setSnowHeightOption(snowHeight);
+				setSoilTemperatureOption(soilTemperature);
 			} else {
-				const tmp = createOptions(
+				const soilWetness = createOptions(
+					{ title: 'Soil Wetness' },
+					graphParameters.tenYearParams.soilWetness,
+					soilWetnessData,
+					markLineValue
+				);
+				const soilTemperature = createOptions(
+					{ title: 'Soil Temperature' },
+					graphParameters.tenYearParams.soilTemperature,
+					soilTemperatureData,
+					markLineValue
+				);
+				const snowHeight = createOptions(
 					{ title: 'Snow Height' },
 					graphParameters.tenYearParams.snowHeight,
 					snowHeightData,
 					markLineValue
 				);
-				setSnowHeightOption(tmp);
+				setSnowHeightOption(snowHeight);
+				setSoilTemperatureOption(soilTemperature);
+				setSoilWetnessOption(soilWetness);
 			}
 		}
 	}, [
+		soilWetnessData,
 		snowHeightData,
-		graphParameters.tenYearParams.snowHeight,
+		soilTemperatureData,
+		graphParameters.sixMonthParams.soilWetness,
+		graphParameters.sixMonthParams.soilTemperature,
 		graphParameters.sixMonthParams.snowHeight,
+		graphParameters.tenYearParams.soilTemperature,
+		graphParameters.tenYearParams.snowHeight,
+		graphParameters.tenYearParams.soilWetness,
 		markLineValue,
 	]);
 
