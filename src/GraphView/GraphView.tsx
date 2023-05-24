@@ -9,6 +9,7 @@ import { useAppSelector } from '../store/hooks';
 import { RootState } from '../store/store';
 import { Parameter, TimelineControlStyle } from '../types';
 import HarvesterSeasons from '../HarvesterChartComponent/HarvesterSeasons';
+import { getDatesForDuration } from '../utils';
 
 interface GraphOptions {
 	title: string;
@@ -33,36 +34,15 @@ const Graphs = () => {
 	const dateMarker = new Date('2023-05-31').toDateString().substring(3);
 	const [markLineValue, setMarkLineValue] = useState<string>(dateMarker);
 
-	const dateFunc = (arr: Time[]) => {
-		const d: string[] = [];
-		arr.forEach((elements: { utctime: string }) => {
-			const formattedDate = new Date(elements.utctime).toDateString().substring(3);
-			d.push(formattedDate);
-		});
-		return d;
-	};
-
 	const createOptions = useCallback(
 		(opts: GraphOptions, parameters: Parameter[], values: [], mark: string) => {
-			const source = () => {
-				return [
-					[
-						...values.map((value: { utctime: string }) => {
-							const modifiedDate = new Date(value.utctime).toDateString();
-							return modifiedDate.substring(3);
-						}),
-					],
-					...parameters.map((p) => {
-						return values.map((value) => value[p.code]);
-					}),
-				];
-			};
-
+			const marked = new Date(mark).toISOString();
 			return {
-				animationThreshold: 10,
-				dataset: {
+				animationThreshold: 1,
+				/* dataset: {
 					source: source(),
-				},
+					dimension: ['timestamp'],
+				}, */
 				legend: null,
 				grid: {},
 				tooltip: {
@@ -77,10 +57,7 @@ const Graphs = () => {
 					},
 				},
 				xAxis: {
-					type: 'category',
-					axisTick: {
-						show: false,
-					},
+					type: 'time',
 				},
 				series: [
 					{
@@ -93,7 +70,7 @@ const Graphs = () => {
 							data: [
 								{
 									// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-									xAxis: mark,
+									xAxis: marked,
 									name: '',
 									type: 'min',
 									label: { show: false },
@@ -107,10 +84,15 @@ const Graphs = () => {
 							},
 						},
 					},
-					...parameters.map((p) => {
+					...parameters.map((p: { code: string }) => {
+						const codes = p.code;
 						return {
 							type: 'line',
 							seriesLayoutBy: 'row',
+							data: values.map((d: { utctime: string; [key: string]: string }) => {
+								// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+								return [d.utctime, d[codes]];
+							}),
 						};
 					}),
 				],
@@ -120,7 +102,9 @@ const Graphs = () => {
 	);
 
 	useEffect(() => {
-		const dateValue: any = dateFunc(data);
+		const result = new Date();
+		result.setDate(result.getDate() + 2);
+		const dateValue: Array<string> = getDatesForDuration(result, 6, true);
 		const option: any = {
 			timeline: {
 				data: dateValue,
@@ -139,12 +123,6 @@ const Graphs = () => {
 					fontWeight: 'normal',
 					fontSize: 12,
 					align: 'center',
-					formatter(value: string | number) {
-						return new Date(value).toLocaleDateString(undefined, {
-							month: 'long',
-							year: 'numeric',
-						});
-					},
 				},
 				controlStyle: {
 					position: 'left',

@@ -28,3 +28,18 @@ export function asStartEndTimeSpan(value: StartEndTimeSpan): StartEndTimeSpan {
 	const startEndTimeSpan = value;
 	return startEndTimeSpan;
 }
+
+export function getDatesForDuration(startDate: Date, duration: number, isMonths: boolean) {
+	const result = [];
+	const currentDate = new Date(startDate);
+	const daysPerUnit = isMonths ? 30 : 365;
+	const numDays = duration * daysPerUnit;
+
+	for (let i = 0; i < numDays; i++) {
+		const dateString = currentDate.toISOString().slice(0, 10);
+		result.push(dateString);
+		currentDate.setDate(currentDate.getDate() + 1);
+	}
+
+	return result;
+}
