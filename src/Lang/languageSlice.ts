@@ -12,9 +12,7 @@ const languageSlice = createSlice({
 	name: 'language',
 	initialState,
 	reducers: {
-		changeLanguage: (state, action) => {
-			console.log(state, action.payload);
-		},
+		changeLanguage: (state, action) => {},
 	},
 });
 
