@@ -143,14 +143,11 @@ const TraficabilityGraphComponent: FC = () => {
 		graph.setOption(trafficabilityOptionData);
 
 		graph.getZr().on('click', function (params) {
-			console.log(params);
 			const pointInPixel = [params.offsetX, params.offsetY];
 			const pointInGrid = graph.convertFromPixel({ gridIndex: 0 }, pointInPixel);
 			const xAxis = graph.getOption().xAxis;
 			const xAxisData = (Array.isArray(xAxis) ? xAxis[0] : xAxis)?.data;
 			const xValue = xAxisData !== undefined && xAxisData[pointInGrid[0]];
-			console.log(xAxisData);
-			console.log(`Clicked on x-axis value ${xValue}`);
 		});
 
 		return () => {
@@ -169,46 +166,6 @@ const TraficabilityGraphComponent: FC = () => {
 		});
 	};
 
-	/* const trafficabilityOptionData = {
-		dataset: {
-			source: [
-				['type', ...trafficabilityDate()],
-				[`${summer}` ? `${summer} summer` : 'Summer Index', ...summerIndex()],
-				[`${winter}` ? `${winter} winter` : 'Winter Index', ...winterIndex1()],
-			],
-		},
-		legend: {},
-		grid: {
-			height: '80px',
-		},
-		tooltip: {
-			trigger: 'axis',
-		},
-		yAxis: {
-			name: 'Traficability',
-			nameLocation: 'middle',
-			nameTextStyle: {
-				padding: 18,
-			},
-		},
-		xAxis: {
-			type: 'category',
-		},
-		series: [
-			{
-				type: 'line',
-				seriesLayoutBy: 'row',
-				areaStyle: {
-					color: 'rgb(192, 203, 204)',
-				},
-			},
-			{
-				type: 'line',
-				seriesLayoutBy: 'row',
-			},
-		],
-	};
- */
 	const trafficabilityGraph = () => {
 		return (
 			<Box>

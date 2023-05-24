@@ -8,7 +8,6 @@ import GraphView from '../GraphView/GraphView';
 import FooterComponent from '../FooterComponent/FooterComponent';
 import SwitchComponent from '../SwitchComponent/SwitchComponent';
 import * as constants from '../store/constants';
-import TimelineSlider from '../TimeLine/TimeLineSlider';
 import HarvesterMap from '../HarvesterMapComponent/HarvesterMap';
 
 function MainViewComponent() {
@@ -22,14 +21,13 @@ function MainViewComponent() {
 	}, []);
 
 	return (
-		<div>
+		<Box>
 			<Container maxWidth="lg">
 				<br />
 				<HeadingComponent />
 				<br />
 				<TraficabilityGraph />
 				<SwitchComponent />
-				<TimelineSlider />
 				<HarvesterMap />
 				<Box sx={{ marginTop: '2rem' }}>
 					<GraphView />
@@ -39,7 +37,7 @@ function MainViewComponent() {
 				<br />
 				<FooterComponent />
 			</Container>
-		</div>
+		</Box>
 	);
 }
 export default MainViewComponent;

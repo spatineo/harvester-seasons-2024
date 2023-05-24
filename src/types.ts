@@ -24,10 +24,18 @@ export interface GlobalStateProps {
 	snowHeight: [];
 	checked: boolean;
 	parameters: {
-		trafficability: Parameter[];
-		snowHeight: Parameter[];
-		soilTemperature: Parameter[];
-		soilWetness: Parameter[];
+		sixMonthParams: {
+			trafficability: Parameter[];
+			snowHeight: Parameter[];
+			soilTemperature: Parameter[];
+			soilWetness: Parameter[];
+		};
+		tenYearParams: {
+			trafficability: Parameter[];
+			snowHeight: Parameter[];
+			soilTemperature: Parameter[];
+			soilWetness: Parameter[];
+		};
 	};
 	graphLabels: {
 		[key: string]: number | string;

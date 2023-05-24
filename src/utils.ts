@@ -35,3 +35,27 @@ export function initialLabels(obj: { [key: string]: string }) {
 	}
 	return obj;
 }
+export function getDatesForDuration(startDate: Date, duration: number, isMonths: boolean) {
+	const result = [];
+	const currentDate = new Date(startDate);
+
+	const endDate = new Date(startDate);
+
+	if (isMonths) {
+		endDate.setMonth(endDate.getMonth() + duration);
+	} else {
+		endDate.setMonth(endDate.getMonth() + duration * 12);
+	}
+
+	while (currentDate <= endDate) {
+		const year = currentDate.getFullYear();
+		const month = currentDate.toLocaleString('default', { month: 'short' });
+		const day = currentDate.getDate();
+		const dateString = `${month} ${day} ${year}`;
+
+		result.push(dateString);
+		currentDate.setDate(currentDate.getDate() + 1);
+	}
+
+	return result;
+}
