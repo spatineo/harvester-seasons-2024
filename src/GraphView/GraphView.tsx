@@ -199,7 +199,6 @@ const Graphs = () => {
 
 	useEffect(() => {
 		if (soilTemperatureData) {
-			console.log(markLineValue);
 			const tmp = createOptions(
 				{ title: 'Soil Temperature' },
 				graphParameters.soilTemperature,
