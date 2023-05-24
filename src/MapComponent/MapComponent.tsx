@@ -93,11 +93,11 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
 					dispatch(mapActions.setPosition({ lat, lon }));
 				},
 				(error) => {
-					window.console.log(error.code, 'error from geolocation', error.message);
+					window.console.error(error.code, 'error from geolocation', error.message);
 				}
 			);
 		} else {
-			window.console.log('Application cannot access your location');
+			window.console.error('Application cannot access your location');
 		}
 	}, [map]);
 
