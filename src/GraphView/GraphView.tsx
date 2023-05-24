@@ -216,18 +216,9 @@ const Graphs = () => {
 		<Box>
 			<Box>{markLineValue}</Box>
 			<Box ref={timelineRef}></Box>
-			<HarvesterSeasons
-				option={soilWetnessOption}
-				handleClick={(d) => window.console.log('click', d)}
-			/>
-			<HarvesterSeasons
-				option={soilTemperatureOption}
-				handleClick={() => window.console.log('click')}
-			/>
-			<HarvesterSeasons
-				option={snowHeightOption}
-				handleClick={(d: any) => window.console.log('click', d)}
-			/>
+			<HarvesterSeasons option={soilWetnessOption} handleClick={(d) => {}} />
+			<HarvesterSeasons option={soilTemperatureOption} handleClick={() => {}} />
+			<HarvesterSeasons option={snowHeightOption} handleClick={(d: any) => {}} />
 		</Box>
 	);
 };
