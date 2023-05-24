@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/unbound-method */
@@ -130,7 +131,7 @@ export function* fetchTrafficabilityDataSaga({
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
 			const errorMessage: string | [] = error.message;
-			window.console.log(errorMessage);
+			window.console.error(errorMessage);
 		}
 	}
 }
@@ -158,7 +159,7 @@ export function* soilTemperatureDataSaga(): SagaIterator {
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
 			const errorMessage: string | [] = error.message;
-			window.console.log(errorMessage);
+			window.console.error(errorMessage);
 		}
 	}
 }
@@ -187,7 +188,7 @@ export function* fetchSoilWetnessDataSaga(): SagaIterator {
 		window.console.error(error);
 		if (axios.isAxiosError(error)) {
 			const errorMessage: string | [] = error.message;
-			window.console.log(errorMessage);
+			window.console.error(errorMessage);
 		}
 	}
 }
@@ -214,7 +215,7 @@ export function* fetchSnowHeightDataSaga(): SagaIterator {
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
 			const errorMessage: string | [] = error.message;
-			window.console.log(errorMessage);
+			window.console.error(errorMessage);
 		}
 	}
 }
