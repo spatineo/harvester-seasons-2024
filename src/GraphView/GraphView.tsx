@@ -10,7 +10,7 @@ import { useAppSelector } from '../store/hooks';
 import { RootState } from '../store/store';
 import { Parameter, TimelineControlStyle } from '../types';
 import HarvesterSeasons from '../HarvesterChartComponent/HarvesterSeasons';
-import { initialLabels, getDatesForDuration  } from '../utils';
+import { initialLabels, getDatesForDuration, setDateTwoDaysAhead } from '../utils';
 
 interface GraphOptions {
   title: string;
@@ -37,9 +37,7 @@ const Graphs = () => {
 	const [timelineGraph, setTimelineGraph] = useState<any>(null);
 	const [data, setData] = useState<Time[]>([]);
 	const [labelValue, setLabelValue] = useState<number[]>([]);
-
-	const start = new Date();
-	start.setDate(start.getUTCDate() + 10);
+  const start = setDateTwoDaysAhead()
   const [markLineValue, setMarkLineValue] = useState<string>(start);
 
 	const createOptions = useCallback(
@@ -241,6 +239,7 @@ const Graphs = () => {
 
 	const graphLabels = () => {
 		if (labelValue.length > 0) {
+      console.log(labelValue)
 			return (
 				<Box sx={{ display: '-ms-flexbox', flexDirection: 'row' }} component="span">
 					{labelValue.map((value: number, index: number) => (
@@ -306,7 +305,7 @@ const Graphs = () => {
 			/>
 			<HarvesterSeasons
 				option={snowHeightOption}
-				handleClick={(d: any) => {}
+				handleClick={(d: any) => {}}
 				handleOnmouseEnter={(params) => {
 					const paramsValue = params.value;
 					setLabelValue(paramsValue);
