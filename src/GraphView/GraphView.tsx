@@ -6,11 +6,12 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Box } from '@mui/material';
 import * as echarts from 'echarts';
+import { debounce } from 'lodash';
 import { useAppSelector } from '../store/hooks';
 import { RootState } from '../store/store';
 import { Parameter, TimelineControlStyle } from '../types';
 import HarvesterSeasons from '../HarvesterChartComponent/HarvesterSeasons';
-import { initialLabels, getDatesForDuration, setDateTwoDaysAhead } from '../utils';
+import { getDatesForDuration, setDateTwoDaysAhead } from '../utils';
 
 interface GraphOptions {
   title: string;
@@ -37,6 +38,13 @@ const Graphs = () => {
   const start = setDateTwoDaysAhead()
   const [markLineValue, setMarkLineValue] = useState<string>(start);
 
+  function initialLabels(obj: { [key: string]: string }) {
+    for (let i = 1; i <= 50; i++) {
+      obj[`SH-${i}`] = '';
+    }
+    return obj;
+  }
+  
 	const createOptions = useCallback(
 		(opts: GraphOptions, parameters: Parameter[], values: [], mark: string) => {
 			const marked = new Date(mark).toISOString();
@@ -104,7 +112,7 @@ const Graphs = () => {
 	useEffect(() => {
 		const result = new Date();
 		result.setDate(result.getDate() + 2);
-		const dateValue: Array<string> = getDatesForDuration(result, 6, true);
+		const dateValue: Array<string | Date> = getDatesForDuration(result, 6, true);
 		const option: any = {
 			timeline: {
 				data: dateValue,
@@ -235,79 +243,77 @@ const Graphs = () => {
 		markLineValue,
 	]);
 
-	const graphLabels = () => {
-      console.log(labelValue)
-			return (
-				<Box sx={{ display: '-ms-flexbox', flexDirection: 'row' }} component="span">
-					{labelValue.length > 0 ? labelValue.map((value: number, index: number) => (
-						<Box
-							component="span"
-							key={index}
-							sx={{ fontFamily: 'Helvetica, monospace', fontWeight: '200', fontSize: '0.8rem' }}
-						>
-							{index !== 0 ? `SH-${index}: ${(value % 1).toFixed(2)} ` : `${value}: `}
-						</Box>
-					)) :
-          null}
-				</Box>
-			);
-	};
+  const graphLabels = () => {
+    if (labelValue && labelValue.length > 0) {
+      return (
+        <Box sx={{ display: '-ms-flexbox', flexDirection: 'row' }} component="span">
+          {labelValue.map((value: number, index: number) => {
+            return (
+              <Box
+                component="span"
+                key={index}
+                sx={{
+                  fontFamily: 'Helvetica, monospace',
+                  fontWeight: '200',
+                  fontSize: '0.8rem'
+                }}
+              >
+                {index !== 0 ? `SH-${index}: ${(value % 1).toFixed(2)} ` : `${value}: `}
+              </Box>
+            );
+          })}
+        </Box>
+      );
+    } else {
+      const initialLabelValues = initialLabels({});
+      return (
+        <span>
+          {Object.keys(initialLabelValues).map((key: string, index: number) => (
+            <Box
+              component="span"
+              key={index}
+              sx={{ fontFamily: 'Helvetica, monospace', fontWeight: '200', fontSize: '0.8rem' }}
+            >
+              {`${key}: ${initialLabelValues[key]} `}
+            </Box>
+          ))}
+        </span>
+      );
+    }
+  };
 
+  const handleOnmouseEnter = debounce((params) => {
+    setLabelValue(prevState => {
+      const updatedLabelValue = params.value;
+      return updatedLabelValue;
+    });
+  }, 100);
+
+  const handleOnmouseLeave = () => setLabelValue([])
 	return (
 		<Box>
 			<Box>{markLineValue}</Box>
 			<Box ref={timelineRef}></Box>
 			<Box sx={{ width: '80%', margin: 'auto' }}>
-				{graphLabels()
-					? graphLabels()
-					: Object.entries(initialLabels({})).map(([key, value]) => (
-							<Box
-								key={key}
-								sx={{
-									display: '-ms-flexbox',
-									flexDirection: 'row',
-									fontFamily: 'Helvetica, monospace',
-									fontWeight: '200',
-									fontSize: '0.8rem',
-								}}
-								component="span"
-							>
-								{key}: {value}
-							</Box>
-					  ))}
+			 {graphLabels()}
 			</Box>
 			<HarvesterSeasons
 				option={soilWetnessOption}
 				handleClick={(d) => {}}
-				handleOnmouseEnter={(params) => {
-					const paramsValue = params.value;
-					setLabelValue(paramsValue);
-				}}
-				handleOnmouseLeave={(params: { value: [] }) => {
-					setLabelValue([]);
-				}}
+				handleOnmouseEnter={handleOnmouseEnter}
+				handleOnmouseLeave={handleOnmouseLeave}
 			/>
 			<HarvesterSeasons
 				option={soilTemperatureOption}
 				handleClick={() => {}}
-				handleOnmouseEnter={(params) => {
-					const paramsValue = params.value;
-					setLabelValue(paramsValue);
-				}}
-				handleOnmouseLeave={function (params: { value: [] }): void {
-					setLabelValue([]);
-				}}
+				handleOnmouseEnter={handleOnmouseEnter }
+				handleOnmouseLeave={handleOnmouseLeave}
 			/>
 			<HarvesterSeasons
 				option={snowHeightOption}
 				handleClick={(d: any) => {}}
-				handleOnmouseEnter={(params) => {
-					const paramsValue = params.value;
-					setLabelValue(paramsValue);
-				}}
-				handleOnmouseLeave={function (params: { value: [] }): void {
-					setLabelValue([]);
-				}}
+				handleOnmouseEnter={handleOnmouseEnter }
+				handleOnmouseLeave={handleOnmouseLeave}
 			/>
 		</Box>
 	);
