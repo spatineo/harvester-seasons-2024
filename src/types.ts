@@ -37,9 +37,6 @@ export interface GlobalStateProps {
 			soilWetness: Parameter[];
 		};
 	};
-	graphLabels: {
-		[key: string]: number | string;
-	};
 }
 
 export interface Map {
