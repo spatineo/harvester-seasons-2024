@@ -29,12 +29,6 @@ export function asStartEndTimeSpan(value: StartEndTimeSpan): StartEndTimeSpan {
 	return startEndTimeSpan;
 }
 
-export function initialLabels(obj: { [key: string]: string }) {
-	for (let i = 1; i <= 50; i++) {
-		obj[`SH-${i}`] = '';
-	}
-	return obj;
-}
 export function getDatesForDuration(startDate: Date, duration: number, isMonths: boolean) {
 	const result = [];
 	const currentDate = new Date(startDate);
@@ -50,7 +44,7 @@ export function getDatesForDuration(startDate: Date, duration: number, isMonths:
 		const month = currentDate.toLocaleString('default', { month: 'short' });
 		const day = currentDate.getDate();
 		const dateString = `${month} ${day} ${year}`;
-		result.push(dateString);
+		result.push(new Date(dateString));
 		currentDate.setDate(currentDate.getDate() + 1);
 	}
 	return result;
