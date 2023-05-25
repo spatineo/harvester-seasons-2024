@@ -28,14 +28,11 @@ const Graphs = () => {
 	const graphParameters = useAppSelector((state: RootState) => state.global.parameters);
 	const snowHeightData = useAppSelector((state: RootState) => state.global.snowHeight);
 	const soilWetnessData = useAppSelector((state: RootState) => state.global.soilWetnessData);
-	const labels = useAppSelector((state: RootState) => state.global.graphLabels);
-
 	const [soilWetnessOption, setSoilWetnessOption] = useState<any>(null);
 	const [soilTemperatureOption, setSoilTemperatureOption] = useState<any>(null);
 	const [snowHeightOption, setSnowHeightOption] = useState<any>(null);
 	const timelineRef = useRef<HTMLDivElement>(null);
 	const [timelineGraph, setTimelineGraph] = useState<any>(null);
-	const [data, setData] = useState<Time[]>([]);
 	const [labelValue, setLabelValue] = useState<number[]>([]);
   const start = setDateTwoDaysAhead()
   const [markLineValue, setMarkLineValue] = useState<string>(start);
@@ -44,6 +41,7 @@ const Graphs = () => {
 		(opts: GraphOptions, parameters: Parameter[], values: [], mark: string) => {
 			const marked = new Date(mark).toISOString();
 			return {
+        animation: false,
 				animationThreshold: 1,
 				legend: null,
 				grid: {},
@@ -157,7 +155,7 @@ const Graphs = () => {
 				}
 			});
 		}
-	}, [timelineGraph, data]);
+	}, [timelineGraph]);
 
 	useEffect(() => {
 		if (!timelineRef.current) {
@@ -238,11 +236,10 @@ const Graphs = () => {
 	]);
 
 	const graphLabels = () => {
-		if (labelValue.length > 0) {
       console.log(labelValue)
 			return (
 				<Box sx={{ display: '-ms-flexbox', flexDirection: 'row' }} component="span">
-					{labelValue.map((value: number, index: number) => (
+					{labelValue.length > 0 ? labelValue.map((value: number, index: number) => (
 						<Box
 							component="span"
 							key={index}
@@ -250,12 +247,10 @@ const Graphs = () => {
 						>
 							{index !== 0 ? `SH-${index}: ${(value % 1).toFixed(2)} ` : `${value}: `}
 						</Box>
-					))}
+					)) :
+          null}
 				</Box>
 			);
-		} else {
-			return null;
-		}
 	};
 
 	return (
