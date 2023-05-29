@@ -323,7 +323,6 @@ const Graphs = () => {
     }
   };
 
-  console.log(showLegend);
   const handleOnmouseLeave = () => {
     setLabelValue([]);
   };

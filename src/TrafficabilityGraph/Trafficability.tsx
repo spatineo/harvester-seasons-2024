@@ -25,6 +25,7 @@ const TraficabilityGraphComponent: FC = () => {
 			height: '180',
 		});
 
+		console.log(trafficability, 'trafficability data')
 		const trafficabilityDate = () => {
 			return trafficability.map((traffic: { [key: string]: string | number }) => {
 				/*  const date = new Date(traffic.utctime).toUTCString()
