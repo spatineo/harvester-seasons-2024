@@ -136,7 +136,6 @@ export function* fetchTrafficabilityDataSaga({
 			trafficability
 		);
 		if (response.status === 200) {
-			console.log(response.data)
 			yield put(actions.setTrafficabilityData(response.data));
 		}
 	} catch (error) {
