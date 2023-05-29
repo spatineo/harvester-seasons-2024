@@ -37,7 +37,7 @@ const Graphs = () => {
   const [soilWetnessOption, setSoilWetnessOption] = useState<any>(null);
   const [soilTemperatureOption, setSoilTemperatureOption] = useState<any>(null);
   const [snowHeightOption, setSnowHeightOption] = useState<any>(null);
-  const [showLegend, setShowLegend] = useState<boolean>(true);
+  const [showLegend, setShowLegend] = useState<boolean>(false);
   const timelineRef = useRef<HTMLDivElement>(null);
   const [timelineGraph, setTimelineGraph] = useState<any>(null);
   const [labelValue, setLabelValue] = useState<number[]>([]);
