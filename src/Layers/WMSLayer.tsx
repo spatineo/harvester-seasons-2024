@@ -12,6 +12,7 @@ import { TileWMS } from 'ol/source';
 import { useAppSelector } from '../store/hooks';
 import { RootState } from '../store/store';
 import { current } from '@reduxjs/toolkit';
+import { BaseLayerOptions } from 'ol-layerswitcher';
 
 interface WMSLayerProps {
 	layerName: string,
@@ -25,6 +26,7 @@ interface DimensionType {
 
 interface LayerType {
 	Name: string,
+	Title: string,
 	Dimension: DimensionType[]
 };
 
@@ -74,6 +76,7 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl}) => {
 
 		const mapLayer = new TileLayer({
 			opacity: .5,
+			title: layer.Title,
 			source: new TileWMS({
 			  url: 'https://desm.harvesterseasons.com/wms',
 			  params: {
@@ -82,10 +85,9 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl}) => {
 				'VERSION': '1.3.0',
 				'TRANSPARENT': true,
 				'time': time,
-				'origintime': '20150101T120000'
 			  },
 			})
-		});
+		} as BaseLayerOptions);
 		map.addLayer(mapLayer);
 
 		return () => {
