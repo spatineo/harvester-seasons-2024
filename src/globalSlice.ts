@@ -5,6 +5,8 @@ import * as utils from './utils';
 const intialEndDateSixMonths = utils.addSixMonths(new Date(), 6).toISOString();
 const initialStartDate = new Date().toISOString();
 const soilTemperaturCodeArray = utils.soilTemperatureCode([]);
+const trafficabilityCodeSnow = utils.trafficabilityCodeSnow([])
+const trafficabilityCodeDiff = utils.trafficabilityCodeDiff([])
 
 const initialState: GlobalStateProps = {
 	startEndTimeSpan: {
@@ -20,17 +22,11 @@ const initialState: GlobalStateProps = {
 	parameters: {
 		sixMonthParams: {
 			trafficability: [
-				{
-					code: 'HARVIDX{0.4;VSW-M3M3:ECBSF:5022:9:7:0:1-50;VSW-M3M3:ECBSF:5022:9:7:0:0}',
-				},
-				{ code: 'HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}' },
-				{
-					code: 'ensover{0.4;0.9;DIFF{SD-M:ECBSF::1:0:1:0;-0.0640000104904175};DIFF{SD-M:ECBSF::1:0:3:1;-0.0640000104904175};DIFF{SD-M:ECBSF::1:0:3:2;0.0141249895095825};DIFF{SD-M:ECBSF::1:0:3:3;-0.0640000104904175};DIFF{SD-M:ECBSF::1:0:3:4;-0.0171250104904175}}',
-				},
-				{ code: 'HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}' },
-				{ code: 'HARVIDX{-0.7;STL1-K:SMARTMET}' },
-				{ code: 'ensover{0.4;0.9;SD-M:SMARTMET:5027}' },
-				{ code: 'ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}' },
+				{ code: 'HSNOW-M:ECBSF::1:0:1:0'},
+				{ code: 'DIFF{HSNOW-M:ECBSF::1:0:1:0;0}' },
+				{ code: 'HSNOW-M:SMARTOBS:13:4'},
+				...trafficabilityCodeSnow,
+				...trafficabilityCodeDiff,
 			],
 			soilWetness: [
 				{ code: 'DIFF{VSW-M3M3:ECBSF:5022:9:7:0:0;-0.0305226445198059}' },
