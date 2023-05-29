@@ -11,7 +11,6 @@ import WMSCapabilities from 'ol/format/WMSCapabilities';
 import { TileWMS } from 'ol/source';
 import { useAppSelector } from '../store/hooks';
 import { RootState } from '../store/store';
-import { current } from '@reduxjs/toolkit';
 import { BaseLayerOptions } from 'ol-layerswitcher';
 
 interface WMSLayerProps {
@@ -30,13 +29,18 @@ interface LayerType {
 	Dimension: DimensionType[]
 };
 
+interface LayerInfo {
+	layer: LayerType,
+	url: string
+}
+
 const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl}) => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const { map } = useContext(MapContext);
 
 	const currentTime = useAppSelector((state: RootState) => state.timeline.value === '' ? null : new Date(state.timeline.value));
 
-	const [ layer, setLayer ] = useState<LayerType>();
+	const [ layerInfo, setLayerInfo ] = useState<LayerInfo>();
 
 	useEffect(() => {
 		const parser = new WMSCapabilities();
@@ -47,22 +51,23 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl}) => {
   			})
   			.then(function (text) {
     			const result = parser.read(text);
-				const layerInfo = result.Capability.Layer.Layer.find((l : any) => l.Name === layerName)
-				console.log('layer', layerInfo);
-				setLayer(layerInfo);
+
+				const layer = result.Capability.Layer.Layer.find((l : any) => l.Name === layerName)
+				const url = result.Capability.Request.GetMap.DCPType.find((d : any) => d.HTTP).HTTP.Get.OnlineResource;
+
+				setLayerInfo({ layer, url });
 			});
 	}, [layerName, capabilitiesUrl]);
 
 	useEffect(() => {
-		if (!map || !layer) return;
+		if (!map || !layerInfo) return;
 
-		const availableTimestamps = layer.Dimension.find((d) => d.name === 'time')?.values.split(',').map((timeStr) => new Date(timeStr));
+		const availableTimestamps = layerInfo.layer.Dimension.find((d) => d.name === 'time')?.values.split(',').map((timeStr) => new Date(timeStr));
 
 		if (!availableTimestamps || availableTimestamps.length === 0) {
 			console.error('no time dimension values for layer!')
 			return;
 		}
-
 		
 		if (currentTime !== null) {
 			availableTimestamps.sort((a, b) => (a.getTime() - currentTime.getTime()) - (b.getTime() - currentTime.getTime()));
@@ -74,13 +79,13 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl}) => {
 				
 		const time = timeStamp.toISOString().replace(/[:-]/g,'').substring(0,15)
 
-		const mapLayer = new TileLayer({
+		const layer = new TileLayer({
 			opacity: .5,
-			title: layer.Title,
+			title: layerInfo.layer.Title,
 			source: new TileWMS({
-			  url: 'https://desm.harvesterseasons.com/wms',
+			  url: layerInfo.url,
 			  params: {
-				'LAYERS': layer.Name,
+				'LAYERS': layerInfo.layer.Name,
 				'TILED': true,
 				'VERSION': '1.3.0',
 				'TRANSPARENT': true,
@@ -88,12 +93,13 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl}) => {
 			  },
 			})
 		} as BaseLayerOptions);
-		map.addLayer(mapLayer);
+
+		map.addLayer(layer);
 
 		return () => {
-			map.removeLayer(mapLayer);
+			map.removeLayer(layer);
 		};
-	}, [map, layer /*, currentTime*/]);
+	}, [map, layerInfo /*, currentTime*/]);
 
 	return null;
 };
