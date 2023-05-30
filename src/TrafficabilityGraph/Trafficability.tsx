@@ -51,10 +51,10 @@ const TraficabilityGraphComponent: FC = () => {
       series: [
         {
           type: "line",
-					name: 'winter',
-					areaStyle: {
-						color: 'rgba(0, 12, 0, 0.3)',
-					},
+          name: "winter",
+          areaStyle: {
+            color: "rgba(0, 12, 0, 0.3)",
+          },
           data: [
             ...trafficability.map(
               (t: { utctime: string; [key: string]: string }) => {
@@ -63,11 +63,14 @@ const TraficabilityGraphComponent: FC = () => {
                   ...graphParameters.sixMonthParams.trafficability.map((p) => {
                     if (t[p.code] !== null && Number(t[p.code]) === 0) {
                       return 0;
-                    } else if(Number(t[p.code]) > 0.0000 && Number(t[p.code]) <= 0.099999){
-											return 1
-										} else {
-											return 2
-										}
+                    } else if (
+                      Number(t[p.code]) > 0.0 &&
+                      Number(t[p.code]) <= 0.099999
+                    ) {
+                      return 1;
+                    } else {
+                      return 2;
+                    }
                   }),
                 ];
               }
@@ -76,14 +79,28 @@ const TraficabilityGraphComponent: FC = () => {
         },
         {
           type: "line",
-					name: 'summer',
-					areaStyle: {
-						color: 'rgba(0, 128, 255, 0.3)',
-					},
+          name: "summer",
+          areaStyle: {
+            color: "rgba(0, 128, 255, 0.3)",
+          },
           data: [
             ...trafficability.map(
               (t: { utctime: string; [key: string]: string }) => {
-                return [new Date(t.utctime).toISOString(), 0, 1, 2];
+                return [
+                  new Date(t.utctime).toISOString(),
+                  ...graphParameters.sixMonthParams.trafficability.map((p) => {
+                    if (t[p.code] !== null && Number(t[p.code]) === 0) {
+                      return 0.5;
+                    } else if (
+                      Number(t[p.code]) > 0.0 &&
+                      Number(t[p.code]) <= 0.099999
+                    ) {
+                      return 1.5;
+                    } else {
+                      return 2;
+                    }
+                  }),
+                ];
               }
             ),
           ],
