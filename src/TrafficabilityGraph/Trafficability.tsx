@@ -18,6 +18,9 @@ const TraficabilityGraphComponent: FC = () => {
   const trafficability = useAppSelector(
     (state: RootState) => state.global.trafficabilityData
   );
+  const graphParameters = useAppSelector(
+    (state: RootState) => state.global.parameters
+  );
 
   useEffect(() => {
     if (!graphRef.current) {
@@ -27,70 +30,7 @@ const TraficabilityGraphComponent: FC = () => {
       height: "180",
     });
 
-    const trafficabilityDate = () => {
-      return trafficability.map(
-        (traffic: { [key: string]: string | number }) => {
-          const modifiedDate = new Date(traffic.utctime).toDateString();
-          return modifiedDate.substring(3);
-        }
-      );
-    };
-
-    const summerIndex = () => {
-      if (trafficability && trafficability.length > 0) {
-        return trafficability.map((traffic) => {
-          if (
-            traffic["DIFF{HSNOW-M:ECBSF::1:0:3:47;0}"] === 0 ||
-            traffic["DIFF{HSNOW-M:ECBSF::1:0:3:47;0}"] === null
-          ) {
-            return 0;
-          } else if (
-            traffic["DIFF{HSNOW-M:ECBSF::1:0:3:29;0}"] > 0.01111 &&
-            traffic["DIFF{HSNOW-M:ECBSF::1:0:3:29;0}"] < 0.09999
-          ) {
-            return 1;
-          } else {
-            return 2;
-          }
-        });
-      }
-
-      return [];
-    };
-
-    const winterIndex1 = () => {
-      if (trafficability && trafficability.length > 0) {
-        return trafficability.map((traffic) => {
-          if (
-            traffic["HSNOW-M:SMARTOBS:13:4"] === 0 ||
-            traffic["HSNOW-M:SMARTOBS:13:4"] === null
-          ) {
-            return 0;
-          } else if (
-            traffic["HSNOW-M:ECBSF::1:0:3:20"] > 0.01111 &&
-            traffic["HSNOW-M:ECBSF::1:0:3:20"] < 0.09999
-          ) {
-            return 1;
-          } else {
-            return 2;
-          }
-        });
-      }
-
-      return [];
-    };
-
     const trafficabilityOptionData: EChartOption = {
-      dataset: {
-        source: [
-          [...trafficabilityDate()],
-          [`${summer}` ? `${summer} summer` : "Summer Index", ...summerIndex()],
-          [
-            `${winter}` ? `${winter} winter` : "Winter Index",
-            ...winterIndex1(),
-          ],
-        ],
-      },
       legend: {},
       grid: {
         height: "80px",
@@ -106,23 +46,47 @@ const TraficabilityGraphComponent: FC = () => {
         },
       },
       xAxis: {
-        type: "category",
-        axisLabel: {
-          //formatter: (d: any) => moment(d).format('DD.MM'),
-          // interval: 24,
-        },
+        type: "time",
       },
       series: [
         {
           type: "line",
-          seriesLayoutBy: "row",
-          areaStyle: {
-            color: "rgb(192, 203, 204)",
-          },
+					name: 'winter',
+					areaStyle: {
+						color: 'rgba(0, 12, 0, 0.3)',
+					},
+          data: [
+            ...trafficability.map(
+              (t: { utctime: string; [key: string]: string }) => {
+                return [
+                  new Date(t.utctime).toISOString(),
+                  ...graphParameters.sixMonthParams.trafficability.map((p) => {
+                    if (t[p.code] !== null && Number(t[p.code]) === 0) {
+                      return 0;
+                    } else if(Number(t[p.code]) > 0.0000 && Number(t[p.code]) <= 0.099999){
+											return 1
+										} else {
+											return 2
+										}
+                  }),
+                ];
+              }
+            ),
+          ],
         },
         {
           type: "line",
-          seriesLayoutBy: "row",
+					name: 'summer',
+					areaStyle: {
+						color: 'rgba(0, 128, 255, 0.3)',
+					},
+          data: [
+            ...trafficability.map(
+              (t: { utctime: string; [key: string]: string }) => {
+                return [new Date(t.utctime).toISOString(), 0, 1, 2];
+              }
+            ),
+          ],
         },
       ],
     };
@@ -164,11 +128,7 @@ const TraficabilityGraphComponent: FC = () => {
     );
   };
 
-  return (
-    <Box>
-     {trafficabilityGraph()}
-    </Box>
-  );
+  return <Box>{trafficabilityGraph()}</Box>;
 };
 
 export default TraficabilityGraphComponent;
