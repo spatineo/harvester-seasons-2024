@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { Container, Box } from '@mui/material';
 import { useRootDispatch } from '../store/hooks';
 import HeadingComponent from '../HeadingCompnent/HeadingComponent';
-import TraficabilityGraph from '../TrafficanilityGraph/Trafficability';
+import TraficabilityGraph from '../TrafficabilityGraph/Trafficability';
 import GraphView from '../GraphView/GraphView';
 import FooterComponent from '../FooterComponent/FooterComponent';
 import SwitchComponent from '../SwitchComponent/SwitchComponent';

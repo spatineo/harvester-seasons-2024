@@ -19,6 +19,23 @@ export function soilTemperatureCode(arr: Parameter[]) {
 	return arr;
 }
 
+export function trafficabilityCodeSnow(arr: Parameter[]) {
+	for (let i = 1; i <= 50; i++) {
+		arr.push({
+			code: `HSNOW-M:ECBSF::1:0:3:${i}`,
+		});
+	}
+	return arr;
+}
+
+export function trafficabilityCodeDiff(arr: Parameter[]) {
+	for (let i = 1; i <= 50; i++) {
+		arr.push({
+			code: `DIFF{HSNOW-M:ECBSF::1:0:3:${i};0}`,
+		});
+	}
+	return arr;
+}
 export function getValueFromRedux(value: StartEndTimeSpan): StartEndTimeSpan {
 	const startEndTimeSpan = value;
 	return startEndTimeSpan;
@@ -29,12 +46,6 @@ export function asStartEndTimeSpan(value: StartEndTimeSpan): StartEndTimeSpan {
 	return startEndTimeSpan;
 }
 
-export function initialLabels(obj: { [key: string]: string }) {
-	for (let i = 1; i <= 50; i++) {
-		obj[`SH-${i}`] = '';
-	}
-	return obj;
-}
 export function getDatesForDuration(startDate: Date, duration: number, isMonths: boolean) {
 	const result = [];
 	const currentDate = new Date(startDate);
@@ -50,7 +61,7 @@ export function getDatesForDuration(startDate: Date, duration: number, isMonths:
 		const month = currentDate.toLocaleString('default', { month: 'short' });
 		const day = currentDate.getDate();
 		const dateString = `${month} ${day} ${year}`;
-		result.push(dateString);
+		result.push(new Date(dateString));
 		currentDate.setDate(currentDate.getDate() + 1);
 	}
 	return result;

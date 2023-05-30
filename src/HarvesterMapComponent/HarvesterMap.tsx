@@ -14,6 +14,7 @@ import '../Map.css';
 import LocationMarkerLayer from '../Layers/LocationMarker';
 import OSMLayer from '../Layers/OSMLayer';
 import React from 'react';
+import WMSLayer from '../Layers/WMSLayer';
 
 const HarvesterMap: React.FC = () => {
 	return (
@@ -57,6 +58,10 @@ const HarvesterMap: React.FC = () => {
 									'<a href="https://www.thunderforest.com/">Thunderforest</a> Data by <a href="https://www.fmi.fi/">Finnish Meteorological Institute</a>',
 							})
 						}
+					/>
+					<WMSLayer
+						layerName='gui:isobands:SWI_SWI2'
+						capabilitiesUrl='https://desm.harvesterseasons.com/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0'
 					/>
 					<LocationMarkerLayer />
 				</Layer>
