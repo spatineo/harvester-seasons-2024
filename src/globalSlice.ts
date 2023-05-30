@@ -23,9 +23,9 @@ const initialState: GlobalStateProps = {
 		sixMonthParams: {
 			trafficability: [
 				{ code: 'HSNOW-M:ECBSF::1:0:1:0'},
-				{ code: 'DIFF{HSNOW-M:ECBSF::1:0:1:0;0}' },
 				{ code: 'HSNOW-M:SMARTOBS:13:4'},
 				...trafficabilityCodeSnow,
+				{ code: 'DIFF{HSNOW-M:ECBSF::1:0:1:0;0}' },
 				...trafficabilityCodeDiff,
 			],
 			soilWetness: [
