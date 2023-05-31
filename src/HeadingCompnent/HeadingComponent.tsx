@@ -28,7 +28,7 @@ const HeadingCompoment: React.FC = () => {
 						fontFamily: 'Lato',
 					}}
 				>
-					<Typography variant="h4">Harvester Seasons!</Typography>
+					<Typography variant="h4">Harvester Seasons</Typography>
 					<Box component="img" src={logo} sx={{ width: '20rem' }} />
 				</Box>
 				<Box>
