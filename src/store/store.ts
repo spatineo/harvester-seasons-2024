@@ -5,7 +5,6 @@ import { watchHarvesterRequests } from './saga/saga';
 import languageSlice from '../Lang/languageSlice';
 import MapComponentSlice from '../MapComponent/MapComponentSlice';
 import globalSlice from '../globalSlice';
-import TimelineSlice from '../TimeLine/TimelineSlice';
 
 export function* rootSaga(): SagaIterator {
 	yield all([fork(watchHarvesterRequests)]);
@@ -17,7 +16,6 @@ export const store = configureStore({
 		language: languageSlice,
 		mapState: MapComponentSlice,
 		global: globalSlice,
-		timeline: TimelineSlice,
 	},
 	middleware: [sagaMiddleware],
 	devTools: import.meta.env.NODE_ENV !== 'production',
