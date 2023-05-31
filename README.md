@@ -23,7 +23,7 @@ Then enter the code:
 ```
 
 2. Your browser will open a login, accept stuff. 
-3. Go back to the vscode terminal, you will be presented with options. Choose either harvester-staging or harvester-production
+3. Go back to the vscode terminal, you will be presented with options. Choose either harvester-seasons-staging or harvester-seasons-production
 
 4. Enter in the following information:
 
@@ -41,4 +41,9 @@ To use this profile, specify the profile name using --profile, as shown:
 aws s3 ls --profile harvester-staging
 ```
 
-5. Done!
+5. Set default profile:
+
+`export AWS_PROFILE=harvester-staging`
+
+6. Done!
+
