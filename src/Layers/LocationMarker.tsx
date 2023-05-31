@@ -13,6 +13,7 @@ import { useAppSelector } from '../store/hooks';
 import { MapPosition } from '../MapComponent/MapComponentSlice';
 import VectorSource from 'ol/source/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
+import markerIcon from '../assets/map-pin-icon.svg'
 
 import { Icon, Stroke } from 'ol/style';
 
@@ -26,7 +27,7 @@ const iconStyle = new Style({
 		scale: 0.3,
 		anchorXUnits: 'fraction',
 		anchorYUnits: 'fraction',
-		src: 'src/assets/map-pin-icon.svg',
+		src: markerIcon,
 	}),
 });
 
