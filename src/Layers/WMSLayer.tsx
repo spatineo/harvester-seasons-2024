@@ -38,8 +38,6 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl}) => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const { map } = useContext(MapContext);
 
-	const currentTime = useAppSelector((state: RootState) => state.timeline.value === '' ? null : new Date(state.timeline.value));
-
 	const [ layerInfo, setLayerInfo ] = useState<LayerInfo>();
 
 	useEffect(() => {
@@ -69,11 +67,8 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl}) => {
 			return;
 		}
 		
-		if (currentTime !== null) {
-			availableTimestamps.sort((a, b) => (a.getTime() - currentTime.getTime()) - (b.getTime() - currentTime.getTime()));
-		} else {
-			availableTimestamps.sort((a, b) => a.getTime()- b.getTime() );
-		}
+		availableTimestamps.sort((a, b) => a.getTime()- b.getTime() );
+		
 		
 		const timeStamp = availableTimestamps[availableTimestamps.length-1]
 				
