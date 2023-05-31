@@ -25,8 +25,24 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Upload production-ready build files
-        uses: actions/upload-artifact@v2
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@master
         with:
-          name: production-files
-          path: ./dist
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: 'eu-north-1'
+
+      - name: Install CDK dependencies
+        run: |
+          cd cdk/
+          npm install
+        
+      - name: CDK Synth
+        run: |
+          cd cdk/
+          node_modules/.bin/cdk synth
+
+      - name: Deploy stack
+        run: |
+          cd cdk/
+          node_modules/.bin/cdk deploy --all --require-approval never
