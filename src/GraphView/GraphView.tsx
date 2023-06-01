@@ -69,7 +69,6 @@ const Graphs = () => {
       const marked = new Date(mark).toISOString();
       return {
         legend: {
-          show: showLegend,
           type: "plain",
           orient: "horizontal",
           top: "auto",
@@ -330,17 +329,16 @@ const Graphs = () => {
     <Box>
       <Box>{markLineValue}</Box>
       <Box ref={timelineRef}></Box>
-      <Box sx={{ width: "80%", margin: "auto" }}>{graphLabels()}</Box>
+      {/* <Box sx={{ width: "80%", margin: "auto" }}>{graphLabels()}</Box> */}
       <Box>
         {soilWetnessData && soilWetnessData.length === 0 ? (
           <Box sx={{ width: "80%", margin: "4rem auto" }}>Loading...</Box>
         ) : (
           <HarvesterSeasons
-            option={soilWetnessOption}
-            handleClick={(d) => {}}
-            handleOnmouseEnter={handleOnmouseEnter}
-            handleOnmouseLeave={handleOnmouseLeave}
-          />
+              option={soilWetnessOption}
+              handleClick={(d) => { } }
+              handleOnmouseEnter={handleOnmouseEnter}
+              handleOnmouseLeave={handleOnmouseLeave} showLegend={showLegend}          />
         )}
       </Box>
       <Box>
@@ -348,11 +346,10 @@ const Graphs = () => {
           <Box>Loading...</Box>
         ) : (
           <HarvesterSeasons
-            option={soilTemperatureOption}
-            handleClick={() => {}}
-            handleOnmouseEnter={handleOnmouseEnter}
-            handleOnmouseLeave={handleOnmouseLeave}
-          />
+              option={soilTemperatureOption}
+              handleClick={() => { } }
+              handleOnmouseEnter={handleOnmouseEnter}
+              handleOnmouseLeave={handleOnmouseLeave} showLegend={showLegend}          />
         )}
       </Box>
       <Box>
@@ -360,11 +357,10 @@ const Graphs = () => {
           <Box>Loading...</Box>
         ) : (
           <HarvesterSeasons
-            option={snowHeightOption}
-            handleClick={(d: any) => {}}
-            handleOnmouseEnter={handleOnmouseEnter}
-            handleOnmouseLeave={handleOnmouseLeave}
-          />
+              option={snowHeightOption}
+              handleClick={(d: any) => { } }
+              handleOnmouseEnter={handleOnmouseEnter}
+              handleOnmouseLeave={handleOnmouseLeave} showLegend={showLegend}          />
         )}
       </Box>
     </Box>
