@@ -1,5 +1,6 @@
 export interface HarvesterChartProps {
 	option: {};
+	showLegend: boolean;
 	handleClick: (data: { value: [] }) => void;
 	handleOnmouseEnter: (data: { value: [] }) => void;
 	handleOnmouseLeave: (data: { value: [] }) => void;
