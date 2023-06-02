@@ -1,8 +1,7 @@
 export interface HarvesterChartProps {
 	option: {};
 	handleClick: (data: { value: [] }) => void;
-	handleOnmouseEnter: (data: { value: [] }) => void;
-	handleOnmouseLeave: (data: { value: [] }) => void;
+	handleOnmouseEnter: (data: [string | null, ...number[]]) => void;
 }
 
 export interface Parameter {

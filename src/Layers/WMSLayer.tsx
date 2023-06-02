@@ -72,7 +72,7 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl}) => {
 		
 		const timeStamp = availableTimestamps[availableTimestamps.length-1]
 				
-		const time = timeStamp.toISOString().replace(/[:-]/g,'').substring(0,15)
+		//const time = timeStamp.toISOString().replace(/[:-]/g,'').substring(0,15)
 
 		const layer = new TileLayer({
 			opacity: .5,
@@ -84,7 +84,7 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl}) => {
 				'TILED': true,
 				'VERSION': '1.3.0',
 				'TRANSPARENT': true,
-				'time': time,
+				//'time': time,
 			  },
 			})
 		} as BaseLayerOptions);
