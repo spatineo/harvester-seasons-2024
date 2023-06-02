@@ -25,18 +25,20 @@
       "./tsconfig.json"
     ]
   },
-  "plugins": ["import",  "react",
-  "@typescript-eslint"],
-  
+  "plugins": [
+    "import",
+    "react",
+    "@typescript-eslint"
+  ],
   "settings": {
     "react": {
       "version": "detect"
     }
   },
   "rules": {
-        "import/no-extraneous-dependencies": [
-          "error",
-        ],
+    "import/no-extraneous-dependencies": [
+      "error"
+    ],
     "linebreak-style": "off",
     "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/ban-types": [
@@ -52,4 +54,4 @@
     "object-shorthand": "error",
     "no-console": "warn"
   }
-  }
+}

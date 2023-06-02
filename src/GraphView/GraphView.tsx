@@ -1,12 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable import/default */
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Box } from "@mui/material";
 import * as echarts from "echarts";
-import { debounce } from "lodash";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
 import { Parameter, TimelineControlStyle } from "../types";
@@ -45,18 +43,17 @@ const Graphs = () => {
 
   function initialLabels() {
     const obj: { [key: string]: string } = {};
-  
+
     for (let i = 1; i <= 50; i++) {
       obj[`SH-${i}`] = "";
     }
-  
+
     return obj;
   }
 
   const handleSetValuesProps = (data: [string | null, ...number[]]) => {
     setSelectedYValues(data);
   };
-
 
   const createOptions = useCallback(
     (opts: GraphOptions, parameters: Parameter[], values: [], mark: string) => {
@@ -270,43 +267,45 @@ const Graphs = () => {
           sx={{ display: "-ms-flexbox", flexDirection: "row" }}
           component="span"
         >
-          {selectedYValues.map((value: number | string | null , index: number) => {
-            return (
-              <Box
-                component="span"
-                key={index}
-                sx={{
-                  fontFamily: "Helvetica, monospace",
-                  fontWeight: "200",
-                  fontSize: "0.8rem",
-                }}
-              >
-                {index !== 0
-                  ? `SH-${index}: ${(value as number % 1).toFixed(2)} `
-                  : `${value}: `}
-              </Box>
-            );
-          })}
+          {selectedYValues.map(
+            (value: number | string | null, index: number) => {
+              return (
+                <Box
+                  component="span"
+                  key={index}
+                  sx={{
+                    fontFamily: "Helvetica, monospace",
+                    fontWeight: "200",
+                    fontSize: "0.8rem",
+                  }}
+                >
+                  {index !== 0
+                    ? `SH-${index}: ${((value as number) % 1).toFixed(2)} `
+                    : `${value}: `}
+                </Box>
+              );
+            }
+          )}
         </Box>
       );
     } else {
       const initialLabelValues = initialLabels();
       return (
         <span>
-        {Object.keys(initialLabelValues).map((key: string, index: number) => (
-          <Box
-            component="span"
-            key={index}
-            sx={{
-              fontFamily: "Helvetica, monospace",
-              fontWeight: "200",
-              fontSize: "0.8rem",
-            }}
-          >
-            {`${key}: ${initialLabelValues[key]} `}
-          </Box>
-        ))}
-      </span>
+          {Object.keys(initialLabelValues).map((key: string, index: number) => (
+            <Box
+              component="span"
+              key={index}
+              sx={{
+                fontFamily: "Helvetica, monospace",
+                fontWeight: "200",
+                fontSize: "0.8rem",
+              }}
+            >
+              {`${key}: ${initialLabelValues[key]} `}
+            </Box>
+          ))}
+        </span>
       );
     }
   };
@@ -315,16 +314,18 @@ const Graphs = () => {
     <Box>
       <Box>{markLineValue}</Box>
       <Box ref={timelineRef}></Box>
-      <Box sx={{ width: "80%", margin: "auto" }}>{graphLabels()}</Box>
+      <Box sx={{ width: "80%", margin: "4rem auto 0rem", minHeight: "110px" }}>
+        {graphLabels()}
+      </Box>
       <Box>
         {soilWetnessData && soilWetnessData.length === 0 ? (
           <Box sx={{ width: "80%", margin: "4rem auto" }}>Loading...</Box>
         ) : (
           <HarvesterSeasons
-              option={soilWetnessOption}
-              handleClick={(d) => { } }
-              handleOnmouseEnter={handleSetValuesProps}
-                  />
+            option={soilWetnessOption}
+            handleClick={(d) => {}}
+            handleOnmouseEnter={handleSetValuesProps}
+          />
         )}
       </Box>
       <Box>
@@ -332,10 +333,10 @@ const Graphs = () => {
           <Box>Loading...</Box>
         ) : (
           <HarvesterSeasons
-              option={soilTemperatureOption}
-              handleClick={() => { } }
-              handleOnmouseEnter={handleSetValuesProps}
-                  />
+            option={soilTemperatureOption}
+            handleClick={() => {}}
+            handleOnmouseEnter={handleSetValuesProps}
+          />
         )}
       </Box>
       <Box>
@@ -343,10 +344,10 @@ const Graphs = () => {
           <Box>Loading...</Box>
         ) : (
           <HarvesterSeasons
-              option={snowHeightOption}
-              handleClick={(d: any) => { } }
-              handleOnmouseEnter={handleSetValuesProps}
-                  />
+            option={snowHeightOption}
+            handleClick={(d: any) => {}}
+            handleOnmouseEnter={handleSetValuesProps}
+          />
         )}
       </Box>
     </Box>

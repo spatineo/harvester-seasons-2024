@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/default
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { Box } from '@mui/material';
 import EchartsComponent from '../EchartsComponent/EchartsComponent'
 import { HarvesterChartProps } from '../types';
