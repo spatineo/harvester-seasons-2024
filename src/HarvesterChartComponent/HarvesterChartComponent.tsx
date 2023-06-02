@@ -12,9 +12,6 @@ const HarvesterSeasons: FC<HarvesterChartProps> = ({
 	
 	return (
 		<Box>
-			<Box>
-				Box
-			</Box>
 			{
 				option ? (
 					<EchartsComponent option={option} setValuesProps={handleOnmouseEnter} />
