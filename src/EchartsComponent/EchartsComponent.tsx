@@ -19,13 +19,12 @@ type EventParams = {
 
 interface ChartProps {
   option: EChartOption;
-  setValuesProps: (data: string | null, yValue: (string | number)[]) => void
+  setValuesProps: (data: [string | null, ...number[]]) => void;
 }
 
 const EchartsCompoent: React.FC<ChartProps> = ({ option, setValuesProps }) => {
   const chartRef = useRef<HTMLDivElement>(null)
   const [chart, setChart] = useState<echarts.ECharts | null>(null)
-  const [showLegend, setShowLegend] = useState<boolean>(false);
 
   useEffect(() => {
     if(chartRef.current) {
@@ -42,15 +41,9 @@ const EchartsCompoent: React.FC<ChartProps> = ({ option, setValuesProps }) => {
 
   useEffect(() => {
     if(chart) {
-      chart.setOption({
-        ...option,
-        legend: {
-          ...option.legend,
-          show: showLegend,
-        }
-      })
+      chart.setOption(option)
     }
-  }, [chart, option, showLegend])
+  }, [chart, option])
 
   useEffect(() => {
     if(!chart) {
@@ -60,7 +53,6 @@ const EchartsCompoent: React.FC<ChartProps> = ({ option, setValuesProps }) => {
       const date: any = params.value[0];
       const yValues: number[] = [];
 
-  // Loop through the series data to collect the y values for the specific date
   option.series?.forEach((series) => {
     if (Array.isArray(series.data)) {
       series.data.forEach((dataItem: any) => {
@@ -70,24 +62,26 @@ const EchartsCompoent: React.FC<ChartProps> = ({ option, setValuesProps }) => {
       });
     }
   });
-
-  setValuesProps(date, yValues)
+  setValuesProps([date, ...yValues])
 
     })
-  }, [chart])
-  
-  const handleMouseEnter = () => {
-  
-    setShowLegend(true);
-  };
 
-  const handleMouseLeave = () => {
-    setShowLegend(false);
-  };
+  }, [chart, setValuesProps])
+  
+useEffect(() => {
+  if(!chart) {
+    return;
+  }
 
+  chart.on('globalout', function() {
+    const data: any  = []
+    setValuesProps(data)
+  })
+
+}, [chart]
+)
     return (
-    <Box ref={chartRef} style={{ width: '100%', height: '300px' }} onMouseEnter={handleMouseEnter}
-    onMouseLeave={handleMouseLeave}></Box>
+    <Box ref={chartRef} style={{ width: '100%', height: '300px' }}></Box>
   )
 }
 
