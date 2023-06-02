@@ -10,7 +10,7 @@ import { debounce } from "lodash";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
 import { Parameter, TimelineControlStyle } from "../types";
-import HarvesterSeasons from "../HarvesterChartComponent/HarvesterSeasons";
+import HarvesterSeasons from "../HarvesterChartComponent/HarvesterChartComponent";
 import { getDatesForDuration, setDateTwoDaysAhead } from "../utils";
 
 interface GraphOptions {
@@ -37,42 +37,31 @@ const Graphs = () => {
   const [soilWetnessOption, setSoilWetnessOption] = useState<any>(null);
   const [soilTemperatureOption, setSoilTemperatureOption] = useState<any>(null);
   const [snowHeightOption, setSnowHeightOption] = useState<any>(null);
-  const [showLegend, setShowLegend] = useState<boolean>(false);
+  const [selectedYValues, setSelectedYValues] = useState<any>([]);
   const timelineRef = useRef<HTMLDivElement>(null);
   const [timelineGraph, setTimelineGraph] = useState<any>(null);
-  const [labelValue, setLabelValue] = useState<number[]>([]);
   const start = setDateTwoDaysAhead();
   const [markLineValue, setMarkLineValue] = useState<string>(start);
 
-  function initialLabels(obj: { [key: string]: string }) {
+  function initialLabels() {
+    const obj: { [key: string]: string } = {};
+  
     for (let i = 1; i <= 50; i++) {
       obj[`SH-${i}`] = "";
     }
+  
     return obj;
   }
 
-  const handleOnmouseEnter = /* debounce( */ (params: any) => {
-		if(showLegend === false){
-			setShowLegend(true);
-		} else {
-			setShowLegend(false);
-		}
-   
-    setLabelValue((prevState) => {
-      const updatedLabelValue = params.value;
-      return updatedLabelValue;
-    });
-  }; /* , 100); */
+  const handleSetValuesProps = (data: [string | null, ...number[]]) => {
+    setSelectedYValues(data);
+  };
+
 
   const createOptions = useCallback(
     (opts: GraphOptions, parameters: Parameter[], values: [], mark: string) => {
       const marked = new Date(mark).toISOString();
       return {
-        legend: {
-          type: "plain",
-          orient: "horizontal",
-          top: "auto",
-        },
         animation: false,
         animationThreshold: 1,
         grid: {},
@@ -275,13 +264,13 @@ const Graphs = () => {
   ]);
 
   const graphLabels = () => {
-    if (labelValue && labelValue.length > 0) {
+    if (selectedYValues.length > 0) {
       return (
         <Box
           sx={{ display: "-ms-flexbox", flexDirection: "row" }}
           component="span"
         >
-          {labelValue.map((value: number, index: number) => {
+          {selectedYValues.map((value: number | string | null , index: number) => {
             return (
               <Box
                 component="span"
@@ -293,7 +282,7 @@ const Graphs = () => {
                 }}
               >
                 {index !== 0
-                  ? `SH-${index}: ${(value % 1).toFixed(2)} `
+                  ? `SH-${index}: ${(value as number % 1).toFixed(2)} `
                   : `${value}: `}
               </Box>
             );
@@ -301,35 +290,32 @@ const Graphs = () => {
         </Box>
       );
     } else {
-      const initialLabelValues = initialLabels({});
+      const initialLabelValues = initialLabels();
       return (
         <span>
-          {Object.keys(initialLabelValues).map((key: string, index: number) => (
-            <Box
-              component="span"
-              key={index}
-              sx={{
-                fontFamily: "Helvetica, monospace",
-                fontWeight: "200",
-                fontSize: "0.8rem",
-              }}
-            >
-              {`${key}: ${initialLabelValues[key]} `}
-            </Box>
-          ))}
-        </span>
+        {Object.keys(initialLabelValues).map((key: string, index: number) => (
+          <Box
+            component="span"
+            key={index}
+            sx={{
+              fontFamily: "Helvetica, monospace",
+              fontWeight: "200",
+              fontSize: "0.8rem",
+            }}
+          >
+            {`${key}: ${initialLabelValues[key]} `}
+          </Box>
+        ))}
+      </span>
       );
     }
   };
 
-  const handleOnmouseLeave = () => {
-    setLabelValue([]);
-  };
   return (
     <Box>
       <Box>{markLineValue}</Box>
       <Box ref={timelineRef}></Box>
-      {/* <Box sx={{ width: "80%", margin: "auto" }}>{graphLabels()}</Box> */}
+      <Box sx={{ width: "80%", margin: "auto" }}>{graphLabels()}</Box>
       <Box>
         {soilWetnessData && soilWetnessData.length === 0 ? (
           <Box sx={{ width: "80%", margin: "4rem auto" }}>Loading...</Box>
@@ -337,8 +323,8 @@ const Graphs = () => {
           <HarvesterSeasons
               option={soilWetnessOption}
               handleClick={(d) => { } }
-              handleOnmouseEnter={handleOnmouseEnter}
-              handleOnmouseLeave={handleOnmouseLeave} showLegend={showLegend}          />
+              handleOnmouseEnter={handleSetValuesProps}
+                  />
         )}
       </Box>
       <Box>
@@ -348,8 +334,8 @@ const Graphs = () => {
           <HarvesterSeasons
               option={soilTemperatureOption}
               handleClick={() => { } }
-              handleOnmouseEnter={handleOnmouseEnter}
-              handleOnmouseLeave={handleOnmouseLeave} showLegend={showLegend}          />
+              handleOnmouseEnter={handleSetValuesProps}
+                  />
         )}
       </Box>
       <Box>
@@ -359,8 +345,8 @@ const Graphs = () => {
           <HarvesterSeasons
               option={snowHeightOption}
               handleClick={(d: any) => { } }
-              handleOnmouseEnter={handleOnmouseEnter}
-              handleOnmouseLeave={handleOnmouseLeave} showLegend={showLegend}          />
+              handleOnmouseEnter={handleSetValuesProps}
+                  />
         )}
       </Box>
     </Box>
