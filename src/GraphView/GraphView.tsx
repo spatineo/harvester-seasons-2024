@@ -330,7 +330,7 @@ const Graphs = () => {
       </Box>
       <Box>
         {soilTemperatureData && soilTemperatureData.length === 0 ? (
-          <Box>Loading...</Box>
+          <Box sx={{ width: "80%", margin: "4rem auto" }}>Loading...</Box>
         ) : (
           <HarvesterSeasons
             option={soilTemperatureOption}
@@ -341,7 +341,7 @@ const Graphs = () => {
       </Box>
       <Box>
         {snowHeightData && snowHeightData.length === 0 ? (
-          <Box>Loading...</Box>
+          <Box sx={{ width: "80%", margin: "4rem auto" }}>Loading...</Box>
         ) : (
           <HarvesterSeasons
             option={snowHeightOption}
