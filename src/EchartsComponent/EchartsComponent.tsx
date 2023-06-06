@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import  React, { useRef, useEffect, useState } from 'react'
 import *  as echarts from 'echarts'
 import { Box } from '@mui/material'
-import {  EChartOption, SeriesOption } from 'echarts'
-import { YouTube } from '@mui/icons-material';
+import {  EChartOption } from 'echarts'
 
 type EventParams = {
   componentType: string,
@@ -11,6 +13,7 @@ type EventParams = {
   seriesName: string,
   name: string,
   dataIndex: number,
+  // eslint-disable-next-line @typescript-eslint/ban-types
   data: Object,
   dataType: string,
   value: number | Array<any> | any,

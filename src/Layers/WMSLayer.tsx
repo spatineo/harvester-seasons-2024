@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -63,7 +65,6 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl}) => {
 		const availableTimestamps = layerInfo.layer.Dimension.find((d) => d.name === 'time')?.values.split(',').map((timeStr) => new Date(timeStr));
 
 		if (!availableTimestamps || availableTimestamps.length === 0) {
-			console.error('no time dimension values for layer!')
 			return;
 		}
 		
