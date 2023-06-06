@@ -11,8 +11,6 @@ import MapContext from '../MapComponent/MapContext';
 import TileLayer from 'ol/layer/Tile';
 import WMSCapabilities from 'ol/format/WMSCapabilities';
 import { TileWMS } from 'ol/source';
-import { useAppSelector } from '../store/hooks';
-import { RootState } from '../store/store';
 import { BaseLayerOptions } from 'ol-layerswitcher';
 
 interface WMSLayerProps {
@@ -60,6 +58,9 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl}) => {
 	}, [layerName, capabilitiesUrl]);
 
 	useEffect(() => {
+		// add try catch
+		try {
+
 		if (!map || !layerInfo) return;
 
 		const availableTimestamps = layerInfo.layer.Dimension.find((d) => d.name === 'time')?.values.split(',').map((timeStr) => new Date(timeStr));
@@ -73,7 +74,7 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl}) => {
 		
 		const timeStamp = availableTimestamps[availableTimestamps.length-1]
 				
-		//const time = timeStamp.toISOString().replace(/[:-]/g,'').substring(0,15)
+		const time = timeStamp.toISOString().replace(/[:-]/g,'').substring(0,15)
 
 		const layer = new TileLayer({
 			opacity: .5,
@@ -85,7 +86,7 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl}) => {
 				'TILED': true,
 				'VERSION': '1.3.0',
 				'TRANSPARENT': true,
-				//'time': time,
+				time,
 			  },
 			})
 		} as BaseLayerOptions);
@@ -95,7 +96,10 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl}) => {
 		return () => {
 			map.removeLayer(layer);
 		};
-	}, [map, layerInfo /*, currentTime*/]);
+	} catch (error){
+		window.console.error(error)
+	}
+	}, [map, layerInfo]);
 
 	return null;
 };
