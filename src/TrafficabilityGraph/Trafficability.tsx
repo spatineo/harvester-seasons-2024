@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -15,6 +16,8 @@ const TraficabilityGraphComponent: FC = () => {
   const graphRef = useRef<HTMLDivElement>(null);
   const [summer, setSummer] = useState<string>("");
   const [winter, setWinter] = useState<string>("");
+  const [chart, setChart] = useState<echarts.ECharts | null>(null);
+
   const trafficability = useAppSelector(
     (state: RootState) => state.global.trafficabilityData
   );
@@ -22,130 +25,131 @@ const TraficabilityGraphComponent: FC = () => {
     (state: RootState) => state.global.parameters
   );
 
+  const trafficabilityOptionData: EChartOption = {
+    legend: {},
+    grid: {
+      height: "80px",
+    },
+    tooltip: {
+      trigger: "axis",
+    },
+    yAxis: {
+      name: "Traficability",
+      nameLocation: "middle",
+      nameTextStyle: {
+        padding: 18,
+      },
+    },
+    xAxis: {
+      type: "time",
+    },
+    series: [
+      {
+        type: "line",
+        name: "winter",
+        areaStyle: {
+          color: "rgba(0, 12, 0, 0.3)",
+        },
+        data: [
+          ...trafficability.map(
+            (t: { utctime: string; [key: string]: string }) => {
+              return [
+                new Date(t.utctime).toISOString(),
+                ...graphParameters.sixMonthParams.trafficability.map((p) => {
+                  if (t[p.code] !== null && Number(t[p.code]) === 0) {
+                    return 0;
+                  } else if (
+                    Number(t[p.code]) > 0.0 &&
+                    Number(t[p.code]) <= 0.099999
+                  ) {
+                    return 1;
+                  } else {
+                    return 2;
+                  }
+                }),
+              ];
+            }
+          ),
+        ],
+      },
+      {
+        type: "line",
+        name: "summer",
+        areaStyle: {
+          color: "rgba(0, 128, 255, 0.3)",
+        },
+        data: [
+          ...trafficability.map(
+            (t: { utctime: string; [key: string]: string }) => {
+              return [
+                new Date(t.utctime).toISOString(),
+                ...graphParameters.sixMonthParams.trafficability.map((p) => {
+                  if (t[p.code] !== null && Number(t[p.code]) === 0) {
+                    return 0.5;
+                  } else if (
+                    Number(t[p.code]) > 0.0 &&
+                    Number(t[p.code]) <= 0.099999
+                  ) {
+                    return 1.5;
+                  } else {
+                    return 2;
+                  }
+                }),
+              ];
+            }
+          ),
+        ],
+      },
+    ],
+  };
+
   useEffect(() => {
-    if (!graphRef.current) {
-      throw Error("No graph ref available");
+    if (graphRef.current) {
+      const newChart = echarts.init(graphRef.current, undefined, {
+        height: "180",
+      });
+
+      setChart(newChart);
     }
-    const graph = echarts.init(graphRef.current!, undefined, {
-      height: "180",
-    });
-
-    const trafficabilityOptionData: EChartOption = {
-      legend: {},
-      grid: {
-        height: "80px",
-      },
-      tooltip: {
-        trigger: "axis",
-      },
-      yAxis: {
-        name: "Traficability",
-        nameLocation: "middle",
-        nameTextStyle: {
-          padding: 18,
-        },
-      },
-      xAxis: {
-        type: "time",
-      },
-      series: [
-        {
-          type: "line",
-          name: "winter",
-          areaStyle: {
-            color: "rgba(0, 12, 0, 0.3)",
-          },
-          data: [
-            ...trafficability.map(
-              (t: { utctime: string; [key: string]: string }) => {
-                return [
-                  new Date(t.utctime).toISOString(),
-                  ...graphParameters.sixMonthParams.trafficability.map((p) => {
-                    if (t[p.code] !== null && Number(t[p.code]) === 0) {
-                      return 0;
-                    } else if (
-                      Number(t[p.code]) > 0.0 &&
-                      Number(t[p.code]) <= 0.099999
-                    ) {
-                      return 1;
-                    } else {
-                      return 2;
-                    }
-                  }),
-                ];
-              }
-            ),
-          ],
-        },
-        {
-          type: "line",
-          name: "summer",
-          areaStyle: {
-            color: "rgba(0, 128, 255, 0.3)",
-          },
-          data: [
-            ...trafficability.map(
-              (t: { utctime: string; [key: string]: string }) => {
-                return [
-                  new Date(t.utctime).toISOString(),
-                  ...graphParameters.sixMonthParams.trafficability.map((p) => {
-                    if (t[p.code] !== null && Number(t[p.code]) === 0) {
-                      return 0.5;
-                    } else if (
-                      Number(t[p.code]) > 0.0 &&
-                      Number(t[p.code]) <= 0.099999
-                    ) {
-                      return 1.5;
-                    } else {
-                      return 2;
-                    }
-                  }),
-                ];
-              }
-            ),
-          ],
-        },
-      ],
-    };
-
-    graph.setOption(trafficabilityOptionData);
-
-    graph.getZr().on("click", function (params) {
-      const pointInPixel = [params.offsetX, params.offsetY];
-      const pointInGrid = graph.convertFromPixel(
-        { gridIndex: 0 },
-        pointInPixel
-      );
-      const xAxis = graph.getOption().xAxis;
-      const xAxisData = (Array.isArray(xAxis) ? xAxis[0] : xAxis)?.data;
-      const xValue = xAxisData !== undefined && xAxisData[pointInGrid[0]];
-    });
 
     return () => {
-      if (graph) {
-        graph.dispose();
+      if (chart) {
+        chart.dispose();
       }
     };
-  }, [graphRef, trafficability]);
+  }, []);
 
-  const trafficabilityDate = () => {
-    return trafficability.map((traffic: { [key: string]: string | number }) => {
-      /*  const date = new Date(traffic.utctime).toUTCString()
-        return date.substring(7, 17) */
-      const modifiedDate = new Date(traffic.utctime).toDateString();
-      return modifiedDate.substring(3);
+  useEffect(() => {
+    if (chart && trafficability) {
+      chart.setOption(trafficabilityOptionData);
+    }
+  }, [chart, trafficability]);
+
+
+  useEffect(() => {
+    if (!chart) {
+      return;
+    }
+    chart.on("mouseover", function () {
+      const option = chart.getOption();
+      const legendData: string[] | undefined =
+        option.legend && option.legend[0] && option.legend[0].data;
     });
-  };
+  }, [chart]);
 
-  const trafficabilityGraph = () => {
-    return (
-      <Box>
-        <Box ref={graphRef}></Box>
-      </Box>
-    );
-  };
+  return (
+    <Box >
 
-  return <Box>{trafficabilityGraph()}</Box>;
+        <div>
+          {trafficability.length === 0 ? (
+            <div>No data available</div>
+          ) : (
+            <div ref={graphRef}></div>
+          )}
+        </div>
+
+    </Box>
+  );
 };
 
 export default TraficabilityGraphComponent;
