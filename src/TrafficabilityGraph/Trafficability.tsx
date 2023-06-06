@@ -125,7 +125,6 @@ const TraficabilityGraphComponent: FC = () => {
     }
   }, [chart, trafficability]);
 
-
   useEffect(() => {
     if (!chart) {
       return;
@@ -138,16 +137,12 @@ const TraficabilityGraphComponent: FC = () => {
   }, [chart]);
 
   return (
-    <Box >
-
-        <div>
-          {trafficability.length === 0 ? (
-            <div>No data available</div>
-          ) : (
-            <div ref={graphRef}></div>
-          )}
-        </div>
-
+    <Box>
+      {trafficability.length === 0 ? (
+        <Box sx={{ width: "80%", margin: "4rem auto" }}>Waiting for network to load data...</Box>
+      ) : (
+        <Box ref={graphRef}></Box>
+      )}
     </Box>
   );
 };
