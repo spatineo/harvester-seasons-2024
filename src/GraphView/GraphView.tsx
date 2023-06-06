@@ -319,7 +319,7 @@ const Graphs = () => {
       </Box>
       <Box>
         {soilWetnessData && soilWetnessData.length === 0 ? (
-          <Box sx={{ width: "80%", margin: "4rem auto" }}>Loading...</Box>
+          <Box sx={{ width: "80%", margin: "4rem auto" }}>Waiting for network to load data...</Box>
         ) : (
           <HarvesterSeasons
             option={soilWetnessOption}
@@ -330,7 +330,7 @@ const Graphs = () => {
       </Box>
       <Box>
         {soilTemperatureData && soilTemperatureData.length === 0 ? (
-          <Box sx={{ width: "80%", margin: "4rem auto" }}>Loading...</Box>
+          <Box sx={{ width: "80%", margin: "4rem auto" }}>Waiting for network to load data...</Box>
         ) : (
           <HarvesterSeasons
             option={soilTemperatureOption}
@@ -341,7 +341,7 @@ const Graphs = () => {
       </Box>
       <Box>
         {snowHeightData && snowHeightData.length === 0 ? (
-          <Box sx={{ width: "80%", margin: "4rem auto" }}>Loading...</Box>
+          <Box sx={{ width: "80%", margin: "4rem auto" }}>Waiting for network to load data...</Box>
         ) : (
           <HarvesterSeasons
             option={snowHeightOption}
