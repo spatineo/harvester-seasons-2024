@@ -132,13 +132,11 @@ export function* fetchTrafficabilityDataSaga({
 		);
 
 		if (response.status === 200) {
-			console.log('console.log')
 			yield put(actions.setTrafficabilityData(response.data));
 		}
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
 			const errorMessage: string | [] = error.message;
-			console.log('Test error')
 			window.console.error(errorMessage);
 			yield call(
 				EnqueueSnackbar,
