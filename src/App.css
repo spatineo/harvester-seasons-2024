@@ -5,3 +5,18 @@
 div[_echarts_instance_="ec_1682325606774"] > div  > canvas{
   border: 1px solid black !important
 }
+
+.loading {
+  display:inline-block;
+  font-family: 'Trebuchet MS';
+  clip-path: inset(0 3ch 0 0);
+  animation: l 2s steps(4) infinite;
+  min-height: 4rem;
+  margin-top: 2rem;
+}
+
+@keyframes l {
+  to {
+    clip-path: inset(0 -1ch 0 0)
+  }
+}
