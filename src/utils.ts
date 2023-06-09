@@ -19,23 +19,16 @@ export function soilTemperatureCode(arr: Parameter[]) {
 	return arr;
 }
 
-export function trafficabilityCodeSnow(arr: Parameter[]) {
+export function trafficabilityApiParams() {
+	const arr: Parameter[] = []
 	for (let i = 1; i <= 50; i++) {
 		arr.push({
-			code: `HSNOW-M:ECBSF::1:0:3:${i}`,
+			code: `TSOIL-K:ECBSF:::7:3:${i}`,
 		});
 	}
 	return arr;
 }
 
-export function trafficabilityCodeDiff(arr: Parameter[]) {
-	for (let i = 1; i <= 50; i++) {
-		arr.push({
-			code: `DIFF{HSNOW-M:ECBSF::1:0:3:${i};0}`,
-		});
-	}
-	return arr;
-}
 export function getValueFromRedux(value: StartEndTimeSpan): StartEndTimeSpan {
 	const startEndTimeSpan = value;
 	return startEndTimeSpan;
