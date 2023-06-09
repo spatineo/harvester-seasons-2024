@@ -5,8 +5,7 @@ import * as utils from './utils';
 const intialEndDateSixMonths = utils.addSixMonths(new Date(), 6).toISOString();
 const initialStartDate = new Date().toISOString();
 const soilTemperaturCodeArray = utils.soilTemperatureCode([]);
-const trafficabilityCodeSnow = utils.trafficabilityCodeSnow([])
-const trafficabilityCodeDiff = utils.trafficabilityCodeDiff([])
+const trafficabilityApiParams = utils.trafficabilityApiParams()
 
 const initialState: GlobalStateProps = {
 	startEndTimeSpan: {
@@ -22,11 +21,8 @@ const initialState: GlobalStateProps = {
 	parameters: {
 		sixMonthParams: {
 			trafficability: [
-				{ code: 'HSNOW-M:ECBSF::1:0:1:0'},
-				{ code: 'HSNOW-M:SMARTOBS:13:4'},
-				...trafficabilityCodeSnow,
-				{ code: 'DIFF{HSNOW-M:ECBSF::1:0:1:0;0}' },
-				...trafficabilityCodeDiff,
+				{ code: 'TSOIL-K:ECBSF:::7:1:0'},
+				...trafficabilityApiParams,
 			],
 			soilWetness: [
 				{ code: 'DIFF{VSW-M3M3:ECBSF:5022:9:7:0:0;-0.0305226445198059}' },
