@@ -56,7 +56,7 @@ const Graphs = () => {
   };
 
   const createOptions = useCallback(
-    (opts: GraphOptions, parameters: Parameter[], values: [], mark: string) => {
+    (opts: GraphOptions, parameters: Parameter[], values: [], mark: string, padding: [number, number, number, number]) => {
       const marked = new Date(mark).toISOString();
       return {
         animation: false,
@@ -69,7 +69,7 @@ const Graphs = () => {
           name: opts.title,
           nameLocation: "middle",
           nameTextStyle: {
-            padding: 14,
+            padding,
           },
         },
         xAxis: {
@@ -206,19 +206,22 @@ const Graphs = () => {
           { title: "Soil Wetness" },
           graphParameters.sixMonthParams.soilWetness,
           soilWetnessData,
-          markLineValue
+          markLineValue,
+          [0, 0, 16, 0]
         );
         const soilTemperature = createOptions(
           { title: "Soil Temperature" },
           graphParameters.sixMonthParams.soilTemperature,
           soilTemperatureData,
-          markLineValue
+          markLineValue,
+          [0, 0, 16, 0]
         );
         const snowHeight = createOptions(
           { title: "Snow Height" },
           graphParameters.sixMonthParams.snowHeight,
           snowHeightData,
-          markLineValue
+          markLineValue,
+          [0, 0, 22, 0]
         );
         setSoilWetnessOption(soilWetness);
         setSnowHeightOption(snowHeight);
@@ -228,19 +231,22 @@ const Graphs = () => {
           { title: "Soil Wetness" },
           graphParameters.tenYearParams.soilWetness,
           soilWetnessData,
-          markLineValue
+          markLineValue,
+          [0, 0, 16, 0]
         );
         const soilTemperature = createOptions(
           { title: "Soil Temperature" },
           graphParameters.tenYearParams.soilTemperature,
           soilTemperatureData,
-          markLineValue
+          markLineValue,
+          [0, 0, 16, 0]
         );
         const snowHeight = createOptions(
           { title: "Snow Height" },
           graphParameters.tenYearParams.snowHeight,
           snowHeightData,
-          markLineValue
+          markLineValue,
+          [0, 0, 22, 0]
         );
         setSnowHeightOption(snowHeight);
         setSoilTemperatureOption(soilTemperature);
@@ -319,7 +325,7 @@ const Graphs = () => {
       </Box>
       <Box>
         {soilWetnessData && soilWetnessData.length === 0 ? (
-          <Box sx={{ width: "80%", margin: "4rem auto" }}>Loading...</Box>
+          <Box className="loading">Loading ....</Box>
         ) : (
           <HarvesterSeasons
             option={soilWetnessOption}
@@ -330,7 +336,7 @@ const Graphs = () => {
       </Box>
       <Box>
         {soilTemperatureData && soilTemperatureData.length === 0 ? (
-          <Box sx={{ width: "80%", margin: "4rem auto" }}>Loading...</Box>
+          <Box className="loading">Loading ....</Box>
         ) : (
           <HarvesterSeasons
             option={soilTemperatureOption}
@@ -341,7 +347,7 @@ const Graphs = () => {
       </Box>
       <Box>
         {snowHeightData && snowHeightData.length === 0 ? (
-          <Box sx={{ width: "80%", margin: "4rem auto" }}>Loading...</Box>
+          <Box className="loading" >Loading ....</Box>
         ) : (
           <HarvesterSeasons
             option={snowHeightOption}

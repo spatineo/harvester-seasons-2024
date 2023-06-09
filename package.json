@@ -23,6 +23,7 @@
     "echarts-for-react": "^3.0.2",
     "jquery": "^3.6.4",
     "lodash": "^4.17.21",
+    "notistack": "^3.0.1",
     "ol": "^7.3.0",
     "ol-ext": "^4.0.7",
     "ol-layerswitcher": "^4.1.1",
