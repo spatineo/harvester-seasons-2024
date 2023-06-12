@@ -329,7 +329,6 @@ const Graphs = () => {
         ) : (
           <HarvesterSeasons
             option={soilWetnessOption}
-            handleClick={(d) => {}}
             handleOnmouseEnter={handleSetValuesProps}
           />
         )}
@@ -340,7 +339,6 @@ const Graphs = () => {
         ) : (
           <HarvesterSeasons
             option={soilTemperatureOption}
-            handleClick={() => {}}
             handleOnmouseEnter={handleSetValuesProps}
           />
         )}
@@ -351,7 +349,6 @@ const Graphs = () => {
         ) : (
           <HarvesterSeasons
             option={snowHeightOption}
-            handleClick={(d: any) => {}}
             handleOnmouseEnter={handleSetValuesProps}
           />
         )}
