@@ -5,7 +5,6 @@ import { HarvesterChartProps } from '../types';
 
 const HarvesterSeasons: FC<HarvesterChartProps> = ({
 	option,
-	handleClick,
 	handleOnmouseEnter,
 }) => {
 	
