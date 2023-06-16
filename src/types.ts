@@ -3,6 +3,11 @@ export interface HarvesterChartProps {
 	handleOnmouseEnter: (data: [string | null, ...number[]]) => void;
 }
 
+export interface Smartmet {
+	utctime: string
+	[key: string]: string | null | number
+}
+
 export interface Parameter {
 	code: string;
 	title?: string;
