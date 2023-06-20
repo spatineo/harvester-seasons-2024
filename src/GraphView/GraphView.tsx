@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -9,7 +10,7 @@ import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
 import { Parameter, TimelineControlStyle } from "../types";
 import HarvesterSeasons from "../HarvesterChartComponent/HarvesterChartComponent";
-import { getDatesForDuration, setDateTwoDaysAhead } from "../utils";
+import { getDatesForDuration, setDateTwoDaysAhead, checkSmartMet } from "../utils";
 
 interface GraphOptions {
   title: string;
@@ -32,15 +33,15 @@ const Graphs = () => {
   const soilWetnessData = useAppSelector(
     (state: RootState) => state.global.soilWetnessData
   );
-  const [soilWetnessOption, setSoilWetnessOption] = useState<any>(null);
-  const [soilTemperatureOption, setSoilTemperatureOption] = useState<any>(null);
-  const [snowHeightOption, setSnowHeightOption] = useState<any>(null);
+  const [soilWetnessOption, setSoilWetnessOption] = useState<null | {}>(null);
+  const [soilTemperatureOption, setSoilTemperatureOption] = useState<null | {}>(null);
+  const [snowHeightOption, setSnowHeightOption] = useState<null | {}>(null);
   const [selectedYValues, setSelectedYValues] = useState<any>([]);
   const timelineRef = useRef<HTMLDivElement>(null);
   const [timelineGraph, setTimelineGraph] = useState<any>(null);
   const start = setDateTwoDaysAhead();
   const [markLineValue, setMarkLineValue] = useState<string>(start);
-
+  
   function initialLabels() {
     const obj: { [key: string]: string } = {};
 
@@ -58,6 +59,7 @@ const Graphs = () => {
   const createOptions = useCallback(
     (opts: GraphOptions, parameters: Parameter[], values: [], mark: string, padding: [number, number, number, number]) => {
       const marked = new Date(mark).toISOString();
+
       return {
         animation: false,
         animationThreshold: 1,
@@ -202,10 +204,11 @@ const Graphs = () => {
   useEffect(() => {
     if (soilWetnessData || soilTemperatureData || snowHeightData) {
       if (!checked) {
+        const modifiedSoilWetness: any = checkSmartMet(soilWetnessData, 'SWVL2-M3M3:SMARTMET:5015')
         const soilWetness = createOptions(
           { title: "Soil Wetness" },
           graphParameters.sixMonthParams.soilWetness,
-          soilWetnessData,
+          modifiedSoilWetness,
           markLineValue,
           [0, 0, 16, 0]
         );
@@ -285,9 +288,10 @@ const Graphs = () => {
                     fontSize: "0.8rem",
                   }}
                 >
-                  {index !== 0
-                    ? `SH-${index}: ${((value as number) % 1).toFixed(2)} `
-                    : `${value}: `}
+                  {value}
+                 {/*  {index !== 0
+                    ? `${index -1}: ${((value as number) % 1).toFixed(2)} `
+                    : `${value}: `} */}
                 </Box>
               );
             }
@@ -328,7 +332,7 @@ const Graphs = () => {
           <Box className="loading">Loading ....</Box>
         ) : (
           <HarvesterSeasons
-            option={soilWetnessOption}
+            option={soilWetnessOption !== null  ? soilWetnessOption :  {}}
             handleOnmouseEnter={handleSetValuesProps}
           />
         )}
@@ -338,7 +342,7 @@ const Graphs = () => {
           <Box className="loading">Loading ....</Box>
         ) : (
           <HarvesterSeasons
-            option={soilTemperatureOption}
+            option={soilTemperatureOption !== null ? soilTemperatureOption : {}}
             handleOnmouseEnter={handleSetValuesProps}
           />
         )}
@@ -348,7 +352,7 @@ const Graphs = () => {
           <Box className="loading" >Loading ....</Box>
         ) : (
           <HarvesterSeasons
-            option={snowHeightOption}
+            option={snowHeightOption !== null ? snowHeightOption : {}}
             handleOnmouseEnter={handleSetValuesProps}
           />
         )}
