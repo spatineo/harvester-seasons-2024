@@ -14,7 +14,7 @@ import * as constants from '../constants';
 import * as utils from '../../utils';
 import { RootState, store } from '../store';
 import { EnqueueSnackbar } from '../hooks'
-import { Parameter, StartEndTimeSpan } from '../../types';
+import { Parameter, StartEndTimeSpan, Smartmet } from '../../types';
 import { MapPosition, mapActions } from '../../MapComponent/MapComponentSlice';
 
 const timeSeriesServiceURL = 'https://desm.harvesterseasons.com/timeseries';
@@ -201,7 +201,8 @@ export function* fetchSoilWetnessDataSaga(): SagaIterator {
 			createTimeSeriesQueryParameters(startEndTimeSpan, parameters, userLocation)
 		);
 		if (response.status === 200) {
-			const tmp = response.data;
+			const tmp: any = utils.checkSmartMet(response.data, "SWVL2-M3M3:SMARTMET:5015");
+			console.log(response.data)
 			yield put(actions.setSoilWetnessData(tmp));
 		}
 	} catch (error) {
