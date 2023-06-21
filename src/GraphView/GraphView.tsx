@@ -10,7 +10,7 @@ import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
 import { Parameter, TimelineControlStyle } from "../types";
 import HarvesterSeasons from "../HarvesterChartComponent/HarvesterChartComponent";
-import { getDatesForDuration, setDateTwoDaysAhead, checkSmartMet } from "../utils";
+import { getDatesForDuration, setDateTwoDaysAhead } from "../utils";
 
 interface GraphOptions {
   title: string;
@@ -204,11 +204,10 @@ const Graphs = () => {
   useEffect(() => {
     if (soilWetnessData || soilTemperatureData || snowHeightData) {
       if (!checked) {
-        const modifiedSoilWetness: any = checkSmartMet(soilWetnessData, 'SWVL2-M3M3:SMARTMET:5015')
         const soilWetness = createOptions(
           { title: "Soil Wetness" },
           graphParameters.sixMonthParams.soilWetness,
-          modifiedSoilWetness,
+          soilWetnessData,
           markLineValue,
           [0, 0, 16, 0]
         );
