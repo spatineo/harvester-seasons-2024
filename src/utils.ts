@@ -93,9 +93,19 @@ export function setDateTwoDaysAhead() {
 }
 
 export function checkSmartMet(arr: Smartmet[], smartmet: string) {
+	let lastNonNull: any = null
+	for (let i = 0; i < arr.length; i++) {
+    const obj = arr[i];
+    if (obj[smartmet] !== null) {
+      lastNonNull = obj;
+    } else {
+			break;
+		}
+	}
+
   const newArr: Smartmet[] = [];
   let foundNonNull = false;
-  let lastSmartMetValue: Record<string, number | null> | null | {} = null;
+  //let lastSmartMetObj: Record<string, number | null> | null | {} = null;
 
   for (let i = 0; i < arr.length; i++) {
     const obj = arr[i];
@@ -103,7 +113,7 @@ export function checkSmartMet(arr: Smartmet[], smartmet: string) {
     if (obj[smartmet] !== null) {
       const smartMetValue = obj[smartmet];
       newArr.push({ utctime: obj.utctime, [smartmet]: smartMetValue });
-      lastSmartMetValue = obj;
+      //lastSmartMetObj = obj[smartmet];
       foundNonNull = true;
     } else if (foundNonNull || i === 0) {
       const smartmetKey: string | null = smartmet;
@@ -111,16 +121,10 @@ export function checkSmartMet(arr: Smartmet[], smartmet: string) {
       for (const key in obj) {
         if (key === smartmet) {
           newObj[key] = null;
-        } else if (key !== 'utctime') {
-          const lastValue = lastSmartMetValue && lastSmartMetValue[smartmet];
-          const lastSubtraction = lastSmartMetValue && lastSmartMetValue['VSW-M3M3:ECBSF:5022:9:7:0:0'];
+        } else if (key !== "utctime") {
           const currentObjValue = obj[key];
-          const subtraction =
-					currentObjValue !== null && lastValue !== null && lastSubtraction !== null
-					? (Number(lastValue) - Number(lastSubtraction)) - Number(currentObjValue)
-					: null;
-          newObj[key] = subtraction;
-					//dataSW[i][SWensemblelist[j]] - (dataSW[smartmetIdx][SWensemblelist[j]] - dataSW[smartmetIdx]["SWVL2-M3M3:SMARTMET:5015"]);
+					//console.log(key + ' = ' + lastNonNull[key] + ' =>' + obj[key])
+          newObj[key] = currentObjValue !== null ? Number(currentObjValue ) - (lastNonNull[smartmet] - lastNonNull[key]) : null
         } else {
           newObj[key] = obj[key];
         }
@@ -128,9 +132,6 @@ export function checkSmartMet(arr: Smartmet[], smartmet: string) {
       newArr.push(newObj);
     }
   }
+  console.log(newArr)
   return newArr;
 }
-
-
-
-
