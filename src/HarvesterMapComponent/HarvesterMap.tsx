@@ -15,6 +15,7 @@ import LocationMarkerLayer from '../Layers/LocationMarker';
 import OSMLayer from '../Layers/OSMLayer';
 import React from 'react';
 import WMSLayer from '../Layers/WMSLayer';
+import STACLayers from '../Layers/STACLayers';
 
 const HarvesterMap: React.FC = () => {
 	return (
@@ -63,6 +64,7 @@ const HarvesterMap: React.FC = () => {
 						layerName='gui:isobands:SWI_SWI2'
 						capabilitiesUrl='https://desm.harvesterseasons.com/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0'
 					/>
+					<STACLayers searchUrl='https://paituli.csc.fi/geoserver/ogc/stac/search' />
 					<LocationMarkerLayer />
 				</Layer>
 			</MapComponent>
