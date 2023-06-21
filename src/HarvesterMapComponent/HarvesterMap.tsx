@@ -64,7 +64,11 @@ const HarvesterMap: React.FC = () => {
 						layerName='gui:isobands:SWI_SWI2'
 						capabilitiesUrl='https://desm.harvesterseasons.com/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0'
 					/>
-					<STACLayers searchUrl='https://paituli.csc.fi/geoserver/ogc/stac/search' />
+					<STACLayers 
+						title='Latvuskorkeusmalli'
+						searchUrl='https://paituli.csc.fi/geoserver/ogc/stac/search' 
+						collection='canopy_height_model_at_fmi'
+						band='latvuskorkeusmalli'/>
 					<LocationMarkerLayer />
 				</Layer>
 			</MapComponent>

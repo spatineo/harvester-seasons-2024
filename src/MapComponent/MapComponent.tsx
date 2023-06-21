@@ -14,6 +14,7 @@ import * as constants from '../store/constants';
 import LayerSwitcher from 'ol-layerswitcher';
 import proj4 from 'proj4';
 import { RootState } from '../store/store';
+import { register } from 'ol/proj/proj4';
 
 const styles = {
 	mapTextContainer: {
@@ -55,6 +56,9 @@ proj4.defs(
 	'+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs +type=crs'
 );
 
+register(proj4);
+
+
 const MapComponent: React.FC<MapProps> = ({ children }) => {
 	const mapRef = useRef();
 	const [map, setMap] = useState<ol.Map | null>(null);
@@ -63,7 +67,10 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
 
 	useEffect(() => {
 		const options = {
-			view: new ol.View({ resolution: 3550 }),
+			view: new ol.View({
+				resolution: 3550,
+				projection: 'EPSG:3857'
+			}),
 			layers: [],
 			controls: defaultControls().extend([new LayerSwitcher()]),
 			overlays: [],
