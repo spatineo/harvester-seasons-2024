@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { GlobalStateProps } from "./types";
+import { GlobalStateProps, Smartmet } from "./types";
 import * as utils from "./utils";
 
 const intialEndDateSixMonths = utils.addSixMonths(new Date(), 6).toISOString();
@@ -85,7 +85,7 @@ const globalSlice = createSlice({
     setTrafficabilityData: (state, action: PayloadAction<[]>) => {
       state.trafficabilityData = action.payload;
     },
-    setSoilWetnessData: (state, action: PayloadAction<[]>) => {
+    setSoilWetnessData: (state, action: PayloadAction<Smartmet[]>) => {
       state.soilWetnessData = action.payload;
     },
     setSoilTemperatureData: (state, action: PayloadAction<[]>) => {
