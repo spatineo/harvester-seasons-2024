@@ -22,7 +22,7 @@ export interface StartEndTimeSpan {
 export interface GlobalStateProps {
 	startEndTimeSpan: StartEndTimeSpan;
 	trafficabilityData: [];
-	soilWetnessData: [];
+	soilWetnessData: Smartmet[];
 	soilTemperatureData: [];
 	snowHeight: [];
 	checked: boolean;
