@@ -201,8 +201,7 @@ export function* fetchSoilWetnessDataSaga(): SagaIterator {
 			createTimeSeriesQueryParameters(startEndTimeSpan, parameters, userLocation)
 		);
 		if (response.status === 200) {
-			const tmp: any = utils.checkSmartMet(response.data, "SWVL2-M3M3:SMARTMET:5015");
-			console.log(response.data)
+			const tmp: Smartmet[] = utils.checkSmartMet(response.data, "SWVL2-M3M3:SMARTMET:5015");
 			yield put(actions.setSoilWetnessData(tmp));
 		}
 	} catch (error) {
