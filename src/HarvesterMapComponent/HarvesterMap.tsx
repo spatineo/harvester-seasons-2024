@@ -61,6 +61,7 @@ const HarvesterMap: React.FC = () => {
 							})
 						}
 					/>
+					{/* 
 					<WMSLayer
 						layerName='gui:isobands:SWI_SWI2'
 						capabilitiesUrl='https://desm.harvesterseasons.com/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0'
@@ -70,6 +71,7 @@ const HarvesterMap: React.FC = () => {
 						searchUrl='https://paituli.csc.fi/geoserver/ogc/stac/search' 
 						collection='canopy_height_model_at_fmi'
 						band='latvuskorkeusmalli'/>
+					*/}
 					<TIFFLayer title='Trafficability' url='https://pta.data.lit.fmi.fi/geo/harvestability/KKL_SMK_Suomi_2021_06_01-UTM35.tif' />
 					<LocationMarkerLayer />
 				</Layer>
