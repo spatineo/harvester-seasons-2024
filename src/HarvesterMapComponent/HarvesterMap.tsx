@@ -16,6 +16,7 @@ import OSMLayer from '../Layers/OSMLayer';
 import React from 'react';
 import WMSLayer from '../Layers/WMSLayer';
 import STACLayers from '../Layers/STACLayers';
+import TIFFLayer from '../Layers/TIFFLayer';
 
 const HarvesterMap: React.FC = () => {
 	return (
@@ -69,6 +70,7 @@ const HarvesterMap: React.FC = () => {
 						searchUrl='https://paituli.csc.fi/geoserver/ogc/stac/search' 
 						collection='canopy_height_model_at_fmi'
 						band='latvuskorkeusmalli'/>
+					<TIFFLayer title='Trafficability' url='https://pta.data.lit.fmi.fi/geo/harvestability/KKL_SMK_Suomi_2021_06_01-UTM35.tif' />
 					<LocationMarkerLayer />
 				</Layer>
 			</MapComponent>
