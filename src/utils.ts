@@ -105,7 +105,6 @@ export function checkSmartMet(arr: Smartmet[], smartmet: string) {
 
   const newArr: Smartmet[] = [];
   let foundNonNull = false;
-  //let lastSmartMetObj: Record<string, number | null> | null | {} = null;
 
   for (let i = 0; i < arr.length; i++) {
     const obj = arr[i];
@@ -113,7 +112,6 @@ export function checkSmartMet(arr: Smartmet[], smartmet: string) {
     if (obj[smartmet] !== null) {
       const smartMetValue = obj[smartmet];
       newArr.push({ utctime: obj.utctime, [smartmet]: smartMetValue });
-      //lastSmartMetObj = obj[smartmet];
       foundNonNull = true;
     } else if (foundNonNull || i === 0) {
       const smartmetKey: string | null = smartmet;
@@ -123,8 +121,7 @@ export function checkSmartMet(arr: Smartmet[], smartmet: string) {
           newObj[key] = null;
         } else if (key !== "utctime") {
           const currentObjValue = obj[key];
-					//console.log(key + ' = ' + lastNonNull[key] + ' =>' + obj[key])
-          newObj[key] = currentObjValue !== null ? Number(currentObjValue ) - (lastNonNull[smartmet] - lastNonNull[key]) : null
+          newObj[key] = currentObjValue !== null ? Number(currentObjValue ) - ( lastNonNull[key] - lastNonNull[smartmet]) : null
         } else {
           newObj[key] = obj[key];
         }
@@ -132,6 +129,5 @@ export function checkSmartMet(arr: Smartmet[], smartmet: string) {
       newArr.push(newObj);
     }
   }
-  console.log(newArr)
   return newArr;
 }
