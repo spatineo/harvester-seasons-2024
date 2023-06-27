@@ -8,7 +8,7 @@ import { Box } from "@mui/material";
 import * as echarts from "echarts";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
-import { Parameter, TimelineControlStyle } from "../types";
+import { Parameter, TimelineControlStyle, Smartmet } from "../types";
 import HarvesterSeasons from "../HarvesterChartComponent/HarvesterChartComponent";
 import { getDatesForDuration, setDateTwoDaysAhead } from "../utils";
 
@@ -27,10 +27,10 @@ const Graphs = () => {
   const graphParameters = useAppSelector(
     (state: RootState) => state.global.parameters
   );
-  const snowHeightData = useAppSelector(
-    (state: RootState) => state.global.snowHeight
+  const snowHeightData: Smartmet[] = useAppSelector(
+    (state: RootState) => state.global.snowHeightData
   );
-  const soilWetnessData = useAppSelector(
+  const soilWetnessData: Smartmet[] = useAppSelector(
     (state: RootState) => state.global.soilWetnessData
   );
   const [soilWetnessOption, setSoilWetnessOption] = useState<null | {}>(null);
@@ -44,11 +44,9 @@ const Graphs = () => {
   
   function initialLabels() {
     const obj: { [key: string]: string } = {};
-
     for (let i = 1; i <= 50; i++) {
       obj[`SH-${i}`] = "";
     }
-
     return obj;
   }
 
@@ -57,7 +55,7 @@ const Graphs = () => {
   };
 
   const createOptions = useCallback(
-    (opts: GraphOptions, parameters: Parameter[], values: [], mark: string, padding: [number, number, number, number]) => {
+    (opts: GraphOptions, parameters: Parameter[], values: Smartmet[], mark: string, padding: [number, number, number, number]) => {
       const marked = new Date(mark).toISOString();
 
       return {
@@ -108,7 +106,7 @@ const Graphs = () => {
               type: "line",
               name: `SH-${i}`,
               data: values.map(
-                (d: { utctime: string; [key: string]: string }) => {
+                (d: { utctime: string; [key: string]: string | number | null }) => {
                   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                   return [d.utctime, d[codes]];
                 }
