@@ -18,7 +18,7 @@ const initialState: GlobalStateProps = {
   trafficabilityData: [],
   soilWetnessData: [],
   soilTemperatureData: [],
-  snowHeight: [],
+  snowHeightData: [],
   checked: false,
   parameters: {
     sixMonthParams: {
@@ -31,7 +31,7 @@ const initialState: GlobalStateProps = {
         ...soilTemperaturCodeArray,
         { code: "K2C{TSOIL-K:ECBSF:::7:1:0}" }
       ],
-      snowHeight: [{ code: "HSNOW-M:ECBSF::1:0:1:0" }, ...soilHeightParams]
+      snowHeight: [{ code: "HSNOW-M:ECBSF::1:0:1:0" },{ code: "HSNOW-M:SMARTOBS:13:4"}, ...soilHeightParams]
     },
     tenYearParams: {
       trafficability: [
@@ -91,8 +91,8 @@ const globalSlice = createSlice({
     setSoilTemperatureData: (state, action: PayloadAction<[]>) => {
       state.soilTemperatureData = action.payload;
     },
-    setSnowHeightData: (state, action: PayloadAction<[]>) => {
-      state.snowHeight = action.payload;
+    setSnowHeightData: (state, action: PayloadAction<Smartmet[]>) => {
+      state.snowHeightData = action.payload;
     }
   }
 });
