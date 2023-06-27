@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -27,11 +28,11 @@ const Graphs = () => {
   const graphParameters = useAppSelector(
     (state: RootState) => state.global.parameters
   );
-  const snowHeightData: Smartmet[] = useAppSelector(
-    (state: RootState) => state.global.snowHeightData
-  );
-  const soilWetnessData: Smartmet[] = useAppSelector(
+  const soilWetnessData = useAppSelector(
     (state: RootState) => state.global.soilWetnessData
+  );
+  const snowHeightData = useAppSelector(
+    (state: RootState) => state.global.snowHeightData
   );
   const [soilWetnessOption, setSoilWetnessOption] = useState<null | {}>(null);
   const [soilTemperatureOption, setSoilTemperatureOption] = useState<null | {}>(null);
