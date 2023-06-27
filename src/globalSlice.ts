@@ -8,8 +8,10 @@ const soilTemperaturCodeArray = utils.soilTemperatureCode([]);
 const trafficabilityApiParams = utils.trafficabilityApiParams();
 const soilHeightParams = utils.snowHeightApiParams();
 const soilWetnessParams = utils.soilWetnesstApiParams();
+const marked = new Date(utils.setDateTwoDaysAhead()).toISOString();
 
 const initialState: GlobalStateProps = {
+  markLine: marked,
   startEndTimeSpan: {
     start_time: initialStartDate,
     end_time: intialEndDateSixMonths,
@@ -93,7 +95,11 @@ const globalSlice = createSlice({
     },
     setSnowHeightData: (state, action: PayloadAction<Smartmet[]>) => {
       state.snowHeightData = action.payload;
-    }
+    },
+    setMarkLine: (state, action: PayloadAction<string>) => {
+      const modifyDate = new Date(action.payload).toISOString()
+      state.markLine = modifyDate
+    },
   }
 });
 
@@ -105,4 +111,5 @@ export type ReduxActions =
   | ReturnType<typeof actions.setSoilWetnessData>
   | ReturnType<typeof actions.setSnowHeightData>
   | ReturnType<typeof actions.setSoilTemperatureData>
-  | ReturnType<typeof actions.setCheckedButton>;
+  | ReturnType<typeof actions.setCheckedButton>
+  | ReturnType<typeof actions.setMarkLine>;

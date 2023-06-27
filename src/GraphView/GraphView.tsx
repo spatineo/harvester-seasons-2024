@@ -7,11 +7,12 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Box } from "@mui/material";
 import * as echarts from "echarts";
-import { useAppSelector } from "../store/hooks";
+import { useAppSelector, useRootDispatch } from "../store/hooks";
 import { RootState } from "../store/store";
 import { Parameter, TimelineControlStyle, Smartmet } from "../types";
 import HarvesterSeasons from "../HarvesterChartComponent/HarvesterChartComponent";
 import { getDatesForDuration, setDateTwoDaysAhead } from "../utils";
+import { actions } from '../globalSlice';
 
 interface GraphOptions {
   title: string;
@@ -34,6 +35,7 @@ const Graphs = () => {
   const snowHeightData = useAppSelector(
     (state: RootState) => state.global.snowHeightData
   );
+  const markLineDate = useAppSelector((state: RootState) => state.global.markLine );
   const [soilWetnessOption, setSoilWetnessOption] = useState<null | {}>(null);
   const [soilTemperatureOption, setSoilTemperatureOption] = useState<null | {}>(null);
   const [snowHeightOption, setSnowHeightOption] = useState<null | {}>(null);
@@ -42,6 +44,7 @@ const Graphs = () => {
   const [timelineGraph, setTimelineGraph] = useState<any>(null);
   const start = setDateTwoDaysAhead();
   const [markLineValue, setMarkLineValue] = useState<string>(start);
+  const dispatch = useRootDispatch();
   
   function initialLabels() {
     const obj: { [key: string]: string } = {};
@@ -57,8 +60,6 @@ const Graphs = () => {
 
   const createOptions = useCallback(
     (opts: GraphOptions, parameters: Parameter[], values: Smartmet[], mark: string, padding: [number, number, number, number]) => {
-      const marked = new Date(mark).toISOString();
-
       return {
         animation: false,
         animationThreshold: 1,
@@ -87,7 +88,7 @@ const Graphs = () => {
               data: [
                 {
                   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                  xAxis: marked,
+                  xAxis: mark,
                   name: "",
                   type: "min",
                   label: { show: false },
@@ -105,6 +106,7 @@ const Graphs = () => {
             const codes = p.code;
             return {
               type: "line",
+              symbolSize: 2,
               name: `SH-${i}`,
               data: values.map(
                 (d: { utctime: string; [key: string]: string | number | null }) => {
@@ -177,6 +179,7 @@ const Graphs = () => {
         const timelineData = option?.timeline?.data;
         if (timelineData[value]) {
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          dispatch(actions.setMarkLine(`${timelineData[value]}`))
           setMarkLineValue(`${timelineData[value]}`);
         }
       });
@@ -207,21 +210,21 @@ const Graphs = () => {
           { title: "Soil Wetness" },
           graphParameters.sixMonthParams.soilWetness,
           soilWetnessData,
-          markLineValue,
+          markLineDate,
           [0, 0, 16, 0]
         );
         const soilTemperature = createOptions(
           { title: "Soil Temperature" },
           graphParameters.sixMonthParams.soilTemperature,
           soilTemperatureData,
-          markLineValue,
+          markLineDate,
           [0, 0, 16, 0]
         );
         const snowHeight = createOptions(
           { title: "Snow Height" },
           graphParameters.sixMonthParams.snowHeight,
           snowHeightData,
-          markLineValue,
+          markLineDate,
           [0, 0, 22, 0]
         );
         setSoilWetnessOption(soilWetness);
@@ -232,21 +235,21 @@ const Graphs = () => {
           { title: "Soil Wetness" },
           graphParameters.tenYearParams.soilWetness,
           soilWetnessData,
-          markLineValue,
+          markLineDate,
           [0, 0, 16, 0]
         );
         const soilTemperature = createOptions(
           { title: "Soil Temperature" },
           graphParameters.tenYearParams.soilTemperature,
           soilTemperatureData,
-          markLineValue,
+          markLineDate,
           [0, 0, 16, 0]
         );
         const snowHeight = createOptions(
           { title: "Snow Height" },
           graphParameters.tenYearParams.snowHeight,
           snowHeightData,
-          markLineValue,
+          markLineDate,
           [0, 0, 22, 0]
         );
         setSnowHeightOption(snowHeight);
