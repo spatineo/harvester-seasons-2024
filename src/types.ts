@@ -24,7 +24,7 @@ export interface GlobalStateProps {
 	trafficabilityData: [];
 	soilWetnessData: Smartmet[];
 	soilTemperatureData: [];
-	snowHeight: [];
+	snowHeightData: Smartmet[];
 	checked: boolean;
 	parameters: {
 		sixMonthParams: {
