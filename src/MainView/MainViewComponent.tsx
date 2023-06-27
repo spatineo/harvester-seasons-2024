@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable import/default */
 import React, { useEffect, useState } from "react";
-import { Container, Box, CircularProgress } from "@mui/material";
+import { Container, Box } from "@mui/material";
 import { EChartOption } from "echarts";
 import { useRootDispatch } from "../store/hooks";
 import HeadingComponent from "../HeadingCompnent/HeadingComponent";
@@ -27,7 +27,7 @@ function MainViewComponent() {
   const graphParameters = useAppSelector(
     (state: RootState) => state.global.parameters
   );
-
+  const mark = useAppSelector((state: RootState) => state.global.markLine );
   const createOptions = (parameters: Parameter[], values: []) => {
     const trafficabilityOptionData: EChartOption = {
       legend: {},
@@ -48,6 +48,28 @@ function MainViewComponent() {
         type: "time",
       },
       series: [
+        {
+          label: {
+            show: false,
+          },
+          type: "line",
+          seriesLayoutBy: "row",
+          markLine: {
+            data: [
+              {
+                xAxis: mark,
+                name: "",
+                type: "min",
+                label: { show: false },
+              },
+            ],
+            symbol: 'none',
+            lineStyle: {
+            type: 'solid',
+            width: 3,
+            },
+          },
+        },
         {
           type: "line",
           name: "winter",
@@ -120,7 +142,7 @@ function MainViewComponent() {
       );
       setTrafficabilityGraphOption(trafficabilityOption);
     }
-  }, [trafficability, graphParameters.sixMonthParams.trafficability]);
+  }, [trafficability, graphParameters.sixMonthParams.trafficability, mark]);
 
   return (
     <Box>
