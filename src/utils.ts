@@ -92,8 +92,8 @@ export function setDateTwoDaysAhead() {
   return currentDate.toISOString().split("T")[0];
 }
 
-export function checkSmartMet(arr: Smartmet[], smartmet: string) {
-	let lastNonNull: any = null
+export function scaleEnsembleData(arr: Smartmet[], smartmet: string) {
+	let lastNonNull: {} | null = null
 	for (let i = 0; i < arr.length; i++) {
     const obj = arr[i];
     if (obj[smartmet] !== null) {
@@ -102,9 +102,7 @@ export function checkSmartMet(arr: Smartmet[], smartmet: string) {
 			break;
 		}
 	}
-
   const newArr: Smartmet[] = [];
-  let foundNonNull = false;
 
   for (let i = 0; i < arr.length; i++) {
     const obj = arr[i];
@@ -112,8 +110,9 @@ export function checkSmartMet(arr: Smartmet[], smartmet: string) {
     if (obj[smartmet] !== null) {
       const smartMetValue = obj[smartmet];
       newArr.push({ utctime: obj.utctime, [smartmet]: smartMetValue });
-      foundNonNull = true;
-    } else if (foundNonNull || i === 0) {
+    } else if (!lastNonNull){
+      newArr.push(obj)
+    } else {
       const smartmetKey: string | null = smartmet;
       const newObj: Smartmet = { utctime: obj.utctime, [smartmetKey]: null };
       for (const key in obj) {
@@ -121,7 +120,7 @@ export function checkSmartMet(arr: Smartmet[], smartmet: string) {
           newObj[key] = null;
         } else if (key !== "utctime") {
           const currentObjValue = obj[key];
-          newObj[key] = currentObjValue !== null ? Number(currentObjValue ) - ( lastNonNull[key] - lastNonNull[smartmet]) : null
+          newObj[key] = currentObjValue !== null && lastNonNull !== null ? Number(currentObjValue ) - ( lastNonNull[key] - lastNonNull[smartmet]) : null
         } else {
           newObj[key] = obj[key];
         }
