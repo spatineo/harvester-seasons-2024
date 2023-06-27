@@ -14,7 +14,7 @@ import * as constants from '../constants';
 import * as utils from '../../utils';
 import { RootState, store } from '../store';
 import { EnqueueSnackbar } from '../hooks'
-import { Parameter, StartEndTimeSpan } from '../../types';
+import { Parameter, StartEndTimeSpan, Smartmet } from '../../types';
 import { MapPosition, mapActions } from '../../MapComponent/MapComponentSlice';
 
 const timeSeriesServiceURL = 'https://desm.harvesterseasons.com/timeseries';
@@ -201,7 +201,7 @@ export function* fetchSoilWetnessDataSaga(): SagaIterator {
 			createTimeSeriesQueryParameters(startEndTimeSpan, parameters, userLocation)
 		);
 		if (response.status === 200) {
-			const tmp = response.data;
+			const tmp: Smartmet[] = utils.scaleEnsembleData(response.data, "SWVL2-M3M3:SMARTMET:5015");
 			yield put(actions.setSoilWetnessData(tmp));
 		}
 	} catch (error) {
@@ -237,7 +237,7 @@ export function* fetchSnowHeightDataSaga(): SagaIterator {
 			createTimeSeriesQueryParameters(startEndTimeSpan, parameters, userLocation)
 		);
 		if (response.status === 200) {
-			const tmp = response.data;
+			const tmp: Smartmet[] = utils.scaleEnsembleData(response.data, "HSNOW-M:SMARTOBS:13:4")
 			yield put(actions.setSnowHeightData(tmp));
 		}
 	} catch (error) {

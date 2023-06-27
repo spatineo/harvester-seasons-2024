@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -7,7 +8,7 @@ import { Box } from "@mui/material";
 import * as echarts from "echarts";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
-import { Parameter, TimelineControlStyle } from "../types";
+import { Parameter, TimelineControlStyle, Smartmet } from "../types";
 import HarvesterSeasons from "../HarvesterChartComponent/HarvesterChartComponent";
 import { getDatesForDuration, setDateTwoDaysAhead } from "../utils";
 
@@ -26,28 +27,26 @@ const Graphs = () => {
   const graphParameters = useAppSelector(
     (state: RootState) => state.global.parameters
   );
-  const snowHeightData = useAppSelector(
-    (state: RootState) => state.global.snowHeight
+  const snowHeightData: Smartmet[] = useAppSelector(
+    (state: RootState) => state.global.snowHeightData
   );
-  const soilWetnessData = useAppSelector(
+  const soilWetnessData: Smartmet[] = useAppSelector(
     (state: RootState) => state.global.soilWetnessData
   );
-  const [soilWetnessOption, setSoilWetnessOption] = useState<any>(null);
-  const [soilTemperatureOption, setSoilTemperatureOption] = useState<any>(null);
-  const [snowHeightOption, setSnowHeightOption] = useState<any>(null);
+  const [soilWetnessOption, setSoilWetnessOption] = useState<null | {}>(null);
+  const [soilTemperatureOption, setSoilTemperatureOption] = useState<null | {}>(null);
+  const [snowHeightOption, setSnowHeightOption] = useState<null | {}>(null);
   const [selectedYValues, setSelectedYValues] = useState<any>([]);
   const timelineRef = useRef<HTMLDivElement>(null);
   const [timelineGraph, setTimelineGraph] = useState<any>(null);
   const start = setDateTwoDaysAhead();
   const [markLineValue, setMarkLineValue] = useState<string>(start);
-
+  
   function initialLabels() {
     const obj: { [key: string]: string } = {};
-
     for (let i = 1; i <= 50; i++) {
       obj[`SH-${i}`] = "";
     }
-
     return obj;
   }
 
@@ -56,8 +55,9 @@ const Graphs = () => {
   };
 
   const createOptions = useCallback(
-    (opts: GraphOptions, parameters: Parameter[], values: [], mark: string, padding: [number, number, number, number]) => {
+    (opts: GraphOptions, parameters: Parameter[], values: Smartmet[], mark: string, padding: [number, number, number, number]) => {
       const marked = new Date(mark).toISOString();
+
       return {
         animation: false,
         animationThreshold: 1,
@@ -106,7 +106,7 @@ const Graphs = () => {
               type: "line",
               name: `SH-${i}`,
               data: values.map(
-                (d: { utctime: string; [key: string]: string }) => {
+                (d: { utctime: string; [key: string]: string | number | null }) => {
                   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                   return [d.utctime, d[codes]];
                 }
@@ -285,9 +285,10 @@ const Graphs = () => {
                     fontSize: "0.8rem",
                   }}
                 >
-                  {index !== 0
-                    ? `SH-${index}: ${((value as number) % 1).toFixed(2)} `
-                    : `${value}: `}
+                  {value}
+                 {/*  {index !== 0
+                    ? `${index -1}: ${((value as number) % 1).toFixed(2)} `
+                    : `${value}: `} */}
                 </Box>
               );
             }
@@ -328,8 +329,7 @@ const Graphs = () => {
           <Box className="loading">Loading ....</Box>
         ) : (
           <HarvesterSeasons
-            option={soilWetnessOption}
-            handleClick={(d) => {}}
+            option={soilWetnessOption !== null  ? soilWetnessOption :  {}}
             handleOnmouseEnter={handleSetValuesProps}
           />
         )}
@@ -339,8 +339,7 @@ const Graphs = () => {
           <Box className="loading">Loading ....</Box>
         ) : (
           <HarvesterSeasons
-            option={soilTemperatureOption}
-            handleClick={() => {}}
+            option={soilTemperatureOption !== null ? soilTemperatureOption : {}}
             handleOnmouseEnter={handleSetValuesProps}
           />
         )}
@@ -350,8 +349,7 @@ const Graphs = () => {
           <Box className="loading" >Loading ....</Box>
         ) : (
           <HarvesterSeasons
-            option={snowHeightOption}
-            handleClick={(d: any) => {}}
+            option={snowHeightOption !== null ? snowHeightOption : {}}
             handleOnmouseEnter={handleSetValuesProps}
           />
         )}

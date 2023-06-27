@@ -1,7 +1,11 @@
 export interface HarvesterChartProps {
 	option: {};
-	handleClick: (data: { value: [] }) => void;
 	handleOnmouseEnter: (data: [string | null, ...number[]]) => void;
+}
+
+export interface Smartmet {
+	utctime: string
+	[key: string]: string | null | number
 }
 
 export interface Parameter {
@@ -18,9 +22,9 @@ export interface StartEndTimeSpan {
 export interface GlobalStateProps {
 	startEndTimeSpan: StartEndTimeSpan;
 	trafficabilityData: [];
-	soilWetnessData: [];
+	soilWetnessData: Smartmet[];
 	soilTemperatureData: [];
-	snowHeight: [];
+	snowHeightData: Smartmet[];
 	checked: boolean;
 	parameters: {
 		sixMonthParams: {
