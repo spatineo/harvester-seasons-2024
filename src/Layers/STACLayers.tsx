@@ -87,7 +87,7 @@ const STACLayers: React.FC<STACLayersProps> = ({ title, searchUrl, collection, b
 				EnqueueSnackbar(`failed to load collection ${collection} from STAC ${searchUrl}`, 'error');
 				console.error(e);
 			});
-	}, [searchUrl]);
+	}, [searchUrl, collection, band]);
 
 	useEffect(() => {
 		if (!layer) return;
