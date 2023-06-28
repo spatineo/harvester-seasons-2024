@@ -109,7 +109,14 @@ export function scaleEnsembleData(arr: Smartmet[], smartmet: string) {
 
     if (obj[smartmet] !== null) {
       const smartMetValue = obj[smartmet];
-      newArr.push({ utctime: obj.utctime, [smartmet]: smartMetValue });
+      const newObj = { utctime: obj.utctime };
+  
+      Object.keys(obj).forEach(key => {
+       if(key !== 'utctime'){ 
+        newObj[key] = smartMetValue;
+      }
+      });
+      newArr.push(newObj);
     } else if (!lastNonNull){
       newArr.push(obj)
     } else {
