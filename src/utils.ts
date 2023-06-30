@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Parameter, StartEndTimeSpan, Smartmet } from "./types";
+import { Parameter, StartEndTimeSpan, Smartmet, GraphOptions } from "./types";
 
 export function addTenYears(date: Date, years: number) {
   date.setFullYear(date.getFullYear() + years);
@@ -92,33 +92,98 @@ export function setDateTwoDaysAhead() {
   return currentDate.toISOString().split("T")[0];
 }
 
+export function createOptions(
+  opts: GraphOptions,
+  parameters: Parameter[],
+  values: Smartmet[],
+  mark: string,
+  padding: [number, number, number, number]
+) {
+  return {
+    animation: false,
+    animationThreshold: 1,
+    grid: {},
+    tooltip: {
+      trigger: "item"
+    },
+    yAxis: {
+      name: opts.title,
+      nameLocation: "middle",
+      nameTextStyle: {
+        padding
+      }
+    },
+    xAxis: {
+      type: "time"
+    },
+    series: [
+      {
+        label: {
+          show: false
+        },
+        type: "line",
+        seriesLayoutBy: "row",
+        markLine: {
+          data: [
+            {
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+              xAxis: mark,
+              name: "",
+              type: "min",
+              label: { show: false }
+            }
+          ],
+          symbol: "none",
+          lineStyle: {
+            type: "solid",
+            width: 3,
+            arrow: "none"
+          }
+        }
+      },
+      ...parameters.map((p: { code: string }, i: number) => {
+        const codes = p.code;
+        return {
+          type: "line",
+          symbolSize: 2,
+          name: `SH-${i}`,
+          data: values.map(
+            (d: { utctime: string; [key: string]: string | number | null }) => {
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+              return [d.utctime, d[codes]];
+            }
+          )
+        };
+      })
+    ]
+  };
+}
+
 export function scaleEnsembleData(arr: Smartmet[], smartmet: string) {
-	let lastNonNull: {} | null = null
-	for (let i = 0; i < arr.length; i++) {
+  let lastNonNull: {} | null = null;
+  for (let i = 0; i < arr.length; i++) {
     const obj = arr[i];
     if (obj[smartmet] !== null) {
       lastNonNull = obj;
     } else {
-			break;
-		}
-	}
+      break;
+    }
+  }
   const newArr: Smartmet[] = [];
-
   for (let i = 0; i < arr.length; i++) {
     const obj = arr[i];
 
     if (obj[smartmet] !== null) {
       const smartMetValue = obj[smartmet];
       const newObj = { utctime: obj.utctime };
-  
-      Object.keys(obj).forEach(key => {
-       if(key !== 'utctime'){ 
-        newObj[key] = smartMetValue;
-      }
+      Object.keys(obj).forEach((key) => {
+        if (key !== "utctime") {
+          newObj[key] = smartMetValue;
+        }
       });
       newArr.push(newObj);
-    } else if (!lastNonNull){
-      newArr.push(obj)
+    } else if (!lastNonNull) {
+      newArr.push(obj);
     } else {
       const smartmetKey: string | null = smartmet;
       const newObj: Smartmet = { utctime: obj.utctime, [smartmetKey]: null };
@@ -127,7 +192,11 @@ export function scaleEnsembleData(arr: Smartmet[], smartmet: string) {
           newObj[key] = null;
         } else if (key !== "utctime") {
           const currentObjValue = obj[key];
-          newObj[key] = currentObjValue !== null && lastNonNull !== null ? Number(currentObjValue ) - ( lastNonNull[key] - lastNonNull[smartmet]) : null
+          newObj[key] =
+            currentObjValue !== null && lastNonNull !== null
+              ? Number(currentObjValue) -
+                (lastNonNull[key] - lastNonNull[smartmet])
+              : null;
         } else {
           newObj[key] = obj[key];
         }
