@@ -4,19 +4,20 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Box } from "@mui/material";
 import * as echarts from "echarts";
 import { useAppSelector, useRootDispatch } from "../store/hooks";
 import { RootState } from "../store/store";
-import { Parameter, TimelineControlStyle, Smartmet } from "../types";
+import { TimelineControlStyle } from "../types";
 import HarvesterSeasons from "../HarvesterChartComponent/HarvesterChartComponent";
-import { getDatesForDuration, setDateTwoDaysAhead } from "../utils";
-import { actions } from '../globalSlice';
+import {
+  getDatesForDuration,
+  setDateTwoDaysAhead,
+  createOptions,
+} from "../utils";
+import { actions } from "../globalSlice";
 
-interface GraphOptions {
-  title: string;
-}
 export interface Time {
   utctime: string;
 }
@@ -35,92 +36,19 @@ const Graphs = () => {
   const snowHeightData = useAppSelector(
     (state: RootState) => state.global.snowHeightData
   );
-  const markLineDate = useAppSelector((state: RootState) => state.global.markLine );
+  const markLineDate = useAppSelector(
+    (state: RootState) => state.global.markLine
+  );
   const [soilWetnessOption, setSoilWetnessOption] = useState<null | {}>(null);
-  const [soilTemperatureOption, setSoilTemperatureOption] = useState<null | {}>(null);
+  const [soilTemperatureOption, setSoilTemperatureOption] = useState<null | {}>(
+    null
+  );
   const [snowHeightOption, setSnowHeightOption] = useState<null | {}>(null);
-  const [selectedYValues, setSelectedYValues] = useState<any>([]);
   const timelineRef = useRef<HTMLDivElement>(null);
   const [timelineGraph, setTimelineGraph] = useState<any>(null);
   const start = setDateTwoDaysAhead();
   const [markLineValue, setMarkLineValue] = useState<string>(start);
   const dispatch = useRootDispatch();
-  
-  function initialLabels() {
-    const obj: { [key: string]: string } = {};
-    for (let i = 1; i <= 50; i++) {
-      obj[`SH-${i}`] = "";
-    }
-    return obj;
-  }
-
-  const handleSetValuesProps = (data: [string | null, ...number[]]) => {
-    setSelectedYValues(data);
-  };
-
-  const createOptions = useCallback(
-    (opts: GraphOptions, parameters: Parameter[], values: Smartmet[], mark: string, padding: [number, number, number, number]) => {
-      return {
-        animation: false,
-        animationThreshold: 1,
-        grid: {},
-        tooltip: {
-          trigger: "item",
-        },
-        yAxis: {
-          name: opts.title,
-          nameLocation: "middle",
-          nameTextStyle: {
-            padding,
-          },
-        },
-        xAxis: {
-          type: "time",
-        },
-        series: [
-          {
-            label: {
-              show: false,
-            },
-            type: "line",
-            seriesLayoutBy: "row",
-            markLine: {
-              data: [
-                {
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-                  xAxis: mark,
-                  name: "",
-                  type: "min",
-                  label: { show: false },
-                },
-              ],
-              symbol: "none",
-              lineStyle: {
-                type: "solid",
-                width: 3,
-                arrow: "none",
-              },
-            },
-          },
-          ...parameters.map((p: { code: string }, i: number) => {
-            const codes = p.code;
-            return {
-              type: "line",
-              symbolSize: 2,
-              name: `SH-${i}`,
-              data: values.map(
-                (d: { utctime: string; [key: string]: string | number | null }) => {
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-                  return [d.utctime, d[codes]];
-                }
-              ),
-            };
-          }),
-        ],
-      };
-    },
-    []
-  );
 
   useEffect(() => {
     const result = new Date();
@@ -179,7 +107,7 @@ const Graphs = () => {
         const timelineData = option?.timeline?.data;
         if (timelineData[value]) {
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          dispatch(actions.setMarkLine(`${timelineData[value]}`))
+          dispatch(actions.setMarkLine(`${timelineData[value]}`));
           setMarkLineValue(`${timelineData[value]}`);
         }
       });
@@ -270,71 +198,18 @@ const Graphs = () => {
     markLineValue,
   ]);
 
-  const graphLabels = () => {
-    if (selectedYValues.length > 0) {
-      return (
-        <Box
-          sx={{ display: "-ms-flexbox", flexDirection: "row" }}
-          component="span"
-        >
-          {selectedYValues.map(
-            (value: number | string | null, index: number) => {
-              return (
-                <Box
-                  component="span"
-                  key={index}
-                  sx={{
-                    fontFamily: "Helvetica, monospace",
-                    fontWeight: "200",
-                    fontSize: "0.8rem",
-                  }}
-                >
-                  {value}
-                 {/*  {index !== 0
-                    ? `${index -1}: ${((value as number) % 1).toFixed(2)} `
-                    : `${value}: `} */}
-                </Box>
-              );
-            }
-          )}
-        </Box>
-      );
-    } else {
-      const initialLabelValues = initialLabels();
-      return (
-        <span>
-          {Object.keys(initialLabelValues).map((key: string, index: number) => (
-            <Box
-              component="span"
-              key={index}
-              sx={{
-                fontFamily: "Helvetica, monospace",
-                fontWeight: "200",
-                fontSize: "0.8rem",
-              }}
-            >
-              {`${key}: ${initialLabelValues[key]} `}
-            </Box>
-          ))}
-        </span>
-      );
-    }
-  };
-
   return (
     <Box>
-      <Box>{markLineValue}</Box>
-      <Box ref={timelineRef}></Box>
-      <Box sx={{ width: "80%", margin: "4rem auto 0rem", minHeight: "110px" }}>
-        {graphLabels()}
+      <Box sx={{ fontFamily: "Lato" }}>
+        {new Date(markLineValue).toLocaleDateString()}
       </Box>
+      <Box ref={timelineRef}></Box>
       <Box>
         {soilWetnessData && soilWetnessData.length === 0 ? (
           <Box className="loading">Loading ....</Box>
         ) : (
           <HarvesterSeasons
-            option={soilWetnessOption !== null  ? soilWetnessOption :  {}}
-            handleOnmouseEnter={handleSetValuesProps}
+            option={soilWetnessOption !== null ? soilWetnessOption : {}}
           />
         )}
       </Box>
@@ -344,17 +219,15 @@ const Graphs = () => {
         ) : (
           <HarvesterSeasons
             option={soilTemperatureOption !== null ? soilTemperatureOption : {}}
-            handleOnmouseEnter={handleSetValuesProps}
           />
         )}
       </Box>
       <Box>
         {snowHeightData && snowHeightData.length === 0 ? (
-          <Box className="loading" >Loading ....</Box>
+          <Box className="loading">Loading ....</Box>
         ) : (
           <HarvesterSeasons
             option={snowHeightOption !== null ? snowHeightOption : {}}
-            handleOnmouseEnter={handleSetValuesProps}
           />
         )}
       </Box>

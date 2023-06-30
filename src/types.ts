@@ -2,6 +2,10 @@ export interface HarvesterChartProps {
   option: {};
 }
 
+export interface GraphOptions {
+  title: string;
+}
+
 export interface Smartmet {
   utctime: string;
   [key: string]: string | null | number;
