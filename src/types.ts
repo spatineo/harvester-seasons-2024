@@ -1,6 +1,5 @@
 export interface HarvesterChartProps {
   option: {};
-  handleOnmouseEnter: (data: [string | null, ...number[]]) => void;
 }
 
 export interface Smartmet {
