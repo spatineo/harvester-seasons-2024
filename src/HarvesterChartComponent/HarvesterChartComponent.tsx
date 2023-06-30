@@ -1,18 +1,17 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Box } from '@mui/material';
 import EchartsComponent from '../EchartsComponent/EchartsComponent'
 import { HarvesterChartProps } from '../types';
 
-const HarvesterSeasons: FC<HarvesterChartProps> = ({
+const HarvesterSeasons: React.FC<HarvesterChartProps> = ({
 	option,
-	handleOnmouseEnter,
 }) => {
 	
 	return (
 		<Box>
 			{
 				option ? (
-					<EchartsComponent option={option} setValuesProps={handleOnmouseEnter} />
+					<EchartsComponent option={option} />
 				) :
 				(<Box>No data</Box>)
 			}

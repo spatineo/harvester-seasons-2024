@@ -6,20 +6,6 @@ import *  as echarts from 'echarts'
 import { Box } from '@mui/material'
 import {  EChartOption } from 'echarts'
 
-type EventParams = {
-  componentType: string,
-  seriesType: string,
-  seriesIndex: number,
-  seriesName: string,
-  name: string,
-  dataIndex: number,
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  data: Object,
-  dataType: string,
-  value: number | Array<any> | any,
-  color: string
-};
-
 interface ChartProps {
   option: EChartOption;
 }
@@ -47,7 +33,6 @@ const EchartsCompoent: React.FC<ChartProps> = ({ option }) => {
     }
   }, [chart, option])
 
-  
     return (
     <Box ref={chartRef} style={{ width: '100%', height: '300px' }}></Box>
   )
