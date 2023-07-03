@@ -1,6 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
-import logo from "../assets/logo.png";
+import { Box } from "@mui/material";
 
 const styles = {
   bottom: {
@@ -19,16 +18,6 @@ const PrivacyPolicy: React.FC = () => {
         fontFamily: "Lato",
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <Typography variant="h4">Harvester Seasons</Typography>
-        <Box component="img" src={logo} sx={{ width: "20rem" }} />
-      </Box>
       <Box component={"h1"}>Privacy Policy</Box>
       <br />
       <Box>
@@ -174,10 +163,7 @@ const PrivacyPolicy: React.FC = () => {
       <br />
       <p>FMI may change material on the site without prior notice.</p>
       <br />
-      <hr />
-      <Box component={"h3"} sx={{ marginTop: "0.4rem", position: "relative" }}>
-        Harvester Seasons
-      </Box>
+      <br />
       <br />
     </Box>
   );

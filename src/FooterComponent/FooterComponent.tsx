@@ -1,80 +1,65 @@
 /* eslint-disable import/default */
-import React, { FC } from "react";
-import { Box, Link, Typography, Button } from "@mui/material";
+import React from "react";
+import { Box, Typography, Button } from "@mui/material";
 // eslint-disable-next-line import/no-extraneous-dependencies
-import * as DomLink from "react-router-dom";
+import { Link } from "react-router-dom";
 import linkedin from "../assets/LI-In-Bug.png";
 
 const footerStyle = {
   container: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
+    width: "100%",
     marginBottom: "2rem",
     fontFamily: "Lato",
     borderTop: "1px solid grey",
-    paddingTop: "0.4rem",
-  },
-  image: {
-    width: "1.6rem",
-    height: "1.2rem",
-    marginRight: "0.2rem",
-  },
-  link: {
-    display: "flex",
-    textDecoration: "none",
-    flexDirection: "row",
-    padding: "0.2rem",
-    color: "#000",
   },
   text: {
     fontFamily: "Lato",
   },
 };
 
-const FooterComponent: FC = () => {
+const FooterComponent: React.FC = () => {
   return (
     <Box sx={footerStyle.container}>
-      <Box>
-        <Link
-          href="https://harvesterseasons.com/"
-          target="_blank"
-          sx={footerStyle.link}
-        >
-          <Button>
-            <Typography sx={footerStyle.text}>Harvester Seasons</Typography>
-          </Button>
-        </Link>
-      </Box>
-      <Link
-        href="https://www.linkedin.com/showcase/harvester-seasons"
-        target="_blank"
-        sx={footerStyle.link}
-      >
-        <Button>
-          <Box component="img" src={linkedin} sx={footerStyle.image} />
-          <Typography component={"span"} sx={footerStyle.text}>
-            Follow us on LinkedIn
-          </Typography>
-        </Button>
-      </Link>
-      <DomLink.Link
-        to="privacy-policy"
-        target="_blank"
-        style={{
+      <Box
+        sx={{
+          width: "80%",
+          marginLeft: "auto",
+          marginRight: "auto",
           display: "flex",
-          textDecoration: "none",
           flexDirection: "row",
-          padding: "0.2rem",
-          color: "#000",
+          justifyContent: 'space-evenly',
         }}
       >
-        <Button>
-          <Typography sx={footerStyle.text}>
-            Privacy Policy / Terms <span>of Use</span>
-          </Typography>
-        </Button>
-      </DomLink.Link>
+        <Box sx={{ width: '26.66%', marginRight: 'auto'}}>
+          <Link to="https://harvesterseasons.com/" target="_blank">
+            <Button>
+              <Typography sx={footerStyle.text}>Harvester Seasons</Typography>
+            </Button>
+          </Link>
+        </Box>
+        <Box sx={{ width: '26.66%', marginRight: 'auto'}}>
+          <Link
+            to="https://www.linkedin.com/showcase/harvester-seasons"
+            target="_blank"
+          >
+            <Button>
+              <Box component="img" src={linkedin} sx={{ width: "5%" }} />
+              <Typography component={"span"} sx={footerStyle.text}>
+                Follow us on LinkedIn
+              </Typography>
+            </Button>
+          </Link>
+        </Box>
+        <Box sx={{ width: '26.66%', marginLeft: 'auto'}}>
+          <Link to="privacy-policy">
+            <Button>
+              <Typography sx={footerStyle.text}>
+                Privacy Policy / Terms <span>of Use</span>
+              </Typography>
+            </Button>
+          </Link>
+        </Box>
+      </Box>
     </Box>
   );
 };

@@ -1,19 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable import/default */
 import React, { useEffect, useState } from "react";
-import { Container, Box } from "@mui/material";
+import { Container, Box, ListItemButton, Collapse } from "@mui/material";
 import { EChartOption } from "echarts";
 import { useRootDispatch } from "../store/hooks";
-import HeadingComponent from "../HeadingCompnent/HeadingComponent";
 import TraficabilityGraph from "../TrafficabilityGraph/Trafficability";
 import GraphView from "../GraphView/GraphView";
-import FooterComponent from "../FooterComponent/FooterComponent";
 import SwitchComponent from "../SwitchComponent/SwitchComponent";
 import * as constants from "../store/constants";
 import HarvesterMap from "../HarvesterMapComponent/HarvesterMap";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
 import { Parameter } from "../types";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { LanguageOptions } from "../Lang/languageSlice";
+import { languages } from "../Lang/languages";
+import testimonial from '../assets/testimonial_metsateho1.png';
 
 function MainViewComponent() {
   const [trafficabilityGraphOtion, setTrafficabilityGraphOption] =
@@ -28,6 +30,9 @@ function MainViewComponent() {
     (state: RootState) => state.global.parameters
   );
   const mark = useAppSelector((state: RootState) => state.global.markLine );
+  const [open, setOpen] = useState(false);
+	const information = useAppSelector((state) => state.language);
+
   const createOptions = (parameters: Parameter[], values: []) => {
     const trafficabilityOptionData: EChartOption = {
       legend: {},
@@ -143,13 +148,27 @@ function MainViewComponent() {
       setTrafficabilityGraphOption(trafficabilityOption);
     }
   }, [trafficability, graphParameters.sixMonthParams.trafficability, mark]);
+  
+  const handleClick = () => {
+		setOpen(!open);
+	};
+
 
   return (
     <Box>
       <Container maxWidth="lg">
-        <br />
-        <HeadingComponent />
-        <br />
+        <Box>
+					<ListItemButton onClick={handleClick} style={{ paddingLeft: '0px', width: '26%' }}>
+						{open ? <ExpandLess /> : <ExpandMore />}{' '}
+						{languages.info[information.en as keyof LanguageOptions]}
+					</ListItemButton>
+					<Collapse in={open} timeout="auto" unmountOnExit>
+						<Box sx={{ width: '80%', margin: '2rem auto' }}>
+							<Box component="img" src={testimonial} sx={{ width: '80%' }} />
+						</Box>
+						<Box>{languages.overviewBody[information.en as keyof LanguageOptions]}</Box>
+					</Collapse>
+				</Box>
         {trafficability.length > 0 ? (
           <TraficabilityGraph option={trafficabilityGraphOtion} />
         ) : (
@@ -161,9 +180,6 @@ function MainViewComponent() {
           <GraphView />
         </Box>
         <Box sx={{ marginTop: "2rem" }}></Box>
-        <br />
-        <br />
-        <FooterComponent />
       </Container>
     </Box>
   );
