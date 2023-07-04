@@ -4,17 +4,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable import/namespace */
 /* eslint-disable import/default */
-import React, { useState, FC, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import * as echarts from "echarts";
 // eslint-disable-next-line import/named
 import { EChartOption } from "echarts";
 import { Box } from "@mui/material";
 
 interface TraficabilityGraphComponentProp {
-  option: EChartOption;
+  option: EChartOption | null;
+  onGraphClick: (xAxisData: string) => void;
 }
 
-const TraficabilityGraphComponent: FC<TraficabilityGraphComponentProp> = ({ option }) => {
+const TraficabilityGraphComponent: React.FC<TraficabilityGraphComponentProp> = ({ option, onGraphClick }) => {
   const graphRef = useRef<HTMLDivElement>(null);
   const [chart, setChart] = useState<echarts.ECharts | null>(null);
 
@@ -23,7 +24,6 @@ const TraficabilityGraphComponent: FC<TraficabilityGraphComponentProp> = ({ opti
       const newChart = echarts.init(graphRef.current, undefined, {
         height: "180",
       });
-
       setChart(newChart);
     }
 
@@ -35,7 +35,7 @@ const TraficabilityGraphComponent: FC<TraficabilityGraphComponentProp> = ({ opti
   }, []);
 
   useEffect(() => {
-    if (chart) {
+    if (chart && option) {
       chart.setOption(option);
     }
   }, [chart, option]);
@@ -59,12 +59,29 @@ const TraficabilityGraphComponent: FC<TraficabilityGraphComponentProp> = ({ opti
         }
       }
     };
-
-
-
     chart.on('mouseover', handleMouseover);
   }, [chart]);
 
+  useEffect(() => {
+    if (!chart) {
+      return;
+    }
+  
+    const handleMouseover = (params: any) => {
+      const xAxisData = chart.convertFromPixel({ seriesIndex: 0 }, [params.offsetX, params.offsetY])[0];
+      if (xAxisData) {
+        const date = new Date(xAxisData);
+        const formattedDate = date.toISOString();
+        onGraphClick(formattedDate);
+      }
+    };
+
+    chart.getZr().on("click", handleMouseover);
+
+    return () => {
+      chart.getZr().off("click", handleMouseover);
+    };
+  }, [chart, onGraphClick]);
   return <Box ref={graphRef}></Box>;
 };
 
