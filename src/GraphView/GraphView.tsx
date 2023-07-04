@@ -195,7 +195,7 @@ const Graphs = () => {
     graphParameters.tenYearParams.soilTemperature,
     graphParameters.tenYearParams.snowHeight,
     graphParameters.tenYearParams.soilWetness,
-    markLineValue,
+    markLineDate,
   ]);
 
   return (
