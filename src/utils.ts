@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Parameter, StartEndTimeSpan, Smartmet, GraphOptions } from "./types";
+import { EChartOption } from "echarts";
 
 export function addTenYears(date: Date, years: number) {
   date.setFullYear(date.getFullYear() + years);
@@ -206,3 +207,102 @@ export function scaleEnsembleData(arr: Smartmet[], smartmet: string) {
   }
   return newArr;
 }
+
+export function createTrafficabilityGraphOptions(parameters: Parameter[], values: [], mark){
+  const trafficabilityOptionData: EChartOption = {
+    legend: {},
+    grid: {
+      height: "80px",
+    },
+    tooltip: {
+      trigger: "axis",
+    },
+    yAxis: {
+      name: "Traficability",
+      nameLocation: "middle",
+      nameTextStyle: {
+        padding: 18,
+      },
+    },
+    xAxis: {
+      type: "time",
+    },
+    series: [
+      {
+        label: {
+          show: false,
+        },
+        type: "line",
+        seriesLayoutBy: "row",
+        markLine: {
+          data: [
+            {
+              xAxis: mark,
+              name: "",
+              type: "min",
+              label: { show: false },
+            },
+          ],
+          symbol: "none",
+          lineStyle: {
+            type: "solid",
+            width: 3,
+          },
+        },
+      },
+      {
+        type: "line",
+        name: "winter",
+        areaStyle: {
+          color: "rgba(0, 12, 0, 0.3)",
+        },
+        data: [
+          ...values.map((t: { utctime: string; [key: string]: string }) => {
+            return [
+              new Date(t.utctime).toISOString(),
+              ...parameters.map((p) => {
+                if (t[p.code] !== null && Number(t[p.code]) === 0) {
+                  return 0;
+                } else if (
+                  Number(t[p.code]) > 0.0 &&
+                  Number(t[p.code]) <= 0.099999
+                ) {
+                  return 1;
+                } else {
+                  return 2;
+                }
+              }),
+            ];
+          }),
+        ],
+      },
+      {
+        type: "line",
+        name: "summer",
+        areaStyle: {
+          color: "rgba(0, 128, 255, 0.3)",
+        },
+        data: [
+          ...values.map((t: { utctime: string; [key: string]: string }) => {
+            return [
+              new Date(t.utctime).toISOString(),
+              ...parameters.map((p) => {
+                if (t[p.code] !== null && Number(t[p.code]) === 0) {
+                  return 0.5;
+                } else if (
+                  Number(t[p.code]) > 0.0 &&
+                  Number(t[p.code]) <= 0.099999
+                ) {
+                  return 1.5;
+                } else {
+                  return 2;
+                }
+              }),
+            ];
+          }),
+        ],
+      },
+    ],
+  };
+  return trafficabilityOptionData;
+};
