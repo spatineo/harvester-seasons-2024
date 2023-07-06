@@ -12,8 +12,8 @@ import Style from 'ol/style/Style';
 import { Color } from 'ol/color';
 import { Feature } from 'ol';
 
-interface OSMLayerProps {
-	source: VectorSource;
+interface TaustakarttaProps {
+	source: VectorSource ;
 }
 
 const style = new Style({
@@ -23,7 +23,7 @@ const style = new Style({
 });
 
 // eslint-disable-next-line react/prop-types
-const Taustakartta: React.FC<OSMLayerProps> = ({ source }) => {
+const Taustakartta: React.FC<TaustakarttaProps> = ({ source }) => {
 	const { map } = useContext(MapContext);
 
 	useEffect(() => {
