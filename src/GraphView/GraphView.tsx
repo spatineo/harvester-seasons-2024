@@ -199,7 +199,7 @@ const Graphs = () => {
   ]);
 
   return (
-    <Box>
+    <Box sx={{ position: 'relative', top: '2rem'}}>
       <Box sx={{ fontFamily: "Lato" }}>
         {new Date(markLineValue).toLocaleDateString()}
       </Box>
