@@ -7,6 +7,9 @@ import { BaseLayerOptions } from 'ol-layerswitcher';
 import GeoTIFF from 'ol/source/GeoTIFF';
 import TileLayer from 'ol/layer/WebGLTile';
 import { ExpressionValue } from 'ol/style/expressions';
+import { getOpacityFromPercentage } from '../utils';
+import { useAppSelector } from '../store/hooks';
+import { RootState } from '../store/store';
 
 interface TIFFLayerProps {
 	title: string
@@ -43,6 +46,7 @@ function colorExpression() {
 
 const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
 	const { map } = useContext(MapContext);
+	const opacityValue = useAppSelector((state: RootState) => state.global.opacityValue);
 
 	useEffect(() => {
 		if (!map || !url) return;
@@ -50,7 +54,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
 		const layer = new TileLayer({
 			title,
 			visible: true,
-			opacity: .7,
+			opacity: getOpacityFromPercentage(opacityValue),
 			className: 'class',
 			style:  {
 				color: colorExpression(),
@@ -68,7 +72,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
 		return () => {
 			map.removeLayer(layer);
 		};
-	}, [map, url, title]);
+	}, [map, url, title, opacityValue]);
 
 	return null;
 };
