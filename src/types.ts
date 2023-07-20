@@ -23,6 +23,7 @@ export interface StartEndTimeSpan {
 }
 
 export interface GlobalStateProps {
+  opacityValue: number
   markLine: string;
   startEndTimeSpan: StartEndTimeSpan;
   trafficabilityData: [];
