@@ -306,3 +306,13 @@ export function createTrafficabilityGraphOptions(parameters: Parameter[], values
   };
   return trafficabilityOptionData;
 };
+
+export function getOpacityFromPercentage(percentage: number): number {
+  if (percentage < 0) {
+    return 0;
+  } else if (percentage > 100) {
+    return 1;
+  } else {
+    return percentage / 100;
+  }
+}
