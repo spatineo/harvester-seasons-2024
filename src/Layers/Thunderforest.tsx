@@ -8,7 +8,6 @@ import LayerTile from 'ol/layer/Tile';
 import { BaseLayerOptions } from 'ol-layerswitcher';
 import TileSource from 'ol/source/Tile';
 import MapContext from '../MapComponent/MapContext';
-import { Style, Fill, Circle } from 'ol/style';
 
 interface OSMLayerProps {
 	source: TileSource;
