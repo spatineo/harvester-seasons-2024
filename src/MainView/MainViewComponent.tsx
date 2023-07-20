@@ -8,7 +8,8 @@ import TraficabilityGraph from "../TrafficabilityGraph/Trafficability";
 import GraphView from "../GraphView/GraphView";
 import SwitchComponent from "../SwitchComponent/SwitchComponent";
 import * as constants from "../store/constants";
-import HarvesterMap from "../HarvesterMapComponent/HarvesterMap";
+import HarvesterMap from "../HarvesterMapComponent/HarvesterMap"
+import OpacityComponent from "../Opacity/OpacityComponent"
 import { useAppSelector, useRootDispatch } from "../store/hooks";
 import { RootState } from "../store/store";
 import { LanguageOptions } from "../Lang/languageSlice";
@@ -42,11 +43,13 @@ function MainViewComponent() {
 
   useEffect(() => {
     if (trafficability) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       const trafficabilityOption = createTrafficabilityGraphOptions(
         graphParameters.sixMonthParams.trafficability,
         trafficability,
         mark
       );
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       setTrafficabilityGraphOption(trafficabilityOption);
     }
   }, [trafficability, graphParameters.sixMonthParams.trafficability, mark]);
@@ -54,7 +57,6 @@ function MainViewComponent() {
   const handleClick = () => {
     setOpen(!open);
   };
-  console.log(mark, 'in traffica')
 
   return (
     <Box>
@@ -88,6 +90,9 @@ function MainViewComponent() {
         )}
         <SwitchComponent />
         <HarvesterMap />
+        <Box sx={{ width: '30%', marginLeft: 'auto', marginRight: 'auto'}}>
+          <OpacityComponent />
+        </Box>
         <Box sx={{ marginTop: "2rem" }}>
           <GraphView />
         </Box>
