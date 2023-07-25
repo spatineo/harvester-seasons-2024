@@ -2,14 +2,15 @@
 /* eslint-disable import/default */
 import React, { useEffect, useState } from "react";
 import { Container, Box, ListItemButton, Collapse } from "@mui/material";
-import { EChartOption } from 'echarts';
+import { EChartOption } from "echarts";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import TraficabilityGraph from "../TrafficabilityGraph/Trafficability";
 import GraphView from "../GraphView/GraphView";
 import SwitchComponent from "../SwitchComponent/SwitchComponent";
 import * as constants from "../store/constants";
-import HarvesterMap from "../HarvesterMapComponent/HarvesterMap"
-import OpacityComponent from "../Opacity/OpacityComponent"
+import HarvesterMap from "../HarvesterMapComponent/HarvesterMap";
+import OpacityComponent from "../Opacity/OpacityComponent";
+import CarbonText from "../CarbonText/CarbonText";
 import { useAppSelector, useRootDispatch } from "../store/hooks";
 import { RootState } from "../store/store";
 import { LanguageOptions } from "../Lang/languageSlice";
@@ -20,7 +21,7 @@ import { actions } from "../globalSlice";
 
 function MainViewComponent() {
   const [trafficabilityGraphOption, setTrafficabilityGraphOption] =
-  useState<EChartOption | null>(null);
+    useState<EChartOption | null>(null);
   const [summer, setSummer] = useState<string>("");
   const [winter, setWinter] = useState<string>("");
   const dispatch = useRootDispatch();
@@ -82,7 +83,7 @@ function MainViewComponent() {
           <TraficabilityGraph
             option={trafficabilityGraphOption}
             onGraphClick={function (xAxisData: string): void {
-              dispatch(actions.setMarkLine(xAxisData))
+              dispatch(actions.setMarkLine(xAxisData));
             }}
           />
         ) : (
@@ -90,10 +91,20 @@ function MainViewComponent() {
         )}
         <SwitchComponent />
         <HarvesterMap />
-        <Box sx={{ width: '30%', marginLeft: 'auto', marginRight: 'auto'}}>
+        <Box
+          sx={{
+            width: "30%",
+            marginLeft: "auto",
+            marginRight: "auto",
+            position: "relative",
+          }}
+        >
           <OpacityComponent />
         </Box>
-        <Box sx={{ marginTop: "2rem" }}>
+        <Box sx={{ position: "relative", top: "4rem" }}>
+          <CarbonText />
+        </Box>
+        <Box sx={{ top: "4rem", position: "relative" }}>
           <GraphView />
         </Box>
         <Box sx={{ marginTop: "2rem" }}></Box>
