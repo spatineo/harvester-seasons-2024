@@ -11,6 +11,7 @@ const soilWetnessParams = utils.soilWetnesstApiParams();
 const marked = new Date(utils.setDateTwoDaysAhead()).toISOString();
 
 const initialState: GlobalStateProps = {
+  opacityValue: 70,
   markLine: marked,
   startEndTimeSpan: {
     start_time: initialStartDate,
@@ -100,6 +101,9 @@ const globalSlice = createSlice({
       const modifyDate = new Date(action.payload).toISOString()
       state.markLine = modifyDate
     },
+    setOpacity: (state, action: PayloadAction<number>) => {
+      state.opacityValue = action.payload
+    },
   }
 });
 
@@ -112,4 +116,5 @@ export type ReduxActions =
   | ReturnType<typeof actions.setSnowHeightData>
   | ReturnType<typeof actions.setSoilTemperatureData>
   | ReturnType<typeof actions.setCheckedButton>
-  | ReturnType<typeof actions.setMarkLine>;
+  | ReturnType<typeof actions.setMarkLine>
+  | ReturnType<typeof actions.setOpacity>;
