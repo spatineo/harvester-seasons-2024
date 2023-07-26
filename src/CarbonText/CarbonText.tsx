@@ -82,7 +82,7 @@ const CarbonText: React.FC = () => {
         >
           <Box component={"h2"}>Soil Carbon in General</Box>
           <br />
-          <div dangerouslySetInnerHTML={{__html: getTextForButton(1).replace(/\n/g, '<br/>')}}/>
+          <Box dangerouslySetInnerHTML={{__html: getTextForButton(1).replace(/\n/g, '<br/>')}}/>
         </Box>
         <br />
       </Collapse>
@@ -97,7 +97,7 @@ const CarbonText: React.FC = () => {
         >
           <Box component={"h2"}>Forest Management and Soil Carbon</Box>
           <br />
-          <div dangerouslySetInnerHTML={{__html: getTextForButton(2).replace(/\n/g, '<br/>')}}/>
+          <Box dangerouslySetInnerHTML={{__html: getTextForButton(2).replace(/\n/g, '<br/>')}}/>
         </Box>
         <br />
       </Collapse>
@@ -112,7 +112,7 @@ const CarbonText: React.FC = () => {
         >
             <Box component={"h2"}>Peatland vs. Mineral Soil</Box>
           <br />
-          <div dangerouslySetInnerHTML={{__html: getTextForButton(3).replace(/\n/g, '<br/>')}}/>
+          <Box dangerouslySetInnerHTML={{__html: getTextForButton(3).replace(/\n/g, '<br/>')}}/>
         </Box>
         <br/>
       </Collapse>
@@ -127,7 +127,7 @@ const CarbonText: React.FC = () => {
         >
           <Box component={"h2"}>Carbon Literature</Box>
           <br />
-          <div dangerouslySetInnerHTML={{ __html: getTextForButton(4).replace(/\n/g, '<br/>')}} />
+          <Box dangerouslySetInnerHTML={{ __html: getTextForButton(4).replace(/\n/g, '<br/>')}} />
         </Box>
         <br />
       </Collapse>
