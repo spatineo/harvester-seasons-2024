@@ -8,9 +8,11 @@ import linkedin from "../assets/LI-In-Bug.png";
 const footerStyle = {
   container: {
     width: "100%",
-    marginBottom: "2rem",
     fontFamily: "Lato",
     borderTop: "1px solid grey",
+    position: 'relative',
+    top: '4rem',
+    marginBottom: "6rem"
   },
   text: {
     fontFamily: "Lato",
@@ -25,9 +27,10 @@ const FooterComponent: React.FC = () => {
           width: "80%",
           marginLeft: "auto",
           marginRight: "auto",
+          paddingTop: "1rem",
           display: "flex",
           flexDirection: "row",
-          justifyContent: 'space-evenly',
+          justifyContent: "space-evenly",
         }}
       >
         <Box sx={{ width: '26.66%', marginRight: 'auto'}}>
