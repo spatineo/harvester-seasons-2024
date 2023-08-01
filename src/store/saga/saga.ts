@@ -40,7 +40,7 @@ export function* triggerCheckUpdate({
 		const tenYearsTimeSpan = utils.addTenYears(new Date(), 10).toISOString();
 		yield put(
 			actions.setTimeEndStartSpan({
-				start_time: new Date().toISOString(),
+				start_time: utils.backDateMonths(new Date(), 6).toISOString(),
 				end_time: tenYearsTimeSpan,
 				time_step: 1440, // one week
 			})
@@ -50,10 +50,10 @@ export function* triggerCheckUpdate({
 		yield put({ type: constants.SOILWETNESS_API });
 		yield put({ type: constants.SNOWHEIGHT_API });
 	} else {
-		const sixMonthsSpan = utils.addSixMonths(new Date(), 6).toISOString();
+		const sixMonthsSpan = utils.addMonths(new Date(), 6).toISOString();
 		yield put(
 			actions.setTimeEndStartSpan({
-				start_time: new Date().toISOString(),
+				start_time: utils.backDateMonths(new Date(), 6).toISOString(),
 				end_time: sixMonthsSpan,
 				time_step: 24 * 60, // 24 hours
 			})
@@ -104,7 +104,7 @@ export function* fetchTrafficabilityDataSaga({
 	const checked = yield select((state: RootState) => state.global.checked);
 	const parameters = checked
 		? yield select((state: RootState) => state.global.parameters.tenYearParams.trafficability)
-		: yield select((state: RootState) => state.global.parameters.sixMonthParams.trafficability);
+		: yield select((state: RootState) => state.global.parameters.twelveMonthParams.trafficability);
 
 	const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
 	const modifiedEndDate = new Date(startEndTimeSpan.end_time).toISOString();
@@ -157,7 +157,7 @@ export function* soilTemperatureDataSaga(): SagaIterator {
 	const checked = yield select((state: RootState) => state.global.checked);
 	const parameters = checked
 		? yield select((state: RootState) => state.global.parameters.tenYearParams.soilTemperature)
-		: yield select((state: RootState) => state.global.parameters.sixMonthParams.soilTemperature);
+		: yield select((state: RootState) => state.global.parameters.twelveMonthParams.soilTemperature);
 
 	try {
 		const response = yield call(
@@ -193,7 +193,7 @@ export function* fetchSoilWetnessDataSaga(): SagaIterator {
 	const checked = yield select((state: RootState) => state.global.checked);
 	const parameters = checked
 		? yield select((state: RootState) => state.global.parameters.tenYearParams.soilWetness)
-		: yield select((state: RootState) => state.global.parameters.sixMonthParams.soilWetness);
+		: yield select((state: RootState) => state.global.parameters.twelveMonthParams.soilWetness);
 	try {
 		const response = yield call(
 			axios.get,
@@ -228,7 +228,7 @@ export function* fetchSnowHeightDataSaga(): SagaIterator {
 	const checked = yield select((state: RootState) => state.global.checked);
 	const parameters = checked
 		? yield select((state: RootState) => state.global.parameters.tenYearParams.snowHeight)
-		: yield select((state: RootState) => state.global.parameters.sixMonthParams.snowHeight);
+		: yield select((state: RootState) => state.global.parameters.twelveMonthParams.snowHeight);
 
 	try {
 		const response = yield call(
