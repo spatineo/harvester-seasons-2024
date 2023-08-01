@@ -136,21 +136,21 @@ const Graphs = () => {
       if (!checked) {
         const soilWetness = createOptions(
           { title: "Soil Wetness" },
-          graphParameters.sixMonthParams.soilWetness,
+          graphParameters.twelveMonthParams.soilWetness,
           soilWetnessData,
           markLineDate,
           [0, 0, 16, 0]
         );
         const soilTemperature = createOptions(
           { title: "Soil Temperature" },
-          graphParameters.sixMonthParams.soilTemperature,
+          graphParameters.twelveMonthParams.soilTemperature,
           soilTemperatureData,
           markLineDate,
           [0, 0, 16, 0]
         );
         const snowHeight = createOptions(
           { title: "Snow Height" },
-          graphParameters.sixMonthParams.snowHeight,
+          graphParameters.twelveMonthParams.snowHeight,
           snowHeightData,
           markLineDate,
           [0, 0, 22, 0]
@@ -189,9 +189,9 @@ const Graphs = () => {
     soilWetnessData,
     snowHeightData,
     soilTemperatureData,
-    graphParameters.sixMonthParams.soilWetness,
-    graphParameters.sixMonthParams.soilTemperature,
-    graphParameters.sixMonthParams.snowHeight,
+    graphParameters.twelveMonthParams.soilWetness,
+    graphParameters.twelveMonthParams.soilTemperature,
+    graphParameters.twelveMonthParams.snowHeight,
     graphParameters.tenYearParams.soilTemperature,
     graphParameters.tenYearParams.snowHeight,
     graphParameters.tenYearParams.soilWetness,
