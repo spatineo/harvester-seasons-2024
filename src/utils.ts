@@ -9,8 +9,14 @@ export function addTenYears(date: Date, years: number) {
   return date;
 }
 
-export function addSixMonths(date: Date, months: number) {
+export function addMonths(date: Date, months: number) {
   const newDate = new Date(date.setMonth(date.getMonth() + months));
+  return newDate;
+}
+
+export function backDateMonths(date: Date, months: number) {
+  const newDate = new Date(date); 
+  newDate.setMonth(date.getMonth() - months);
   return newDate;
 }
 
