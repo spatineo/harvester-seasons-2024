@@ -121,7 +121,16 @@ export function createOptions(
       }
     },
     xAxis: {
-      type: "time"
+      type: "time",
+      axisLabel: {
+        formatter: (value: Date) => {
+          const date = new Date(value);
+          const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+          const month = monthNames[date.getMonth()];
+          const year = date.getFullYear();
+          return `${month} ${year}`;
+        }
+      }
     },
     series: [
       {
@@ -232,6 +241,16 @@ export function createTrafficabilityGraphOptions(parameters: Parameter[], values
     },
     xAxis: {
       type: "time",
+      axisLabel: {
+        formatter: (value: Date) => {
+        const date = new Date(value);
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const month = monthNames[date.getMonth()];
+        const year = date.getFullYear();
+        return `${month} ${year}`;
+      }
+    }
+      
     },
     series: [
       {
