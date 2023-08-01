@@ -46,14 +46,14 @@ function MainViewComponent() {
     if (trafficability) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       const trafficabilityOption = createTrafficabilityGraphOptions(
-        graphParameters.sixMonthParams.trafficability,
+        graphParameters.twelveMonthParams.trafficability,
         trafficability,
         mark
       );
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       setTrafficabilityGraphOption(trafficabilityOption);
     }
-  }, [trafficability, graphParameters.sixMonthParams.trafficability, mark]);
+  }, [trafficability, graphParameters.twelveMonthParams.trafficability, mark]);
 
   const handleClick = () => {
     setOpen(!open);
