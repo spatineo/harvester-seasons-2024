@@ -19,7 +19,7 @@ const SwitchComponent: FC = () => {
 					sx={{ margin: '0rem' }}
 				/>
 				<Typography sx={{ fontFamily: 'Lato' }} component={'span'}>
-					Turn on to change timestep between 6 months and 10 years{' '}
+					Turn on to change timestep between 1 year and 10 years{' '}
 				</Typography>
 			</Box>
 		</Box>

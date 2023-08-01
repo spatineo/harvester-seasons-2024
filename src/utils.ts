@@ -9,8 +9,14 @@ export function addTenYears(date: Date, years: number) {
   return date;
 }
 
-export function addSixMonths(date: Date, months: number) {
+export function addMonths(date: Date, months: number) {
   const newDate = new Date(date.setMonth(date.getMonth() + months));
+  return newDate;
+}
+
+export function backDateMonths(date: Date, months: number) {
+  const newDate = new Date(date); 
+  newDate.setMonth(date.getMonth() - months);
   return newDate;
 }
 
@@ -115,7 +121,16 @@ export function createOptions(
       }
     },
     xAxis: {
-      type: "time"
+      type: "time",
+      axisLabel: {
+        formatter: (value: Date) => {
+          const date = new Date(value);
+          const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+          const month = monthNames[date.getMonth()];
+          const year = date.getFullYear();
+          return `${month} ${year}`;
+        }
+      }
     },
     series: [
       {
@@ -226,6 +241,16 @@ export function createTrafficabilityGraphOptions(parameters: Parameter[], values
     },
     xAxis: {
       type: "time",
+      axisLabel: {
+        formatter: (value: Date) => {
+        const date = new Date(value);
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const month = monthNames[date.getMonth()];
+        const year = date.getFullYear();
+        return `${month} ${year}`;
+      }
+    }
+      
     },
     series: [
       {
