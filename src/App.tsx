@@ -6,6 +6,9 @@ import MainViewComponent from "./MainView/MainViewComponent";
 import PrivacyPolicy from "./PrivacyPolicy/PrivacyPolicy";
 import HarvesterDashBoard from "./HarvesterDashBoard/HarvesterDashBoard";
 import LeafletComponent from "./LeafletMap/LeafletMap";
+import MaastoLayer from "./LeafletMap/MaastoLayer";
+import LayerControl from "./LeafletMap/LayerControl";
+import { tileLayer } from "./LeafletMap/MaastoLayer";
 import "ol/ol.css";
 import "ol-layerswitcher/dist/ol-layerswitcher.css";
 import "./App.css";
@@ -17,7 +20,10 @@ function App() {
         <Route path="/" element={<HarvesterDashBoard />}>
           <Route path="/" element={<MainViewComponent />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/leaflet" element={<LeafletComponent />} />
+          <Route path="/leaflet" element={<LeafletComponent>
+            <MaastoLayer/>
+            <LayerControl maasto={tileLayer} thunder={ tileLayer } />
+          </LeafletComponent>} />
         </Route>
       </Routes>
     </div>
