@@ -26,15 +26,21 @@ const initialState: GlobalStateProps = {
   parameters: {
     twelveMonthParams: {
       trafficability: [
-        { code: "TSOIL-K:ECBSF:::7:1:0" },
-        ...trafficabilityApiParams
+        { code: "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}" },
+        { code: "HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}" },
+        { code: "ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}" },
+        { code: "ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}" }
       ],
       soilWetness: [...soilWetnessParams, { code: "SWVL2-M3M3:SMARTMET:5015" }],
       soilTemperature: [
         ...soilTemperaturCodeArray,
         { code: "K2C{TSOIL-K:ECBSF:::7:1:0}" }
       ],
-      snowHeight: [{ code: "HSNOW-M:ECBSF::1:0:1:0" },{ code: "HSNOW-M:SMARTOBS:13:4"}, ...soilHeightParams]
+      snowHeight: [
+        { code: "HSNOW-M:ECBSF::1:0:1:0" },
+        { code: "HSNOW-M:SMARTOBS:13:4" },
+        ...soilHeightParams
+      ]
     },
     tenYearParams: {
       trafficability: [
@@ -98,12 +104,12 @@ const globalSlice = createSlice({
       state.snowHeightData = action.payload;
     },
     setMarkLine: (state, action: PayloadAction<string>) => {
-      const modifyDate = new Date(action.payload).toISOString()
-      state.markLine = modifyDate
+      const modifyDate = new Date(action.payload).toISOString();
+      state.markLine = modifyDate;
     },
     setOpacity: (state, action: PayloadAction<number>) => {
-      state.opacityValue = action.payload
-    },
+      state.opacityValue = action.payload;
+    }
   }
 });
 
