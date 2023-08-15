@@ -11,11 +11,9 @@ import { useAppSelector, useRootDispatch } from "../store/hooks";
 import { RootState } from "../store/store";
 import { TimelineControlStyle } from "../types";
 import HarvesterSeasons from "../HarvesterChartComponent/HarvesterChartComponent";
-import {
-  getDatesForDuration,
-  setDateTwoDaysAhead,
-  createOptions,
-} from "../utils";
+import { createOptions } from "../utils/graphHelpers";
+import {getDatesForDuration,
+  setDateTwoDaysAhead } from "../utils/helpers"
 import { actions } from "../globalSlice";
 
 export interface Time {
@@ -199,7 +197,7 @@ const Graphs = () => {
   ]);
 
   return (
-    <Box sx={{ position: 'relative', top: '2rem'}}>
+    <Box sx={{ position: "relative", top: "2rem" }}>
       <Box sx={{ fontFamily: "Lato" }}>
         {new Date(markLineValue).toLocaleDateString()}
       </Box>
