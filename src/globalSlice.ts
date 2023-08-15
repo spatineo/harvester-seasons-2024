@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { GlobalStateProps, Smartmet } from "./types";
-import * as utils from "./utils";
+import * as utils from "./utils/helpers";
 
 const intialEndDateSixMonths = utils.addMonths(new Date(), 6).toISOString();
 const startDate = utils.backDateMonths(new Date(), 6).toISOString();
