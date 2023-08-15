@@ -16,7 +16,7 @@ import { RootState } from "../store/store";
 import { LanguageOptions } from "../Lang/languageSlice";
 import { languages } from "../Lang/languages";
 import testimonial from "../assets/testimonial_metsateho1.png";
-import { createTrafficabilityGraphOptions } from "../utils";
+import { createTrafficabilityGraphOptions } from "../utils/graphHelpers";
 import { actions } from "../globalSlice";
 
 function MainViewComponent() {
@@ -28,6 +28,7 @@ function MainViewComponent() {
   const trafficability = useAppSelector(
     (state: RootState) => state.global.trafficabilityData
   );
+ 
   const graphParameters = useAppSelector(
     (state: RootState) => state.global.parameters
   );
