@@ -3,11 +3,11 @@ import React from 'react';
 import { Slider, Box, Typography } from '@mui/material';
 import { useAppSelector, useRootDispatch } from '../store/hooks';
 import { RootState } from '../store/store';
-import { actions } from '../globalSlice';
+import { mapActions } from '../MapComponent/MapComponentSlice';
 
 const OpacityComponent: React.FC = () => {
 	const dispatch = useRootDispatch();
-	const opacityValue = useAppSelector((state: RootState) => state.global.opacityValue);
+	const opacityValue = useAppSelector((state: RootState) => state.mapState.opacityValue);
  
 	return (
     <Box width={300} sx={{ display: 'flex', flexDirection: 'row', gap: '1em', position: 'relative', top: '2rem'}}>
@@ -17,7 +17,7 @@ const OpacityComponent: React.FC = () => {
         aria-label="Opacity"
         onChange={(event: Event, newValue: number | number[]) => {
           if(typeof newValue === 'number'){
-            dispatch(actions.setOpacity(newValue))
+            dispatch(mapActions.setOpacity(newValue))
           }
         }}
       />
