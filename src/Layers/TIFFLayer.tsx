@@ -50,7 +50,7 @@ function colorExpression() {
 const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
   const { map } = useContext(MapContext);
   const opacityValue = useAppSelector(
-    (state: RootState) => state.global.opacityValue
+    (state: RootState) => state.mapState.opacityValue
   );
 
   useEffect(() => {
