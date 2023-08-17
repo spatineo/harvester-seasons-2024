@@ -28,7 +28,7 @@ function MainViewComponent() {
   const trafficability = useAppSelector(
     (state: RootState) => state.global.trafficabilityData
   );
- 
+
   const graphParameters = useAppSelector(
     (state: RootState) => state.global.parameters
   );
@@ -61,25 +61,25 @@ function MainViewComponent() {
   };
 
   return (
-    <Box>
-      <Container maxWidth="lg">
-        <Box>
-          <ListItemButton
-            onClick={handleClick}
-            style={{ paddingLeft: "0px", width: "26%" }}
-          >
-            {open ? <ExpandLess /> : <ExpandMore />}{" "}
-            {languages.info[information.en as keyof LanguageOptions]}
-          </ListItemButton>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ width: "80%", margin: "2rem auto" }}>
-              <Box component="img" src={testimonial} sx={{ width: "80%" }} />
-            </Box>
-            <Box>
-              {languages.overviewBody[information.en as keyof LanguageOptions]}
-            </Box>
-          </Collapse>
-        </Box>
+    <Container maxWidth="lg">
+      <Box>
+        <ListItemButton
+          onClick={handleClick}
+          style={{ paddingLeft: "0px", width: "26%" }}
+        >
+          {open ? <ExpandLess /> : <ExpandMore />}{" "}
+          {languages.info[information.en as keyof LanguageOptions]}
+        </ListItemButton>
+        <Collapse in={open} timeout="auto" unmountOnExit>
+          <Box sx={{ width: "80%", margin: "2rem auto" }}>
+            <Box component="img" src={testimonial} sx={{ width: "80%" }} />
+          </Box>
+          <Box>
+            {languages.overviewBody[information.en as keyof LanguageOptions]}
+          </Box>
+        </Collapse>
+      </Box>
+      <Box>
         {trafficability.length > 0 ? (
           <TraficabilityGraph
             option={trafficabilityGraphOption}
@@ -90,27 +90,28 @@ function MainViewComponent() {
         ) : (
           <Box className="loading"> Loading ....</Box>
         )}
-        <SwitchComponent />
-        <HarvesterMap />
-        <Box
-          sx={{
-            width: "30%",
-            marginLeft: "auto",
-            marginRight: "auto",
-            position: "relative",
-          }}
-        >
-          <OpacityComponent />
-        </Box>
-        <Box sx={{ position: "relative", top: "4rem" }}>
-          <CarbonText />
-        </Box>
-        <Box sx={{ top: "4rem", position: "relative" }}>
-          <GraphView />
-        </Box>
-        <Box sx={{ marginTop: "2rem" }}></Box>
-      </Container>
-    </Box>
+      </Box>
+
+      <SwitchComponent />
+      <HarvesterMap />
+      <Box
+        sx={{
+          width: "30%",
+          marginLeft: "auto",
+          marginRight: "auto",
+          position: "relative",
+        }}
+      >
+        <OpacityComponent />
+      </Box>
+      <Box sx={{ position: "relative", top: "4rem" }}>
+        <CarbonText />
+      </Box>
+      <Box sx={{ top: "4rem", position: "relative" }}>
+        <GraphView />
+      </Box>
+      <Box sx={{ marginTop: "2rem" }}></Box>
+    </Container>
   );
 }
 export default MainViewComponent;

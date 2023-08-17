@@ -27,7 +27,9 @@ export function createTrafficabilityGraphOptions(
   const trafficabilityOptionData: EChartOption = {
     legend: {},
     grid: {
-      height: "80px"
+      show: true,
+      left: 46,
+      width: "94%"
     },
     tooltip: {
       trigger: "axis"
@@ -41,6 +43,7 @@ export function createTrafficabilityGraphOptions(
     },
     xAxis: {
       type: "time",
+      splitNumber: 12,
       axisLabel: {
         formatter: (value: Date) => {
           const date = new Date(value);
@@ -139,7 +142,10 @@ export function createOptions(
   return {
     animation: false,
     animationThreshold: 1,
-    grid: {},
+    grid: {
+      left: 46,
+      width: "98%"
+    },
     tooltip: {
       trigger: "item"
     },
@@ -152,6 +158,7 @@ export function createOptions(
     },
     xAxis: {
       type: "time",
+      splitNumber: 12,
       axisLabel: {
         formatter: (value: Date) => {
           const date = new Date(value);

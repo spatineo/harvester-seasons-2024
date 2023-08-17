@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Map } from '../types';
 
 export interface MapPosition {
 	lat: number | null;
@@ -6,11 +7,8 @@ export interface MapPosition {
 	resolution: number;
 }
 
-export interface MapState {
-	position: MapPosition;
-}
-
-const initialState: MapState = {
+const initialState: Map = {
+	opacityValue: 70,
 	position: {
 		lat: null,
 		lon: null,
@@ -26,9 +24,13 @@ const mapComponentSlice = createSlice({
 			state.position.lat = action.payload.lat;
 			state.position.lon = action.payload.lon;
 		},
+		setOpacity: (state, action: PayloadAction<number>) => {
+      state.opacityValue = action.payload;
+    },
 	},
 });
 
 export const mapActions = { ...mapComponentSlice.actions };
 export default mapComponentSlice.reducer;
-export type ReduxActions = ReturnType<typeof mapActions.setPosition>;
+export type ReduxActions = ReturnType<typeof mapActions.setPosition>
+| ReturnType<typeof mapActions.setOpacity>;

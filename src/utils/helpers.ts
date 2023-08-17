@@ -13,6 +13,13 @@ export function addMonths(date: Date, months: number) {
   return newDate;
 }
 
+export function getStartDateOfJune() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const startDate = new Date(year, 11, 1);
+  return startDate;
+}
+
 export function backDateMonths(date: Date, months: number) {
   const newDate = new Date(date);
   newDate.setMonth(date.getMonth() - months);
@@ -57,6 +64,7 @@ export function soilWetnesstApiParams() {
   }
   return arr;
 }
+
 export function getValueFromRedux(value: StartEndTimeSpan): StartEndTimeSpan {
   const startEndTimeSpan = value;
   return startEndTimeSpan;
@@ -67,7 +75,7 @@ export function asStartEndTimeSpan(value: StartEndTimeSpan): StartEndTimeSpan {
   return startEndTimeSpan;
 }
 
-export function getDatesForDuration(
+export function getDatesForTimelineDuration(
   startDate: Date,
   duration: number,
   isMonths: boolean
@@ -177,21 +185,22 @@ export function dataScaled(scaledData: any[], value: string) {
   }
 
   let swvl2SmartMet = null;
-  let foundNonNull = false;
+  const foundObject = scaledData.find(
+    (obj) => obj["SWVL2-M3M3:SMARTMET:5015"] !== null
+  );
 
-  scaledData.forEach((obj) => {
-    if (!foundNonNull && obj["SWVL2-M3M3:SMARTMET:5015"] !== null) {
-      swvl2SmartMet = obj["SWVL2-M3M3:SMARTMET:5015"];
-      foundNonNull = true;
-    }
-  });
+  if (foundObject) {
+    swvl2SmartMet = foundObject["SWVL2-M3M3:SMARTMET:5015"];
+  }
 
   if (firstNonNull) {
     for (const key in firstNonNull) {
       if (Number(firstNonNull[key]) && swvl2SmartMet !== null) {
-        const tmp = firstNonNull[key] - swvl2SmartMet
-        console.log(key , ': ' ,firstNonNull[key])
-        dataSWscaled.push((firstNonNull[key] - (firstNonNull[key] - swvl2SmartMet)));
+        const tmp = firstNonNull[key] - swvl2SmartMet;
+        console.log(key, ": ", firstNonNull[key]);
+        dataSWscaled.push(
+          firstNonNull[key] - (firstNonNull[key] - swvl2SmartMet)
+        );
       }
     }
   }
@@ -244,4 +253,16 @@ export function harvidx(
     }
   }
   return resultseries;
+}
+
+export function increaseByOneYear(date: Date, years: number) {
+  const newDate = new Date(date);
+  newDate.setFullYear(newDate.getFullYear() + years);
+  return newDate;
+}
+
+export function decreaseByOneYear(date: Date, years: number) {
+  const newDate = new Date(date);
+  newDate.setFullYear(newDate.getFullYear() - years);
+  return newDate;
 }
