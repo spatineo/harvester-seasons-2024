@@ -23,7 +23,8 @@ export interface StartEndTimeSpan {
 }
 
 export interface GlobalStateProps {
-  opacityValue: number
+  hideNext: boolean;
+  changeYear: string;
   markLine: string;
   startEndTimeSpan: StartEndTimeSpan;
   trafficabilityData: [];
@@ -48,9 +49,10 @@ export interface GlobalStateProps {
 }
 
 export interface Map {
+  opacityValue: number;
   position: {
-    lat: number;
-    lon: number;
+    lat: number | null;
+    lon: number | null;
     resolution: number;
   };
 }
