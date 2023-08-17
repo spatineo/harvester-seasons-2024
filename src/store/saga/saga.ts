@@ -65,6 +65,45 @@ export function* triggerCheckUpdate({
   }
 }
 
+export function* triggerTimeSpanChange({
+  payload
+}: ReturnType<typeof actions.changeYear>): SagaIterator {
+  //const previousOrNext = yield select((state: RootState) => state.global.sta)
+  const start = yield select(
+    (state: RootState) => state.global.startEndTimeSpan
+  );
+
+  if (payload === "next") {
+    yield put(
+      actions.setTimeEndStartSpan({
+        start_time: utils
+          .increaseByOneYear(new Date(start.start_time), 1)
+          .toISOString(),
+        end_time: utils
+          .increaseByOneYear(new Date(start.end_time), 1)
+          .toISOString(),
+        time_step: 24 * 60
+      })
+    );
+  } else if (payload === "previous") {
+    yield put(
+      actions.setTimeEndStartSpan({
+        start_time: utils
+          .decreaseByOneYear(new Date(start.start_time), 1)
+          .toISOString(),
+        end_time: utils
+          .decreaseByOneYear(new Date(start.end_time), 1)
+          .toISOString(),
+        time_step: 24 * 60
+      })
+    );
+  }
+  yield put({ type: constants.TRAFFICABILITY_API });
+  yield put({ type: constants.SOILTEMPERATUE_API });
+  yield put({ type: constants.SOILWETNESS_API });
+  yield put({ type: constants.SNOWHEIGHT_API });
+}
+
 function createTimeSeriesQueryParameters(
   startEndTimeSpan: StartEndTimeSpan,
   parameters: Parameter[],
@@ -295,4 +334,5 @@ export function* watchHarvesterRequests(): SagaIterator {
   yield takeLatest(constants.SOILWETNESS_API, fetchSoilWetnessDataSaga);
   yield takeLatest(constants.SOILTEMPERATUE_API, soilTemperatureDataSaga);
   yield takeLatest(constants.SNOWHEIGHT_API, fetchSnowHeightDataSaga);
+  yield takeLatest(actions.changeYear.type, triggerTimeSpanChange);
 }
