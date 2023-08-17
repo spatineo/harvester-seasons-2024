@@ -2,8 +2,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { GlobalStateProps, Smartmet } from "./types";
 import * as utils from "./utils/helpers";
 
-const intialEndDateSixMonths = utils.addMonths(new Date(), 6).toISOString();
-const startDate = utils.backDateMonths(new Date(), 6).toISOString();
+const intialEndDateSixMonths = utils.addMonths(utils.getStartDateOfJune(), 7).toISOString();
+const startDate = utils.backDateMonths(utils.getStartDateOfJune(), 5).toISOString();
 const soilTemperaturCodeArray = utils.soilTemperatureCode([]);
 const trafficabilityApiParams = utils.trafficabilityApiParams();
 const soilHeightParams = utils.snowHeightApiParams();
@@ -11,7 +11,8 @@ const soilWetnessParams = utils.soilWetnesstApiParams();
 const marked = new Date(utils.setDateTwoDaysAhead()).toISOString();
 
 const initialState: GlobalStateProps = {
-  opacityValue: 70,
+  hideNext: false,
+  changeYear: "",
   markLine: marked,
   startEndTimeSpan: {
     start_time: startDate,
@@ -107,8 +108,11 @@ const globalSlice = createSlice({
       const modifyDate = new Date(action.payload).toISOString();
       state.markLine = modifyDate;
     },
-    setOpacity: (state, action: PayloadAction<number>) => {
-      state.opacityValue = action.payload;
+    changeYear: (state, action: PayloadAction<string>) => {
+      state.changeYear = action.payload;
+    },
+    changeHideNextArrowState: (state, action: PayloadAction<boolean>) => {
+      state.hideNext = action.payload;
     }
   }
 });
@@ -123,4 +127,5 @@ export type ReduxActions =
   | ReturnType<typeof actions.setSoilTemperatureData>
   | ReturnType<typeof actions.setCheckedButton>
   | ReturnType<typeof actions.setMarkLine>
-  | ReturnType<typeof actions.setOpacity>;
+  | ReturnType<typeof actions.changeHideNextArrowState>
+  | ReturnType<typeof actions.changeYear>;
