@@ -34,6 +34,32 @@ interface LayerInfo {
 	url: string
 }
 
+const TIME_DIMENSION_PERIOD_MATCHER = /([0-9-T:Z]+)\/([0-9-T:Z]+)\/(P.*)/
+
+function getLatestTimestamp(layerInfo : LayerInfo) {
+	const values = layerInfo.layer.Dimension.find((d) => d.name === 'time')?.values
+
+	if (!values) {
+		// No time dimension
+		return;
+	}
+
+	const periodMatch = TIME_DIMENSION_PERIOD_MATCHER.exec(values)
+	if (periodMatch) {
+		return new Date(periodMatch[2]) // latest date = end of period
+	}
+
+	const availableTimestamps = values.split(',').map((timeStr) => new Date(timeStr));
+
+	if (availableTimestamps.length === 0) {
+		return;
+	}
+
+	availableTimestamps.sort((a, b) => a.getTime()- b.getTime() );
+
+	return availableTimestamps[availableTimestamps.length-1]
+}
+
 const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl}) => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const { map } = useContext(MapContext);
@@ -63,17 +89,12 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl}) => {
 
 		if (!map || !layerInfo) return;
 
-		const availableTimestamps = layerInfo.layer.Dimension.find((d) => d.name === 'time')?.values.split(',').map((timeStr) => new Date(timeStr));
+		const timeStamp = getLatestTimestamp(layerInfo);
 
-		if (!availableTimestamps || availableTimestamps.length === 0) {
+		if (!timeStamp) {
 			return;
 		}
-		
-		availableTimestamps.sort((a, b) => a.getTime()- b.getTime() );
-		
-		
-		const timeStamp = availableTimestamps[availableTimestamps.length-1]
-				
+
 		const time = timeStamp.toISOString().replace(/[:-]/g,'').substring(0,15)
 
 		const layer = new TileLayer({
