@@ -15,8 +15,11 @@ import OSMLayer from "../Layers/OSMLayer";
 import WMSLayer, { WMSLayerTimeStrategy } from "../Layers/WMSLayer";
 import STACLayers from "../Layers/STACLayers";
 import TIFFLayer from "../Layers/TIFFLayer";
+import { useAppSelector } from "../store/hooks";
+import { RootState } from "../store/store";
 
 const HarvesterMap: React.FC = () => {
+  const markLine = useAppSelector((state: RootState) => state.global.markLine);
   return (
     <Box>
       <MapComponent>
@@ -63,6 +66,7 @@ const HarvesterMap: React.FC = () => {
 						capabilitiesUrl='https://desm.harvesterseasons.com/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0'
             strategy={WMSLayerTimeStrategy.LatestBeforeNow}
             opacity={0.5}
+            date={markLine}
 					/>
           {/* 
 					<STACLayers 

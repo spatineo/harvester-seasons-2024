@@ -217,7 +217,7 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl, strategy
 
 		const tmp = timeStamp.toISOString().replace(/[:-]/g,'').substring(0,15)
 		setTime(tmp)
-	}, [layerInfo, strategy])
+	}, [layerInfo, strategy, date])
 
 	useEffect(() => {
 		// add try catch
