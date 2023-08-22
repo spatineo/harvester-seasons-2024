@@ -89,7 +89,6 @@ const TraficabilityGraphComponent: React.FC<
           const dataIndex = params.dataIndex;
           const dataValue = series.data[dataIndex];
           // console.log(`Hovered over ${seriesName}: ${dataValue}`);
-          console.log(`${seriesName}`);
         }
       }
     };
@@ -101,7 +100,7 @@ const TraficabilityGraphComponent: React.FC<
       return;
     }
 
-    const handleMouseover = (params: any) => {
+    const handleMouseover = (params) => {
       const xAxisData = chart.convertFromPixel({ seriesIndex: 0 }, [
         params.offsetX,
         params.offsetY,
@@ -125,10 +124,9 @@ const TraficabilityGraphComponent: React.FC<
       sx={{ width: "96%", display: "flex", flex: "row", alignItems: "center" }}
     >
       <ArrowBackIos
-        onClick={handleBackClick}
         onMouseOut={handleArrowMouseout}
         onMouseOver={handleArrowMouseover}
-        onDoubleClick={() => handleDoubleClick("prev")}
+        onClick={() => handleDoubleClick("prev")}
         color={arrowColor}
         fontSize="large"
       />
@@ -142,7 +140,7 @@ const TraficabilityGraphComponent: React.FC<
           fontSize="large"
           onMouseOut={handleArrowMouseout}
           onMouseOver={handleArrowMouseover}
-          onDoubleClick={() => handleDoubleClick("next")}
+          onClick={() => handleDoubleClick("next")}
         />
       )}
     </Box>

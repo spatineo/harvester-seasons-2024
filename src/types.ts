@@ -1,5 +1,6 @@
 export interface HarvesterChartProps {
   option: {};
+  height: number;
 }
 
 export interface GraphOptions {

@@ -54,6 +54,7 @@ function parseISODuration(s) : Duration {
 	// QnD validation of string, need something smarter
 	// Should check tokens, order and values
 	// e.g. decimals only in smallest unit, W excludes other date parts
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 	if (!/^P/.test(s)) return {};
 
 	// Split into parts

@@ -8,9 +8,10 @@ import {  EChartOption } from 'echarts'
 
 interface ChartProps {
   option: EChartOption;
+  height: number;
 }
 
-const EchartsCompoent: React.FC<ChartProps> = ({ option }) => {
+const EchartsCompoent: React.FC<ChartProps> = ({ option, height }) => {
   const chartRef = useRef<HTMLDivElement>(null)
   const [chart, setChart] = useState<echarts.ECharts | null>(null)
 
@@ -34,7 +35,7 @@ const EchartsCompoent: React.FC<ChartProps> = ({ option }) => {
   }, [chart, option])
 
     return (
-    <Box ref={chartRef} style={{ width: '100%', height: '300px' }}></Box>
+    <Box ref={chartRef} style={{ width: '100%', height: `${height}px` }}></Box>
   )
 }
 

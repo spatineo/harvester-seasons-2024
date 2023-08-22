@@ -5,13 +5,14 @@ import { HarvesterChartProps } from '../types';
 
 const HarvesterSeasons: React.FC<HarvesterChartProps> = ({
 	option,
+	height
 }) => {
 	
 	return (
 		<Box>
 			{
 				option ? (
-					<EchartsComponent option={option} />
+					<EchartsComponent option={option} height={height} />
 				) :
 				(<Box>No data</Box>)
 			}
