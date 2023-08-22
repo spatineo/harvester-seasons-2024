@@ -45,7 +45,9 @@ const Graphs = () => {
   );
   const [snowHeightOption, setSnowHeightOption] = useState<null | {}>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
-  const [timelineGraph, setTimelineGraph] = useState<null | echarts.ECharts>(null);
+  const [timelineGraph, setTimelineGraph] = useState<null | echarts.ECharts>(
+    null
+  );
   const start = setDateTwoDaysAhead();
   const [markLineValue, setMarkLineValue] = useState<string>(start);
   const dispatch = useRootDispatch();
@@ -101,7 +103,7 @@ const Graphs = () => {
     if (timelineGraph) {
       timelineGraph.on("timelinechanged", function (params: any) {
         const value = params.currentIndex; // get the index of the current data point
-        const timelineData = (option?.timeline?.data as string[]) || []
+        const timelineData = (option?.timeline?.data as string[]) || [];
         if (timelineData[value]) {
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           dispatch(actions.setMarkLine(`${timelineData[value]}`));
@@ -110,7 +112,7 @@ const Graphs = () => {
       });
     }
   }, [timelineGraph]);
-  
+
   useEffect(() => {
     if (!timelineRef.current) {
       throw Error("Echarts not available");
@@ -207,6 +209,7 @@ const Graphs = () => {
         ) : (
           <HarvesterSeasons
             option={soilWetnessOption !== null ? soilWetnessOption : {}}
+            height={300}
           />
         )}
       </Box>
@@ -216,6 +219,7 @@ const Graphs = () => {
         ) : (
           <HarvesterSeasons
             option={soilTemperatureOption !== null ? soilTemperatureOption : {}}
+            height={300}
           />
         )}
       </Box>
@@ -225,6 +229,7 @@ const Graphs = () => {
         ) : (
           <HarvesterSeasons
             option={snowHeightOption !== null ? snowHeightOption : {}}
+            height={300}
           />
         )}
       </Box>
