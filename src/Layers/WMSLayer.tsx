@@ -26,7 +26,7 @@ interface WMSLayerProps {
 	layerName: string,
 	capabilitiesUrl: string,
 	strategy: WMSLayerTimeStrategy,
-	date?: Date,
+	date?: any,
 	opacity?: number
 };
 
@@ -199,6 +199,7 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl, strategy
 			timeStamp = getLatestTimestamp(layerInfo);
 
 		} else if (strategy !== WMSLayerTimeStrategy.NoTimeDimesion) {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 			const nearest = getNearestTimestamps(layerInfo, date || new Date());
 
 			if (nearest) {
