@@ -12,7 +12,7 @@ import GeoJSON from "ol/format/GeoJSON";
 import "../Map.css";
 import LocationMarkerLayer from "../Layers/LocationMarker";
 import OSMLayer from "../Layers/OSMLayer";
-import WMSLayer from "../Layers/WMSLayer";
+import WMSLayer, { WMSLayerTimeStrategy } from "../Layers/WMSLayer";
 import STACLayers from "../Layers/STACLayers";
 import TIFFLayer from "../Layers/TIFFLayer";
 
@@ -58,11 +58,13 @@ const HarvesterMap: React.FC = () => {
               })
             }
           />
-          {/* 
 					<WMSLayer
-						layerName='gui:isobands:SWI_SWI2'
+						layerName='gui:isobands:CERRA_FFG-MS'
 						capabilitiesUrl='https://desm.harvesterseasons.com/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0'
+            strategy={WMSLayerTimeStrategy.LatestBeforeNow}
+            opacity={0.5}
 					/>
+          {/* 
 					<STACLayers 
 						title='Latvuskorkeusmalli'
 						searchUrl='https://paituli.csc.fi/geoserver/ogc/stac/search' 
