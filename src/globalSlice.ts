@@ -2,13 +2,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { GlobalStateProps, Smartmet } from "./types";
 import * as utils from "./utils/helpers";
 
-const intialEndDateSixMonths = utils.addMonths(utils.getStartDateOfJune(), 7).toISOString();
-const startDate = utils.backDateMonths(utils.getStartDateOfJune(), 5).toISOString();
+const endDate = utils.addMonths(utils.getStartSearchDate(), 12).toISOString();
+const startDate = utils.getStartSearchDate().toISOString();
 const soilTemperaturCodeArray = utils.soilTemperatureCode([]);
 const trafficabilityApiParams = utils.trafficabilityApiParams();
 const soilHeightParams = utils.snowHeightApiParams();
 const soilWetnessParams = utils.soilWetnesstApiParams();
-const marked = new Date(utils.setDateTwoDaysAhead()).toISOString();
+const marked = new Date(utils.marklineStartDate(utils.getStartSearchDate())).toISOString();
 
 const initialState: GlobalStateProps = {
   hideNext: false,
@@ -16,7 +16,7 @@ const initialState: GlobalStateProps = {
   markLine: marked,
   startEndTimeSpan: {
     start_time: startDate,
-    end_time: intialEndDateSixMonths,
+    end_time: endDate,
     time_step: 1440
   },
   trafficabilityData: [],
