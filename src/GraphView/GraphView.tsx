@@ -15,7 +15,7 @@ import { createOptions } from "../utils/graphHelpers";
 import {
   getDatesForTimelineDuration,
   marklineStartDate,
-  getStartSearchDate
+  getStartSearchDate,
 } from "../utils/helpers";
 import { actions } from "../globalSlice";
 
