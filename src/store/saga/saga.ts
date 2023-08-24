@@ -40,7 +40,7 @@ export function* triggerCheckUpdate({
     const tenYearsTimeSpan = utils.addTenYears(new Date(), 10).toISOString();
     yield put(
       actions.setTimeEndStartSpan({
-        start_time: utils.backDateMonths(new Date(), 6).toISOString(),
+        start_time:  utils.getStartSearchDate().toISOString(),
         end_time: tenYearsTimeSpan,
         time_step: 1440 // one week
       })
@@ -50,11 +50,11 @@ export function* triggerCheckUpdate({
     yield put({ type: constants.SOILWETNESS_API });
     yield put({ type: constants.SNOWHEIGHT_API });
   } else {
-    const sixMonthsSpan = utils.addMonths(new Date(), 6).toISOString();
+    const oneYear = utils.addMonths(utils.getStartSearchDate(), 12).toISOString()
     yield put(
       actions.setTimeEndStartSpan({
-        start_time: utils.backDateMonths(new Date(), 6).toISOString(),
-        end_time: sixMonthsSpan,
+        start_time:  utils.getStartSearchDate().toISOString(),
+        end_time: oneYear,
         time_step: 24 * 60 // 24 hours
       })
     );
