@@ -14,7 +14,8 @@ import HarvesterSeasons from "../HarvesterChartComponent/HarvesterChartComponent
 import { createOptions } from "../utils/graphHelpers";
 import {
   getDatesForTimelineDuration,
-  setDateTwoDaysAhead,
+  marklineStartDate,
+  getStartSearchDate
 } from "../utils/helpers";
 import { actions } from "../globalSlice";
 
@@ -22,21 +23,21 @@ export interface Time {
   utctime: string;
 }
 
-function getState(
+/* function getState(
   state: RootState,
   data: string,
   selectorFn: (state: RootState) => any
 ) {
   return selectorFn(state.global[data]);
-}
+} */
 
 const Graphs: React.FC = () => {
   //Created a function to call state data using strings  'soilTemperatureData' - option one
-  const selectedSoilTemperature = getState(
+ /*  const selectedSoilTemperature = getState(
     useAppSelector((state: RootState) => state),
     "soilTemperatureData",
     (state: RootState) => state
-  );
+  ); */
 
   //console.log(selectedSoilTemperature)
 
@@ -60,11 +61,11 @@ const Graphs: React.FC = () => {
     null
   );
   const [markLineValue, setMarkLineValue] = useState<string>(
-    setDateTwoDaysAhead()
+    marklineStartDate(getStartSearchDate())
   );
   const dispatch = useRootDispatch();
   useEffect(() => {
-    const result = new Date();
+    const result = new Date(marklineStartDate(getStartSearchDate()));
     result.setDate(result.getDate() + 2);
     const dateValue: Array<string | Date> = getDatesForTimelineDuration(
       result,
