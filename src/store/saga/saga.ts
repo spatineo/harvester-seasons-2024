@@ -40,7 +40,7 @@ export function* triggerCheckUpdate({
     const tenYearsTimeSpan = utils.addTenYears(new Date(), 10).toISOString();
     yield put(
       actions.setTimeEndStartSpan({
-        start_time:  utils.getStartSearchDate().toISOString(),
+        start_time: utils.getStartSearchDate().toISOString(),
         end_time: tenYearsTimeSpan,
         time_step: 1440 // one week
       })
@@ -50,10 +50,12 @@ export function* triggerCheckUpdate({
     yield put({ type: constants.SOILWETNESS_API });
     yield put({ type: constants.SNOWHEIGHT_API });
   } else {
-    const oneYear = utils.addMonths(utils.getStartSearchDate(), 12).toISOString()
+    const oneYear = utils
+      .addMonths(utils.getStartSearchDate(), 12)
+      .toISOString();
     yield put(
       actions.setTimeEndStartSpan({
-        start_time:  utils.getStartSearchDate().toISOString(),
+        start_time: utils.getStartSearchDate().toISOString(),
         end_time: oneYear,
         time_step: 24 * 60 // 24 hours
       })
@@ -72,8 +74,11 @@ export function* triggerTimeSpanChange({
   const start = yield select(
     (state: RootState) => state.global.startEndTimeSpan
   );
+  const markline = yield select((state: RootState) => state.global.markLine )
 
   if (payload === "next") {
+    const newDate = new Date(utils.increaseByOneYear(markline, 1)).toISOString()
+    yield put(actions.setMarkLine(newDate))
     yield put(
       actions.setTimeEndStartSpan({
         start_time: utils
@@ -85,7 +90,10 @@ export function* triggerTimeSpanChange({
         time_step: 24 * 60
       })
     );
+   
   } else if (payload === "previous") {
+    const newDate = new Date(utils.decreaseByOneYear(markline, 1)).toISOString()
+    yield put(actions.setMarkLine(newDate))
     yield put(
       actions.setTimeEndStartSpan({
         start_time: utils
