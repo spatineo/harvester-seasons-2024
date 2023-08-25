@@ -158,43 +158,27 @@ export function getOpacityFromPercentage(percentage: number): number {
   }
 }
 
-/* 
-dataSWscaled = [
-  VSW-M3M3:ECBSF:5022:9:7:0:0 - (VSW-M3M3:ECBSF:5022:9:7:0:0 - SWVL2-M3M3:SMARTMET:5015), 
-  VSW-M3M3:ECBSF:5022:9:7:0:1- (VSW-M3M3:ECBSF:5022:9:7:0:1 - SWVL2-M3M3:SMARTMET:5015), 
-  VSW-M3M3:ECBSF:5022:9:7:0:2- (VSW-M3M3:ECBSF:5022:9:7:0:2 - SWVL2-M3M3:SMARTMET:5015), 
-  ... ]
-*/
-
-export function dataScaled(scaledData: any[], value: string) {
-  const dataSWscaled: any[] = [];
-  let firstNonNull: any = null;
-
-  for (let i = 0; i < scaledData.length; i++) {
-    const obj = scaledData[i];
-    if (obj[value] !== null) {
-      firstNonNull = obj;
-      break;
-    }
-  }
-
-  let swvl2SmartMet = null;
-  const foundObject = scaledData.find(
-    (obj) => obj["SWVL2-M3M3:SMARTMET:5015"] !== null
+export function dataScaled(scaledData: Smartmet[], smartmet: string) {
+  const dataSWscaled: number[] = [];
+  const foundObject: Smartmet | undefined = scaledData.findLast(
+    //"SWVL2-M3M3:SMARTMET:5015"
+    (obj) => obj[smartmet] !== null
   );
 
-  if (foundObject) {
-    swvl2SmartMet = foundObject["SWVL2-M3M3:SMARTMET:5015"];
-  }
-
-  if (firstNonNull) {
-    for (const key in firstNonNull) {
-      if (Number(firstNonNull[key]) && swvl2SmartMet !== null) {
-        const tmp = firstNonNull[key] - swvl2SmartMet;
-        console.log(key, ": ", firstNonNull[key]);
-        dataSWscaled.push(
-          firstNonNull[key] - (firstNonNull[key] - swvl2SmartMet)
-        );
+  const smartmetValue: number | null =
+    foundObject !== undefined ? (foundObject[smartmet] as number) : null;
+  if (foundObject !== undefined) {
+    for (const key in foundObject) {
+      if (Object.prototype.hasOwnProperty.call(foundObject, key)) {
+        if (key !== smartmet && key !== "utctime" && smartmetValue !== null) {
+          if (
+            foundObject[key] !== null &&
+            typeof foundObject[key] === "number"
+          ) {
+            const newValue = foundObject[key] as number;
+            dataSWscaled.push(newValue - (newValue - smartmetValue));
+          }
+        }
       }
     }
   }
@@ -203,18 +187,18 @@ export function dataScaled(scaledData: any[], value: string) {
 
 export function harvidx(
   threshold: number,
-  datascaled: [],
+  datascaled: any[],
   ensemblelist: Array<string>,
   perturbations: number,
   smartvariable: string
 ) {
   const resultseries: Array<string | number> = [];
   let agree: number | string = 0;
-  let disagree: number | string = 0;
   let count: number | string = 0;
 
   for (let k = 0; k < datascaled.length; k++) {
     // No result when smartvariable !== null
+    console.log(datascaled[k][smartvariable], 'datascaled[k][smartvariable] ')
     if (
       datascaled[k][smartvariable] !== null ||
       datascaled[k][ensemblelist[0]] == null
@@ -224,14 +208,13 @@ export function harvidx(
       let nans = 0;
       // let threshold = 0.4;
       for (let i = 0; i <= perturbations; i++) {
-        const value = datascaled[k][ensemblelist[i]];
+        const value: number = datascaled[k][ensemblelist[i]];
         if (isNaN(value)) {
           nans++;
         } else if (value < threshold) {
           agree++;
           count++;
         } else {
-          disagree++;
           count++;
         }
       }
