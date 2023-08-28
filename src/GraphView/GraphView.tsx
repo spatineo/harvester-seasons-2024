@@ -69,7 +69,7 @@ const Graphs: React.FC = () => {
     result.setDate(result.getDate() + 2);
     const dateValue: Array<string | Date> = getDatesForTimelineDuration(
       result,
-      6,
+      11,
       true
     );
     const option: any = {
