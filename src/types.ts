@@ -82,3 +82,8 @@ export interface TimelineControlStyle {
     shadowOffsetY?: number;
   };
 }
+
+export interface DataRecord {
+  [key: string]: number | null | string;
+  utctime: string;
+}
