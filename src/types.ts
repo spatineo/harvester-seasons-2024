@@ -83,7 +83,7 @@ export interface TimelineControlStyle {
   };
 }
 
-export interface DataRecord {
+export interface RecordObject {
   [key: string]: number | null | string;
   utctime: string;
 }
