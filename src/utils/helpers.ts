@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Parameter, StartEndTimeSpan, Smartmet } from "../types";
+import { Parameter, StartEndTimeSpan, Smartmet, RecordObject } from "../types";
 
 export function addTenYears(date: Date, years: number) {
   const tenYears = new Date(date.setFullYear(date.getFullYear() + years));
@@ -14,9 +15,11 @@ export function addMonths(date: Date, months: number) {
 }
 
 export function getStartSearchDate() {
-  const today = new Date();
+ /*  const today = new Date();
   const year = today.getFullYear();
   const startDate = new Date(year, 0, 1);
+  return startDate; */
+  const startDate = new Date(2019, 5, 1); 
   return startDate;
 }
 
@@ -101,14 +104,9 @@ export function getDatesForTimelineDuration(
 }
 
 export function scaleEnsembleData(arr: Smartmet[], smartmet: string) {
-  let lastNonNull: {} | null = null;
-  for (let i = 0; i < arr.length; i++) {
-    const obj = arr[i];
-    if (obj[smartmet] !== null) {
-      lastNonNull = obj;
-      break;
-    }
-  }
+  const lastNonNull: RecordObject | undefined = arr.findLast(
+    (obj) => obj[smartmet] !== null
+  );
 
   const newArr: Smartmet[] = [];
   for (let i = 0; i < arr.length; i++) {
@@ -132,11 +130,13 @@ export function scaleEnsembleData(arr: Smartmet[], smartmet: string) {
         if (key === smartmet) {
           newObj[key] = null;
         } else if (key !== "utctime") {
+          const key1 = lastNonNull[key] as number 
+          const key2 = lastNonNull[smartmet] as number
           const currentObjValue = obj[key];
           newObj[key] =
             currentObjValue !== null && lastNonNull !== null
               ? Number(currentObjValue) -
-                (lastNonNull[key] - lastNonNull[smartmet])
+                (key1 - key2)
               : null;
         } else {
           newObj[key] = obj[key];
@@ -160,6 +160,8 @@ export function getOpacityFromPercentage(percentage: number): number {
 
 export function dataScaled(scaledData: Smartmet[], smartmet: string) {
   const dataSWscaled: number[] = [];
+  const ensembleList: string[] = [];
+  const smartId: number = scaledData.findLastIndex( (obj) => obj[smartmet] !== null)
   const foundObject: Smartmet | undefined = scaledData.findLast(
     //"SWVL2-M3M3:SMARTMET:5015"
     (obj) => obj[smartmet] !== null
@@ -171,6 +173,7 @@ export function dataScaled(scaledData: Smartmet[], smartmet: string) {
     for (const key in foundObject) {
       if (Object.prototype.hasOwnProperty.call(foundObject, key)) {
         if (key !== smartmet && key !== "utctime" && smartmetValue !== null) {
+          ensembleList.push(key);
           if (
             foundObject[key] !== null &&
             typeof foundObject[key] === "number"
@@ -182,13 +185,17 @@ export function dataScaled(scaledData: Smartmet[], smartmet: string) {
       }
     }
   }
-  return dataSWscaled;
+  return {
+    dataSWscaled,
+    ensembleList,
+    smartId
+  };
 }
 
 export function harvidx(
   threshold: number,
-  datascaled: any[],
-  ensemblelist: Array<string>,
+  datascaled: (string | number)[],
+  ensemblelist: Array<number>,
   perturbations: number,
   smartvariable: string
 ) {
@@ -198,7 +205,6 @@ export function harvidx(
 
   for (let k = 0; k < datascaled.length; k++) {
     // No result when smartvariable !== null
-    console.log(datascaled[k][smartvariable], 'datascaled[k][smartvariable] ')
     if (
       datascaled[k][smartvariable] !== null ||
       datascaled[k][ensemblelist[0]] == null
@@ -230,6 +236,40 @@ export function harvidx(
     }
   }
   return resultseries;
+}
+
+export function scalingFunction(
+  data: RecordObject[],
+  ensemblelist: string[],
+  smartIdx: number,
+  perturbations: number,
+  smartvariable1: string,
+  smartvariable2?: string
+): RecordObject[] {
+  const datascaled: RecordObject[] = [];
+  for (let i = 0; i < data.length; i++) {
+    datascaled[i] = {
+      utctime: data[i].utctime,
+      [smartvariable1]: data[i][smartvariable1]
+    };
+    if (smartvariable2 !== undefined) {
+      datascaled[i][smartvariable2] = data[i][smartvariable2];
+    }
+    for (let j = 0; j <= perturbations; j++) {
+      if (
+        data[i][ensemblelist[j]] !== null &&
+        data[smartIdx][smartvariable1] !== null
+      ) {
+        const ensembleValue = data[i][ensemblelist[j]]! as number;
+        const smartIdxValue = data[smartIdx][ensemblelist[j]]! as number;
+        const smartVariable1Value = data[smartIdx][smartvariable1]! as number;
+        datascaled[i][ensemblelist[j]] = ensembleValue - (smartIdxValue - smartVariable1Value);
+      } else {
+        datascaled[i][ensemblelist[j]] = null;
+      }
+    }
+  }
+  return datascaled;
 }
 
 export function increaseByOneYear(date: Date, years: number) {
