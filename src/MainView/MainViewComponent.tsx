@@ -18,6 +18,7 @@ import { languages } from "../Lang/languages";
 import testimonial from "../assets/testimonial_metsateho1.png";
 import { createTrafficabilityGraphOptions } from "../utils/graphHelpers";
 import { actions } from "../globalSlice";
+import { harvidx, dataScaled, scalingFunction } from "../utils/helpers";
 
 function MainViewComponent() {
   const [trafficabilityGraphOption, setTrafficabilityGraphOption] =
@@ -25,9 +26,7 @@ function MainViewComponent() {
   const [summer, setSummer] = useState<string>("");
   const [winter, setWinter] = useState<string>("");
   const dispatch = useRootDispatch();
-  const trafficability = useAppSelector(
-    (state: RootState) => state.global.trafficabilityData
-  );
+  const globalState = useAppSelector((state: RootState) => state.global);
 
   const graphParameters = useAppSelector(
     (state: RootState) => state.global.parameters
@@ -41,20 +40,40 @@ function MainViewComponent() {
     dispatch({ type: constants.SOILWETNESS_API });
     dispatch({ type: constants.SOILTEMPERATUE_API });
     dispatch({ type: constants.SNOWHEIGHT_API });
+    dispatch({ type: constants.WINDGUST_API });
   }, []);
 
   useEffect(() => {
-    if (trafficability) {
+    if (globalState.trafficabilityData || globalState.windSpeedData) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       const trafficabilityOption = createTrafficabilityGraphOptions(
         graphParameters.twelveMonthParams.trafficability,
-        trafficability,
+        globalState.trafficabilityData,
+        globalState.windSpeedData,
         mark
       );
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       setTrafficabilityGraphOption(trafficabilityOption);
     }
-  }, [trafficability, graphParameters.twelveMonthParams.trafficability, mark]);
+  }, [
+    globalState.trafficabilityData,
+    graphParameters.twelveMonthParams.trafficability,
+    mark,
+    globalState.windSpeedData,
+  ]);
+
+  useEffect(() => {
+    if (!globalState.soilWetnessData) {
+      return;
+    }
+    /*  const scaledData = dataScaled(globalState.soilWetnessData, "SWVL2-M3M3:SMARTMET:5015")
+    
+    window.console.log('scaledData.dataSWscaled',scaledData.dataSWscaled)
+    const dataSWscaled = scalingFunction(globalState.soilWetnessData, scaledData.ensembleList, scaledData.smartId, 50, "SWVL2-M3M3:SMARTMET:5015");
+    const havardx = harvidx(0.4, globalState.soilWetnessData, scaledData.dataSWscaled, 50, "SWVL2-M3M3:SMARTMET:5015");
+    window.console.log(havardx) */
+    //console.log(scaledData)
+  }, [globalState.soilWetnessData]);
 
   const handleClick = () => {
     setOpen(!open);
@@ -80,7 +99,7 @@ function MainViewComponent() {
         </Collapse>
       </Box>
       <Box>
-        {trafficability.length > 0 ? (
+        {globalState.trafficabilityData.length > 0 ? (
           <TraficabilityGraph
             option={trafficabilityGraphOption}
             onGraphClick={function (xAxisData: string): void {
