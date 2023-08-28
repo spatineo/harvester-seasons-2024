@@ -28,7 +28,7 @@ export interface GlobalStateProps {
   changeYear: string;
   markLine: string;
   startEndTimeSpan: StartEndTimeSpan;
-  windSpeed: [];
+  windSpeedData: [];
   trafficabilityData: [];
   soilWetnessData: Smartmet[];
   soilTemperatureData: [];
