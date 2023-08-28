@@ -44,7 +44,6 @@ const Graphs: React.FC = () => {
   //option two - calling the object state.gloabl once
   const globalStateObject = useAppSelector((state: RootState) => state.global);
 
-  const checked = useAppSelector((state: RootState) => state.global.checked);
   const graphParameters = useAppSelector(
     (state: RootState) => state.global.parameters
   );
@@ -147,7 +146,7 @@ const Graphs: React.FC = () => {
       globalStateObject.soilTemperatureData ||
       globalStateObject.snowHeightData
     ) {
-      if (!checked) {
+      if (!globalStateObject.checked) {
         const soilWetness = createOptions(
           { title: "Soil Wetness" },
           graphParameters.twelveMonthParams.soilWetness,
