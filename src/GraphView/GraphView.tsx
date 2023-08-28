@@ -14,7 +14,8 @@ import HarvesterSeasons from "../HarvesterChartComponent/HarvesterChartComponent
 import { createOptions } from "../utils/graphHelpers";
 import {
   getDatesForTimelineDuration,
-  setDateTwoDaysAhead,
+  marklineStartDate,
+  getStartSearchDate,
 } from "../utils/helpers";
 import { actions } from "../globalSlice";
 
@@ -22,19 +23,29 @@ export interface Time {
   utctime: string;
 }
 
-const Graphs = () => {
-  const soilTemperatureData = useAppSelector(
-    (state: RootState) => state.global.soilTemperatureData
-  );
-  const checked = useAppSelector((state: RootState) => state.global.checked);
+/* function getState(
+  state: RootState,
+  data: string,
+  selectorFn: (state: RootState) => any
+) {
+  return selectorFn(state.global[data]);
+} */
+
+const Graphs: React.FC = () => {
+  //Created a function to call state data using strings  'soilTemperatureData' - option one
+ /*  const selectedSoilTemperature = getState(
+    useAppSelector((state: RootState) => state),
+    "soilTemperatureData",
+    (state: RootState) => state
+  ); */
+
+  //console.log(selectedSoilTemperature)
+
+  //option two - calling the object state.gloabl once
+  const globalStateObject = useAppSelector((state: RootState) => state.global);
+
   const graphParameters = useAppSelector(
     (state: RootState) => state.global.parameters
-  );
-  const soilWetnessData = useAppSelector(
-    (state: RootState) => state.global.soilWetnessData
-  );
-  const snowHeightData = useAppSelector(
-    (state: RootState) => state.global.snowHeightData
   );
   const markLineDate = useAppSelector(
     (state: RootState) => state.global.markLine
@@ -48,16 +59,16 @@ const Graphs = () => {
   const [timelineGraph, setTimelineGraph] = useState<null | echarts.ECharts>(
     null
   );
-  const start = setDateTwoDaysAhead();
-  const [markLineValue, setMarkLineValue] = useState<string>(start);
+  const [markLineValue, setMarkLineValue] = useState<string>(
+    marklineStartDate(getStartSearchDate())
+  );
   const dispatch = useRootDispatch();
-
   useEffect(() => {
-    const result = new Date();
+    const result = new Date(marklineStartDate(getStartSearchDate()));
     result.setDate(result.getDate() + 2);
     const dateValue: Array<string | Date> = getDatesForTimelineDuration(
       result,
-      6,
+      11,
       true
     );
     const option: any = {
@@ -122,7 +133,6 @@ const Graphs = () => {
       height: "70",
     });
     setTimelineGraph(timeline);
-
     return () => {
       if (timeline) {
         timeline.dispose();
@@ -131,26 +141,30 @@ const Graphs = () => {
   }, [timelineRef]);
 
   useEffect(() => {
-    if (soilWetnessData || soilTemperatureData || snowHeightData) {
-      if (!checked) {
+    if (
+      globalStateObject.soilWetnessData ||
+      globalStateObject.soilTemperatureData ||
+      globalStateObject.snowHeightData
+    ) {
+      if (!globalStateObject.checked) {
         const soilWetness = createOptions(
           { title: "Soil Wetness" },
           graphParameters.twelveMonthParams.soilWetness,
-          soilWetnessData,
+          globalStateObject.soilWetnessData,
           markLineDate,
           [0, 0, 16, 0]
         );
         const soilTemperature = createOptions(
           { title: "Soil Temperature" },
           graphParameters.twelveMonthParams.soilTemperature,
-          soilTemperatureData,
+          globalStateObject.soilTemperatureData,
           markLineDate,
           [0, 0, 16, 0]
         );
         const snowHeight = createOptions(
           { title: "Snow Height" },
           graphParameters.twelveMonthParams.snowHeight,
-          snowHeightData,
+          globalStateObject.snowHeightData,
           markLineDate,
           [0, 0, 22, 0]
         );
@@ -161,21 +175,21 @@ const Graphs = () => {
         const soilWetness = createOptions(
           { title: "Soil Wetness" },
           graphParameters.tenYearParams.soilWetness,
-          soilWetnessData,
+          globalStateObject.soilWetnessData,
           markLineDate,
           [0, 0, 16, 0]
         );
         const soilTemperature = createOptions(
           { title: "Soil Temperature" },
           graphParameters.tenYearParams.soilTemperature,
-          soilTemperatureData,
+          globalStateObject.soilTemperatureData,
           markLineDate,
           [0, 0, 16, 0]
         );
         const snowHeight = createOptions(
           { title: "Snow Height" },
           graphParameters.tenYearParams.snowHeight,
-          snowHeightData,
+          globalStateObject.snowHeightData,
           markLineDate,
           [0, 0, 22, 0]
         );
@@ -185,9 +199,9 @@ const Graphs = () => {
       }
     }
   }, [
-    soilWetnessData,
-    snowHeightData,
-    soilTemperatureData,
+    globalStateObject.soilWetnessData,
+    globalStateObject.snowHeightData,
+    globalStateObject.soilTemperatureData,
     graphParameters.twelveMonthParams.soilWetness,
     graphParameters.twelveMonthParams.soilTemperature,
     graphParameters.twelveMonthParams.snowHeight,
@@ -204,7 +218,8 @@ const Graphs = () => {
       </Box>
       <Box ref={timelineRef}></Box>
       <Box>
-        {soilWetnessData && soilWetnessData.length === 0 ? (
+        {globalStateObject.soilWetnessData &&
+        globalStateObject.soilWetnessData.length === 0 ? (
           <Box className="loading">Loading ....</Box>
         ) : (
           <HarvesterSeasons
@@ -214,7 +229,8 @@ const Graphs = () => {
         )}
       </Box>
       <Box>
-        {soilTemperatureData && soilTemperatureData.length === 0 ? (
+        {globalStateObject.soilTemperatureData &&
+        globalStateObject.soilTemperatureData.length === 0 ? (
           <Box className="loading">Loading ....</Box>
         ) : (
           <HarvesterSeasons
@@ -224,7 +240,8 @@ const Graphs = () => {
         )}
       </Box>
       <Box>
-        {snowHeightData && snowHeightData.length === 0 ? (
+        {globalStateObject.snowHeightData &&
+        globalStateObject.snowHeightData.length === 0 ? (
           <Box className="loading">Loading ....</Box>
         ) : (
           <HarvesterSeasons

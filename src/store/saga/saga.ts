@@ -31,6 +31,7 @@ export function* setUserLocation({
   yield put({ type: constants.SOILTEMPERATUE_API });
   yield put({ type: constants.SOILWETNESS_API });
   yield put({ type: constants.SNOWHEIGHT_API });
+  yield put({ type: constants.WINDGUST_API});
 }
 
 export function* triggerCheckUpdate({
@@ -40,7 +41,7 @@ export function* triggerCheckUpdate({
     const tenYearsTimeSpan = utils.addTenYears(new Date(), 10).toISOString();
     yield put(
       actions.setTimeEndStartSpan({
-        start_time: utils.backDateMonths(new Date(), 6).toISOString(),
+        start_time: utils.getStartSearchDate().toISOString(),
         end_time: tenYearsTimeSpan,
         time_step: 1440 // one week
       })
@@ -49,12 +50,15 @@ export function* triggerCheckUpdate({
     yield put({ type: constants.SOILTEMPERATUE_API });
     yield put({ type: constants.SOILWETNESS_API });
     yield put({ type: constants.SNOWHEIGHT_API });
+    yield put({ type: constants.WINDGUST_API});
   } else {
-    const sixMonthsSpan = utils.addMonths(new Date(), 6).toISOString();
+    const oneYear = utils
+      .addMonths(utils.getStartSearchDate(), 12)
+      .toISOString();
     yield put(
       actions.setTimeEndStartSpan({
-        start_time: utils.backDateMonths(new Date(), 6).toISOString(),
-        end_time: sixMonthsSpan,
+        start_time: utils.getStartSearchDate().toISOString(),
+        end_time: oneYear,
         time_step: 24 * 60 // 24 hours
       })
     );
@@ -62,6 +66,7 @@ export function* triggerCheckUpdate({
     yield put({ type: constants.SOILTEMPERATUE_API });
     yield put({ type: constants.SOILWETNESS_API });
     yield put({ type: constants.SNOWHEIGHT_API });
+    yield put({ type: constants.WINDGUST_API});
   }
 }
 
@@ -72,8 +77,13 @@ export function* triggerTimeSpanChange({
   const start = yield select(
     (state: RootState) => state.global.startEndTimeSpan
   );
+  const markline = yield select((state: RootState) => state.global.markLine);
 
   if (payload === "next") {
+    const newDate = new Date(
+      utils.increaseByOneYear(markline, 1)
+    ).toISOString();
+    yield put(actions.setMarkLine(newDate));
     yield put(
       actions.setTimeEndStartSpan({
         start_time: utils
@@ -86,6 +96,10 @@ export function* triggerTimeSpanChange({
       })
     );
   } else if (payload === "previous") {
+    const newDate = new Date(
+      utils.decreaseByOneYear(markline, 1)
+    ).toISOString();
+    yield put(actions.setMarkLine(newDate));
     yield put(
       actions.setTimeEndStartSpan({
         start_time: utils
@@ -102,6 +116,7 @@ export function* triggerTimeSpanChange({
   yield put({ type: constants.SOILTEMPERATUE_API });
   yield put({ type: constants.SOILWETNESS_API });
   yield put({ type: constants.SNOWHEIGHT_API });
+  yield put({ type: constants.WINDGUST_API});
 }
 
 function createTimeSeriesQueryParameters(
@@ -127,6 +142,32 @@ function createTimeSeriesQueryParameters(
       precision: "full"
     }
   };
+}
+
+export function* fetchWindSpeedData({
+  payload
+}: ReturnType<typeof actions.setWindSpeedData>): SagaIterator {
+  const userLocation = yield select(
+    (state: RootState) => state.mapState.position
+  );
+  window.console.log(userLocation, 'use locationb')
+  const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
+    yield select((state: RootState) => state.global.startEndTimeSpan)
+  );
+  const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
+  const modifiedEndDate = new Date(startEndTimeSpan.end_time).toISOString();
+  const lat = userLocation.latitude !== null ? userLocation.latitude : 60.1891711
+  const lon = userLocation.longitude === null ? 24.9724435 : userLocation.longitude
+  const url = `https://desm.harvesterseasons.com/timeseries?latlon=60.1891711,24.9724435&param=utctime,FFG-MS:CERRA:5057:6:10:0&starttime=${modifiedStartDate}&endtime=${modifiedEndDate}&timestep=1440&format=json&source=grid&tz=utc&timeformat=xml&precision=full`;
+  try {
+    const response = yield call(axios.get, url);
+    if (response.status === 200) {
+      const tmp = response.data
+      yield put(actions.setWindSpeedData(tmp));
+    }
+  } catch (e) {
+    window.console.log(e);
+  }
 }
 
 export function* fetchTrafficabilityDataSaga({
@@ -331,6 +372,7 @@ export function* watchHarvesterRequests(): SagaIterator {
   yield takeLatest(constants.POSITION, setUserLocation);
   yield takeLatest(actions.setCheckedButton.type, triggerCheckUpdate);
   yield takeLatest(constants.TRAFFICABILITY_API, fetchTrafficabilityDataSaga);
+  yield takeLatest(constants.WINDGUST_API, fetchWindSpeedData);
   yield takeLatest(constants.SOILWETNESS_API, fetchSoilWetnessDataSaga);
   yield takeLatest(constants.SOILTEMPERATUE_API, soilTemperatureDataSaga);
   yield takeLatest(constants.SNOWHEIGHT_API, fetchSnowHeightDataSaga);

@@ -22,6 +22,7 @@ const monthNames = [
 export function createTrafficabilityGraphOptions(
   parameters: Parameter[],
   values: [],
+  wind: [],
   mark
 ) {
   const trafficabilityOptionData: EChartOption = {
@@ -29,18 +30,33 @@ export function createTrafficabilityGraphOptions(
     grid: {
       show: true,
       left: 46,
-      width: "94%"
+      width: "90%"
     },
     tooltip: {
       trigger: "axis"
     },
-    yAxis: {
-      name: "Traficability",
-      nameLocation: "middle",
-      nameTextStyle: {
-        padding: 18
+    yAxis: [
+      {
+        name: "Traficability",
+        nameLocation: "middle",
+        min: 0,
+        max: 2,
+        splitNumber: 1,
+        nameTextStyle: {
+          padding: 18
+        }
+      },
+      {
+        name: "Wind Gust",
+        nameLocation: "middle",
+        min: 0,
+        max: 28,
+        splitNumber: 1,
+        nameTextStyle: {
+          padding: 18
+        }
       }
-    },
+    ],
     xAxis: {
       type: "time",
       splitNumber: 12,
@@ -55,6 +71,7 @@ export function createTrafficabilityGraphOptions(
     },
     series: [
       {
+        symbol: "none",
         label: {
           show: false
         },
@@ -82,6 +99,7 @@ export function createTrafficabilityGraphOptions(
         areaStyle: {
           color: "rgba(0, 12, 0, 0.3)"
         },
+        yAxisIndex: 0,
         data: [
           ...values.map((t: { utctime: string; [key: string]: string }) => {
             return [
@@ -105,6 +123,7 @@ export function createTrafficabilityGraphOptions(
         areaStyle: {
           color: "rgba(0, 128, 255, 0.3)"
         },
+        yAxisIndex: 0,
         data: [
           ...values.map((t: { utctime: string; [key: string]: string }) => {
             return [
@@ -123,6 +142,19 @@ export function createTrafficabilityGraphOptions(
                   return "";
                 }
               })
+            ];
+          })
+        ]
+      },
+      {
+        type: "line",
+        name: "Wind gust",
+        yAxisIndex: 1,
+        data: [
+          ...wind.map((t: { utctime: string }) => {
+            return [
+              new Date(t.utctime).toISOString(),
+              t["FFG-MS:CERRA:5057:6:10:0"]
             ];
           })
         ]

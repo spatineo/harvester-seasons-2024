@@ -1,11 +1,12 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Parameter, StartEndTimeSpan, Smartmet } from "../types";
+import { Parameter, StartEndTimeSpan, Smartmet, RecordObject } from "../types";
 
 export function addTenYears(date: Date, years: number) {
-  date.setFullYear(date.getFullYear() + years);
-  return date;
+  const tenYears = new Date(date.setFullYear(date.getFullYear() + years));
+  return tenYears;
 }
 
 export function addMonths(date: Date, months: number) {
@@ -13,17 +14,19 @@ export function addMonths(date: Date, months: number) {
   return newDate;
 }
 
-export function getStartDateOfJune() {
-  const today = new Date();
+export function getStartSearchDate() {
+ /*  const today = new Date();
   const year = today.getFullYear();
-  const startDate = new Date(year, 11, 1);
+  const startDate = new Date(year, 0, 1);
+  return startDate; */
+  const startDate = new Date(2019, 5, 1); 
   return startDate;
 }
 
-export function backDateMonths(date: Date, months: number) {
-  const newDate = new Date(date);
-  newDate.setMonth(date.getMonth() - months);
-  return newDate;
+export function marklineStartDate(current: Date) {
+  const currentDate = new Date(current);
+  currentDate.setDate(currentDate.getDate() + 7);
+  return currentDate.toISOString().split("T")[0];
 }
 
 export function soilTemperatureCode(arr: Parameter[]) {
@@ -100,21 +103,10 @@ export function getDatesForTimelineDuration(
   return result;
 }
 
-export function setDateTwoDaysAhead() {
-  const currentDate = new Date();
-  currentDate.setDate(currentDate.getDate() + 2);
-  return currentDate.toISOString().split("T")[0];
-}
-
 export function scaleEnsembleData(arr: Smartmet[], smartmet: string) {
-  let lastNonNull: {} | null = null;
-  for (let i = 0; i < arr.length; i++) {
-    const obj = arr[i];
-    if (obj[smartmet] !== null) {
-      lastNonNull = obj;
-      break;
-    }
-  }
+  const lastNonNull: RecordObject | undefined = arr.findLast(
+    (obj) => obj[smartmet] !== null
+  );
 
   const newArr: Smartmet[] = [];
   for (let i = 0; i < arr.length; i++) {
@@ -138,11 +130,13 @@ export function scaleEnsembleData(arr: Smartmet[], smartmet: string) {
         if (key === smartmet) {
           newObj[key] = null;
         } else if (key !== "utctime") {
+          const key1 = lastNonNull[key] as number 
+          const key2 = lastNonNull[smartmet] as number
           const currentObjValue = obj[key];
           newObj[key] =
             currentObjValue !== null && lastNonNull !== null
               ? Number(currentObjValue) -
-                (lastNonNull[key] - lastNonNull[smartmet])
+                (key1 - key2)
               : null;
         } else {
           newObj[key] = obj[key];
@@ -164,59 +158,49 @@ export function getOpacityFromPercentage(percentage: number): number {
   }
 }
 
-/* 
-dataSWscaled = [
-  VSW-M3M3:ECBSF:5022:9:7:0:0 - (VSW-M3M3:ECBSF:5022:9:7:0:0 - SWVL2-M3M3:SMARTMET:5015), 
-  VSW-M3M3:ECBSF:5022:9:7:0:1- (VSW-M3M3:ECBSF:5022:9:7:0:1 - SWVL2-M3M3:SMARTMET:5015), 
-  VSW-M3M3:ECBSF:5022:9:7:0:2- (VSW-M3M3:ECBSF:5022:9:7:0:2 - SWVL2-M3M3:SMARTMET:5015), 
-  ... ]
-*/
-
-export function dataScaled(scaledData: any[], value: string) {
-  const dataSWscaled: any[] = [];
-  let firstNonNull: any = null;
-
-  for (let i = 0; i < scaledData.length; i++) {
-    const obj = scaledData[i];
-    if (obj[value] !== null) {
-      firstNonNull = obj;
-      break;
-    }
-  }
-
-  let swvl2SmartMet = null;
-  const foundObject = scaledData.find(
-    (obj) => obj["SWVL2-M3M3:SMARTMET:5015"] !== null
+export function dataScaled(scaledData: Smartmet[], smartmet: string) {
+  const dataSWscaled: number[] = [];
+  const ensembleList: string[] = [];
+  const smartId: number = scaledData.findLastIndex( (obj) => obj[smartmet] !== null)
+  const foundObject: Smartmet | undefined = scaledData.findLast(
+    //"SWVL2-M3M3:SMARTMET:5015"
+    (obj) => obj[smartmet] !== null
   );
 
-  if (foundObject) {
-    swvl2SmartMet = foundObject["SWVL2-M3M3:SMARTMET:5015"];
-  }
-
-  if (firstNonNull) {
-    for (const key in firstNonNull) {
-      if (Number(firstNonNull[key]) && swvl2SmartMet !== null) {
-        const tmp = firstNonNull[key] - swvl2SmartMet;
-        console.log(key, ": ", firstNonNull[key]);
-        dataSWscaled.push(
-          firstNonNull[key] - (firstNonNull[key] - swvl2SmartMet)
-        );
+  const smartmetValue: number | null =
+    foundObject !== undefined ? (foundObject[smartmet] as number) : null;
+  if (foundObject !== undefined) {
+    for (const key in foundObject) {
+      if (Object.prototype.hasOwnProperty.call(foundObject, key)) {
+        if (key !== smartmet && key !== "utctime" && smartmetValue !== null) {
+          ensembleList.push(key);
+          if (
+            foundObject[key] !== null &&
+            typeof foundObject[key] === "number"
+          ) {
+            const newValue = foundObject[key] as number;
+            dataSWscaled.push(newValue - (newValue - smartmetValue));
+          }
+        }
       }
     }
   }
-  return dataSWscaled;
+  return {
+    dataSWscaled,
+    ensembleList,
+    smartId
+  };
 }
 
 export function harvidx(
   threshold: number,
-  datascaled: [],
-  ensemblelist: Array<string>,
+  datascaled: (string | number)[],
+  ensemblelist: Array<number>,
   perturbations: number,
   smartvariable: string
 ) {
   const resultseries: Array<string | number> = [];
   let agree: number | string = 0;
-  let disagree: number | string = 0;
   let count: number | string = 0;
 
   for (let k = 0; k < datascaled.length; k++) {
@@ -230,14 +214,13 @@ export function harvidx(
       let nans = 0;
       // let threshold = 0.4;
       for (let i = 0; i <= perturbations; i++) {
-        const value = datascaled[k][ensemblelist[i]];
+        const value: number = datascaled[k][ensemblelist[i]];
         if (isNaN(value)) {
           nans++;
         } else if (value < threshold) {
           agree++;
           count++;
         } else {
-          disagree++;
           count++;
         }
       }
@@ -253,6 +236,40 @@ export function harvidx(
     }
   }
   return resultseries;
+}
+
+export function scalingFunction(
+  data: RecordObject[],
+  ensemblelist: string[],
+  smartIdx: number,
+  perturbations: number,
+  smartvariable1: string,
+  smartvariable2?: string
+): RecordObject[] {
+  const datascaled: RecordObject[] = [];
+  for (let i = 0; i < data.length; i++) {
+    datascaled[i] = {
+      utctime: data[i].utctime,
+      [smartvariable1]: data[i][smartvariable1]
+    };
+    if (smartvariable2 !== undefined) {
+      datascaled[i][smartvariable2] = data[i][smartvariable2];
+    }
+    for (let j = 0; j <= perturbations; j++) {
+      if (
+        data[i][ensemblelist[j]] !== null &&
+        data[smartIdx][smartvariable1] !== null
+      ) {
+        const ensembleValue = data[i][ensemblelist[j]]! as number;
+        const smartIdxValue = data[smartIdx][ensemblelist[j]]! as number;
+        const smartVariable1Value = data[smartIdx][smartvariable1]! as number;
+        datascaled[i][ensemblelist[j]] = ensembleValue - (smartIdxValue - smartVariable1Value);
+      } else {
+        datascaled[i][ensemblelist[j]] = null;
+      }
+    }
+  }
+  return datascaled;
 }
 
 export function increaseByOneYear(date: Date, years: number) {

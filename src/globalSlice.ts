@@ -2,13 +2,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { GlobalStateProps, Smartmet } from "./types";
 import * as utils from "./utils/helpers";
 
-const intialEndDateSixMonths = utils.addMonths(utils.getStartDateOfJune(), 7).toISOString();
-const startDate = utils.backDateMonths(utils.getStartDateOfJune(), 5).toISOString();
+const endDate = utils.addMonths(utils.getStartSearchDate(), 12).toISOString();
+const startDate = utils.getStartSearchDate().toISOString();
 const soilTemperaturCodeArray = utils.soilTemperatureCode([]);
 const trafficabilityApiParams = utils.trafficabilityApiParams();
 const soilHeightParams = utils.snowHeightApiParams();
 const soilWetnessParams = utils.soilWetnesstApiParams();
-const marked = new Date(utils.setDateTwoDaysAhead()).toISOString();
+const marked = new Date(utils.marklineStartDate(utils.getStartSearchDate())).toISOString();
 
 const initialState: GlobalStateProps = {
   hideNext: false,
@@ -16,9 +16,10 @@ const initialState: GlobalStateProps = {
   markLine: marked,
   startEndTimeSpan: {
     start_time: startDate,
-    end_time: intialEndDateSixMonths,
+    end_time: endDate,
     time_step: 1440
   },
+  windSpeedData: [],
   trafficabilityData: [],
   soilWetnessData: [],
   soilTemperatureData: [],
@@ -26,6 +27,7 @@ const initialState: GlobalStateProps = {
   checked: false,
   parameters: {
     twelveMonthParams: {
+      windSpeed: [],
       trafficability: [
         { code: "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}" },
         { code: "HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}" },
@@ -44,6 +46,7 @@ const initialState: GlobalStateProps = {
       ]
     },
     tenYearParams: {
+      windSpeed: [],
       trafficability: [
         { code: "TSOIL-K:ECBSF:::7:1:0" },
         ...trafficabilityApiParams
@@ -101,6 +104,9 @@ const globalSlice = createSlice({
     setSoilTemperatureData: (state, action: PayloadAction<[]>) => {
       state.soilTemperatureData = action.payload;
     },
+    setWindSpeedData: (state, action: PayloadAction<[]>) => {
+      state.windSpeedData = action.payload;
+    },
     setSnowHeightData: (state, action: PayloadAction<Smartmet[]>) => {
       state.snowHeightData = action.payload;
     },
@@ -121,6 +127,7 @@ export const actions = { ...globalSlice.actions };
 export default globalSlice.reducer;
 export type ReduxActions =
   | ReturnType<typeof actions.setTimeEndStartSpan>
+  | ReturnType<typeof actions.setWindSpeedData>
   | ReturnType<typeof actions.setTrafficabilityData>
   | ReturnType<typeof actions.setSoilWetnessData>
   | ReturnType<typeof actions.setSnowHeightData>

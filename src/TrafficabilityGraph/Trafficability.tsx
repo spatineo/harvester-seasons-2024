@@ -32,13 +32,10 @@ const TraficabilityGraphComponent: React.FC<
   );
   const dispatch = useRootDispatch();
 
-  const handleBackClick = () => {
-    window.console.log("Back button clicked");
-  };
-
   const handleDoubleClick = (direction: string) => {
     if (direction === "prev") {
       dispatch(actions.changeYear("previous"));
+      //dispatch(actions.setMarkLine(newDateForMarkline));
       dispatch(actions.changeHideNextArrowState(true));
     } else if (direction === "next") {
       dispatch(actions.changeYear("next"));

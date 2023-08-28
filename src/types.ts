@@ -28,6 +28,7 @@ export interface GlobalStateProps {
   changeYear: string;
   markLine: string;
   startEndTimeSpan: StartEndTimeSpan;
+  windSpeedData: [];
   trafficabilityData: [];
   soilWetnessData: Smartmet[];
   soilTemperatureData: [];
@@ -35,12 +36,14 @@ export interface GlobalStateProps {
   checked: boolean;
   parameters: {
     twelveMonthParams: {
+      windSpeed: Parameter[];
       trafficability: Parameter[];
       snowHeight: Parameter[];
       soilTemperature: Parameter[];
       soilWetness: Parameter[];
     };
     tenYearParams: {
+      windSpeed: Parameter[];
       trafficability: Parameter[];
       snowHeight: Parameter[];
       soilTemperature: Parameter[];
@@ -81,4 +84,9 @@ export interface TimelineControlStyle {
     shadowOffsetX?: number;
     shadowOffsetY?: number;
   };
+}
+
+export interface RecordObject {
+  [key: string]: number | null | string;
+  utctime: string;
 }
