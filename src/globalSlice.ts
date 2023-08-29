@@ -4,9 +4,9 @@ import * as utils from "./utils/helpers";
 
 const endDate = utils.addMonths(utils.getStartSearchDate(), 12).toISOString();
 const startDate = utils.getStartSearchDate().toISOString();
-const soilTemperaturCodeArray = utils.soilTemperatureCode([]);
+const soilTemperaturCodeArray = utils.soilTemperatureParams([]);
 const trafficabilityApiParams = utils.trafficabilityApiParams();
-const soilHeightParams = utils.snowHeightApiParams();
+const snowHeightParams = utils.snowHeightApiParams();
 const soilWetnessParams = utils.soilWetnesstApiParams();
 const marked = new Date(utils.marklineStartDate(utils.getStartSearchDate())).toISOString();
 
@@ -42,7 +42,7 @@ const initialState: GlobalStateProps = {
       snowHeight: [
         { code: "HSNOW-M:ECBSF::1:0:1:0" },
         { code: "HSNOW-M:SMARTOBS:13:4" },
-        ...soilHeightParams
+        ...snowHeightParams
       ]
     },
     tenYearParams: {
