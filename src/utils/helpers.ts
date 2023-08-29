@@ -29,7 +29,7 @@ export function marklineStartDate(current: Date) {
   return currentDate.toISOString().split("T")[0];
 }
 
-export function soilTemperatureCode(arr: Parameter[]) {
+export function soilTemperatureParams(arr: Parameter[]) {
   for (let i = 1; i <= 50; i++) {
     arr.push({
       code: `K2C{TSOIL-K:ECBSF:::7:3:${i}}`
