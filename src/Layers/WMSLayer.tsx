@@ -9,7 +9,6 @@ import { useEffect, useContext, useState } from 'react';
 
 import MapContext from '../MapComponent/MapContext';
 import TileLayer from 'ol/layer/Tile';
-import WMSCapabilities from 'ol/format/WMSCapabilities';
 import { TileWMS } from 'ol/source';
 import { BaseLayerOptions } from 'ol-layerswitcher';
 import add from 'date-fns/add';
@@ -24,7 +23,7 @@ export enum WMSLayerTimeStrategy {
 
 interface WMSLayerProps {
 	layerName: string,
-	capabilitiesUrl: string,
+	capabilities: any,
 	strategy: WMSLayerTimeStrategy,
 	date?: any,
 	opacity?: number
@@ -112,7 +111,6 @@ function getLatestTimestamp(layerInfo : LayerInfo) : Date | null {
 }
 
 function getNearestTimestamps(layerInfo: LayerInfo, date : Date) : (null | Date)[] | undefined {
-	window.console.error('getNearestTimestamps', layerInfo, date)
 	const values = layerInfo.layer.Dimension.find((d) => d.name === 'time')?.values
 
 	if (!values) {
@@ -166,7 +164,7 @@ function getNearestTimestamps(layerInfo: LayerInfo, date : Date) : (null | Date)
 	return [availableTimestamps[availableTimestamps.length-1], null];
 }
 
-const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl, strategy, date, opacity}) => {
+const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilities, strategy, date, opacity}) => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const { map } = useContext(MapContext);
 
@@ -174,21 +172,18 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl, strategy
 	const [ time, setTime ] = useState<string>("");
 
 	useEffect(() => {
-		const parser = new WMSCapabilities();
+		if (!capabilities || !layerName) return;
 
-		fetch(capabilitiesUrl)
-  			.then(function (response) {
-    			return response.text();
-  			})
-  			.then(function (text) {
-    			const result = parser.read(text);
+		const layer = capabilities.Capability.Layer.Layer.find((l : any) => l.Name === layerName)
+		if (!layer) {
+			window.console.error('NO LAYER', layerName)
+			return;
+		}
+		const url = capabilities.Capability.Request.GetMap.DCPType.find((d : any) => d.HTTP).HTTP.Get.OnlineResource;
 
-				const layer = result.Capability.Layer.Layer.find((l : any) => l.Name === layerName)
-				const url = result.Capability.Request.GetMap.DCPType.find((d : any) => d.HTTP).HTTP.Get.OnlineResource;
+		setLayerInfo({ layer, url });
 
-				setLayerInfo({ layer, url });
-			});
-	}, [layerName, capabilitiesUrl]);
+	}, [layerName, capabilities]);
 
 	useEffect(() => {
 		if (!map || !layerInfo) return;
@@ -203,7 +198,6 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilitiesUrl, strategy
 			const nearest = getNearestTimestamps(layerInfo, date || new Date());
 
 			if (nearest) {
-				window.console.log('NEAREST', nearest)
 				if (strategy === WMSLayerTimeStrategy.LatestBeforeNow) {
 					timeStamp = nearest[0];
 				} else if (strategy === WMSLayerTimeStrategy.EarliestAfterNow) {
