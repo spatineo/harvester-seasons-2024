@@ -31,7 +31,7 @@ export function* setUserLocation({
   yield put({ type: constants.SOILTEMPERATUE_API });
   yield put({ type: constants.SOILWETNESS_API });
   yield put({ type: constants.SNOWHEIGHT_API });
-  yield put({ type: constants.WINDGUST_API});
+  yield put({ type: constants.WINDGUST_API });
 }
 
 export function* triggerCheckUpdate({
@@ -50,7 +50,7 @@ export function* triggerCheckUpdate({
     yield put({ type: constants.SOILTEMPERATUE_API });
     yield put({ type: constants.SOILWETNESS_API });
     yield put({ type: constants.SNOWHEIGHT_API });
-    yield put({ type: constants.WINDGUST_API});
+    yield put({ type: constants.WINDGUST_API });
   } else {
     const oneYear = utils
       .addMonths(utils.getStartSearchDate(), 12)
@@ -66,7 +66,7 @@ export function* triggerCheckUpdate({
     yield put({ type: constants.SOILTEMPERATUE_API });
     yield put({ type: constants.SOILWETNESS_API });
     yield put({ type: constants.SNOWHEIGHT_API });
-    yield put({ type: constants.WINDGUST_API});
+    yield put({ type: constants.WINDGUST_API });
   }
 }
 
@@ -116,7 +116,7 @@ export function* triggerTimeSpanChange({
   yield put({ type: constants.SOILTEMPERATUE_API });
   yield put({ type: constants.SOILWETNESS_API });
   yield put({ type: constants.SNOWHEIGHT_API });
-  yield put({ type: constants.WINDGUST_API});
+  yield put({ type: constants.WINDGUST_API });
 }
 
 function createTimeSeriesQueryParameters(
@@ -150,23 +150,30 @@ export function* fetchWindSpeedData({
   const userLocation = yield select(
     (state: RootState) => state.mapState.position
   );
-  window.console.log(userLocation, 'use locationb')
+
   const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
   const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
   const modifiedEndDate = new Date(startEndTimeSpan.end_time).toISOString();
-  const lat = userLocation.latitude !== null ? userLocation.latitude : 60.1891711
-  const lon = userLocation.longitude === null ? 24.9724435 : userLocation.longitude
+  const lat =
+    userLocation.latitude !== null ? userLocation.latitude : 60.1891711;
+  const lon =
+    userLocation.longitude === null ? 24.9724435 : userLocation.longitude;
   const url = `https://desm.harvesterseasons.com/timeseries?latlon=60.1891711,24.9724435&param=utctime,FFG-MS:CERRA:5057:6:10:0&starttime=${modifiedStartDate}&endtime=${modifiedEndDate}&timestep=1440&format=json&source=grid&tz=utc&timeformat=xml&precision=full`;
   try {
     const response = yield call(axios.get, url);
     if (response.status === 200) {
-      const tmp = response.data
+      const tmp = response.data;
       yield put(actions.setWindSpeedData(tmp));
     }
   } catch (e) {
     window.console.log(e);
+    yield call(
+      EnqueueSnackbar,
+      "Error in network for Wind gust server",
+      "error"
+    );
   }
 }
 
@@ -266,12 +273,15 @@ export function* soilTemperatureDataSaga(): SagaIterator {
     );
     if (response.status === 200) {
       const tmp = response.data;
-      yield put(actions.setSoilTemperatureData(tmp));
+      console.log(tmp, "temperature");
+      yield put(actions.setSoilTemperatureData(response.data));
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const errorMessage: string | [] = error.message;
       window.console.error(errorMessage);
+      //from origin 'http://localhost:5173' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+      //error message 408
       yield call(
         EnqueueSnackbar,
         "Error in network for soil temperature",
@@ -313,7 +323,8 @@ export function* fetchSoilWetnessDataSaga(): SagaIterator {
         response.data,
         "SWVL2-M3M3:SMARTMET:5015"
       );
-      yield put(actions.setSoilWetnessData(tmp));
+      console.log(tmp, "wetness");
+      yield put(actions.setSoilWetnessData(response.data));
     }
   } catch (error) {
     window.console.error(error);
@@ -357,7 +368,8 @@ export function* fetchSnowHeightDataSaga(): SagaIterator {
         response.data,
         "HSNOW-M:SMARTOBS:13:4"
       );
-      yield put(actions.setSnowHeightData(tmp));
+      console.log(tmp, "height");
+      yield put(actions.setSnowHeightData(response.data));
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
