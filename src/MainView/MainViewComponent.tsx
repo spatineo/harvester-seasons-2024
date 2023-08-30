@@ -20,11 +20,18 @@ import { createTrafficabilityGraphOptions } from "../utils/graphHelpers";
 import { actions } from "../globalSlice";
 import { harvidx, dataScaled, scalingFunction } from "../utils/helpers";
 
+interface YValues {
+  seriesName: string | undefined;
+  yValue: number;
+}
+
 function MainViewComponent() {
   const [trafficabilityGraphOption, setTrafficabilityGraphOption] =
     useState<EChartOption | null>(null);
   const [summer, setSummer] = useState<string>("");
   const [winter, setWinter] = useState<string>("");
+  const [windGust, setWindGust] = useState<number | null>(null);
+  const [yAxisValues, setYAxisValues] = useState<YValues[] | null>(null);
   const dispatch = useRootDispatch();
   const globalState = useAppSelector((state: RootState) => state.global);
 
@@ -44,13 +51,14 @@ function MainViewComponent() {
   }, []);
 
   useEffect(() => {
-    if (globalState.trafficabilityData || globalState.windSpeedData) {
+    if (globalState.trafficabilityData || globalState.windSpeedData ) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       const trafficabilityOption = createTrafficabilityGraphOptions(
         graphParameters.twelveMonthParams.trafficability,
         globalState.trafficabilityData,
         globalState.windSpeedData,
-        mark
+        mark,
+        yAxisValues
       );
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       setTrafficabilityGraphOption(trafficabilityOption);
@@ -60,6 +68,7 @@ function MainViewComponent() {
     graphParameters.twelveMonthParams.trafficability,
     mark,
     globalState.windSpeedData,
+    yAxisValues
   ]);
 
   useEffect(() => {
@@ -104,6 +113,9 @@ function MainViewComponent() {
             option={trafficabilityGraphOption}
             onGraphClick={function (xAxisData: string): void {
               dispatch(actions.setMarkLine(xAxisData));
+            }}
+            onMouseOver={(newyAxisValues: YValues[]) => {
+              setYAxisValues(newyAxisValues);
             }}
           />
         ) : (

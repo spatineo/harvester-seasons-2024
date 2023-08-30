@@ -4,11 +4,13 @@ import * as utils from "./utils/helpers";
 
 const endDate = utils.addMonths(utils.getStartSearchDate(), 12).toISOString();
 const startDate = utils.getStartSearchDate().toISOString();
-const soilTemperaturCodeArray = utils.soilTemperatureCode([]);
+const soilTemperaturCodeArray = utils.soilTemperatureParams([]);
 const trafficabilityApiParams = utils.trafficabilityApiParams();
-const soilHeightParams = utils.snowHeightApiParams();
+const snowHeightParams = utils.snowHeightApiParams();
 const soilWetnessParams = utils.soilWetnesstApiParams();
-const marked = new Date(utils.marklineStartDate(utils.getStartSearchDate())).toISOString();
+const marked = new Date(
+  utils.marklineStartDate(utils.getStartSearchDate())
+).toISOString();
 
 const initialState: GlobalStateProps = {
   hideNext: false,
@@ -34,15 +36,21 @@ const initialState: GlobalStateProps = {
         { code: "ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}" },
         { code: "ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}" }
       ],
-      soilWetness: [...soilWetnessParams, { code: "SWVL2-M3M3:SMARTMET:5015" }],
+      soilWetness: [
+       /*  ...soilWetnessParams,
+        { code: "SWVL2-M3M3:SMARTMET:5015" }, */
+        { code: "SWI2:SWI:5029:1:0:1" }
+      ],
       soilTemperature: [
-        ...soilTemperaturCodeArray,
-        { code: "K2C{TSOIL-K:ECBSF:::7:1:0}" }
+       /*  ...soilTemperaturCodeArray,
+        { code: "K2C{TSOIL-K:ECBSF:::7:1:0}" }, */
+        { code: "TSOIL-K:ERA5L:5022:9:1820:1" }
       ],
       snowHeight: [
-        { code: "HSNOW-M:ECBSF::1:0:1:0" },
-        { code: "HSNOW-M:SMARTOBS:13:4" },
-        ...soilHeightParams
+       /*  { code: "HSNOW-M:ECBSF::1:0:1:0" },
+        { code: "HSNOW-M:SMARTOBS:13:4" }, */
+       { code: "SD-M:CLMS:5051:1:0:1" },
+       //...snowHeightParams
       ]
     },
     tenYearParams: {

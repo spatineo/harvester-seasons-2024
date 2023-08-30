@@ -14,14 +14,20 @@ import { useAppSelector, useRootDispatch } from "../store/hooks";
 import { actions } from "../globalSlice";
 import { RootState } from "../store/store";
 
+interface YValues {
+  seriesName: string | undefined;
+  yValue: number;
+}
+
 interface TraficabilityGraphComponentProp {
   option: EChartOption | null;
   onGraphClick: (xAxisData: string) => void;
+  onMouseOver: (yAxisValues: YValues[]) => void;
 }
 
 const TraficabilityGraphComponent: React.FC<
   TraficabilityGraphComponentProp
-> = ({ option, onGraphClick }) => {
+> = ({ option, onGraphClick, onMouseOver }) => {
   const graphRef = useRef<HTMLDivElement>(null);
   const [chart, setChart] = useState<echarts.ECharts | null>(null);
   const [arrowColor, setArrowColor] = useState<"primary" | "secondary">(
@@ -75,29 +81,52 @@ const TraficabilityGraphComponent: React.FC<
     if (!chart) {
       return;
     }
-
-    const handleMouseover = (params) => {
+    const mouseover = function (params) {
       if (params.data) {
-        const seriesIndex = params.seriesIndex;
-        const series = chart.getOption()?.series?.[seriesIndex];
+        const xValue = params.data[0];
+        const chartOption = chart.getOption();
 
-        if (series && series.name && series.data) {
-          const seriesName = series.name;
-          const dataIndex = params.dataIndex;
-          const dataValue = series.data[dataIndex];
-          // console.log(`Hovered over ${seriesName}: ${dataValue}`);
+        if (chartOption) {
+          const yValues: YValues[] | null = [];
+
+          chartOption.series?.forEach((series) => {
+            let yValue: number | null = null;
+
+            if (series.data) {
+              for (const dataPoint of series.data) {
+                if (dataPoint[0] === xValue) {
+                  yValue = dataPoint[1];
+                  break;
+                }
+              }
+            }
+
+            if (yValue !== null) {
+              yValues.push({
+                seriesName: series.name,
+                yValue,
+              });
+            }
+          });
+          onMouseOver(yValues);
         }
       }
-    };
-    chart.on("mouseover", handleMouseover);
-  }, [chart]);
+    }
+   // chart.on("mouseover", mouseover );
+
+    return () => {
+      if(chart !== null){
+        chart.off("mouseover", mouseover)
+      }
+    }
+  }, [chart, onMouseOver]);
 
   useEffect(() => {
     if (!chart) {
       return;
     }
 
-    const handleMouseover = (params) => {
+    const handleMouseClick = (params) => {
       const xAxisData = chart.convertFromPixel({ seriesIndex: 0 }, [
         params.offsetX,
         params.offsetY,
@@ -109,10 +138,10 @@ const TraficabilityGraphComponent: React.FC<
       }
     };
 
-    chart.getZr().on("click", handleMouseover);
-
     return () => {
-      chart.getZr().off("click", handleMouseover);
+      if (chart) {
+        chart.getZr().off('click', handleMouseClick);
+      }
     };
   }, [chart, onGraphClick]);
 
