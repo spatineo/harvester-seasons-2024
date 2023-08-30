@@ -4,6 +4,10 @@
 import { Parameter, Smartmet, GraphOptions } from "../types";
 import { EChartOption } from "echarts";
 
+interface YValues {
+  seriesName: string | undefined;
+  yValue: number;
+}
 const monthNames = [
   "Jan",
   "Feb",
@@ -22,11 +26,22 @@ const monthNames = [
 export function createTrafficabilityGraphOptions(
   parameters: Parameter[],
   values: [],
-  wind: [],
-  mark
+  windGustArray: [],
+  mark,
+  windYValue: YValues[] | null
 ) {
+
+  const windGustValues = windYValue !== null
+  ? windYValue
+      .filter((w) => {
+        return w.seriesName === 'Wind gust '})
+      .map((w) => `${w.yValue}`)
+      .join(', ')
+  : '';
+
   const trafficabilityOptionData: EChartOption = {
-    legend: {},
+    legend: {
+    },
     grid: {
       show: true,
       left: 46,
@@ -148,10 +163,11 @@ export function createTrafficabilityGraphOptions(
       },
       {
         type: "line",
-        name: "Wind gust",
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        name: `Wind gust ${windGustValues}`,
         yAxisIndex: 1,
         data: [
-          ...wind.map((t: { utctime: string }) => {
+          ...windGustArray.map((t: { utctime: string }) => {
             return [
               new Date(t.utctime).toISOString(),
               t["FFG-MS:CERRA:5057:6:10:0"]
