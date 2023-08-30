@@ -1,5 +1,5 @@
 /* eslint-disable import/default */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import MapComponent from "../MapComponent/MapComponent";
 import Layers from "../Layers/Layers";
@@ -17,8 +17,29 @@ import STACLayers from "../Layers/STACLayers";
 import TIFFLayer from "../Layers/TIFFLayer";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
+import WMSCapabilities from "ol/format/WMSCapabilities";
 
 const HarvesterMap: React.FC = () => {
+  const [harvesterWMSCapabilities, setHarvesterWMSCapabilities] = useState<Document | null>(null);
+
+  useEffect(() => {
+		const parser = new WMSCapabilities();
+    const capabilitiesUrl = 'https://desm.harvesterseasons.com/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0';
+
+		fetch(capabilitiesUrl)
+  			.then(function (response) {
+    			return response.text();
+  			})
+  			.then(function (text : string) {
+    			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    			const result : Document = parser.read(text);
+          setHarvesterWMSCapabilities(result);
+			}).catch(e => {
+        window.console.error('could not load capabilities', e);
+      })
+      
+	}, []);
+
   const markLine = useAppSelector((state: RootState) => state.global.markLine);
   return (
     <Box>
@@ -61,13 +82,41 @@ const HarvesterMap: React.FC = () => {
               })
             }
           />
-					<WMSLayer
-						layerName='gui:isobands:CERRA_FFG-MS'
-						capabilitiesUrl='https://desm.harvesterseasons.com/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0'
+          <WMSLayer
+            layerName='gui:isobands:CERRA_FFG-MS'
+            capabilities={harvesterWMSCapabilities}
             strategy={WMSLayerTimeStrategy.LatestBeforeNow}
             opacity={0.5}
             date={markLine}
-					/>
+          />
+          <WMSLayer
+            layerName='gui:isobands:SWI_SWI2'
+            capabilities={harvesterWMSCapabilities}
+            strategy={WMSLayerTimeStrategy.LatestBeforeNow}
+            opacity={0.5}
+            date={markLine}
+          />
+          <WMSLayer
+            layerName='gui:isobands:ERA5L_TSOIL-K'
+            capabilities={harvesterWMSCapabilities}
+            strategy={WMSLayerTimeStrategy.LatestBeforeNow}
+            opacity={0.5}
+            date={markLine}
+          />
+          <WMSLayer
+            layerName='harvester:ecsf:HSNOW-M'
+            capabilities={harvesterWMSCapabilities}
+            strategy={WMSLayerTimeStrategy.LatestBeforeNow}
+            opacity={0.5}
+            date={markLine}
+          />
+          <WMSLayer
+            layerName='gui:isobands:ERA5L_TSOIL-K'
+            capabilities={harvesterWMSCapabilities}
+            strategy={WMSLayerTimeStrategy.LatestBeforeNow}
+            opacity={0.5}
+            date={markLine}
+          />
           {/* 
 					<STACLayers 
 						title='Latvuskorkeusmalli'
