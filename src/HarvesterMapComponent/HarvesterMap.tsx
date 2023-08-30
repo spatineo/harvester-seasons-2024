@@ -110,13 +110,6 @@ const HarvesterMap: React.FC = () => {
             opacity={0.5}
             date={markLine}
           />
-          <WMSLayer
-            layerName='gui:isobands:ERA5L_TSOIL-K'
-            capabilities={harvesterWMSCapabilities}
-            strategy={WMSLayerTimeStrategy.LatestBeforeNow}
-            opacity={0.5}
-            date={markLine}
-          />
           {/* 
 					<STACLayers 
 						title='Latvuskorkeusmalli'
