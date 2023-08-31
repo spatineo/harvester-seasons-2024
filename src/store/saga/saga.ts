@@ -273,7 +273,6 @@ export function* soilTemperatureDataSaga(): SagaIterator {
     );
     if (response.status === 200) {
       const tmp = response.data;
-      console.log(tmp, "temperature");
       yield put(actions.setSoilTemperatureData(response.data));
     }
   } catch (error) {
@@ -323,7 +322,6 @@ export function* fetchSoilWetnessDataSaga(): SagaIterator {
         response.data,
         "SWVL2-M3M3:SMARTMET:5015"
       );
-      console.log(tmp, "wetness");
       yield put(actions.setSoilWetnessData(response.data));
     }
   } catch (error) {
@@ -368,7 +366,6 @@ export function* fetchSnowHeightDataSaga(): SagaIterator {
         response.data,
         "HSNOW-M:SMARTOBS:13:4"
       );
-      console.log(tmp, "height");
       yield put(actions.setSnowHeightData(response.data));
     }
   } catch (error) {
