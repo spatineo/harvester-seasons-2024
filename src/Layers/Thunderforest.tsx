@@ -3,37 +3,37 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable react/prop-types */
-import { useEffect, useContext } from 'react';
-import LayerTile from 'ol/layer/Tile';
-import { BaseLayerOptions } from 'ol-layerswitcher';
-import TileSource from 'ol/source/Tile';
-import MapContext from '../MapComponent/MapContext';
+import { useEffect, useContext } from "react";
+import LayerTile from "ol/layer/Tile";
+import { BaseLayerOptions } from "ol-layerswitcher";
+import TileSource from "ol/source/Tile";
+import MapContext from "../MapComponent/MapContext";
 
 interface OSMLayerProps {
-	source: TileSource;
+  source: TileSource;
 }
 
 const OSMLayer: React.FC<OSMLayerProps> = ({ source }) => {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const { map } = useContext(MapContext);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { map } = useContext(MapContext);
 
-	useEffect(() => {
-		if (!map) return;
+  useEffect(() => {
+    if (!map) return;
 
-		const osmLayer = new LayerTile({
-			background: '#1a2b39',
-			title: 'Thunderforest',
-			type: 'base',
-			source,
-		} as BaseLayerOptions);
+    const osmLayer = new LayerTile({
+      background: "#1a2b39",
+      title: "Thunderforest",
+      type: "base",
+      source,
+    } as BaseLayerOptions);
 
-		map.addLayer(osmLayer);
+    map.addLayer(osmLayer);
 
-		return () => {
-			map.removeLayer(osmLayer);
-		};
-	}, [map]);
-	return null;
+    return () => {
+      map.removeLayer(osmLayer);
+    };
+  }, [map]);
+  return null;
 };
 
 export default OSMLayer;

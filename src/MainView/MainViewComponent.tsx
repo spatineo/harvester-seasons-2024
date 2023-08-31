@@ -51,7 +51,7 @@ function MainViewComponent() {
   }, []);
 
   useEffect(() => {
-    if (globalState.trafficabilityData || globalState.windSpeedData ) {
+    if (globalState.trafficabilityData || globalState.windSpeedData) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       const trafficabilityOption = createTrafficabilityGraphOptions(
         graphParameters.twelveMonthParams.trafficability,
@@ -68,7 +68,7 @@ function MainViewComponent() {
     graphParameters.twelveMonthParams.trafficability,
     mark,
     globalState.windSpeedData,
-    yAxisValues
+    yAxisValues,
   ]);
 
   useEffect(() => {
