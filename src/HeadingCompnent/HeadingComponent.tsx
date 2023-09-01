@@ -28,9 +28,14 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   font: {
-    fontSize: "calc(14px + (45 - 22) * ((100vw - 300px) / (1600 - 300)))",
+    fontSize: "calc(16px + (45 - 22) * ((100vw - 300px) / (1600 - 300)))",
     color: "darkred",
-    paddingLeft: '1.2rem'
+    [theme.breakpoints.up("xs")]: {
+      paddingLeft: '0.4rem'
+    },
+    [theme.breakpoints.up("sm")]: {
+      paddingLeft: '1.2rem'
+    },
   },
   info: {
     fontSize: "calc(14px + (16 - 12) * ((100vw - 300px) / (1600 - 300)))",
@@ -58,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
       width: "60%",
       height: "auto",
       float: "right",
-      paddingRight: "0.2rem",
+      paddingRight: "0.6rem",
     },
     [theme.breakpoints.up("sm")]: {
       display: "none",
