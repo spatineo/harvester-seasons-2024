@@ -39,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
   },
   info: {
     fontSize: "calc(14px + (16 - 12) * ((100vw - 300px) / (1600 - 300)))",
+    [theme.breakpoints.up("xs")]: {
+      fontFamily: "Lato" 
+    },
   },
   link: {
     [theme.breakpoints.up("xs")]: {
@@ -104,7 +107,6 @@ const HeadingCompoment: React.FC = () => {
       <Box>
         <ListItemButton
           onClick={handleClick}
-          style={{ marginLeft: "0px", paddingLeft: "0px", fontFamily: "Lato" }}
           className={classes.info}
         >
           {open ? <ArrowDropDown /> : <ArrowRight />}{" "}
