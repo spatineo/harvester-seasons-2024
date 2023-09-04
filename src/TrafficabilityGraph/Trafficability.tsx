@@ -59,7 +59,7 @@ const TraficabilityGraphComponent: React.FC<
   useEffect(() => {
     if (graphRef.current) {
       const newChart = echarts.init(graphRef.current, undefined, {
-        height: "180",
+        height: "200",
       });
       setChart(newChart);
     }
@@ -158,7 +158,7 @@ const TraficabilityGraphComponent: React.FC<
       />
       <Box
         ref={graphRef}
-        style={{ width: "100%", margin: "auto", paddingRight: "0rem" }}
+        style={{ width: "100%", margin: "auto" }}
       ></Box>
       {hideNextArrow && (
         <ArrowForwardIos
