@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginTop: "0.6rem"
+    marginTop: "0.6rem",
   },
 }))
 
@@ -59,6 +59,7 @@ const styles = {
   typography: {
     fontSize: "0.8rem",
     padding: "0.1rem",
+    fontFamily: 'Lato'
   },
 };
 
