@@ -21,6 +21,9 @@ interface YValues {
   yValue: number;
 }
 
+/* const useStyles = makeStyles((theme) => ({
+
+}) */
 function MainViewComponent() {
   const [trafficabilityGraphOption, setTrafficabilityGraphOption] =
     useState<EChartOption | null>(null);
@@ -35,7 +38,6 @@ function MainViewComponent() {
     (state: RootState) => state.global.parameters
   );
   const mark = useAppSelector((state: RootState) => state.global.markLine);
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     dispatch({ type: constants.TRAFFICABILITY_API });
