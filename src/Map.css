@@ -1,6 +1,5 @@
 .ol-map {
   height: 600px;
-  border: 1px solid black;
   margin: 0px;
   padding: 0px;
 }
@@ -11,7 +10,8 @@
   padding: 2px;
 }
 .ol-map > .ol-viewport {
-  margin: 0rem;
+  position: relative;
+  top: 0rem
 }
 
 .base-control {
