@@ -58,7 +58,7 @@ export function createTrafficabilityGraphOptions(
         max: 2,
         splitNumber: 1,
         nameTextStyle: {
-          padding: 18
+          padding: 8
         }
       },
       {
@@ -68,7 +68,7 @@ export function createTrafficabilityGraphOptions(
         max: 28,
         splitNumber: 1,
         nameTextStyle: {
-          padding: 18
+          padding: 8
         }
       }
     ],
