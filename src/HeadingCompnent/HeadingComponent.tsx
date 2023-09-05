@@ -16,115 +16,44 @@ import smallScreen from "../assets/logos.png";
 import testimonial from "../assets/testimonial_metsateho1.png";
 
 const useStyles = makeStyles((theme) => ({
-  constainer: {
-    position: "relative",
-    top: "0rem",
-    alignItems: "center",
-    margin: "auto",
-    justifyContent: "space-between",
-    width: "100%",
-    [theme.breakpoints.up("xl")]: {
-     width: "80%",
-     margin: "auto",
-    },
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
   },
-  main: {
-    position: "relative",
-    top: "0.2rem",
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    margin: "auto",
-    justifyContent: "space-between",
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      margin: "auto",
-      width: "90%",
-    },
+  textAndLogo: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'nowrap',
   },
   font: {
     fontSize: "calc(16px + (45 - 22) * ((100vw - 300px) / (1600 - 300)))",
     color: "darkred",
-    marginLeft: "-0.4rem",
-    position: "relative",
-    top: "-0.2rem",
-    [theme.breakpoints.up("sm")]: {
-      paddingLeft: "1.2rem",
-    },
-    [theme.breakpoints.up("md")]: {
-      marginLeft: "-2.8rem"
-    },
-    [theme.breakpoints.up("lg")]: {
-      marginLeft: "-7rem"
-    },
+    fontWeight: 600,
+    flex: 1,
   },
-  info: {
+  clickInformation: {
     fontSize: "calc(14px + (16 - 12) * ((100vw - 300px) / (1600 - 300)))",
-    fontFamily: "Lato",
-    position: "relative",
-    top: "0rem",
-    left: "0rem",
-    marginLeft: "-1.4rem",
-    [theme.breakpoints.up("sm")]: {
-      marginLeft: "-0.8rem",
-    },
-    [theme.breakpoints.up("md")]: {
-      marginLeft: "0rem",
-    },
-    [theme.breakpoints.up("lg")]: {
-      marginLeft: "-4rem"
-    },
+    marginLeft: "0rem",
   },
   link: {
-    [theme.breakpoints.up("xs")]: {
-      flex: 1,
-    },
+    flex: 1
   },
   image: {
-    display: "flex",
     width: "70%",
-    float: "right",
-    flex: 1,
-    marginRight: "0.8rem",
     [theme.breakpoints.up("xs")]: {
       display: "none",
     },
     [theme.breakpoints.up("sm")]: {
-      display: "flex",
-      width: "70%",
-      float: "right",
-      paddingRight: "0rem",
-    },
-    [theme.breakpoints.up("md")]: {
-      display: "flex",
-      width: "70%",
-      float: "right",
-      marginRight: "-2rem",
-    },
-    [theme.breakpoints.up("lg")]: {
-      display: "flex",
-      width: "70%",
-      float: "right",
-      marginRight: "-2.4rem",
-    },
-    [theme.breakpoints.up("xl")]: {
-      display: "flex",
-      width: "70%",
-      float: "right",
-      marginRight: "-6rem",
+      display: "inline-block",
+      width: "100%",
     },
   },
-  mobile: {
+  mobileLogo: {
     [theme.breakpoints.up("xs")]: {
-      display: "flex",
-      width: "60%",
+      width: "50%",
       height: "auto",
-      float: "right",
-      paddingRight: "0.6rem",
+      float: "right"
     },
     [theme.breakpoints.up("sm")]: {
       display: "none",
@@ -145,8 +74,8 @@ const HeadingCompoment: React.FC = () => {
   const classes = useStyles();
 
   return (
-    <Box className={classes.constainer}>
-      <Box className={classes.main}>
+    <Box className={classes.container}>
+      <Box className={classes.textAndLogo}>
         <Box className={classes.link}>
           <Link to="/" style={linkStyle}>
             <Box className={classes.font}>Harvester Seasons</Box>
@@ -156,12 +85,12 @@ const HeadingCompoment: React.FC = () => {
         <Box className={classes.link}>
           <Link to="/">
             <Box component="img" src={logo} className={classes.image} />
-            <Box component="img" src={smallScreen} className={classes.mobile} />
+            <Box component="img" src={smallScreen} className={classes.mobileLogo} />
           </Link>
         </Box>
       </Box>
-      <Box className={classes.info}>
-        <ListItemButton onClick={handleClick}>
+      <Box className={classes.clickInformation}>
+        <ListItemButton onClick={handleClick} sx={{ margin: "-0.6rem 0rem 0rem -0.6rem",  padding: "0rem"}}>
           {open ? <ArrowDropDown /> : <ArrowRight />}{" "}
           {languages.info[information.en as keyof LanguageOptions]}
         </ListItemButton>
