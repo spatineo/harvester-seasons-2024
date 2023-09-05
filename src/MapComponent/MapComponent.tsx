@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -5,6 +6,7 @@
 /* eslint-disable import/default */
 import React, { useRef, useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
+import { makeStyles } from "@material-ui/core/styles";
 import { useRootDispatch, useAppSelector } from "../store/hooks";
 import { MapPosition, mapActions } from "./MapComponentSlice";
 import MapContext from "./MapContext";
@@ -21,21 +23,31 @@ import { Fill, Stroke, Style } from "ol/style";
 import { Vector as VectorLayer } from "ol/layer";
 import { Vector as VectorSource } from "ol/source";
 
-const styles = {
-  mapTextContainer: {
+const useStyles = makeStyles((theme) => ({
+  container: {
     display: "flex",
     flexDirection: "row",
     margin: "auto",
-    paddingLeft: "0px",
-    width: "88%",
-    fontFamily: "Roboto",
+    width: "100%",
+    flexWrap: 'wrap',
+    gap: 2,
+    justifyContent: 'start',
   },
+  innerContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: "0.6rem",
+  },
+}))
+
+const styles = {
   innerBoxStyle: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    fontFamily: "Roboto",
     marginTop: "0.8rem",
   },
   box: {
@@ -47,6 +59,7 @@ const styles = {
   typography: {
     fontSize: "0.8rem",
     padding: "0.1rem",
+    fontFamily: 'Lato'
   },
 };
 
@@ -183,14 +196,16 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
 
   }, [map]);
 
+  const classes = useStyles()
+
   return (
     <MapContext.Provider value={{ map }}>
       <Box ref={mapRef} className="ol-map">
         {children}
         <div id="select"></div>
       </Box>
-      <Box sx={styles.mapTextContainer}>
-        <Box sx={styles.innerBoxStyle}>
+      <Box className={classes.container}>
+        <Box className={classes.innerContainer}>
           <Box
             sx={styles.box}
             component="span"
@@ -200,7 +215,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
             Frost heave (kelirikko, GOOD)
           </Typography>
         </Box>
-        <Box sx={styles.innerBoxStyle}>
+        <Box className={classes.innerContainer}>
           <Box
             style={{ background: "rgb(139, 172, 82)", marginLeft: "0.3rem" }}
             component="span"
@@ -210,7 +225,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
             Normal summer, mineral soil
           </Typography>
         </Box>
-        <Box sx={styles.innerBoxStyle}>
+        <Box className={classes.innerContainer}>
           <Box
             sx={styles.box}
             component="span"
@@ -220,7 +235,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
             Dry summer, mineral soil
           </Typography>
         </Box>
-        <Box sx={styles.innerBoxStyle}>
+        <Box className={classes.innerContainer}>
           <Box
             sx={styles.box}
             component="span"
@@ -230,7 +245,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
             Normal summer, peat soil
           </Typography>
         </Box>
-        <Box sx={styles.innerBoxStyle}>
+        <Box className={classes.innerContainer}>
           <Box
             sx={styles.box}
             component="span"
@@ -240,7 +255,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
             Dry summer, peat soil
           </Typography>
         </Box>
-        <Box sx={styles.innerBoxStyle}>
+        <Box className={classes.innerContainer}>
           <Box
             sx={styles.box}
             component="span"

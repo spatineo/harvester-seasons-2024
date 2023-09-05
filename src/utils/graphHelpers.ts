@@ -58,7 +58,7 @@ export function createTrafficabilityGraphOptions(
         max: 2,
         splitNumber: 1,
         nameTextStyle: {
-          padding: 18
+          padding: 8
         }
       },
       {
@@ -68,7 +68,7 @@ export function createTrafficabilityGraphOptions(
         max: 28,
         splitNumber: 1,
         nameTextStyle: {
-          padding: 18
+          padding: 8
         }
       }
     ],
@@ -111,6 +111,14 @@ export function createTrafficabilityGraphOptions(
       {
         type: "line",
         name: "Summer",
+        symbol: "none",
+        itemStyle: {
+          color: "#028A0F",
+        },
+        lineStyle: {
+          type: "solid",
+          width: 3
+        },
         areaStyle: {
           color: "rgba(0, 12, 0, 0.3)"
         },
@@ -134,7 +142,15 @@ export function createTrafficabilityGraphOptions(
       },
       {
         type: "line",
+        symbol: 'none',
         name: "Winter",
+        itemStyle: {
+          color: '#0080FF',
+        },
+        lineStyle: {
+          type: "solid",
+          width: 3
+        },
         areaStyle: {
           color: "rgba(0, 128, 255, 0.3)"
         },
@@ -163,6 +179,10 @@ export function createTrafficabilityGraphOptions(
       },
       {
         type: "line",
+        symbol: "none",
+        itemStyle: {
+          color: '#E3242B'
+        },
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         name: `Wind gust ${windGustValues}`,
         yAxisIndex: 1,
