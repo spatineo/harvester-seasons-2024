@@ -104,7 +104,8 @@ export function createTrafficabilityGraphOptions(
           symbol: "none",
           lineStyle: {
             type: "solid",
-            width: 3
+            width: 3,
+            color: "#666362"
           }
         }
       },
@@ -257,7 +258,8 @@ export function createOptions(
           lineStyle: {
             type: "solid",
             width: 3,
-            arrow: "none"
+            arrow: "none",
+            color: "#666362"
           }
         }
       },
