@@ -9,7 +9,7 @@ const SwitchComponent: FC = () => {
   const dispatch = useRootDispatch();
   const checked = useAppSelector((state: RootState) => state.global.checked);
   return (
-    <Box sx={{ position: "relative", top: "-2rem" }}>
+    <Box sx={{ position: "relative", top: "0rem" }}>
       <Switch
         checked={checked}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
