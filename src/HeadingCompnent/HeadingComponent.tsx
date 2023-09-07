@@ -19,6 +19,21 @@ const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
+    width: '92%', 
+    margin: '0rem auto',
+   
+    [theme.breakpoints.up("sm")]: {
+      width: '94%', 
+      margin: '0rem auto',
+    },
+    [theme.breakpoints.up("md")]: {
+      width: '96%', 
+      margin: '0rem auto',
+    },
+    [theme.breakpoints.up("xl")]: {
+      width: '86%', 
+      margin: '0rem auto',
+    },
   },
   textAndLogo: {
     display: 'flex',
@@ -51,9 +66,10 @@ const useStyles = makeStyles((theme) => ({
   },
   mobileLogo: {
     [theme.breakpoints.up("xs")]: {
-      width: "50%",
+      width: "60%",
       height: "auto",
-      float: "right"
+      float: "right",
+      clear: 'both',
     },
     [theme.breakpoints.up("sm")]: {
       display: "none",
