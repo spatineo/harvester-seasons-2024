@@ -28,7 +28,9 @@ export function createTrafficabilityGraphOptions(
   values: [],
   windGustArray: [],
   mark,
-  windYValue: YValues[] | null
+  windYValue: YValues[] | null,
+  summerSeries: (string | number)[],
+  winterSeries: (string | number)[],
 ) {
 
   const windGustValues = windYValue !== null
@@ -111,32 +113,24 @@ export function createTrafficabilityGraphOptions(
       },
       {
         type: "line",
-        name: "Summer",
+        name: "Summer Index",
         symbol: "none",
         itemStyle: {
           color: "#028A0F",
         },
         lineStyle: {
           type: "solid",
-          width: 3
+          width: 1.5
         },
         areaStyle: {
           color: "rgba(0, 12, 0, 0.3)"
         },
         yAxisIndex: 0,
         data: [
-          ...values.map((t: { utctime: string; [key: string]: string }) => {
+          ...values.map((t: { utctime: string; [key: string]: string }, index) => {
             return [
               new Date(t.utctime).toISOString(),
-              ...parameters.map((p) => {
-                if (p.code === "HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}") {
-                  if (Number(t[p.code]) === 2) {
-                    return "nan";
-                  }
-                } else {
-                  return 2;
-                }
-              })
+             summerSeries[index]
             ];
           })
         ]
@@ -144,23 +138,24 @@ export function createTrafficabilityGraphOptions(
       {
         type: "line",
         symbol: 'none',
-        name: "Winter",
+        name: "Winter Index",
         itemStyle: {
           color: '#0080FF',
         },
         lineStyle: {
           type: "solid",
-          width: 3
+          width: 1.5
         },
         areaStyle: {
-          color: "rgba(0, 128, 255, 0.3)"
+          color:  'rgba(2, 138, 15, 0.5)'
         },
         yAxisIndex: 0,
         data: [
-          ...values.map((t: { utctime: string; [key: string]: string }) => {
+          ...values.map((t: { utctime: string; [key: string]: string }, index) => {
             return [
               new Date(t.utctime).toISOString(),
               ...parameters.map((p) => {
+                //"ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"
                 if (p["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"] !== null) {
                   return Math.max(
                     Number(t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"]),
@@ -170,8 +165,10 @@ export function createTrafficabilityGraphOptions(
                       ]
                     )
                   );
+                } else if(p[ "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"] !== null  || winterSeries[index] !== null){
+                  return Math.max(Number(p[ "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"]), Number(winterSeries[index]));
                 } else {
-                  return "";
+                  return ''
                 }
               })
             ];
@@ -195,7 +192,63 @@ export function createTrafficabilityGraphOptions(
             ];
           })
         ]
-      }
+      },
+      {
+        type: "line",
+        name: "Summer 10 days",
+        symbol: "none",
+        itemStyle: {
+          color: "#070A52",
+        },
+        lineStyle: {
+          type: "solid",
+          width: 1
+        },
+        yAxisIndex: 0,
+        data: [
+          ...values.map((t: { utctime: string; [key: string]: string }) => {
+            return [
+              new Date(t.utctime).toISOString(),
+              ...parameters.map((p) => {
+                if (p.code === "HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}") {
+                  if (Number(t[p.code]) !== null && t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"] !== null) {
+                    return Math.max(Number(t[p.code]), Number(t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"]))
+                  }
+                } 
+              })
+            ];
+          })
+        ]
+      },
+      {
+        type: "line",
+        name: "Winter 10 Days",
+        symbol: "none",
+        itemStyle: {
+          color: "#1D5B79",
+        },
+        lineStyle: {
+          type: "solid",
+          width: 1
+        },
+        yAxisIndex: 0,
+        data: [
+          ...values.map((t: { utctime: string; [key: string]: string }) => {
+            return [
+              new Date(t.utctime).toISOString(),
+              ...parameters.map((p) => {
+                if (p.code === "HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}") {
+                  if (Number(t[p.code]) === 2) {
+                    return "nan";
+                  }
+                } else if(t["ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}"] !== null){
+                  return Math.max(Number(t["ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}"]), Number(t["HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"]));
+                } 
+              })
+            ];
+          })
+        ]
+      },
     ]
   };
   return trafficabilityOptionData;
