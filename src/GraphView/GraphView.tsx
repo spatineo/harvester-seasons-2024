@@ -33,7 +33,7 @@ export interface Time {
 
 const Graphs: React.FC = () => {
   //Created a function to call state data using strings  'soilTemperatureData' - option one
- /*  const selectedSoilTemperature = getState(
+  /*  const selectedSoilTemperature = getState(
     useAppSelector((state: RootState) => state),
     "soilTemperatureData",
     (state: RootState) => state
@@ -42,7 +42,8 @@ const Graphs: React.FC = () => {
   //console.log(selectedSoilTemperature)
 
   //option two - calling the object state.gloabl once
-  const globalStateObject = useAppSelector((state: RootState) => state.global);
+  const { soilWetnessData, soilTemperatureData, snowHeightData, checked } =
+    useAppSelector((state: RootState) => state.global);
 
   const graphParameters = useAppSelector(
     (state: RootState) => state.global.parameters
@@ -141,30 +142,26 @@ const Graphs: React.FC = () => {
   }, [timelineRef]);
 
   useEffect(() => {
-    if (
-      globalStateObject.soilWetnessData ||
-      globalStateObject.soilTemperatureData ||
-      globalStateObject.snowHeightData
-    ) {
-      if (!globalStateObject.checked) {
+    if (soilWetnessData || soilTemperatureData || snowHeightData) {
+      if (!checked) {
         const soilWetness = createOptions(
           { title: "Soil Wetness" },
           graphParameters.twelveMonthParams.soilWetness,
-          globalStateObject.soilWetnessData,
+          soilWetnessData,
           markLineDate,
           [0, 0, 16, 0]
         );
         const soilTemperature = createOptions(
           { title: "Soil Temperature" },
           graphParameters.twelveMonthParams.soilTemperature,
-          globalStateObject.soilTemperatureData,
+          soilTemperatureData,
           markLineDate,
           [0, 0, 16, 0]
         );
         const snowHeight = createOptions(
           { title: "Snow Height" },
           graphParameters.twelveMonthParams.snowHeight,
-          globalStateObject.snowHeightData,
+          snowHeightData,
           markLineDate,
           [0, 0, 22, 0]
         );
@@ -175,21 +172,21 @@ const Graphs: React.FC = () => {
         const soilWetness = createOptions(
           { title: "Soil Wetness" },
           graphParameters.tenYearParams.soilWetness,
-          globalStateObject.soilWetnessData,
+          soilWetnessData,
           markLineDate,
           [0, 0, 16, 0]
         );
         const soilTemperature = createOptions(
           { title: "Soil Temperature" },
           graphParameters.tenYearParams.soilTemperature,
-          globalStateObject.soilTemperatureData,
+          soilTemperatureData,
           markLineDate,
           [0, 0, 16, 0]
         );
         const snowHeight = createOptions(
           { title: "Snow Height" },
           graphParameters.tenYearParams.snowHeight,
-          globalStateObject.snowHeightData,
+          snowHeightData,
           markLineDate,
           [0, 0, 22, 0]
         );
@@ -199,9 +196,9 @@ const Graphs: React.FC = () => {
       }
     }
   }, [
-    globalStateObject.soilWetnessData,
-    globalStateObject.snowHeightData,
-    globalStateObject.soilTemperatureData,
+    soilWetnessData,
+    snowHeightData,
+    soilTemperatureData,
     graphParameters.twelveMonthParams.soilWetness,
     graphParameters.twelveMonthParams.soilTemperature,
     graphParameters.twelveMonthParams.snowHeight,
@@ -218,8 +215,7 @@ const Graphs: React.FC = () => {
       </Box>
       <Box ref={timelineRef}></Box>
       <Box>
-        {globalStateObject.soilWetnessData &&
-        globalStateObject.soilWetnessData.length === 0 ? (
+        {soilWetnessData && soilWetnessData.length === 0 ? (
           <Box className="loading">Loading ....</Box>
         ) : (
           <HarvesterSeasons
@@ -229,8 +225,7 @@ const Graphs: React.FC = () => {
         )}
       </Box>
       <Box>
-        {globalStateObject.soilTemperatureData &&
-        globalStateObject.soilTemperatureData.length === 0 ? (
+        {soilTemperatureData && soilTemperatureData.length === 0 ? (
           <Box className="loading">Loading ....</Box>
         ) : (
           <HarvesterSeasons
@@ -240,8 +235,7 @@ const Graphs: React.FC = () => {
         )}
       </Box>
       <Box>
-        {globalStateObject.snowHeightData &&
-        globalStateObject.snowHeightData.length === 0 ? (
+        {snowHeightData && snowHeightData.length === 0 ? (
           <Box className="loading">Loading ....</Box>
         ) : (
           <HarvesterSeasons

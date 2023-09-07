@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable import/default */
 import React, { useEffect, useState } from "react";
@@ -14,7 +15,13 @@ import { useAppSelector, useRootDispatch } from "../store/hooks";
 import { RootState } from "../store/store";
 import { createTrafficabilityGraphOptions } from "../utils/graphHelpers";
 import { actions } from "../globalSlice";
-import { harvidx, dataScaled, scalingFunction } from "../utils/helpers";
+import {
+  harvidx,
+  ensembleListSmartIdx,
+  scalingFunction,
+  scaleEnsembleData,
+  ensover,
+} from "../utils/helpers";
 
 interface YValues {
   seriesName: string | undefined;
@@ -32,7 +39,13 @@ function MainViewComponent() {
   const [windGust, setWindGust] = useState<number | null>(null);
   const [yAxisValues, setYAxisValues] = useState<YValues[] | null>(null);
   const dispatch = useRootDispatch();
-  const globalState = useAppSelector((state: RootState) => state.global);
+  const {
+    soilWetnessData,
+    soilTemperatureData,
+    snowHeightData,
+    trafficabilityData,
+    windSpeedData,
+  } = useAppSelector((state: RootState) => state.global);
 
   const graphParameters = useAppSelector(
     (state: RootState) => state.global.parameters
@@ -48,43 +61,83 @@ function MainViewComponent() {
   }, []);
 
   useEffect(() => {
-    if (globalState.trafficabilityData || globalState.windSpeedData) {
+    if (!soilWetnessData || !snowHeightData || !soilTemperatureData) {
+      return;
+    }
+
+    const testEnsemble = scaleEnsembleData(
+      soilWetnessData,
+      "SWVL2-M3M3:SMARTMET:5015"
+    );
+    const ensembleSoilWetness = ensembleListSmartIdx(
+      soilWetnessData,
+      "SWVL2-M3M3:SMARTMET:5015"
+    );
+   
+    const ensembleSnowHeight = ensembleListSmartIdx(
+      snowHeightData,
+      "HSNOW-M:SMARTOBS:13:4"
+    );
+    const dataSWscaled = scalingFunction(
+      testEnsemble,
+      ensembleSoilWetness.ensembleList,
+      ensembleSoilWetness.smartId,
+      50,
+      "SWVL2-M3M3:SMARTMET:5015"
+    );
+    
+    const dataSHscaled = scalingFunction(
+      snowHeightData,
+      ensembleSnowHeight.ensembleList,
+      ensembleSnowHeight.smartId,
+      50,
+      "HSNOW-M:SMARTOBS:13:4",
+      "HSNOW-M:SMARTMET:5027"
+    );
+
+    const summer1series = harvidx(
+      0.4,
+      dataSWscaled,
+      ensembleSoilWetness.ensembleList,
+      50,
+      "SWVL2-M3M3:SMARTMET:5015"
+    );
+    
+    const winter1series = ensover(
+      0.4,
+      0.9,
+      dataSHscaled,
+      ensembleSnowHeight.ensembleList,
+      50,
+      "HSNOW-M:SMARTOBS:13:4"
+    );   
+    if (trafficabilityData || windSpeedData) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       const trafficabilityOption = createTrafficabilityGraphOptions(
         graphParameters.twelveMonthParams.trafficability,
-        globalState.trafficabilityData,
-        globalState.windSpeedData,
+        trafficabilityData,
+        windSpeedData,
         mark,
-        yAxisValues
+        yAxisValues,
+        summer1series,
+        winter1series
       );
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       setTrafficabilityGraphOption(trafficabilityOption);
     }
   }, [
-    globalState.trafficabilityData,
+    trafficabilityData,
+    soilWetnessData,
     graphParameters.twelveMonthParams.trafficability,
     mark,
-    globalState.windSpeedData,
+    windSpeedData,
     yAxisValues,
   ]);
-
-  useEffect(() => {
-    if (!globalState.soilWetnessData) {
-      return;
-    }
-    /*  const scaledData = dataScaled(globalState.soilWetnessData, "SWVL2-M3M3:SMARTMET:5015")
-    
-    window.console.log('scaledData.dataSWscaled',scaledData.dataSWscaled)
-    const dataSWscaled = scalingFunction(globalState.soilWetnessData, scaledData.ensembleList, scaledData.smartId, 50, "SWVL2-M3M3:SMARTMET:5015");
-    const havardx = harvidx(0.4, globalState.soilWetnessData, scaledData.dataSWscaled, 50, "SWVL2-M3M3:SMARTMET:5015");
-    window.console.log(havardx) */
-    //console.log(scaledData)
-  }, [globalState.soilWetnessData]);
 
   return (
     <Container maxWidth="lg">
       <Box>
-        {globalState.trafficabilityData.length > 0 ? (
+        {trafficabilityData.length > 0 ? (
           <TraficabilityGraph
             option={trafficabilityGraphOption}
             onGraphClick={function (xAxisData: string): void {
