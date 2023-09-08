@@ -23,26 +23,8 @@ export interface Time {
   utctime: string;
 }
 
-/* function getState(
-  state: RootState,
-  data: string,
-  selectorFn: (state: RootState) => any
-) {
-  return selectorFn(state.global[data]);
-} */
-
 const Graphs: React.FC = () => {
-  //Created a function to call state data using strings  'soilTemperatureData' - option one
-  /*  const selectedSoilTemperature = getState(
-    useAppSelector((state: RootState) => state),
-    "soilTemperatureData",
-    (state: RootState) => state
-  ); */
-
-  //console.log(selectedSoilTemperature)
-
-  //option two - calling the object state.gloabl once
-  const { soilWetnessData, soilTemperatureData, snowHeightData, checked } =
+  const { soilWetnessData, soilTemperatureData, snowHeightData, checked, startEndTimeSpan } =
     useAppSelector((state: RootState) => state.global);
 
   const graphParameters = useAppSelector(
@@ -61,17 +43,19 @@ const Graphs: React.FC = () => {
     null
   );
   const [markLineValue, setMarkLineValue] = useState<string>(
-    marklineStartDate(getStartSearchDate())
+    startEndTimeSpan.start_time
   );
   const dispatch = useRootDispatch();
+
   useEffect(() => {
-    const result = new Date(marklineStartDate(getStartSearchDate()));
+    const result = new Date(new Date(startEndTimeSpan.start_time));
     result.setDate(result.getDate() + 2);
     const dateValue: Array<string | Date> = getDatesForTimelineDuration(
       result,
       11,
       true
     );
+
     const option: any = {
       timeline: {
         data: dateValue,
@@ -123,7 +107,7 @@ const Graphs: React.FC = () => {
         }
       });
     }
-  }, [timelineGraph]);
+  }, [timelineGraph, startEndTimeSpan.start_time]);
 
   useEffect(() => {
     if (!timelineRef.current) {
