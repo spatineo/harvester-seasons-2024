@@ -127,11 +127,11 @@ export function createTrafficabilityGraphOptions(
         },
         yAxisIndex: 0,
         data: [
-          ...values.map((t: { utctime: string; [key: string]: string }, index) => {
-            return [
-              new Date(t.utctime).toISOString(), summerSeries[index]
-            ];
-          })
+          ...values.map(
+            (t: { utctime: string; [key: string]: string }, index) => {
+              return [new Date(t.utctime).toISOString(), summerSeries[index]];
+            }
+          )
         ]
       },
       {
@@ -152,10 +152,6 @@ export function createTrafficabilityGraphOptions(
         data: [
           ...values.map(
             (t: { utctime: string; [key: string]: string }, index) => {
-              // const param3 = "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}";
-              // const param5 = "HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}";
-              // const param7 = "ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}";
-              // const param8 = "ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}";
               return [
                 new Date(t.utctime).toISOString(),
                 ...parameters.map((p) => {
