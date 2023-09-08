@@ -131,6 +131,7 @@ const TraficabilityGraphComponent: React.FC<
         params.offsetX,
         params.offsetY,
       ])[0];
+
       if (xAxisData) {
         const date = new Date(xAxisData);
         const formattedDate = date.toISOString();
@@ -138,6 +139,7 @@ const TraficabilityGraphComponent: React.FC<
       }
     };
 
+    chart.getZr().on('click', handleMouseClick);
     return () => {
       if (chart) {
         chart.getZr().off('click', handleMouseClick);
