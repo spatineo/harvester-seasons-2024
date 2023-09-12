@@ -19,7 +19,6 @@ import {
   harvidx,
   ensembleListSmartIdx,
   scalingFunction,
-  scaleEnsembleData,
   ensover,
 } from "../utils/helpers";
 
@@ -50,7 +49,7 @@ function MainViewComponent() {
   const graphParameters = useAppSelector(
     (state: RootState) => state.global.parameters
   );
-  const mark = useAppSelector((state: RootState) => state.global.markLine);
+  const { markLine }= useAppSelector((state: RootState) => state.global);
 
   useEffect(() => {
     dispatch({ type: constants.TRAFFICABILITY_API });
@@ -112,7 +111,7 @@ function MainViewComponent() {
         graphParameters.twelveMonthParams.trafficability,
         trafficabilityData,
         windSpeedData,
-        mark,
+        markLine,
         yAxisValues,
         summer1series,
         winter1series
@@ -124,7 +123,7 @@ function MainViewComponent() {
     trafficabilityData,
     soilWetnessData,
     graphParameters.twelveMonthParams.trafficability,
-    mark,
+    markLine,
     windSpeedData,
     yAxisValues,
   ]);
