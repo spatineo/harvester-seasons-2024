@@ -115,11 +115,6 @@ const TraficabilityGraphComponent: React.FC<
     };
     //chart.on("mouseover", mouseover );
 
-    return () => {
-      if (chart !== null) {
-        chart.off("mouseover", mouseover);
-      }
-    };
   }, [chart, onMouseOver]);
 
   useEffect(() => {
@@ -173,16 +168,6 @@ const TraficabilityGraphComponent: React.FC<
 
                 if (dataIndex !== undefined) {
                   const yValue = series.data[dataIndex];
-                  //const seriesName = series.name;
-                  /*  const yValue = series.data[dataIndex];
-                  // Ensure that yValue is an array and contains numerical values
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                  const numericValues = yValue.filter((value) => typeof value === "number");
-                  //const filteredYValue = Array.from(yValue).filter(y => typeof y === 'number')
-                  if(yValue[1] === "number" || yValue[2] === "number" || yValue[3] === "number" || yValue[4]) {
-                    console.log(Math.max(yValue[1], yValue[2], yValue[3], yValue[4]))
-                  }
-                  dispatch(actions.changeTrafficabilityIndexColor(Math.max(yValue[1], yValue[2], yValue[3], yValue[4]))) */
                   if (Array.isArray(yValue)) {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
                     const numericValues = yValue
@@ -206,12 +191,6 @@ const TraficabilityGraphComponent: React.FC<
         }
       });
     }
-
-    return () => {
-      if (chart !== null) {
-        chart.getZr().off();
-      }
-    };
   }, [chart, onGraphClick]);
 
   return (
