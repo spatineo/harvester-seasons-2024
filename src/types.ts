@@ -24,6 +24,7 @@ export interface StartEndTimeSpan {
 }
 
 export interface GlobalStateProps {
+  trafficabilityIndexColor: number | null;
   hideNext: boolean;
   changeYear: string;
   markLine: string;
