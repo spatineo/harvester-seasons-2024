@@ -33,8 +33,8 @@ const TraficabilityGraphComponent: React.FC<
   const [arrowColor, setArrowColor] = useState<"primary" | "secondary">(
     "primary"
   );
-  const hideNextArrow = useAppSelector(
-    (state: RootState) => state.global.hideNext
+  const { hideNext } = useAppSelector(
+    (state: RootState) => state.global
   );
   const dispatch = useRootDispatch();
 
@@ -81,6 +81,7 @@ const TraficabilityGraphComponent: React.FC<
     if (!chart) {
       return;
     }
+
     const mouseover = function (params) {
       if (params.data) {
         const xValue = params.data[0];
@@ -111,36 +112,104 @@ const TraficabilityGraphComponent: React.FC<
           onMouseOver(yValues);
         }
       }
-    }
-   // chart.on("mouseover", mouseover );
+    };
+    //chart.on("mouseover", mouseover );
 
     return () => {
-      if(chart !== null){
-        chart.off("mouseover", mouseover)
+      if (chart !== null) {
+        chart.off("mouseover", mouseover);
       }
-    }
+    };
   }, [chart, onMouseOver]);
 
   useEffect(() => {
-    if (!chart) {
-      return;
+    const calculateDataIndex = (seriesData, xAxisValue) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
+      const formatDateWithoutTime = (dateString) => {
+        const dateWithTime = new Date(dateString);
+        const dateWithoutTime = new Date(
+          dateWithTime.getFullYear(),
+          dateWithTime.getMonth(),
+          dateWithTime.getDate()
+        );
+        return dateWithoutTime;
+      };
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
+
+      for (let i = 0; i < seriesData.length; i++) {
+        const dataPoint = seriesData[i];
+        const formattedDataPoint = formatDateWithoutTime(
+          new Date(dataPoint[0])
+        );
+        const formattedXAxisValue = formatDateWithoutTime(new Date(xAxisValue));
+        const timestampXAxisValue = formattedXAxisValue.getTime();
+        const timestampDataPoint = formattedDataPoint.getTime();
+
+        if (timestampDataPoint === timestampXAxisValue) {
+          return i;
+        }
+      }
+      return undefined;
+    };
+    if (chart !== null) {
+      chart.getZr().on("click", (params) => {
+        const pointInPixel = [params.offsetX, params.offsetY];
+
+        if (chart.getOption() !== undefined) {
+          chart.getOption().series?.forEach((series, seriesIndex) => {
+            const xAxisData = chart.convertFromPixel(
+              { seriesIndex },
+              pointInPixel
+            )[0];
+
+            if (xAxisData !== null) {
+              const date = new Date(xAxisData);
+              const formattedDate = date.toISOString();
+              if (series.name && series.data) {
+                const dataIndex = calculateDataIndex(
+                  series.data,
+                  formattedDate
+                );
+
+                if (dataIndex !== undefined) {
+                  const yValue = series.data[dataIndex];
+                  //const seriesName = series.name;
+                  /*  const yValue = series.data[dataIndex];
+                  // Ensure that yValue is an array and contains numerical values
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                  const numericValues = yValue.filter((value) => typeof value === "number");
+                  //const filteredYValue = Array.from(yValue).filter(y => typeof y === 'number')
+                  if(yValue[1] === "number" || yValue[2] === "number" || yValue[3] === "number" || yValue[4]) {
+                    console.log(Math.max(yValue[1], yValue[2], yValue[3], yValue[4]))
+                  }
+                  dispatch(actions.changeTrafficabilityIndexColor(Math.max(yValue[1], yValue[2], yValue[3], yValue[4]))) */
+                  if (Array.isArray(yValue)) {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                    const numericValues = yValue
+                      .filter(
+                        (value) => typeof value === "number" && !isNaN(value)
+                      )
+                      .map((value) => Number(value));
+
+                    if (numericValues.length > 0) {
+                      const maxNumericValue = Math.max(...numericValues);
+                      dispatch(
+                        actions.changeTrafficabilityIndexColor(maxNumericValue)
+                      );
+                    }
+                  }
+                }
+              }
+              onGraphClick(formattedDate);
+            }
+          });
+        }
+      });
     }
 
-    const handleMouseClick = (params) => {
-      const xAxisData = chart.convertFromPixel({ seriesIndex: 0 }, [
-        params.offsetX,
-        params.offsetY,
-      ])[0];
-      if (xAxisData) {
-        const date = new Date(xAxisData);
-        const formattedDate = date.toISOString();
-        onGraphClick(formattedDate);
-      }
-    };
-
     return () => {
-      if (chart) {
-        chart.getZr().off('click', handleMouseClick);
+      if (chart !== null) {
+        chart.getZr().off();
       }
     };
   }, [chart, onGraphClick]);
@@ -156,11 +225,8 @@ const TraficabilityGraphComponent: React.FC<
         color={arrowColor}
         fontSize="large"
       />
-      <Box
-        ref={graphRef}
-        style={{ width: "100%", margin: "auto" }}
-      ></Box>
-      {hideNextArrow && (
+      <Box ref={graphRef} style={{ width: "100%", margin: "auto" }}></Box>
+      {hideNext && (
         <ArrowForwardIos
           color={arrowColor}
           fontSize="large"

@@ -13,6 +13,7 @@ const marked = new Date(
 ).toISOString();
 
 const initialState: GlobalStateProps = {
+  trafficabilityIndexColor: null,
   hideNext: false,
   changeYear: "",
   markLine: marked,
@@ -128,6 +129,9 @@ const globalSlice = createSlice({
     },
     changeHideNextArrowState: (state, action: PayloadAction<boolean>) => {
       state.hideNext = action.payload;
+    },
+    changeTrafficabilityIndexColor: (state, action: PayloadAction<number>) => {
+      state.trafficabilityIndexColor = action.payload;
     }
   }
 });

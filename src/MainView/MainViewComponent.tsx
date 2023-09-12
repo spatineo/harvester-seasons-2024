@@ -19,7 +19,6 @@ import {
   harvidx,
   ensembleListSmartIdx,
   scalingFunction,
-  scaleEnsembleData,
   ensover,
 } from "../utils/helpers";
 
@@ -50,7 +49,7 @@ function MainViewComponent() {
   const graphParameters = useAppSelector(
     (state: RootState) => state.global.parameters
   );
-  const mark = useAppSelector((state: RootState) => state.global.markLine);
+  const { markLine }= useAppSelector((state: RootState) => state.global);
 
   useEffect(() => {
     dispatch({ type: constants.TRAFFICABILITY_API });
@@ -64,11 +63,6 @@ function MainViewComponent() {
     if (!soilWetnessData || !snowHeightData || !soilTemperatureData) {
       return;
     }
-
-    const testEnsemble = scaleEnsembleData(
-      soilWetnessData,
-      "SWVL2-M3M3:SMARTMET:5015"
-    );
     const ensembleSoilWetness = ensembleListSmartIdx(
       soilWetnessData,
       "SWVL2-M3M3:SMARTMET:5015"
@@ -79,7 +73,7 @@ function MainViewComponent() {
       "HSNOW-M:SMARTOBS:13:4"
     );
     const dataSWscaled = scalingFunction(
-      testEnsemble,
+      soilWetnessData,
       ensembleSoilWetness.ensembleList,
       ensembleSoilWetness.smartId,
       50,
@@ -117,7 +111,7 @@ function MainViewComponent() {
         graphParameters.twelveMonthParams.trafficability,
         trafficabilityData,
         windSpeedData,
-        mark,
+        markLine,
         yAxisValues,
         summer1series,
         winter1series
@@ -129,7 +123,7 @@ function MainViewComponent() {
     trafficabilityData,
     soilWetnessData,
     graphParameters.twelveMonthParams.trafficability,
-    mark,
+    markLine,
     windSpeedData,
     yAxisValues,
   ]);
