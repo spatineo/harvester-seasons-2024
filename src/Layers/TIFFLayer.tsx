@@ -62,6 +62,8 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
       visible: true,
       opacity: getOpacityFromPercentage(opacityValue),
       className: "class",
+      maxResolution: 2000,
+      minResolution: 200,
       style: {
         color: colorExpression(),
         gamma: 1.0,
