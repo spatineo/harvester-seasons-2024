@@ -4,10 +4,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
 // eslint-disable-next-line import/default
 import React, { useState } from "react";
-import { Box, ListItemButton, Collapse } from "@mui/material";
+import { Box, Grid, ListItemButton, Collapse, styled } from "@mui/material";
 import { ArrowDropDown, ArrowRight } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
 import { useAppSelector } from "../store/hooks";
 import { LanguageOptions } from "../Lang/languageSlice";
 import { languages } from "../Lang/languages";
@@ -15,67 +14,28 @@ import logo from "../assets/logos_long.png";
 import smallScreen from "../assets/logos.png";
 import testimonial from "../assets/testimonial_metsateho1.png";
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    width: '92%', 
-    margin: '0rem auto',
-   
-    [theme.breakpoints.up("sm")]: {
-      width: '94%', 
-      margin: '0rem auto',
-    },
-    [theme.breakpoints.up("md")]: {
-      width: '96%', 
-      margin: '0rem auto',
-    },
-    [theme.breakpoints.up("xl")]: {
-      width: '86%', 
-      margin: '0rem auto',
-    },
+const MobileLogo = styled('img')({
+  '@media (max-width: 900px)': {
+    display: 'block',
+    width: '60%',
+    float: 'right',
+    clear: 'both'
   },
-  textAndLogo: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    flexWrap: 'nowrap',
+  '@media (min-width: 901px)': {
+    display: 'none'
+  }
+})
+
+const BiggerScreen = styled('img')({
+  '@media (min-width: 901px)': {
+    display: 'block',
+    width: '70%',
+    float: 'right',
   },
-  font: {
-    fontSize: "calc(16px + (45 - 22) * ((100vw - 300px) / (1600 - 300)))",
-    color: "darkred",
-    fontWeight: 600,
-    flex: 1,
-  },
-  clickInformation: {
-    fontSize: "calc(14px + (16 - 12) * ((100vw - 300px) / (1600 - 300)))",
-    marginLeft: "0rem",
-  },
-  link: {
-    flex: 1
-  },
-  image: {
-    width: "70%",
-    [theme.breakpoints.up("xs")]: {
-      display: "none",
-    },
-    [theme.breakpoints.up("sm")]: {
-      display: "inline-block",
-      width: "100%",
-    },
-  },
-  mobileLogo: {
-    [theme.breakpoints.up("xs")]: {
-      width: "60%",
-      height: "auto",
-      float: "right",
-      clear: 'both',
-    },
-    [theme.breakpoints.up("sm")]: {
-      display: "none",
-    },
-  },
-}));
+  '@media (max-width: 900px)': {
+    display: 'none'
+  }
+})
 
 const HeadingCompoment: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -87,25 +47,24 @@ const HeadingCompoment: React.FC = () => {
   const handleClick = () => {
     setOpen(!open);
   };
-  const classes = useStyles();
 
   return (
-    <Box className={classes.container}>
-      <Box className={classes.textAndLogo}>
-        <Box className={classes.link}>
+    <Grid container sx={{ width: '100%' }}>
+      <Grid container sx={{ width: '100%', padding: '0rem 1em'}}>
+        <Grid item xs={6} >
           <Link to="/" style={linkStyle}>
-            <Box className={classes.font}>Harvester Seasons</Box>
+            <Box sx={{ fontSize: 'calc(0.1vw + 1vh + 2vmin)'}}>Harvester Seasons</Box>
           </Link>
           <Box></Box>
-        </Box>
-        <Box className={classes.link}>
+        </Grid>
+        <Grid item xs={6}>
           <Link to="/">
-            <Box component="img" src={logo} className={classes.image} />
-            <Box component="img" src={smallScreen} className={classes.mobileLogo} />
+            <BiggerScreen src={logo} />
+            <MobileLogo src={smallScreen}/>
           </Link>
-        </Box>
-      </Box>
-      <Box className={classes.clickInformation}>
+        </Grid>
+      </Grid>
+      <Grid container sx={{padding: '0rem 1rem'}}>
         <ListItemButton onClick={handleClick} sx={{ margin: "-0.6rem 0rem 0rem -0.6rem",  padding: "0rem"}}>
           {open ? <ArrowDropDown /> : <ArrowRight />}{" "}
           {languages.info[information.en as keyof LanguageOptions]}
@@ -118,8 +77,8 @@ const HeadingCompoment: React.FC = () => {
             {languages.overviewBody[information.en as keyof LanguageOptions]} hi
           </Box>
         </Collapse>
-      </Box>
-    </Box>
+      </Grid>
+    </Grid>
   );
 };
 
