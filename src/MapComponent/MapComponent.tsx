@@ -5,8 +5,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable import/default */
 import React, { useRef, useEffect, useState } from "react";
-import { Box, Typography } from "@mui/material";
-import { makeStyles } from "@material-ui/core/styles";
+import { Box, Typography, Grid } from "@mui/material";
 import { useRootDispatch, useAppSelector } from "../store/hooks";
 import { MapPosition, mapActions } from "./MapComponentSlice";
 import MapContext from "./MapContext";
@@ -15,33 +14,8 @@ import { defaults as defaultControls } from "ol/control";
 import * as constants from "../store/constants";
 import LayerSwitcher from "ol-layerswitcher";
 import proj4 from "proj4";
-import { transform } from "ol/proj";
 import { RootState } from "../store/store";
 import { register } from "ol/proj/proj4";
-import { Circle } from "ol/geom";
-import Feature from "ol/Feature";
-import { Fill, Stroke, Style } from "ol/style";
-import { Vector as VectorLayer } from "ol/layer";
-import { Vector as VectorSource } from "ol/source";
-
-const useStyles = makeStyles((theme) => ({
-  container: {
-    display: "flex",
-    flexDirection: "row",
-    margin: "auto",
-    width: "100%",
-    flexWrap: "wrap",
-    gap: 2,
-    justifyContent: "start",
-  },
-  innerContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: "0.6rem",
-  },
-}));
 
 const styles = {
   innerBoxStyle: {
@@ -86,7 +60,6 @@ register(proj4);
 const MapComponent: React.FC<MapProps> = ({ children }) => {
   const mapRef = useRef();
   const [map, setMap] = useState<ol.Map | null>(null);
-  const [clickedPosition, setClickedPosition] = useState<any | null>(null);
   const dispatch = useRootDispatch();
   const position: MapPosition = useAppSelector(
     (state: RootState) => state.mapState.position
@@ -125,7 +98,6 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
           const lat = pos.coords.latitude;
 
           dispatch(mapActions.setPosition({ lat, lon }));
-          setClickedPosition([lon, lat]);
         },
         (error) => {
           window.console.error(
@@ -159,16 +131,14 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
     dispatch({ type: constants.POSITION });
   }, [map, position]);
 
-  const classes = useStyles();
-
   return (
     <MapContext.Provider value={{ map }}>
       <Box ref={mapRef} className="ol-map">
         {children}
         <div id="select"></div>
       </Box>
-      <Box className={classes.container}>
-        <Box className={classes.innerContainer}>
+      <Grid container>
+        <Grid container>
           <Box
             sx={styles.box}
             component="span"
@@ -177,8 +147,8 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
           <Typography component="span" sx={styles.typography}>
             Frost heave (kelirikko, GOOD)
           </Typography>
-        </Box>
-        <Box className={classes.innerContainer}>
+        </Grid>
+        <Box>
           <Box
             style={{ background: "rgb(139, 172, 82)", marginLeft: "0.3rem" }}
             component="span"
@@ -188,7 +158,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
             Normal summer, mineral soil
           </Typography>
         </Box>
-        <Box className={classes.innerContainer}>
+        <Box>
           <Box
             sx={styles.box}
             component="span"
@@ -198,7 +168,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
             Dry summer, mineral soil
           </Typography>
         </Box>
-        <Box className={classes.innerContainer}>
+        <Box>
           <Box
             sx={styles.box}
             component="span"
@@ -208,7 +178,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
             Normal summer, peat soil
           </Typography>
         </Box>
-        <Box className={classes.innerContainer}>
+        <Box>
           <Box
             sx={styles.box}
             component="span"
@@ -218,7 +188,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
             Dry summer, peat soil
           </Typography>
         </Box>
-        <Box className={classes.innerContainer}>
+        <Box>
           <Box
             sx={styles.box}
             component="span"
@@ -228,7 +198,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
             Winter (BAD)
           </Typography>
         </Box>
-      </Box>
+      </Grid>
     </MapContext.Provider>
   );
 };
