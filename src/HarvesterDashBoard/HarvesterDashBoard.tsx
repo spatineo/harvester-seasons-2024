@@ -3,35 +3,26 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import HeadingCompoment from "../HeadingCompnent/HeadingComponent";
 import FooterComponent from "../FooterComponent/FooterComponent";
-import { Box } from "@mui/material";
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { makeStyles } from "@material-ui/core/styles";
+import { Box, styled  } from "@mui/material";
 
-const useStyles = makeStyles((theme) => ({
-  main: {
-    [theme.breakpoints.up("xs")]: {
-      width: "100%",
-    },
-    [theme.breakpoints.up("md")]: {
-      width: "90%",
-      margin: "auto"
-    },
-    [theme.breakpoints.up("lg")]: {
-      width: "70%",
-      margin: "auto"
-    },
+const StyledDiv = styled(Box)({
+  '@media (max-width:900px)': {
+    width: '100%',
+    margin: '0rem auto'
   },
-}));
+  '@media (min-width: 901px)': {
+    maxWidth: '1000px',
+    margin: '0rem auto'
+  }
+})
 
 function HarvesterDashBoard() {
-  const classes = useStyles()
-
   return (
-    <Box className={classes.main}>
+    <StyledDiv>
       <HeadingCompoment />
       <Outlet />
       <FooterComponent />
-    </Box>
+    </StyledDiv>
   );
 }
 
