@@ -19,7 +19,7 @@ import { Icon, Stroke } from 'ol/style';
 
 import * as turf from '@turf/turf';
 
-const CIRCLE_RADIUS_METERS = 1000;
+const CIRCLE_RADIUS_METERS = 2500;
 
 const iconStyle = new Style({
 	image: new Icon({

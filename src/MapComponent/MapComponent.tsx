@@ -15,6 +15,7 @@ import { defaults as defaultControls } from "ol/control";
 import * as constants from "../store/constants";
 import LayerSwitcher from "ol-layerswitcher";
 import proj4 from "proj4";
+import { transform } from "ol/proj";
 import { RootState } from "../store/store";
 import { register } from "ol/proj/proj4";
 import { Circle } from "ol/geom";
@@ -29,9 +30,9 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     margin: "auto",
     width: "100%",
-    flexWrap: 'wrap',
+    flexWrap: "wrap",
     gap: 2,
-    justifyContent: 'start',
+    justifyContent: "start",
   },
   innerContainer: {
     display: "flex",
@@ -40,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     marginTop: "0.6rem",
   },
-}))
+}));
 
 const styles = {
   innerBoxStyle: {
@@ -59,7 +60,7 @@ const styles = {
   typography: {
     fontSize: "0.8rem",
     padding: "0.1rem",
-    fontFamily: 'Lato'
+    fontFamily: "Lato",
   },
 };
 
@@ -85,6 +86,7 @@ register(proj4);
 const MapComponent: React.FC<MapProps> = ({ children }) => {
   const mapRef = useRef();
   const [map, setMap] = useState<ol.Map | null>(null);
+  const [clickedPosition, setClickedPosition] = useState<any | null>(null);
   const dispatch = useRootDispatch();
   const position: MapPosition = useAppSelector(
     (state: RootState) => state.mapState.position
@@ -123,6 +125,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
           const lat = pos.coords.latitude;
 
           dispatch(mapActions.setPosition({ lat, lon }));
+          setClickedPosition([lon, lat]);
         },
         (error) => {
           window.console.error(
@@ -156,47 +159,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
     dispatch({ type: constants.POSITION });
   }, [map, position]);
 
-  useEffect(() => {
-    if (!map) {
-      return;
-    }
-	
-		const vectorSource = new VectorSource();
-    const vectorLayer = new VectorLayer({
-      source: vectorSource,
-    });
-
-		map.addLayer(vectorLayer);
-		const drawCircle = () => {
-			const currentLocation = map.getView().getCenter()/*  proj4("EPSG:4326", "EPSG:3857", [
-        position.lon as number,
-        position.lat as number,
-      ]); */
-			
-			const circleRadius = 400000;
-			if (currentLocation) {
-        const circleGeometry = new Circle(currentLocation, circleRadius);
-        const circleFeature = new Feature(circleGeometry);
-
-        const circleStyle = new Style({
-          stroke: new Stroke({
-            color: 'blue',
-            width: 2,
-          }),
-          fill: new Fill({
-            color: 'rgba(0, 0, 0, 0.1)',
-          }),
-        });
-        circleFeature.setStyle(circleStyle);
-        vectorSource.clear();
-        vectorSource.addFeature(circleFeature);
-      }
-		}
-		map.getView().on('change:resolution', drawCircle)
-
-  }, [map]);
-
-  const classes = useStyles()
+  const classes = useStyles();
 
   return (
     <MapContext.Provider value={{ map }}>

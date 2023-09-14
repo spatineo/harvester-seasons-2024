@@ -50,6 +50,7 @@ export function createTrafficabilityGraphOptions(
       width: "90%"
     },
     tooltip: {
+      show: true,
       trigger: "axis"
     },
     yAxis: [
