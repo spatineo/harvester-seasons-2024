@@ -11,14 +11,14 @@ const StyledDiv = styled(Box)({
     margin: '0rem auto'
   },
   '@media (min-width: 901px)': {
-    width: '70%',
+    maxWidth: '1000px',
     margin: '0rem auto'
   }
 })
 
 function HarvesterDashBoard() {
   return (
-    <StyledDiv sx={{ width: "70%", margin: '0rem auto'}}>
+    <StyledDiv>
       <HeadingCompoment />
       <Outlet />
       <FooterComponent />
