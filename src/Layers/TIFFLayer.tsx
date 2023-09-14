@@ -56,6 +56,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
   useEffect(() => {
     if (!map || !url) return;
 
+    // mimimum and maximum resolution
     const layer = new TileLayer({
       title,
       visible: true,
