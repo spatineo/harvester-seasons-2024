@@ -166,7 +166,7 @@ const TraficabilityGraphComponent: React.FC<
                   formattedDate
                 );
 
-                if (dataIndex !== undefined) {
+                /* if (dataIndex !== undefined) {
                   const yValue = series.data[dataIndex];
                   if (Array.isArray(yValue)) {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -183,7 +183,7 @@ const TraficabilityGraphComponent: React.FC<
                       );
                     }
                   }
-                }
+                } */
               }
               onGraphClick(formattedDate);
             }
