@@ -23,6 +23,7 @@ const monthNames = [
   "Dec"
 ];
 
+
 export function createTrafficabilityGraphOptions(
   parameters: Parameter[],
   values: [],
@@ -129,8 +130,9 @@ export function createTrafficabilityGraphOptions(
         yAxisIndex: 0,
         data: [
           ...values.map(
-            (t: { utctime: string; [key: string]: string }, index) => {
-              return [new Date(t.utctime).toISOString(), summerSeries[index]];
+            (t: { utctime: string; [key: string]: string }, index) => { 
+              const summerValue = summerSeries[index] !== undefined ? summerSeries[index] : 'nan';
+              return [new Date(t.utctime).toISOString(), summerValue];
             }
           )
         ]
@@ -225,17 +227,11 @@ export function createTrafficabilityGraphOptions(
         },
         yAxisIndex: 0,
         data: [
-          ...values.map((t: { utctime: string; [key: string]: string }) => {
-            const filteredParameters = parameters.filter((p) => {
-              return p.code === "HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}";
-            });
-            if (filteredParameters.length === 0) {
-              return ["nan"];
-            } else {
-              return [
-                new Date(t.utctime).toISOString(),
-                t[filteredParameters[0].code]
-              ];
+          ...values.map((t: { utctime: string; [key: string]: string }) => {                   
+            if (t["HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}"] !== null) { 
+              return [t.utctime, t["HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}"]]}
+            else { 
+              return [t.utctime, 'nan']
             }
           })
         ]
@@ -254,39 +250,19 @@ export function createTrafficabilityGraphOptions(
         yAxisIndex: 0,
         data: [
           ...values.map(
-            (t: { utctime: string; [key: string]: string }, index) => {
+            (t: { utctime: string; [key: string]: string }) => {
+          
+            
               return [
                 new Date(t.utctime).toISOString(),
                 ...parameters.map((p) => {
-                  if (
-                    p.code === "ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}" ||
-                    p.code ===
-                      "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"
-                  ) {
-                    if (Number(t[p.code]) !== null) {
-                      return Math.max(
-                        Number(t[p.code]),
-                        Number(t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"])
-                      );
-                    }
-                  } else if (
-                    t[
-                      "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"
-                    ] !== null ||
-                    (winterSeries[index] !== null &&
-                      values.length === winterSeries.length)
-                  ) {
-                    return Math.max(
-                      Number(
-                        t[
-                          "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"
-                        ]
-                      ),
-                      Number(winterSeries[index])
-                    );
-                  } else {
-                    return "nan";
-                  }
+                if (t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"] !== null) {
+                  return Math.max(Number(t["HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"]), Number(t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"]));
+                 } else if (t["ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}"] !== null) { 
+                  return Math.max(Number(t["HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"]), Number(t["ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}"]));
+                 } else {
+                  return 'nan'
+                 }
                 })
               ];
             }
