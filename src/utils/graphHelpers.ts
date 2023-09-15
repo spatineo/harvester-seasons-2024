@@ -158,40 +158,13 @@ export function createTrafficabilityGraphOptions(
               return [
                 new Date(t.utctime).toISOString(),
                 ...parameters.map((p) => {
-                  //"ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"
-                  if (
-                    p.code === "ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}" ||
-                    p.code ===
-                      "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"
-                  ) {
-                    if (t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"] !== null) {
-                      return Math.max(
-                        Number(t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"]),
-                        Number(
-                          t[
-                            "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"
-                          ]
-                        )
-                      );
-                    } else if (
-                      t[
-                        "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"
-                      ] !== null
-                    ) {
-                      return Math.max(
-                        Number(
-                          t[
-                            "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"
-                          ]
-                        ),
-                        Number(winterSeries[index])
-                      );
-                    } else {
-                      return "nan";
-                    }
-                  }
+                  if (t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"] !== null) {
+                    return Math.max(Number(t["HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"]), Number(t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"]))
+                  } else if (t["HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"] !== null || winterSeries[index] !== null && winterSeries.length == values.length) { 
+                    return Math.max(Number(t[ "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"]), Number(winterSeries[index])); }
+                  else { return 'nan' }
                 })
-              ];
+              ]
             }
           )
         ]
