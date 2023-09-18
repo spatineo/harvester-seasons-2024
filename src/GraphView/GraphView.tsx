@@ -60,7 +60,7 @@ const Graphs: React.FC = () => {
       true
     );
 
-    const option: any = {
+    const option = {
       timeline: {
         data: dateValue,
         autoPlay: false,
@@ -101,7 +101,7 @@ const Graphs: React.FC = () => {
     }
 
     if (timelineGraph) {
-      timelineGraph.on("timelinechanged", function (params: any) {
+      timelineGraph.on("timelinechanged", function (params) {
         const value = params.currentIndex; // get the index of the current data point
         const timelineData = (option?.timeline?.data as string[]) || [];
         if (timelineData[value]) {
