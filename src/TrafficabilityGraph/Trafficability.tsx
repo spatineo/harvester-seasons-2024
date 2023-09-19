@@ -113,9 +113,8 @@ const TraficabilityGraphComponent: React.FC<
                 );
 
                 if (dataIndex !== undefined) {
-                  const yValue = series.data[dataIndex];
+                  const yValue: unknown = series.data[dataIndex];
                   if (Array.isArray(yValue)) {
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
                     const numericValues = yValue
                       .filter((value) => typeof value === "number")
                       .map((value) => Number(value));
