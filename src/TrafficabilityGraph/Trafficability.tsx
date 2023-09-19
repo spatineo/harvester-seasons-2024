@@ -100,7 +100,7 @@ const TraficabilityGraphComponent: React.FC<
             const xAxisData = newChart.convertFromPixel(
               { seriesIndex },
               pointInPixel
-            )[0];
+            )[0] as number;
 
             if (xAxisData !== null) {
               const date = new Date(xAxisData);
