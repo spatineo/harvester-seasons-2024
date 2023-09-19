@@ -114,7 +114,6 @@ const TraficabilityGraphComponent: React.FC<
 
                 if (dataIndex !== undefined) {
                   const yValue = series.data[dataIndex];
-
                   if (Array.isArray(yValue)) {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
                     const numericValues = yValue
@@ -129,6 +128,8 @@ const TraficabilityGraphComponent: React.FC<
                       );
                       finalValues.push(...uniqueNumericValues);
                     }
+                  } else {
+                    return
                   }
                 }
               }
