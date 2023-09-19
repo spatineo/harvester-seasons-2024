@@ -131,7 +131,11 @@ const globalSlice = createSlice({
       state.hideNext = action.payload;
     },
     changeTrafficabilityIndexColor: (state, action: PayloadAction<number>) => {
-      state.trafficabilityIndexColor = action.payload;
+      if(typeof action.payload !== "number" || isNaN(action.payload)){
+        state.trafficabilityIndexColor = null
+      } else {
+        state.trafficabilityIndexColor = action.payload;
+      }
     }
   }
 });
