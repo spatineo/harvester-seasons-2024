@@ -138,7 +138,6 @@ const TraficabilityGraphComponent: React.FC<
             }
           });
           const maxValue = Math.max(...finalValues)
-          window.console.log('Test ', ...finalValues)
           dispatch(
             actions.changeTrafficabilityIndexColor(maxValue))
         }
