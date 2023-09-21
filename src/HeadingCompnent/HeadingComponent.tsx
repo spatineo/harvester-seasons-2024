@@ -29,7 +29,7 @@ const MobileLogo = styled('img')({
 const BiggerScreen = styled('img')({
   '@media (min-width: 901px)': {
     display: 'block',
-    width: '70%',
+    width: '90%',
     float: 'right',
   },
   '@media (max-width: 900px)': {
