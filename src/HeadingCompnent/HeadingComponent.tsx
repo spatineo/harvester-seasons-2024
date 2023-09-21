@@ -4,7 +4,17 @@
 /* eslint-disable import/no-extraneous-dependencies */
 // eslint-disable-next-line import/default
 import React, { useState } from "react";
-import { Box, Grid, ListItemButton, Collapse, styled } from "@mui/material";
+import {
+  Box,
+  Grid,
+  ListItemButton,
+  Collapse,
+  styled,
+  FormControl,
+  MenuItem,
+  InputLabel,
+} from "@mui/material";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { ArrowDropDown, ArrowRight } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../store/hooks";
@@ -14,33 +24,37 @@ import logo from "../assets/logos_long.png";
 import smallScreen from "../assets/logos.png";
 import testimonial from "../assets/testimonial_metsateho1.png";
 
-const MobileLogo = styled('img')({
-  '@media (max-width: 900px)': {
-    display: 'block',
-    width: '60%',
-    float: 'right',
-    clear: 'both'
+const MobileLogo = styled("img")({
+  "@media (max-width: 900px)": {
+    display: "block",
+    width: "60%",
+    float: "right",
+    clear: "both",
   },
-  '@media (min-width: 901px)': {
-    display: 'none'
-  }
-})
+  "@media (min-width: 901px)": {
+    display: "none",
+  },
+});
 
-const BiggerScreen = styled('img')({
-  '@media (min-width: 901px)': {
-    display: 'block',
-    width: '90%',
-    float: 'right',
+const BiggerScreen = styled("img")({
+  "@media (min-width: 901px)": {
+    display: "block",
+    width: "100%",
+    float: "right",
   },
-  '@media (max-width: 900px)': {
-    display: 'none'
-  }
-})
+  "@media (max-width: 900px)": {
+    display: "none",
+  },
+});
 
 const HeadingCompoment: React.FC = () => {
   const [open, setOpen] = useState(false);
+  const [language, setLanguage] = useState<string>("En");
   const information = useAppSelector((state) => state.language);
 
+  const handleSelectChange = (event: SelectChangeEvent) => {
+    setLanguage(event.target.value);
+  };
   const linkStyle = {
     textDecoration: "none",
   };
@@ -48,24 +62,52 @@ const HeadingCompoment: React.FC = () => {
     setOpen(!open);
   };
 
+  window.console.log(language, "selected language");
   return (
-    <Grid container sx={{ width: '100%' }}>
-      <Grid container sx={{ width: '100%', padding: '0rem 1em'}}>
-        <Grid item xs={6} >
+    <Grid container sx={{ width: "100%", position: "relative", top: "0.8rem", marginBottom: "2rem" }}>
+      <Grid container sx={{ width: "100%", padding: "0rem 1em" }}>
+        <Grid item xs={6}>
           <Link to="/" style={linkStyle}>
-            <Box sx={{ fontSize: 'calc(0.1vw + 1vh + 2vmin)'}}>Harvester Seasons</Box>
+            <Box sx={{ fontSize: "calc(0.1vw + 1vh + 2vmin)" }}>
+              Harvester Seasons
+            </Box>
           </Link>
           <Box></Box>
         </Grid>
         <Grid item xs={6}>
-          <Link to="/">
-            <BiggerScreen src={logo} />
-            <MobileLogo src={smallScreen}/>
-          </Link>
+          <Grid container>
+            <Grid item xs={3}>
+              <FormControl sx={{ m: 1, minWidth: 60 }} size="small">
+                <InputLabel id="demo-select-small-label">Lang</InputLabel>
+                <Select
+                  labelId="demo-select-small-label"
+                  id="demo-select-small"
+                  value={language}
+                  label="Age"
+                  onChange={handleSelectChange}
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="en">en</MenuItem>
+                  <MenuItem value="fi">fi</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={9}>
+              <Link to="/">
+                <BiggerScreen src={logo} />
+                <MobileLogo src={smallScreen} />
+              </Link>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
-      <Grid container sx={{padding: '0rem 1rem'}}>
-        <ListItemButton onClick={handleClick} sx={{ margin: "-0.6rem 0rem 0rem -0.6rem",  padding: "0rem"}}>
+      <Grid container sx={{ padding: "0rem 1rem" }}>
+        <ListItemButton
+          onClick={handleClick}
+          sx={{ margin: "-0.6rem 0rem 0rem -0.6rem", padding: "0rem" }}
+        >
           {open ? <ArrowDropDown /> : <ArrowRight />}{" "}
           {languages.info[information.en as keyof LanguageOptions]}
         </ListItemButton>
@@ -73,7 +115,7 @@ const HeadingCompoment: React.FC = () => {
           <Box sx={{ width: "80%", margin: "2rem auto" }}>
             <Box component="img" src={testimonial} sx={{ width: "80%" }} />
           </Box>
-          <Box>
+          <Box sx={{ margin: "2rem auto" }}>
             {languages.overviewBody[information.en as keyof LanguageOptions]} hi
           </Box>
         </Collapse>
