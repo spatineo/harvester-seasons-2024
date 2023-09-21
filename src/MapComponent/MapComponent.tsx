@@ -5,7 +5,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable import/default */
 import React, { useRef, useEffect, useState } from "react";
-import { Box, Typography, Grid } from "@mui/material";
+import { Box } from "@mui/material";
 import { useRootDispatch, useAppSelector } from "../store/hooks";
 import { MapPosition, mapActions } from "./MapComponentSlice";
 import MapContext from "./MapContext";
@@ -18,23 +18,16 @@ import { RootState } from "../store/store";
 import { register } from "ol/proj/proj4";
 
 const styles = {
-  innerBoxStyle: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+  container: {
     marginTop: "0.8rem",
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(100px, auto))",
+    fontSize: "calc(10px + (18 - 14) * ((100vw - 300px) / (1600 - 300)))",
+    fontWeight: "900"
   },
-  box: {
-    width: "0.7rem",
-    height: "0.6rem",
-    border: "1px solid black",
-    verticalAlign: "bottom",
-  },
-  typography: {
-    fontSize: "0.8rem",
-    padding: "0.1rem",
-    fontFamily: "Lato",
+  list: {
+    display: "flex",
+    marginRight: "0.2rem"
   },
 };
 
@@ -137,68 +130,86 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
         {children}
         <div id="select"></div>
       </Box>
-      <Grid container>
-        <Grid container>
+      <Box sx={styles.container}>
+        <Box sx={styles.list}>
           <Box
-            sx={styles.box}
             component="span"
-            style={{ background: "rgb(83, 127, 70)", marginLeft: "0.3rem" }}
+            style={{
+              margin: '0.1rem 0.2rem 0rem 0rem',
+              backgroundColor: "rgba(54, 75, 154)",
+              width: "10px",
+              height: "10px",
+              border: "1px solid  rgba(0, 0, 0)",
+            }}
           ></Box>
-          <Typography component="span" sx={styles.typography}>
-            Frost heave (kelirikko, GOOD)
-          </Typography>
-        </Grid>
-        <Box>
-          <Box
-            style={{ background: "rgb(139, 172, 82)", marginLeft: "0.3rem" }}
-            component="span"
-            sx={styles.box}
-          ></Box>
-          <Typography component="span" sx={styles.typography}>
-            Normal summer, mineral soil
-          </Typography>
+          Frost heave (kelirikko, GOOD)
         </Box>
-        <Box>
+        <Box sx={styles.list}>
           <Box
-            sx={styles.box}
             component="span"
-            style={{ background: "rgb(189, 225, 105)", marginLeft: "0.3rem" }}
+            sx={{
+              margin: '0.1rem 0.2rem 0rem 0rem',
+              background: "rgba(74, 123, 183)",
+              width: "10px",
+              height: "10px",
+              border: "1px solid  rgba(0, 0, 0)",
+            }}
           ></Box>
-          <Typography component="span" sx={styles.typography}>
-            Dry summer, mineral soil
-          </Typography>
+          Normal summer, mineral soil
         </Box>
-        <Box>
+        <Box sx={styles.list}>
           <Box
-            sx={styles.box}
             component="span"
-            style={{ background: "rgb(254, 251, 117)", marginLeft: "0.3rem" }}
+            style={{
+              margin: '0.1rem 0.2rem 0rem 0rem',
+              background: "rgba(110, 166, 205)",
+              width: "10px",
+              height: "10px",
+              border: "1px solid  rgba(0, 0, 0)",
+            }}
           ></Box>
-          <Typography component="span" sx={styles.typography}>
-            Normal summer, peat soil
-          </Typography>
+          Dry summer, mineral soil
         </Box>
-        <Box>
+        <Box sx={styles.list}>
           <Box
-            sx={styles.box}
             component="span"
-            style={{ background: "rgb(242, 162, 92)", marginLeft: "0.3rem" }}
+            style={{
+              margin: '0.1rem 0.2rem 0rem 0rem',
+              background: "rgba(254, 218, 139)",
+              width: "10px",
+              height: "10px",
+              border: "1px solid  rgba(0, 0, 0)",
+            }}
           ></Box>
-          <Typography component="span" sx={styles.typography}>
-            Dry summer, peat soil
-          </Typography>
+          Normal summer, peat soil
         </Box>
-        <Box>
+        <Box sx={styles.list}>
           <Box
-            sx={styles.box}
             component="span"
-            style={{ background: "rgb(239, 103, 81)", marginLeft: "0.3rem" }}
+            style={{
+              margin: '0.15rem 0.2rem 0rem 0rem',
+              background: "rgba(246, 126, 75)",
+              width: "10px",
+              height: "10px",
+              border: "1px solid  rgba(0, 0, 0)",
+            }}
           ></Box>
-          <Typography component="span" sx={styles.typography}>
-            Winter (BAD)
-          </Typography>
+          Dry summer, peat soil
         </Box>
-      </Grid>
+        <Box sx={styles.list}>
+          <Box
+            component="span"
+            style={{
+              margin: '0.1rem 0.2rem 0rem 0rem',
+              background: "rgba(165, 0, 38)",
+              width: "10px",
+              height: "10px",
+              border: "1px solid  rgba(0, 0, 0)",
+            }}
+          ></Box>
+          Winter (BAD)
+        </Box>
+      </Box>
     </MapContext.Provider>
   );
 };
