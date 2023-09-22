@@ -99,6 +99,7 @@ export const languages = {
 	Suomen kasvihuonekaasupäästöt 1990 – 2020. Tilastokeskus / Statistics Finland, Helsinki, 2021, 111 pp.
 	
 	Tamminen, P. 2009. Suomen metsämaiden maannokset. Metsätieteen aikakauskirja 1: 74–78.`,
+	fi: ``
 
 	}
 };
