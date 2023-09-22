@@ -19,15 +19,19 @@ import { register } from "ol/proj/proj4";
 
 const styles = {
   container: {
-    marginTop: "0.8rem",
+    display: 'flex',
+    fontSize: "calc(10px + (18 - 14) * ((100vw - 300px) / (1600 - 300)))",
+    flexWrap: 'wrap'
+   /*  marginTop: "0.8rem",
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(100px, auto))",
     fontSize: "calc(10px + (18 - 14) * ((100vw - 300px) / (1600 - 300)))",
-    fontWeight: "900"
+    fontWeight: "900" */
   },
   list: {
     display: "flex",
-    marginRight: "0.2rem"
+    margin: "0.13rem",
+
   },
 };
 
