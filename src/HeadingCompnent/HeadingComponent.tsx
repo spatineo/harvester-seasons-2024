@@ -17,8 +17,8 @@ import {
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { ArrowDropDown, ArrowRight } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import { useAppSelector } from "../store/hooks";
-import { LanguageOptions } from "../Lang/languageSlice";
+import { useAppSelector, useRootDispatch } from "../store/hooks";
+import { LanguageOptions,actions } from "../Lang/languageSlice";
 import { languages } from "../Lang/languages";
 import logo from "../assets/logos_long.png";
 import smallScreen from "../assets/logos.png";
@@ -49,11 +49,12 @@ const BiggerScreen = styled("img")({
 
 const HeadingCompoment: React.FC = () => {
   const [open, setOpen] = useState(false);
-  const [language, setLanguage] = useState<string>("En");
   const information = useAppSelector((state) => state.language);
+  const dispatch = useRootDispatch()
+  
 
   const handleSelectChange = (event: SelectChangeEvent) => {
-    setLanguage(event.target.value);
+    dispatch(actions.changeLanguage(event.target.value))
   };
   const linkStyle = {
     textDecoration: "none",
@@ -62,7 +63,6 @@ const HeadingCompoment: React.FC = () => {
     setOpen(!open);
   };
 
-  window.console.log(language, "selected language");
   return (
     <Grid container sx={{ width: "100%", position: "relative", top: "0.8rem", marginBottom: "2rem" }}>
       <Grid container sx={{ width: "100%", padding: "0rem 1em" }}>
@@ -82,12 +82,11 @@ const HeadingCompoment: React.FC = () => {
                 <Select
                   labelId="demo-select-small-label"
                   id="demo-select-small"
-                  value={language}
+                  value={information.lang}
                   label="Age"
                   onChange={handleSelectChange}
                 >
                   <MenuItem value="">
-                    <em>None</em>
                   </MenuItem>
                   <MenuItem value="en">en</MenuItem>
                   <MenuItem value="fi">fi</MenuItem>
@@ -109,14 +108,14 @@ const HeadingCompoment: React.FC = () => {
           sx={{ margin: "-0.6rem 0rem 0rem -0.6rem", padding: "0rem" }}
         >
           {open ? <ArrowDropDown /> : <ArrowRight />}{" "}
-          {languages.info[information.en as keyof LanguageOptions]}
+          {languages.info[information.lang as keyof LanguageOptions]}
         </ListItemButton>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <Box sx={{ width: "80%", margin: "2rem auto" }}>
             <Box component="img" src={testimonial} sx={{ width: "80%" }} />
           </Box>
           <Box sx={{ margin: "2rem auto" }}>
-            {languages.overviewBody[information.en as keyof LanguageOptions]} hi
+            {languages.overviewBody[information.lang as keyof LanguageOptions]} hi
           </Box>
         </Collapse>
       </Grid>
