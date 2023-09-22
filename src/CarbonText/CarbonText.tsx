@@ -19,13 +19,13 @@ const CarbonText: React.FC = () => {
   const getTextForButton = (buttonIndex: number) => {
     switch (buttonIndex) {
       case 1:
-        return languages.soilCarbon[text.en as keyof LanguageOptions];
+        return languages.soilCarbon[text.lang as keyof LanguageOptions] as string;
       case 2:
-        return languages.forestManagement[text.en as keyof LanguageOptions];
+        return languages.forestManagement[text.lang as keyof LanguageOptions] as string;
       case 3:
-        return languages.petland[text.en as keyof LanguageOptions];
+        return languages.petland[text.lang as keyof LanguageOptions] as string;
       case 4:
-        return languages.literature[text.en as keyof LanguageOptions];
+        return languages.literature[text.lang as keyof LanguageOptions] as string;
       default:
         return "";
     }
