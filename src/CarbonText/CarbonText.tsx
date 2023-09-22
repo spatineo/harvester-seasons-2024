@@ -4,6 +4,41 @@ import { useAppSelector } from "../store/hooks";
 import { LanguageOptions } from "../Lang/languageSlice";
 import { languages } from "../Lang/languages";
 
+interface ButtonSectionProp {
+  buttonIndex: number;
+  selectedButton: number | null;
+  onClick: (buttonIndex: number) => void;
+  buttonText: string;
+  getTextForButton: (buttonIndex: number) => string;
+}
+
+const ButtonSection: React.FC<ButtonSectionProp> = ({
+  buttonIndex,
+  selectedButton,
+  buttonText,
+  getTextForButton,
+}) => (
+  <Collapse in={selectedButton === buttonIndex}>
+    <Box
+      sx={{
+        position: "relative",
+        top: "1rem",
+        fontFamily: "Lato",
+        fontSize: "0.9rem",
+      }}
+    >
+      <Box component={"h2"}>{buttonText}</Box>
+      <br />
+      <Box
+        dangerouslySetInnerHTML={{
+          __html: getTextForButton(buttonIndex).replace(/\n/g, "<br/>"),
+        }}
+      />
+    </Box>
+    <br />
+  </Collapse>
+);
+
 const CarbonText: React.FC = () => {
   const [selectedButton, setSelectedButton] = useState<number | null>(null);
   const text = useAppSelector((state) => state.language);
@@ -37,8 +72,15 @@ const CarbonText: React.FC = () => {
     }
   };
 
+  const buttonData = [
+    { index: 1, data: "Soil Carbon in General" },
+    { index: 2, data: "Forest Management and Soil Carbon" },
+    { index: 3, data: "Peatland vs. Mineral Soil" },
+    { index: 4, data: "Carbon Literature" },
+  ];
+
   return (
-    <Box sx={{ width: "80%", margin: "auto" }}>
+    <Box sx={{ maxWidth: "1000px", margin: "auto" }}>
       <Box
         sx={{
           display: "flex",
@@ -48,107 +90,28 @@ const CarbonText: React.FC = () => {
           margin: "auto",
         }}
       >
-        <Button
-          onClick={() => handleButtonClick(1)}
-          variant="outlined"
-          sx={{ fontFamily: "Lato", fontSize: "0.8rem" }}
-        >
-          Soil Carbon
-        </Button>
-        <Button
-          onClick={() => handleButtonClick(2)}
-          variant="outlined"
-          sx={{ fontFamily: "Lato", fontSize: "0.8rem" }}
-        >
-          Forest Management and Soil Carbon
-        </Button>
-        <Button
-          onClick={() => handleButtonClick(3)}
-          variant="outlined"
-          sx={{ fontFamily: "Lato", fontSize: "0.8rem" }}
-        >
-          Peatland vs. Mineral Soil
-        </Button>
-        <Button
-          onClick={() => handleButtonClick(4)}
-          variant="outlined"
-          sx={{ fontFamily: "Lato", fontSize: "0.8rem" }}
-        >
-          Carbon Literature
-        </Button>
+        {buttonData.map(({ index, data }) => (
+          <Button
+            key={index}
+            onClick={() => handleButtonClick(index)}
+            variant="outlined"
+            sx={{ fontFamily: "Lato", fontSize: "0.8rem" }}
+          >
+            {data}
+          </Button>
+        ))}
       </Box>
-      <Collapse in={selectedButton === 1}>
-        <Box
-          sx={{
-            position: "relative",
-            top: "1rem",
-            fontFamily: "Lato",
-            fontSize: "0.9rem",
-          }}
-        >
-          <Box component={"h2"}>Soil Carbon in General</Box>
-          <br />
-          <Box
-            dangerouslySetInnerHTML={{
-              __html: getTextForButton(1).replace(/\n/g, "<br/>"),
-            }}
-          />
-        </Box>
-        <br />
-      </Collapse>
-      <Collapse in={selectedButton === 2}>
-        <Box
-          sx={{
-            position: "relative",
-            top: "1rem",
-            fontFamily: "Lato",
-            fontSize: "0.9rem",
-          }}
-        >
-          <Box component={"h2"}>Forest Management and Soil Carbon</Box>
-          <br />
-          <Box
-            dangerouslySetInnerHTML={{
-              __html: getTextForButton(2).replace(/\n/g, "<br/>"),
-            }}
-          />
-        </Box>
-        <br />
-      </Collapse>
-      <Collapse in={selectedButton === 3}>
-        <Box
-          sx={{
-            position: "relative",
-            top: "1rem",
-            fontFamily: "Lato",
-            fontSize: "0.9rem",
-          }}
-        >
-          <Box component={"h2"}>Peatland vs. Mineral Soil</Box>
-          <br />
-          <Box
-            dangerouslySetInnerHTML={{
-              __html: getTextForButton(3).replace(/\n/g, "<br/>"),
-            }}
-          />
-        </Box>
-        <br />
-      </Collapse>
-      <Collapse in={selectedButton === 4}>
-        <Box
-          sx={{
-            position: "relative",
-            top: "1rem",
-            fontFamily: "Lato",
-            fontSize: "0.9rem",
-          }}
-        >
-          <Box component={"h2"}>Carbon Literature</Box>
-          <br />
-          <Box dangerouslySetInnerHTML={{ __html: getTextForButton(4).replace(/\n/g, '<br/>')}} />
-        </Box>
-        <br />
-      </Collapse>
+
+      {buttonData.map(({ index, data }) => (
+        <ButtonSection
+          key={index}
+          buttonIndex={index}
+          selectedButton={selectedButton}
+          onClick={handleButtonClick}
+          buttonText={data}
+          getTextForButton={getTextForButton}
+        />
+      ))}
     </Box>
   );
 };
