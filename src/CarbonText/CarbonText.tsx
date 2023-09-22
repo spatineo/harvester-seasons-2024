@@ -19,13 +19,19 @@ const CarbonText: React.FC = () => {
   const getTextForButton = (buttonIndex: number) => {
     switch (buttonIndex) {
       case 1:
-        return languages.soilCarbon[text.lang as keyof LanguageOptions] as string;
+        return languages.soilCarbon[
+          text.lang as keyof LanguageOptions
+        ] as string;
       case 2:
-        return languages.forestManagement[text.lang as keyof LanguageOptions] as string;
+        return languages.forestManagement[
+          text.lang as keyof LanguageOptions
+        ] as string;
       case 3:
         return languages.petland[text.lang as keyof LanguageOptions] as string;
       case 4:
-        return languages.literature[text.lang as keyof LanguageOptions] as string;
+        return languages.literature[
+          text.lang as keyof LanguageOptions
+        ] as string;
       default:
         return "";
     }
@@ -82,7 +88,11 @@ const CarbonText: React.FC = () => {
         >
           <Box component={"h2"}>Soil Carbon in General</Box>
           <br />
-          <Box dangerouslySetInnerHTML={{__html: getTextForButton(1).replace(/\n/g, '<br/>')}}/>
+          <Box
+            dangerouslySetInnerHTML={{
+              __html: getTextForButton(1).replace(/\n/g, "<br/>"),
+            }}
+          />
         </Box>
         <br />
       </Collapse>
@@ -97,7 +107,11 @@ const CarbonText: React.FC = () => {
         >
           <Box component={"h2"}>Forest Management and Soil Carbon</Box>
           <br />
-          <Box dangerouslySetInnerHTML={{__html: getTextForButton(2).replace(/\n/g, '<br/>')}}/>
+          <Box
+            dangerouslySetInnerHTML={{
+              __html: getTextForButton(2).replace(/\n/g, "<br/>"),
+            }}
+          />
         </Box>
         <br />
       </Collapse>
@@ -110,11 +124,15 @@ const CarbonText: React.FC = () => {
             fontSize: "0.9rem",
           }}
         >
-            <Box component={"h2"}>Peatland vs. Mineral Soil</Box>
+          <Box component={"h2"}>Peatland vs. Mineral Soil</Box>
           <br />
-          <Box dangerouslySetInnerHTML={{__html: getTextForButton(3).replace(/\n/g, '<br/>')}}/>
+          <Box
+            dangerouslySetInnerHTML={{
+              __html: getTextForButton(3).replace(/\n/g, "<br/>"),
+            }}
+          />
         </Box>
-        <br/>
+        <br />
       </Collapse>
       <Collapse in={selectedButton === 4}>
         <Box
