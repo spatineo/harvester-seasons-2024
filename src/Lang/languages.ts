@@ -8,11 +8,60 @@ export const languages = {
     fi: "Esittely"
   },
   overviewBody: {
-    en:`Forestry operations depend on good trafficability of terrain and dirt roads on location. The Finnish Forest Centre has produced trafficability maps 
-		based on high resolution laser scanning of most parts of Finland. These maps call for dry or winter coditions for many forests in Finland to be trafficable. 
-		Our app gives a 6 month foresight identifying good or bad conditions within the 6 classes of the trafficability map.`,
-    fi: "Jo muutaman vuoden saatavilla olleet Metsäkeskuksen tarjoamat korjuukelpoisuuskartat kattavat yli 80 % Suomen metsämaasta. Uusi Harvester Seasons -palvelumme antaa kuuden kuukauden ennusteen hyvistä ja huonoista korjuuolosuhteista kuuden korjuukelpoisuusluokan kannalta. Toisin sanoen, korjuukelpoisuuskarttojen esittämään tietoa täydennetään sää- ja ilmastotiedoilla, jolloin korjuukelpoisuuskarttojen esittämästä korjuukelpoisuudesta saadaan ajankohtaan paremmin osuva."
+    en: `Forestry operations depend on good trafficability of terrain and dirt roads on location. <a href="https://www.metsakeskus.fi/en" target=_blank>The Finnish Forest Centre<a/> has produced trafficability maps based on high resolution laser scanning of most parts of Finland. These maps call for dry or winter coditions for many forests in Finland to be trafficable. Our app gives a 6 month foresight identifying good or bad conditions within the 6 classes of the trafficability map.`,
+    fi: `Jo muutaman vuoden saatavilla olleet <a href="https://www.metsakeskus.fi/en" target="_blank">Metsäkeskuksen</a> tarjoamat korjuukelpoisuuskartat kattavat yli 80 % Suomen metsämaasta. Uusi Harvester Seasons -palvelumme antaa kuuden kuukauden ennusteen hyvistä ja huonoista korjuuolosuhteista kuuden korjuukelpoisuusluokan kannalta. Toisin sanoen, korjuukelpoisuuskarttojen esittämään tietoa täydennetään sää- ja ilmastotiedoilla, jolloin korjuukelpoisuuskarttojen esittämästä korjuukelpoisuudesta saadaan ajankohtaan paremmin osuva.`
   },
+  howTo: {
+    en: `How to use`,
+    fi: `Käyttöohje`
+  },
+  instructions: {
+    one: {
+      en: ``,
+      fi: `Kun avaat Harvester Seasons -sivuston, sivusto kysyy mahdollisuutta käyttää sijaintiasi. Voit hyväksyä sijainnin käytön, jolloin kartta kohdentuu sijaintiisi käyttäessäsi ohjelmaa älylaitteella, tai itse kohdentaa haluamaasi paikkaan kartalla.`
+    },
+
+    two: {
+      en: `When you open the page it can use your location information to zoom in on the surrounding area and show the 6 month forecast for it in a graph with summer and winter condition analysis. The blue circle indicates the area where the graph information is valid. You can navigate the date on the map below with a slider, back and forward buttons or play to go through all dates.`,
+      fi: `Tarkenna kartta haluamaasi maastonkohtaan ja klikkaa hiirellä tai kosketa sormella sininen osoitinmerkki alueelle. Tällöin ohjelman tekee laskelman (kestää hetken) maaperän kosteudesta, roudasta ja lumen syvyydestä alueelle.`
+    },
+		three: {
+			en: ``,
+			fi: `Zoomaa takaisin lähelle sinistä osoitinmerkkiä. Leimikkotasolla näkyvässä perustilanteessa on esillä perinteisen korjuukelpoisuuskartan esittämä tieto alueen korjuukelpoisuudesta.`
+		},
+		four: {
+			en:``,
+			fi: `Kun laitat ruksin Trafficability forecast -kohtaan kartan ylälaidassa, Play-toiminto aktivoituu ja voit tarkastella karttaruudun aikajanalla kelaten korjuukelpoisuusarviota eteenpäin seuraavalle kuudelle kuukaudelle sää- ja ilmasto-olosuhteet huomioiden. Voit ohjata kartan päivämäärää myös liukukytkimellä sekä eteen- ja taaksepäin painikkeilla.`
+		},
+		five: {
+			en: ``,
+			fi: `Kartan yläpuolella kuvaajassa on kaksi indeksiä (Summer Index ja Winter Index), jotka kuvaavat kohteen korjuukelpoisuutta kesä- ja talvitilanteiden kannalta asteikolla hyvä, epävarma (keskellä asteikkoa) ja huono.`
+		}
+  },
+  mapTextOne: {
+    en: ``,
+    fi: `Laskelma tehdään sinisen ympyrän alueen sää- ja ilmastotietojen perusteella (zoomaa leimikkotasolta kauemmaksi, jotta näet sinisen ympyrän.)`
+  },
+  mapTextTwo: {
+    en: ``,
+    fi: `arttaikkunan oikeasta yläkulmassa olevasta valikosta voit valita karttatasoja maaperän kosteuden, maaperän lämpötilan, lumen paksuuden ja metsäpaloindeksin tarkastelemiseksi. Karttatasot toimivat vain riittävän isolla mittakaavalla tarkasteltaessa.`
+  },
+	mapTextInstructionFive1: {
+		en: ``,
+		fi: `Summer Index muodostetaan maan pintakerroksen (0 – 28 cm) kosteuden perusteella. Arvo on Hyvä, jos maaperän kosteusprosentti on pienempi kuin 40 %. Menneet päivämäärät sekä tulevat ensimmäiset 10 päivää perustuvat vuodenaikaisennusteen sijaan lyhyemmän aikavälin sääennusteeseen, ja johtuen ennusteiden erosta maakerroksen syvyydessä, käytössä on tällöin maankosteuden osalta 20 % raja-arvo.`
+	},
+	mapTextInstructionFive2: {
+		en: ``,
+		fi: `Winter Index muodostetaan lumikerroksen paksuuden ja maaperän lämpötilan perusteella. Arvo on Hyvä, jos lunta on yli 40 cm tai routaa 20 cm.`
+	},
+	feedBack: {
+		en: `Send feedback`,
+		fi: `Lähetä palautetta`
+	}, 
+	email: {
+		en: `E-mail address or phone number`,
+		fi: `Sähköpostiosoite tai puhelinnumero`
+	},
   soilCarbon: {
     en: `Boreal forest soil is an immense storage of carbon (Crowther et al. 2019). The cold climate of the boreal region leads to slow and partial decomposition of dead plant material i.e. litter (Pan et al. 2011). Mineral soil consists of several layers with forest floor being on the top. Forest floor includes the litter layer, with organic residues such as leaves, branches, bark, and stems, and the finely textured organic humus layer. The mineral soil below the forest floor is generally stratified into various layers as well. The most common soil types in Finnish forests are different types of Podzols and Histosols (peat) (Tamminen 2009). In peat soils, the more decomposed layers are located deeper in the peat and less decomposed on the top.
 
@@ -37,8 +86,8 @@ export const languages = {
 		`,
     fi: ``
   },
-	literature: {
-	en: `Achat, D.L., Deleuze, C., Landmann, G., Pousse, N., Ranger, J. & Augusto, L. 2015. Quantifying consequences of removing harvesting residues on forest soils and tree growth – A meta-analysis. Forest ecology and management 348: 124–141.
+  literature: {
+    en: `Achat, D.L., Deleuze, C., Landmann, G., Pousse, N., Ranger, J. & Augusto, L. 2015. Quantifying consequences of removing harvesting residues on forest soils and tree growth – A meta-analysis. Forest ecology and management 348: 124–141.
 
 	Crowther, T., J. van den Hoogen, J. Wan, M. Mayes, A. Keiser, L. Mo, C. Averill and D. Maynard (2019). The global soil community and its influence on biogeochemistry. Science 365: 772.
 	 
@@ -99,7 +148,6 @@ export const languages = {
 	Suomen kasvihuonekaasupäästöt 1990 – 2020. Tilastokeskus / Statistics Finland, Helsinki, 2021, 111 pp.
 	
 	Tamminen, P. 2009. Suomen metsämaiden maannokset. Metsätieteen aikakauskirja 1: 74–78.`,
-	fi: ``
-
-	}
+    fi: ``
+  }
 };
