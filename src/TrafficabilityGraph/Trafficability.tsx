@@ -145,6 +145,7 @@ const TraficabilityGraphComponent: React.FC<
       
     }
 
+    window.addEventListener('resize', () => newChart.resize())
     setChart(newChart);
 
     return () => {
