@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TextField, Button,Box, Typography } from "@mui/material";
-import { useAppSelector, useRootDispatch } from "../store/hooks";
-import { LanguageOptions, actions } from "../Lang/languageSlice";
+import { useAppSelector } from "../store/hooks";
+import { LanguageOptions } from "../Lang/languageSlice";
 import { languages } from "../Lang/languages";
 
 
@@ -9,7 +9,6 @@ function FeedbackForm() {
   const [email, setEmail] = useState("");
   const [feedback, setFeedback] = useState("");
   const information = useAppSelector((state) => state.language);
-  const dispatch = useRootDispatch();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,6 +17,8 @@ function FeedbackForm() {
   };
 
   const emailAddress = languages.email[information.lang as keyof LanguageOptions] as string
+  const feedbackPlaceholder = languages.feedbackPlaceholder[information.lang as keyof LanguageOptions] as string
+
   return (
     <form
       action="feedback.php"
@@ -26,7 +27,7 @@ function FeedbackForm() {
       onSubmit={handleSubmit}
       style={{ position: "relative", top: "1rem" }}
     >
-       <Box><Typography variant="h6" sx={{ fontFamily: 'Lato'}}>{languages.feedBack[information.lang as keyof LanguageOptions]}</Typography></Box>
+       <Box><Typography variant="h6" sx={{ fontFamily: 'Lato'}}>{languages.feedBack[information.lang as keyof LanguageOptions]}:</Typography></Box>
       <TextField
         label={emailAddress}
         variant="outlined"
@@ -42,9 +43,10 @@ function FeedbackForm() {
       />
       <br />
       <br />
+      <Box><Typography variant="h6" sx={{ fontFamily: 'Lato'}}>{languages.feedbackPlaceholder[information.lang as keyof LanguageOptions]}:</Typography></Box>
       <TextField
         id="feedback"
-        label="Feedback"
+        label={feedbackPlaceholder}
         variant="outlined"
         sx={{
           width: "100%",
