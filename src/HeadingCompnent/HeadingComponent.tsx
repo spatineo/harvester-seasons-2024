@@ -21,16 +21,12 @@ import { Link } from "react-router-dom";
 import { useAppSelector, useRootDispatch } from "../store/hooks";
 import { LanguageOptions, actions } from "../Lang/languageSlice";
 import EmbeddedYouTubeVideo from "./EmbeddedYouTubeVideo";
-import FeedbackForm from "../FeedBackForm/FeedBack";
+import EnglishText from "../Description/English";
+import FinnishText from "../Description/Finnish";
 import { languages } from "../Lang/languages";
 import logo from "../assets/logos_long.png";
 import smallScreen from "../assets/logos.png";
 import testimonial from "../assets/testimonial_metsateho1.png";
-import ohje2 from "../assets/ohje2.png";
-import ohje2a from "../assets/ohje2a.png";
-import ohje4 from "../assets/ohje4.png";
-import ohje5 from "../assets/ohje5b.png";
-import korjuukelpoisuus from "../assets/korjuukelpoisuus.png"
 
 const MobileLogo = styled("img")({
   "@media (max-width: 900px)": {
@@ -59,6 +55,17 @@ const styles = {
   font: {
     fontFamily: "Lato",
   },
+  boldFont: {
+    fontWeight: "900",
+    fontFamily: "Lato",
+  },
+  producersStyle: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    maxWidth: "1000px",
+    flexWrap: "nowrap",
+  },
 };
 
 const HeadingCompoment: React.FC = () => {
@@ -76,7 +83,7 @@ const HeadingCompoment: React.FC = () => {
     setOpen(!open);
   };
 
-  const textWithAnchor =
+  const textWithAnchorOverview =
     languages.overviewBody[information.lang as keyof LanguageOptions];
 
   return (
@@ -146,7 +153,9 @@ const HeadingCompoment: React.FC = () => {
             </Typography>
             <Typography sx={styles.font}>
               <br />
-              <div dangerouslySetInnerHTML={{ __html: textWithAnchor }} />
+              <div
+                dangerouslySetInnerHTML={{ __html: textWithAnchorOverview }}
+              />
             </Typography>
           </Box>
           <EmbeddedYouTubeVideo />
@@ -155,117 +164,9 @@ const HeadingCompoment: React.FC = () => {
               {languages.howTo[information.lang as keyof LanguageOptions]}
             </Typography>
             {information.lang === "fi" ? (
-              <Box>
-                <ol>
-                  <li>
-                    {
-                      languages.instructions.one[
-                        information.lang as keyof LanguageOptions
-                      ]
-                    }
-                  </li>
-                  <br />
-                  <li>
-                    {
-                      languages.instructions.two[
-                        information.lang as keyof LanguageOptions
-                      ]
-                    }
-                    <Box
-                      component="img"
-                      src={ohje2}
-                      sx={{ marginTop: "0.4rem" }}
-                    ></Box>
-                    <ol type="a" style={{ margin: "0.6rem 0rem" }}>
-                      <li>
-                        <Box>
-                          <Box>
-                            {
-                              languages.mapTextOne[
-                                information.lang as keyof LanguageOptions
-                              ]
-                            }
-                          </Box>
-                          <br />
-                          <Box component="img" src={ohje2a}></Box>
-                        </Box>{" "}
-                        <br />
-                      </li>
-                      <li>
-                        <Box>
-                          {
-                            languages.mapTextTwo[
-                              information.lang as keyof LanguageOptions
-                            ]
-                          }
-                        </Box>
-                      </li>
-                    </ol>
-                  </li>
-                  <li>
-                    {
-                      languages.instructions.three[
-                        information.lang as keyof LanguageOptions
-                      ]
-                    }
-                  </li>
-                  <br />
-                  <li>
-                    {
-                      languages.instructions.four[
-                        information.lang as keyof LanguageOptions
-                      ]
-                    }
-                    <Box component="img" src={ohje4}></Box>
-                  </li>
-                  <br />
-                  <li>
-                    {
-                      languages.instructions.five[
-                        information.lang as keyof LanguageOptions
-                      ]
-                    }
-                     <ol type="a" style={{ margin: "0.6rem 0rem" }}>
-                      <li>
-                        <Box>
-                          {
-                            languages.mapTextInstructionFive1[
-                              information.lang as keyof LanguageOptions
-                            ]
-                          }
-                        </Box>
-                        <br />
-                      </li>
-                      <li>
-                        <Box>
-                          {
-                            languages.mapTextInstructionFive2[
-                              information.lang as keyof LanguageOptions
-                            ]
-                          }
-                        </Box>
-                      </li>
-                    </ol>
-                  </li>
-                </ol>
-                <Box component="img" src={ohje5}></Box><br/><br/>
-                <Box>Korjuukelpoisuusluokituksen muuttuminen säätiedon perusteella.</Box><br/>
-                <Box component="img" src={korjuukelpoisuus}></Box>
-                <FeedbackForm />
-              </Box>
+              <FinnishText />
             ) : (
-              <Box>
-                {" "}
-                <Typography sx={styles.font}>
-                  <br />
-                  {
-                    languages.instructions.two[
-                      information.lang as keyof LanguageOptions
-                    ]
-                  }
-                </Typography>
-                <FeedbackForm />
-              </Box>
+             <EnglishText />
             )}
           </Box>
         </Collapse>
