@@ -32,9 +32,6 @@ interface YValues {
 function MainViewComponent() {
   const [trafficabilityGraphOption, setTrafficabilityGraphOption] =
     useState<EChartOption | null>(null);
-  const [summer, setSummer] = useState<string>("");
-  const [winter, setWinter] = useState<string>("");
-  const [windGust, setWindGust] = useState<number | null>(null);
   const [yAxisValues, setYAxisValues] = useState<YValues[] | null>(null);
   const dispatch = useRootDispatch();
   const {
