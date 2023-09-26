@@ -44,11 +44,13 @@ const CarbonText: React.FC = () => {
   const text = useAppSelector((state) => state.language);
 
   const handleButtonClick = (buttonIndex: number) => {
-    if (typeof selectedButton === "number") {
-      setSelectedButton(null);
-    } else {
-      setSelectedButton(buttonIndex);
-    }
+    setSelectedButton((prevSelectedButton) => {
+      if (prevSelectedButton === buttonIndex) {
+        return null; 
+      } else {
+        return buttonIndex; 
+      }
+    });
   };
 
   const getTextForButton = (buttonIndex: number) => {
