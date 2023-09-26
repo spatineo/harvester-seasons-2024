@@ -6,7 +6,6 @@ import { Container, Box } from "@mui/material";
 import { EChartOption } from "echarts";
 import TraficabilityGraph from "../TrafficabilityGraph/Trafficability";
 import GraphView from "../GraphView/GraphView";
-import SwitchComponent from "../SwitchComponent/SwitchComponent";
 import * as constants from "../store/constants";
 import HarvesterMap from "../HarvesterMapComponent/HarvesterMap";
 import OpacityComponent from "../Opacity/OpacityComponent";
@@ -33,9 +32,6 @@ interface YValues {
 function MainViewComponent() {
   const [trafficabilityGraphOption, setTrafficabilityGraphOption] =
     useState<EChartOption | null>(null);
-  const [summer, setSummer] = useState<string>("");
-  const [winter, setWinter] = useState<string>("");
-  const [windGust, setWindGust] = useState<number | null>(null);
   const [yAxisValues, setYAxisValues] = useState<YValues[] | null>(null);
   const dispatch = useRootDispatch();
   const {
@@ -145,8 +141,6 @@ function MainViewComponent() {
           <Box className="loading"> Loading ....</Box>
         )}
       </Box>
-
-      <SwitchComponent />
       <HarvesterMap />
       <Box
         sx={{

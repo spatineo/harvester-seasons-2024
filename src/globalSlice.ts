@@ -44,9 +44,9 @@ const initialState: GlobalStateProps = {
         ////SWI2:SWI:5059:1:0:0
       ],
       soilTemperature: [
-        /*  ...soilTemperaturCodeArray,
-        { code: "K2C{TSOIL-K:ECBSF:::7:1:0}" }, */
-        { code: "TSOIL-K:ERA5L:5022:9:1820:1" }
+         ...soilTemperaturCodeArray,
+        { code: "K2C{TSOIL-K:ECBSF:::7:1:0}" },
+        // { code: "TSOIL-K:ERA5L:5022:9:1820:1" }
       ],
       snowHeight: [
         { code: "HSNOW-M:ECBSF::1:0:1:0" },
