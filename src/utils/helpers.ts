@@ -15,12 +15,10 @@ export function addMonths(date: Date, months: number) {
 }
 
 export function getStartSearchDate() {
-  /*  const today = new Date();
+  const today = new Date();
   const year = today.getFullYear();
   const startDate = new Date(year, 0, 1);
-  return startDate; */
-  const startDate = new Date(2019, 5, 1);
-  return startDate;
+  return startDate; 
 }
 
 export function marklineStartDate(current: Date) {
