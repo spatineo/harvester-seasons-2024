@@ -118,7 +118,7 @@ const Graphs: React.FC = () => {
       throw Error("Echarts not available");
     }
     // eslint-disable-next-line import/namespace
-    const timeline: any = echarts.init(timelineRef.current, undefined, {
+    const timeline = echarts.init(timelineRef.current, undefined, {
       height: "70",
     });
     setTimelineGraph(timeline);
@@ -160,7 +160,7 @@ const Graphs: React.FC = () => {
           graphParameters.twelveMonthParams.snowHeight,
           snowHeightScaled,
           markLineDate,
-          [0, 0, 22, 0]
+          [0, 0, 16, 0]
         );
         setSoilWetnessOption(soilWetness);
         setSnowHeightOption(snowHeight);
@@ -185,7 +185,7 @@ const Graphs: React.FC = () => {
           graphParameters.tenYearParams.snowHeight,
           snowHeightScaled,
           markLineDate,
-          [0, 0, 22, 0]
+          [0, 0, 16 , 0]
         );
         setSnowHeightOption(snowHeight);
         setSoilTemperatureOption(soilTemperature);
