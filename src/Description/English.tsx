@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Box, Grid, Link as MUILink, Typography } from "@mui/material";
+import { Box, Link as MUILink, Typography } from "@mui/material";
 import FeedbackForm from "../FeedBackForm/FeedBack";
 import { useAppSelector } from "../store/hooks";
 import { LanguageOptions } from "../Lang/languageSlice";
