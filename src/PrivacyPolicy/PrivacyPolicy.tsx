@@ -11,9 +11,9 @@ const PrivacyPolicy: React.FC = () => {
   return (
     <Box
       sx={{
-        width: "80%",
-        margin: "auto",
-        top: "2rem",
+        maxWidth: "1000px",
+        margin: "1rem",
+        top: "0rem",
         position: "relative",
         fontFamily: "Lato",
       }}

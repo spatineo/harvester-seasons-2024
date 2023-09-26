@@ -11,10 +11,10 @@ import { Vector as VectorSource } from "ol/source";
 import GeoJSON from "ol/format/GeoJSON";
 import "../Map.css";
 import LocationMarkerLayer from "../Layers/LocationMarker";
-import OSMLayer from "../Layers/OSMLayer";
+//import OSMLayer from "../Layers/OSMLayer";
 import WMSLayer, { WMSLayerTimeStrategy } from "../Layers/WMSLayer";
-import STACLayers from "../Layers/STACLayers";
-import TIFFLayer from "../Layers/TIFFLayer";
+//import STACLayers from "../Layers/STACLayers";
+import TrafficabilityTIFFLayer from "../Layers/TrafficabilityTIFFLayer";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
 import WMSCapabilities from "ol/format/WMSCapabilities";
@@ -119,7 +119,7 @@ const HarvesterMap: React.FC = () => {
 						collection='canopy_height_model_at_fmi'
 						band='latvuskorkeusmalli'/>
 					*/}
-          <TIFFLayer
+          <TrafficabilityTIFFLayer
             title="Trafficability"
             url="https://pta.data.lit.fmi.fi/geo/harvestability/KKL_SMK_Suomi_2021_06_01-UTM35.tif"
           />
