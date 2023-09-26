@@ -20,17 +20,14 @@ import { register } from "ol/proj/proj4";
 const styles = {
   container: {
     display: 'flex',
-    fontSize: "calc(10px + (18 - 14) * ((100vw - 300px) / (1600 - 300)))",
-    flexWrap: 'wrap'
-   /*  marginTop: "0.8rem",
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(100px, auto))",
-    fontSize: "calc(10px + (18 - 14) * ((100vw - 300px) / (1600 - 300)))",
-    fontWeight: "900" */
+    fontSize: "calc(9px + (18 - 14) * ((100vw - 300px) / (1600 - 300)))",
+    flexWrap: 'wrap',
+    gap: '0.8rem',
+    margin: "0.2rem 0rem 0rem 0rem",
   },
   list: {
     display: "flex",
-    margin: "0.13rem",
+    margin: "0.15rem 0rem 0rem 0.15rem",
 
   },
 };
