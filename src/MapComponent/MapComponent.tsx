@@ -22,12 +22,12 @@ const styles = {
     display: 'flex',
     fontSize: "calc(9px + (18 - 14) * ((100vw - 300px) / (1600 - 300)))",
     flexWrap: 'wrap',
-    gap: '0.8rem',
+    gap: '0.4rem',
     margin: "0.2rem 0rem 0rem 0rem",
   },
   list: {
     display: "flex",
-    margin: "0.15rem 0rem 0rem 0.15rem",
+    margin: "0.1rem 0rem 0rem 0.1rem",
 
   },
 };
