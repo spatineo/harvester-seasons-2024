@@ -6,7 +6,6 @@ import { Container, Box } from "@mui/material";
 import { EChartOption } from "echarts";
 import TraficabilityGraph from "../TrafficabilityGraph/Trafficability";
 import GraphView from "../GraphView/GraphView";
-import SwitchComponent from "../SwitchComponent/SwitchComponent";
 import * as constants from "../store/constants";
 import HarvesterMap from "../HarvesterMapComponent/HarvesterMap";
 import OpacityComponent from "../Opacity/OpacityComponent";
@@ -145,8 +144,6 @@ function MainViewComponent() {
           <Box className="loading"> Loading ....</Box>
         )}
       </Box>
-
-      <SwitchComponent />
       <HarvesterMap />
       <Box
         sx={{
