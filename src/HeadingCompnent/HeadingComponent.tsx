@@ -15,6 +15,7 @@ import {
   InputLabel,
   Typography,
 } from "@mui/material";
+import { US, FI } from 'country-flag-icons/react/3x2'
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { ArrowDropDown, ArrowRight } from "@mui/icons-material";
 import { Link } from "react-router-dom";
@@ -117,7 +118,7 @@ const HeadingCompoment: React.FC = () => {
                   label="Age"
                   onChange={handleSelectChange}
                 >
-                  <MenuItem value="en">en</MenuItem>
+                  <MenuItem value="en"><US title="English" /></MenuItem>
                   <MenuItem value="fi">fi</MenuItem>
                 </Select>
               </FormControl>

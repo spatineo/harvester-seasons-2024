@@ -106,8 +106,7 @@ const CarbonText: React.FC = () => {
     { index: 3, data: "Peatland vs. Mineral Soil" },
     { index: 4, data: "Carbon Literature" },
   ];
-
-  window.console.log(selectedButton);
+  
   return (
     <Box sx={{ maxWidth: "1000px", margin: "auto" }}>
       <Box
