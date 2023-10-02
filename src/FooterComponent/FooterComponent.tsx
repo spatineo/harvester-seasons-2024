@@ -15,7 +15,6 @@ const footerStyle = {
     top: "4rem",
     color: "#1976d2",
     display: "inline-flex",
-    justifyContent: "center",
     fontWeight: "500",
     fontSize: "0.875rem",
     lineHeight: "1.75",
@@ -26,15 +25,29 @@ const footerStyle = {
     outline: "0",
     boxPack: "center",
     borderTop: "1px solid grey",
+    margin: "0",
+    alignItems: "center",
+    boxAlign: "center",
+    flexAlign: "center",
   },
-  items: { flex: '1', display: 'flex', margin: '0.6rem 0rem 1rem 0rem' },
+  items: {
+    flex: "1",
+    display: "flex",
+    margin: "0.6rem 0rem 1rem 0rem",
+    alignContent: "center",
+    boxPack: "center",
+  },
 };
 
 const FooterComponent: React.FC = () => {
   return (
     <Box sx={footerStyle.main}>
       <Box sx={footerStyle.items}>
-        <Link to="https://harvesterseasons.com/" target="_blank"  style={{ textDecoration: 'none', color: 'grey' }}>
+        <Link
+          to="https://harvesterseasons.com/"
+          target="_blank"
+          style={{ textDecoration: "none", color: "grey" }}
+        >
           <Box>
             <Typography sx={footerStyle.text}>Harvester Seasons</Typography>
           </Box>
@@ -44,10 +57,10 @@ const FooterComponent: React.FC = () => {
         <Link
           to="https://www.linkedin.com/showcase/harvester-seasons"
           target="_blank"
-          style={{ textDecoration: 'none', color: 'grey' }}
+          style={{ textDecoration: "none", color: "grey" }}
         >
           <Box>
-            <Box component="img" src={linkedin} sx={{ width: "5%" }} />
+            <Box component="img" src={linkedin} sx={{ maxWidth: "18px" }} />
             <Typography component={"span"} sx={footerStyle.text}>
               Follow us on LinkedIn
             </Typography>
@@ -55,7 +68,10 @@ const FooterComponent: React.FC = () => {
         </Link>
       </Box>
       <Box sx={footerStyle.items}>
-        <Link to="privacy-policy"  style={{ textDecoration: 'none', color: 'grey' }}>
+        <Link
+          to="privacy-policy"
+          style={{ textDecoration: "none", color: "grey" }}
+        >
           <Box>
             <Typography sx={footerStyle.text}>
               Privacy Policy / Terms <span>of Use</span>
