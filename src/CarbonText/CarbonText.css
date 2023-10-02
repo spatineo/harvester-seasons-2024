@@ -1,0 +1,8 @@
+.colouredBackgroundButton {
+  background-color: #D3D3D3;
+  color: black
+}
+
+.notColouredBackgroundButton {
+  background-color: transparent;
+}
