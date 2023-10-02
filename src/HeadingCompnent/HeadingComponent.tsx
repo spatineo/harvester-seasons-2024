@@ -110,16 +110,16 @@ const HeadingCompoment: React.FC = () => {
           <Grid container>
             <Grid item xs={3}>
               <FormControl sx={{ m: 1, minWidth: 60 }} size="small">
-                <InputLabel id="demo-select-small-label">Lang</InputLabel>
+                <InputLabel id="select-label" >Lang</InputLabel>
                 <Select
-                  labelId="demo-select-small-label"
-                  id="demo-select-small"
+                  labelId="select-label"
+                  id="select-id"
                   value={information.lang}
-                  label="Age"
+                  label="Lang"
                   onChange={handleSelectChange}
                 >
                   <MenuItem value="en"><US title="English" /></MenuItem>
-                  <MenuItem value="fi">fi</MenuItem>
+                  <MenuItem value="fi"><FI title="Finnish" /></MenuItem>
                 </Select>
               </FormControl>
             </Grid>
