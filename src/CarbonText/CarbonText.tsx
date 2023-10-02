@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { Box, Collapse, Button } from "@mui/material";
+import React, { useState, CSSProperties } from "react";
+import { Box, Collapse } from "@mui/material";
 import { useAppSelector } from "../store/hooks";
 import { LanguageOptions } from "../Lang/languageSlice";
 import { languages } from "../Lang/languages";
+import "./CarbonText.css";
 
 interface ButtonSectionProp {
   buttonIndex: number;
@@ -10,6 +11,31 @@ interface ButtonSectionProp {
   onClick: (buttonIndex: number) => void;
   buttonText: string;
   getTextForButton: (buttonIndex: number) => string;
+}
+
+const styles = {
+  button: {
+    border: '1px solid #2196f3',
+    color: '#1976d2',
+    display: 'inline-flex',
+    fontWeight: '500',
+    fontSize: '0.875rem',
+    lineHeight: '1.75',
+    letterSpacing: '0.02857em',
+    textTransform: 'uppercase',
+    minWidth: '64px',
+    padding: '6px 8px',
+    borderRadius: '4px',
+    justifyContent: 'center',
+    position: 'relative',
+    boxSizing: 'border-box', 
+    outline: '0',
+    margin: '0',
+    alignItems: 'center',
+    boxAlign: 'center',
+    flexAlign: 'center',
+    boxPack: 'center'
+  }
 }
 
 const ButtonSection: React.FC<ButtonSectionProp> = ({
@@ -46,9 +72,9 @@ const CarbonText: React.FC = () => {
   const handleButtonClick = (buttonIndex: number) => {
     setSelectedButton((prevSelectedButton) => {
       if (prevSelectedButton === buttonIndex) {
-        return null; 
+        return null;
       } else {
-        return buttonIndex; 
+        return buttonIndex;
       }
     });
   };
@@ -81,6 +107,7 @@ const CarbonText: React.FC = () => {
     { index: 4, data: "Carbon Literature" },
   ];
 
+  window.console.log(selectedButton);
   return (
     <Box sx={{ maxWidth: "1000px", margin: "auto" }}>
       <Box
@@ -93,14 +120,14 @@ const CarbonText: React.FC = () => {
         }}
       >
         {buttonData.map(({ index, data }) => (
-          <Button
+          <button
             key={index}
             onClick={() => handleButtonClick(index)}
-            variant="outlined"
-            sx={{ fontFamily: "Lato", fontSize: "0.8rem" }}
+             style={styles.button as CSSProperties}
+            className={selectedButton === index ? 'colouredBackgroundButton' : 'notColouredBackgroundButton'}
           >
             {data}
-          </Button>
+          </button>
         ))}
       </Box>
 
