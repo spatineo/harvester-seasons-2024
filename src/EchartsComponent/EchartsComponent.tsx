@@ -29,13 +29,14 @@ const EchartsCompoent: React.FC<ChartProps> = ({ option, height }) => {
   }, []);
 
   useEffect(() => {
-    if (chart) {
-      chart.setOption(option);
+    if(!chart){
+      return; 
     }
+    window.addEventListener('resize', () => chart.resize());
+    chart.setOption(option);
   }, [chart, option]);
 
   return (
-    /*  <Box ref={chartRef} style={{ width: '100%', height: `${height}px` }}></Box> */
     <Box
       ref={chartRef}
       sx={{
