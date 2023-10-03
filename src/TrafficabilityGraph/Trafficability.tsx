@@ -132,8 +132,6 @@ const TraficabilityGraphComponent: React.FC<
                   }
                 }
               }
-             
-              //dispatch(actions.changeTrafficabilityIndexColor(maxValue));
               onGraphClick(formattedDate);
             }
           });
@@ -155,7 +153,7 @@ const TraficabilityGraphComponent: React.FC<
     };
   }, [graphRef, option]);
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (!chart) {
       return;
     }
@@ -193,7 +191,7 @@ const TraficabilityGraphComponent: React.FC<
     };
     //chart.on("mouseover", mouseover );
   }, [chart, onMouseOver]);
-
+ */
   return (
     <Box
       sx={{ width: "96%", display: "flex", flex: "row", alignItems: "center" }}
