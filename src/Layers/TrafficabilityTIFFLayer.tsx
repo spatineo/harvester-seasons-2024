@@ -31,11 +31,13 @@ const color = {
   ],
 };
 
-function colorExpression() {
+
+
+function colorExpression(trafficabilityIndex) {
   function process(channel) {
     const c = color.thresholds.reduce(
       (memo, threshold, i) => {
-        memo.push(["<=", ["band", 1], threshold]);
+        memo.push(["<=", ["band", 1], (threshold - trafficabilityIndex)]);
         memo.push(color.palette[i][channel] as number);
         return memo;
       },
@@ -47,11 +49,17 @@ function colorExpression() {
   return ["array", process("r"), process("g"), process("b"), process("a")];
 }
 
+
+
+
+
+
 const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
   const { map } = useContext(MapContext);
   const opacityValue = useAppSelector(
     (state: RootState) => state.mapState.opacityValue
   );
+  const { trafficabilityIndexColor } = useAppSelector((state: RootState) => state.global)
 
   useEffect(() => {
     if (!map || !url) return;
@@ -65,7 +73,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
       maxResolution: 300,
       minResolution: 20,
       style: {
-        color: colorExpression(),
+        color: colorExpression(trafficabilityIndexColor),
         gamma: 1.0,
       },
       source: new GeoTIFF({
@@ -80,7 +88,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
     return () => {
       map.removeLayer(layer);
     };
-  }, [map, url, title, opacityValue]);
+  }, [map, url, title, opacityValue, trafficabilityIndexColor]);
 
   return null;
 };
