@@ -5,10 +5,7 @@ import MapComponent from "../MapComponent/MapComponent";
 import Layers from "../Layers/Layers";
 import Maastokartta from "../Layers/Maastokartta";
 import Thunderforest from "../Layers/Thunderforest";
-import Taustakartta from "../Layers/Taustakartta";
 import XYZ from "ol/source/XYZ";
-import { Vector as VectorSource } from "ol/source";
-import GeoJSON from "ol/format/GeoJSON";
 import "../Map.css";
 import LocationMarkerLayer from "../Layers/LocationMarker";
 //import OSMLayer from "../Layers/OSMLayer";
@@ -47,40 +44,32 @@ const HarvesterMap: React.FC = () => {
     <Box>
       <MapComponent>
         <Layers>
-          <Taustakartta
+          <Maastokartta
+            title="Taustakartta"
             source={
-              new VectorSource({
+              new XYZ({
+                url: "https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/taustakartta/default/WGS84_Pseudo-Mercator/{z}/{y}/{x}.png?api-key=45deef08-fd2f-42ae-9953-5550fff43b17",
                 attributions:
-                  ' <a href="https://www.thunderforest.com/">Thunderforest</a> Data by <a href="https://www.fmi.fi/">Finnish Meteorological Institute</a>',
-                url: "https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/taustakartta/default/WGS84_Pseudo-Mercator/{z}/{y}/{x}.png", //'https://openlayers.org/data/vector/ecoregions.json',
-                format: new GeoJSON(),
+                  '<a href="https://www.maanmittauslaitos.fi/karttakuvapalvelu/tekninen-kuvaus-wmts" target="_blank">Maanmittauslaitoksen avoin data</a>',
               })
             }
           />
           <Maastokartta
+            title="Maastokartta"
             source={
               new XYZ({
                 url: "https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/maastokartta/default/WGS84_Pseudo-Mercator/{z}/{y}/{x}.png?api-key=45deef08-fd2f-42ae-9953-5550fff43b17",
                 attributions:
-                  '<a href="https://www.thunderforest.com/">Thunderforest</a> Data by <a href="https://www.fmi.fi/">Finnish Meteorological Institute</a>',
+                '<a href="https://www.maanmittauslaitos.fi/karttakuvapalvelu/tekninen-kuvaus-wmts" target="_blank">Maanmittauslaitoksen avoin data</a>',
               })
             }
           />
-          {/* 	<TileLayer
-						source={
-							new olSource.OSM({
-								url: 'https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/taustakartta/default/WGS84_Pseudo-Mercator/{z}/{y}/{x}.png?api-key=45deef08-fd2f-42ae-9953-5550fff43b17',
-								attributions:
-									'<a href="https://www.thunderforest.com/">Thunderforest</a> Data by <a href="https://www.fmi.fi/">Finnish Meteorological Institute</a>',
-							})
-						}
-					/> */}
           <Thunderforest
             source={
               new XYZ({
                 url: "https://{a-c}.tile.opentopomap.org/{z}/{x}/{y}.png",
                 attributions:
-                  '<a href="https://www.thunderforest.com/">Thunderforest</a> Data by <a href="https://www.fmi.fi/">Finnish Meteorological Institute</a>',
+                  '<a href="https://www.thunderforest.com/" target="_blank">Thunderforest</a> Data by <a href="https://www.fmi.fi/">Finnish Meteorological Institute</a>',
               })
             }
           />

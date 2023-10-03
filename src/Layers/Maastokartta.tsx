@@ -10,17 +10,18 @@ import LayerTile from 'ol/layer/Tile';
 
 interface TileLayerProps {
 	source: TileSource;
+	title: string;
 }
 
 // eslint-disable-next-line react/prop-types
-const TileLayer: React.FC<TileLayerProps> = ({ source }) => {
+const TileLayer: React.FC<TileLayerProps> = ({ source, title }) => {
 	const { map } = useContext(MapContext);
 
 	useEffect(() => {
 		if (!map) return;
 
 		const tileLayer = new LayerTile({
-			title: 'Maastokartta',
+			title,
 			type: 'base',
 			visible: true,
 			source,
