@@ -11,29 +11,30 @@ import MapContext from "../MapComponent/MapContext";
 
 interface OSMLayerProps {
   source: TileSource;
+  title: string;
 }
 
-const OSMLayer: React.FC<OSMLayerProps> = ({ source }) => {
+const Thunderforest: React.FC<OSMLayerProps> = ({ source, title }) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { map } = useContext(MapContext);
 
   useEffect(() => {
     if (!map) return;
 
-    const osmLayer = new LayerTile({
-      background: "#1a2b39",
-      title: "Thunderforest",
+    const thunderForestLayer = new LayerTile({
+      title,
       type: "base",
+      className: 'class',
       source,
+      attribution: 'Tesint'
     } as BaseLayerOptions);
-
-    map.addLayer(osmLayer);
+    map.addLayer(thunderForestLayer);
 
     return () => {
-      map.removeLayer(osmLayer);
+      map.removeLayer(thunderForestLayer);
     };
   }, [map]);
   return null;
 };
 
-export default OSMLayer;
+export default Thunderforest;
