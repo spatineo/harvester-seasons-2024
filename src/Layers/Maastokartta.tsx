@@ -23,11 +23,9 @@ const TileLayer: React.FC<TileLayerProps> = ({ source, title }) => {
 		const tileLayer = new LayerTile({
 			title,
 			type: 'base',
-			visible: true,
 			source,
 			className: 'class',
 		} as BaseLayerOptions);
-
 		map.addLayer(tileLayer);
 
 		return () => {
