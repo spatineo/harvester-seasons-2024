@@ -122,6 +122,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
       position.lat,
     ]);
     map.getView().setCenter(convertedCoord);
+    map.getView().setZoom(12)
     dispatch({ type: constants.POSITION });
   }, [map, position]);
 
