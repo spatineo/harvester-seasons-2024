@@ -13,28 +13,23 @@ interface ChartProps {
 
 const EchartsCompoent: React.FC<ChartProps> = ({ option, height }) => {
   const chartRef = useRef<HTMLDivElement>(null);
-  const [chart, setChart] = useState<echarts.ECharts | null>(null);
 
   useEffect(() => {
-    if (chartRef.current) {
-      const newChart = echarts.init(chartRef.current);
-      setChart(newChart);
+    if(!chartRef.current) {
+      return;
     }
+    const newChart = echarts.init(chartRef.current);
+  
 
+    newChart.setOption(option);
+    window.addEventListener('resize', () => newChart.resize());
+  
     return () => {
-      if (chart) {
-        chart.dispose();
+      if (newChart) {
+        newChart.dispose();
       }
     };
-  }, []);
-
-  useEffect(() => {
-    if(!chart){
-      return; 
-    }
-    window.addEventListener('resize', () => chart.resize());
-    chart.setOption(option);
-  }, [chart, option]);
+  }, [chartRef.current, option]);
 
   return (
     <Box
