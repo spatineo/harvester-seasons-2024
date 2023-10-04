@@ -27,9 +27,8 @@ interface TraficabilityGraphComponentProp {
 
 const TraficabilityGraphComponent: React.FC<
   TraficabilityGraphComponentProp
-> = ({ option, onGraphClick, onMouseOver }) => {
+> = ({ option, onGraphClick }) => {
   const graphRef = useRef<HTMLDivElement>(null);
-  const [chart, setChart] = useState<echarts.ECharts | null>(null);
   const [arrowColor, setArrowColor] = useState<"primary" | "secondary">(
     "primary"
   );
@@ -144,7 +143,6 @@ const TraficabilityGraphComponent: React.FC<
     }
 
     window.addEventListener('resize', () => newChart.resize())
-    setChart(newChart);
 
     return () => {
       if (newChart) {
@@ -153,45 +151,6 @@ const TraficabilityGraphComponent: React.FC<
     };
   }, [graphRef, option]);
 
-  /* useEffect(() => {
-    if (!chart) {
-      return;
-    }
-
-    const mouseover = function (params) {
-      if (params.data) {
-        const xValue = params.data[0];
-        const chartOption = chart.getOption();
-
-        if (chartOption) {
-          const yValues: YValues[] | null = [];
-
-          chartOption.series?.forEach((series) => {
-            let yValue: number | null = null;
-
-            if (series.data) {
-              for (const dataPoint of series.data) {
-                if (dataPoint[0] === xValue) {
-                  yValue = dataPoint[1];
-                  break;
-                }
-              }
-            }
-
-            if (yValue !== null) {
-              yValues.push({
-                seriesName: series.name,
-                yValue,
-              });
-            }
-          });
-          onMouseOver(yValues);
-        }
-      }
-    };
-    //chart.on("mouseover", mouseover );
-  }, [chart, onMouseOver]);
- */
   return (
     <Box
       sx={{ width: "96%", display: "flex", flex: "row", alignItems: "center" }}
