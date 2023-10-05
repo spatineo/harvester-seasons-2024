@@ -46,33 +46,27 @@ const HarvesterMap: React.FC = () => {
         <Layers>
           <Maastokartta
             title="Taustakartta"
-            source={
-              new XYZ({
-                url: "https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/taustakartta/default/WGS84_Pseudo-Mercator/{z}/{y}/{x}.png?api-key=45deef08-fd2f-42ae-9953-5550fff43b17",
-                attributions:
-                  '<a href="https://www.maanmittauslaitos.fi/karttakuvapalvelu/tekninen-kuvaus-wmts" target="_blank">Maanmittauslaitoksen avoin data</a>',
-              })
-            }
-          />
+            source={new XYZ({
+              url: "https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/taustakartta/default/WGS84_Pseudo-Mercator/{z}/{y}/{x}.png?api-key=45deef08-fd2f-42ae-9953-5550fff43b17",
+              attributions: '<a href="https://www.maanmittauslaitos.fi/karttakuvapalvelu/tekninen-kuvaus-wmts" target="_blank">Maanmittauslaitoksen avoin data</a>',
+            })} 
+          visible={false}/>
           <Maastokartta
             title="Maastokartta"
-            source={
-              new XYZ({
-                url: "https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/maastokartta/default/WGS84_Pseudo-Mercator/{z}/{y}/{x}.png?api-key=45deef08-fd2f-42ae-9953-5550fff43b17",
-                attributions:
-                '<a href="https://www.maanmittauslaitos.fi/karttakuvapalvelu/tekninen-kuvaus-wmts" target="_blank">Maanmittauslaitoksen avoin data</a>',
-              })
-            }
+            source={new XYZ({
+              url: "https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/maastokartta/default/WGS84_Pseudo-Mercator/{z}/{y}/{x}.png?api-key=45deef08-fd2f-42ae-9953-5550fff43b17",
+              attributions: '<a href="https://www.maanmittauslaitos.fi/karttakuvapalvelu/tekninen-kuvaus-wmts" target="_blank">Maanmittauslaitoksen avoin data</a>',
+            })} 
+          visible={false}
           />
           <Thunderforest
-            source={
-              new XYZ({
-                url: "https://{a-c}.tile.opentopomap.org/{z}/{x}/{y}.png",
-                attributions:
-                  '<a href="https://www.thunderforest.com/" target="_blank">Thunderforest</a> Data by <a href="https://www.fmi.fi/">Finnish Meteorological Institute</a>',
-              })
-            }
-          />
+            title="Thunderforest"
+            source={new XYZ({
+              url: "https://{a-c}.tile.opentopomap.org/{z}/{x}/{y}.png",
+              attributions: '<a href="https://www.thunderforest.com/" target="_blank">Thunderforest</a> Data by <a href="https://www.fmi.fi/">Finnish Meteorological Institute</a>',
+            })} 
+            visible={true}
+            />
           <WMSLayer
             layerName="gui:isobands:CERRA_FFG-MS"
             capabilities={harvesterWMSCapabilities}
