@@ -94,7 +94,7 @@ export const languages = {
 		en: `<ahref="https://harvesterseasons.com/altcolors/HarvesterSeasons_Description2pager_v2.pdf" target="_blank" rel="noreferrer">View infosheet (PDF)</a>`,
 		fi: ``
 	},
-	carbonEmmison: {
+	carbonEmission: {
 		en: `<a href="https://harvesterseasons.com/altcolors/infotext_Carbon_HarvesterSeasons_eng.pdf" target="_blank" rel="noreferrer">Carbon emissions and forest operations: A short guideline for the forestry sector (PDF)</a>`,
 		fi:`<a href="https://harvesterseasons.com/altcolors/infotext_Carbon_HarvesterSeasons_fin.pdf" target="_blank" rel="noreferrer">Carbon emissions and forest operations: A short guideline for the forestry sector (PDF, Suomeksi)</a>`,
 	},
@@ -125,6 +125,20 @@ export const languages = {
 	service: {
 		en: `This service is funded by`,
 		fi : `Tätä palvelua rahoittaa`
+	},
+	carbonButtonData: {
+		en: [
+			{ index: 1, data: "Soil Carbon in General" },
+			{ index: 2, data: "Forest Management and Soil Carbon" },
+			{ index: 3, data: "Peatland vs. Mineral Soil" },
+			{ index: 4, data: "Carbon Literature" },
+		],
+		fi: [
+			{ index: 1, data: "" },
+			{ index: 2, data: "" },
+			{ index: 3, data: "" },
+			{ index: 4, data: "" },
+		]
 	},
 	italicEnglishText1: {
 		en: `This service is funded as a use case by the Destination Earth (DestinE) initiative of the European Commission under framework agreement ECMWF/DESTINE/2022/DE_370d_FMI.`,
