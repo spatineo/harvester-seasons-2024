@@ -36,7 +36,7 @@ const Thunderforest: React.FC<OSMLayerProps> = ({ source, title,visible }) => {
         map.removeLayer(thunderForestLayer);
       }
     };
-  }, [map]);
+  }, [map, title]);
   return null;
 };
 
