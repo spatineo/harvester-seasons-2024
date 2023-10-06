@@ -18,17 +18,20 @@ import { RootState } from "../store/store";
 import { register } from "ol/proj/proj4";
 
 const styles = {
-  container: {
-    display: 'flex',
-    fontSize: "calc(9px + (18 - 14) * ((100vw - 300px) / (1600 - 300)))",
-    flexWrap: 'wrap',
-    gap: '0.4rem',
-    margin: "0.2rem 0rem 0rem 0rem",
+  main: {
+    dispplay: "flex",
+    flexDirection: "column",
+    width: "100%",
+    margin: "auto",
   },
-  list: {
+  container: {
     display: "flex",
-    margin: "0.1rem 0rem 0rem 0.1rem",
-
+    width: "99%",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    fontSize: "13px",
+    gap: "0.4rem",
+    margin: "auto",
   },
 };
 
@@ -122,7 +125,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
       position.lat,
     ]);
     map.getView().setCenter(convertedCoord);
-    map.getView().setZoom(12)
+    map.getView().setZoom(12);
     dispatch({ type: constants.POSITION });
   }, [map, position]);
 
@@ -132,84 +135,100 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
         {children}
         <div id="select"></div>
       </Box>
-      <Box sx={styles.container}>
-        <Box sx={styles.list}>
+      <Box sx={styles.main}>
+        <Box sx={styles.container}>
           <Box
-            component="span"
-            style={{
-              margin: '0.1rem 0.2rem 0rem 0rem',
-              backgroundColor: "rgba(54, 75, 154)",
-              width: "10px",
-              height: "10px",
-              border: "1px solid  rgba(0, 0, 0)",
-            }}
-          ></Box>
-          Frost heave (kelirikko, GOOD)
-        </Box>
-        <Box sx={styles.list}>
+            sx={{ display: "flex", minWidth: "110px", padding: "0.2rem 0rem" }}
+          >
+            <Box
+              component="span"
+              sx={{
+                margin: "0.1rem 0.2rem 0rem 0rem",
+                backgroundColor: "rgba(0, 97, 0, .8)",
+                width: "10px",
+                height: "10px",
+                border: "1px solid rgba(0, 0, 0, .8)",
+              }}
+            ></Box>
+            <Box component="span" sx={{}}>
+              Frost heave (kelirikko, GOOD)
+            </Box>
+          </Box>
           <Box
-            component="span"
-            sx={{
-              margin: '0.1rem 0.2rem 0rem 0rem',
-              background: "rgba(74, 123, 183)",
-              width: "10px",
-              height: "10px",
-              border: "1px solid  rgba(0, 0, 0)",
-            }}
-          ></Box>
-          Normal summer, mineral soil
-        </Box>
-        <Box sx={styles.list}>
+            sx={{ display: "flex", minWidth: "110px", padding: "0.2rem 0rem" }}
+          >
+            <Box
+              component="span"
+              sx={{
+                margin: "0.1rem 0.2rem 0rem 0rem",
+                backgroundColor: "rgba(97, 153, 0, .8)",
+                width: "10px",
+                height: "10px",
+                border: "1px solid rgba(0, 0, 0, .8)",
+              }}
+            ></Box>
+            <Box component="span">Normal summer, mineral soil</Box>
+          </Box>
           <Box
-            component="span"
-            style={{
-              margin: '0.1rem 0.2rem 0rem 0rem',
-              background: "rgba(110, 166, 205)",
-              width: "10px",
-              height: "10px",
-              border: "1px solid  rgba(0, 0, 0)",
-            }}
-          ></Box>
-          Dry summer, mineral soil
-        </Box>
-        <Box sx={styles.list}>
+            sx={{ display: "flex", minWidth: "110px", padding: "0.2rem 0rem" }}
+          >
+            <Box
+              component="span"
+              sx={{
+                margin: "0.1rem 0.2rem 0rem 0rem",
+                background: "rgba(160, 219, 0, .8)",
+                width: "10px",
+                height: "10px",
+                border: "1px solid rgba(0, 0, 0, .8)",
+              }}
+            ></Box>
+            Dry summer, mineral soil
+          </Box>
           <Box
-            component="span"
-            style={{
-              margin: '0.1rem 0.2rem 0rem 0rem',
-              background: "rgba(254, 218, 139)",
-              width: "10px",
-              height: "10px",
-              border: "1px solid  rgba(0, 0, 0)",
-            }}
-          ></Box>
-          Normal summer, peat soil
-        </Box>
-        <Box sx={styles.list}>
+            sx={{ display: "flex", minWidth: "110px", padding: "0.2rem 0rem" }}
+          >
+            <Box
+              component="span"
+              sx={{
+                margin: "0.1rem 0.2rem 0rem 0rem",
+                background: "rgba(255, 250, 0, .8)",
+                width: "10px",
+                height: "10px",
+                border: "1px solid  rgba(0, 0, 0, .8)",
+              }}
+            ></Box>
+            <Box component="span">Normal summer, peat soil</Box>
+          </Box>
           <Box
-            component="span"
-            style={{
-              margin: '0.15rem 0.2rem 0rem 0rem',
-              background: "rgba(246, 126, 75)",
-              width: "10px",
-              height: "10px",
-              border: "1px solid  rgba(0, 0, 0)",
-            }}
-          ></Box>
-          Dry summer, peat soil
-        </Box>
-        <Box sx={styles.list}>
+            sx={{ display: "flex", minWidth: "110px", padding: "0.2rem 0rem" }}
+          >
+            <Box
+              component="span"
+              sx={{
+                margin: "0.15rem 0.2rem 0rem 0rem",
+                background: "rgba(255, 132, 0, .8)",
+                width: "10px",
+                height: "10px",
+                border: "1px solid  rgba(0, 0, 0, .8)",
+              }}
+            ></Box>
+            <Box component="span">Dry summer, peat soil</Box>
+          </Box>
           <Box
-            component="span"
-            style={{
-              margin: '0.1rem 0.2rem 0rem 0rem',
-              background: "rgba(165, 0, 38)",
-              width: "10px",
-              height: "10px",
-              border: "1px solid  rgba(0, 0, 0)",
-            }}
-          ></Box>
-          Winter (BAD)
+            sx={{ display: "flex", minWidth: "90px", padding: "0.2rem 0rem" }}
+          >
+            <Box
+              component="span"
+              sx={{
+                margin: "0.1rem 0.2rem 0rem 0rem",
+                background: "rgba(255, 38, 0, .8)",
+                width: "10px",
+                height: "10px",
+                border: "1px solid  rgba(0, 0, 0, .8)",
+              }}
+            ></Box>
+            <Box component="span">Winter (BAD)</Box>
+          </Box>
         </Box>
       </Box>
     </MapContext.Provider>
