@@ -14,15 +14,10 @@ import { useAppSelector, useRootDispatch } from "../store/hooks";
 import { actions } from "../globalSlice";
 import { RootState } from "../store/store";
 
-interface YValues {
-  seriesName: string | undefined;
-  yValue: number;
-}
 
 interface TraficabilityGraphComponentProp {
   option: EChartOption | null;
   onGraphClick: (xAxisData: string) => void;
-  onMouseOver: (yAxisValues: YValues[]) => void;
 }
 
 const TraficabilityGraphComponent: React.FC<
