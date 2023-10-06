@@ -65,16 +65,6 @@ export interface Map {
 export interface TimelineControlStyle {
   itemSize?: number;
   itemGap?: number;
-  normal?: {
-    color?: string;
-    borderColor?: string;
-    borderWidth?: number;
-    borderType?: string;
-    shadowBlur?: number;
-    shadowColor?: string;
-    shadowOffsetX?: number;
-    shadowOffsetY?: number;
-  };
   emphasis?: {
     color?: string;
     borderColor?: string;
