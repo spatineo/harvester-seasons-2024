@@ -35,7 +35,7 @@ const TileLayer: React.FC<TileLayerProps> = ({ source, title, visible }) => {
 				map.removeLayer(tileLayer);
 			}
 		};
-	}, [map]);
+	}, [map, title]);
 	return null;
 };
 
