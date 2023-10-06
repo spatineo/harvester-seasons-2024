@@ -55,7 +55,9 @@ const TraficabilityGraphComponent: React.FC<
       height: "200",
     });
     window.addEventListener('resize', () => newChart.resize());
-    newChart.setOption(option);
+    if(option !== null){
+       newChart.setOption(option, {notMerge: true, lazyUpdate: false});
+    }
     const calculateDataIndex = (seriesData, xAxisValue) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
       const formatDateWithoutTime = (dateString) => {
