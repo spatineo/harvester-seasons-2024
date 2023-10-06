@@ -54,6 +54,7 @@ const TraficabilityGraphComponent: React.FC<
     const newChart = echarts.init(graphRef.current, undefined, {
       height: "200",
     });
+    window.addEventListener('resize', () => newChart.resize());
     newChart.setOption(option);
     const calculateDataIndex = (seriesData, xAxisValue) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
@@ -137,14 +138,7 @@ const TraficabilityGraphComponent: React.FC<
       
     }
 
-    window.addEventListener('resize', () => newChart.resize())
-
-    return () => {
-      if (newChart) {
-        newChart.dispose();
-      }
-    };
-  }, [graphRef, option]);
+  }, [graphRef.current, option]);
 
   return (
     <Box
