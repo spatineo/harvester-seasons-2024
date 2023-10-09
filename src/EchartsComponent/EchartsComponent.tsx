@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import * as echarts from "echarts";
 import { Box } from "@mui/material";
 import { EChartOption } from "echarts";
@@ -11,31 +11,21 @@ interface ChartProps {
   height: number;
 }
 
-const EchartsCompoent: React.FC<ChartProps> = ({ option, height }) => {
+const EchartsComponent: React.FC<ChartProps> = ({ option, height }) => {
   const chartRef = useRef<HTMLDivElement>(null);
-  const [chart, setChart] = useState<echarts.ECharts | null>(null);
 
   useEffect(() => {
-    if (chartRef.current) {
-      const newChart = echarts.init(chartRef.current);
-      setChart(newChart);
+    if (!chartRef.current) {
+      return;
     }
 
-    return () => {
-      if (chart) {
-        chart.dispose();
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (chart) {
-      chart.setOption(option);
-    }
-  }, [chart, option]);
+  
+   const myChart = echarts.init(chartRef.current, undefined, );
+   window.addEventListener('resize', () => myChart.resize());
+    myChart.setOption(option);
+  }, [option, chartRef.current]);
 
   return (
-    /*  <Box ref={chartRef} style={{ width: '100%', height: `${height}px` }}></Box> */
     <Box
       ref={chartRef}
       sx={{
@@ -49,4 +39,4 @@ const EchartsCompoent: React.FC<ChartProps> = ({ option, height }) => {
   );
 };
 
-export default EchartsCompoent;
+export default EchartsComponent

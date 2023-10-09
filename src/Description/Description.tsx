@@ -37,7 +37,7 @@ const Description = () => {
   const textWithAnchorDescriptions =
   languages.descriptionTextP2[information.lang as keyof LanguageOptions];
   const viewSheet = languages.viewSheet[information.lang as keyof LanguageOptions];
-  const carbonEmissions = languages.carbonEmmison[information.lang as keyof LanguageOptions];
+  const carbonEmissions = languages.carbonEmission[information.lang as keyof LanguageOptions];
   const forestFire = languages.forestFires[information.lang as keyof LanguageOptions]
   const treeCoverDensity = languages.treeCoverDensity[information.lang as keyof LanguageOptions]
 

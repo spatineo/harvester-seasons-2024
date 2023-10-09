@@ -21,6 +21,10 @@ import * as turf from '@turf/turf';
 
 const CIRCLE_RADIUS_METERS = 2500;
 
+interface MarkerProps {
+	title: string
+}
+
 const iconStyle = new Style({
 	image: new Icon({
 		anchor: [0.5, 1],
@@ -41,7 +45,7 @@ const circleStyle = new Style({
 });
 
 // eslint-disable-next-line react/prop-types
-const LocationMarkerLayer: React.FC = () => {
+const LocationMarkerLayer: React.FC<MarkerProps> = ({ title }) => {
 	const { map } = useContext(MapContext);
 	const [source, setSource] = useState<VectorSource | null>(null);
 	const position: MapPosition = useAppSelector((state: RootState) => state.mapState.position);
@@ -52,7 +56,7 @@ const LocationMarkerLayer: React.FC = () => {
 		const src = new VectorSource();
 
 		const layer = new VectorLayer({
-			title: 'Location marker',
+			title,
 			source: src,
 			style: () => [iconStyle, circleStyle],
 			zIndex: 1000,
@@ -66,7 +70,7 @@ const LocationMarkerLayer: React.FC = () => {
 				map.removeLayer(layer);
 			}
 		};
-	}, [map]);
+	}, [map, title]);
 
 	useEffect(() => {
 		if (!source || !map) return;

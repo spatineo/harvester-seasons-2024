@@ -4,45 +4,25 @@
 import { Parameter, Smartmet, GraphOptions } from "../types";
 import { EChartOption } from "echarts";
 
-interface YValues {
-  seriesName: string | undefined;
-  yValue: number;
+const format = () => {
+  return `{MMM} {yyyy}`;
 }
-const monthNames = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec"
-];
-
 
 export function createTrafficabilityGraphOptions(
   parameters: Parameter[],
   values: [],
   windGustArray: [],
   mark,
-  windYValue: YValues[] | null,
   summerSeries: (string | number)[],
-  winterSeries: (string | number)[]
+  winterSeries: (string | number)[],
+  languageObject: {
+    summerIndex: string,
+    winterIndex: string,
+    windGust: string,
+    winterTenDays: string,
+    summerTenDays: string
+  }
 ) {
-  const windGustValues =
-    windYValue !== null
-      ? windYValue
-          .filter((w) => {
-            return w.seriesName === "Wind gust ";
-          })
-          .map((w) => `${w.yValue}`)
-          .join(", ")
-      : "";
-
   const trafficabilityOptionData: EChartOption = {
     legend: {},
     grid: {
@@ -80,12 +60,7 @@ export function createTrafficabilityGraphOptions(
       type: "time",
       splitNumber: 12,
       axisLabel: {
-        formatter: (value: Date) => {
-          const date = new Date(value);
-          const month = monthNames[date.getMonth()];
-          const year = date.getFullYear();
-          return `${month} ${year}`;
-        }
+        formatter: format
       }
     },
     series: [
@@ -115,7 +90,7 @@ export function createTrafficabilityGraphOptions(
       },
       {
         type: "line",
-        name: "Summer Index",
+        name: `${languageObject.summerIndex}`,
         symbol: "none",
         itemStyle: {
           color: "#028A0F"
@@ -130,8 +105,9 @@ export function createTrafficabilityGraphOptions(
         yAxisIndex: 0,
         data: [
           ...values.map(
-            (t: { utctime: string; [key: string]: string }, index) => { 
-              const summerValue = summerSeries[index] !== undefined ? summerSeries[index] : 'nan';
+            (t: { utctime: string; [key: string]: string }, index) => {
+              const summerValue =
+                summerSeries[index] !== undefined ? summerSeries[index] : "nan";
               return [new Date(t.utctime).toISOString(), summerValue];
             }
           )
@@ -140,7 +116,7 @@ export function createTrafficabilityGraphOptions(
       {
         type: "line",
         symbol: "none",
-        name: "Winter Index",
+        name: `${languageObject.winterIndex}`,
         itemStyle: {
           color: "#0080FF"
         },
@@ -159,12 +135,34 @@ export function createTrafficabilityGraphOptions(
                 new Date(t.utctime).toISOString(),
                 ...parameters.map((p) => {
                   if (t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"] !== null) {
-                    return Math.max(Number(t["HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"]), Number(t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"]))
-                  } else if (t["HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"] !== null || winterSeries[index] !== null && winterSeries.length == values.length) { 
-                    return Math.max(Number(t[ "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"]), Number(winterSeries[index])); }
-                  else { return 'nan' }
+                    return Math.max(
+                      Number(
+                        t[
+                          "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"
+                        ]
+                      ),
+                      Number(t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"])
+                    );
+                  } else if (
+                    t[
+                      "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"
+                    ] !== null ||
+                    (winterSeries[index] !== null &&
+                      winterSeries.length == values.length)
+                  ) {
+                    return Math.max(
+                      Number(
+                        t[
+                          "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"
+                        ]
+                      ),
+                      Number(winterSeries[index])
+                    );
+                  } else {
+                    return "nan";
+                  }
                 })
-              ]
+              ];
             }
           )
         ]
@@ -176,7 +174,7 @@ export function createTrafficabilityGraphOptions(
           color: "#E3242B"
         },
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        name: `Wind gust ${windGustValues}`,
+        name: `${languageObject.windGust}`,
         yAxisIndex: 1,
         data: [
           ...windGustArray.map((t: { utctime: string }) => {
@@ -189,7 +187,7 @@ export function createTrafficabilityGraphOptions(
       },
       {
         type: "line",
-        name: "Summer 10 days",
+        name: `${languageObject.summerTenDays}`,
         symbol: "none",
         itemStyle: {
           color: "purple"
@@ -200,18 +198,18 @@ export function createTrafficabilityGraphOptions(
         },
         yAxisIndex: 0,
         data: [
-          ...values.map((t: { utctime: string; [key: string]: string }) => {                   
-            if (t["HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}"] !== null) { 
-              return [t.utctime, t["HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}"]]}
-            else { 
-              return [t.utctime, 'nan']
+          ...values.map((t: { utctime: string; [key: string]: string }) => {
+            if (t["HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}"] !== null) {
+              return [t.utctime, t["HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}"]];
+            } else {
+              return [t.utctime, "nan"];
             }
           })
         ]
       },
       {
         type: "line",
-        name: "Winter 10 Days",
+        name: `${languageObject.winterTenDays}`,
         symbol: "none",
         itemStyle: {
           color: "#1D5B79"
@@ -222,24 +220,36 @@ export function createTrafficabilityGraphOptions(
         },
         yAxisIndex: 0,
         data: [
-          ...values.map(
-            (t: { utctime: string; [key: string]: string }) => {
-          
-            
-              return [
-                new Date(t.utctime).toISOString(),
-                ...parameters.map((p) => {
+          ...values.map((t: { utctime: string; [key: string]: string }) => {
+            return [
+              new Date(t.utctime).toISOString(),
+              ...parameters.map((p) => {
                 if (t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"] !== null) {
-                  return Math.max(Number(t["HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"]), Number(t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"]));
-                 } else if (t["ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}"] !== null) { 
-                  return Math.max(Number(t["HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"]), Number(t["ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}"]));
-                 } else {
-                  return 'nan'
-                 }
-                })
-              ];
-            }
-          )
+                  return Math.max(
+                    Number(
+                      t[
+                        "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"
+                      ]
+                    ),
+                    Number(t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"])
+                  );
+                } else if (
+                  t["ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}"] !== null
+                ) {
+                  return Math.max(
+                    Number(
+                      t[
+                        "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"
+                      ]
+                    ),
+                    Number(t["ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}"])
+                  );
+                } else {
+                  return "nan";
+                }
+              })
+            ];
+          })
         ]
       }
     ]
@@ -275,12 +285,7 @@ export function createOptions(
       type: "time",
       splitNumber: 12,
       axisLabel: {
-        formatter: (value: Date) => {
-          const date = new Date(value);
-          const month = monthNames[date.getMonth()];
-          const year = date.getFullYear();
-          return `${month} ${year}`;
-        }
+        formatter: format
       }
     },
     series: [

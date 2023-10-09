@@ -1,4 +1,68 @@
 export const languages = {
+	frost: {
+		en: `Frost heave (kelirikko, GOOD)`,
+		fi: `Pakkanen (kelirikko, HYVÄ)`
+	},
+	normal: {
+		en: `Normal summer, mineral soil`,
+		fi: `Normaali kesä, mineraalimaa`
+	},
+	dry: {
+		en: `Dry summer, mineral soil`,
+		fi: `Kuiva kesä, mineraalimaa`
+	},
+	normalPeat: {
+		en: `Normal summer, peat soil`,
+		fi: `Normaali kesä, turvemaa`
+	},
+	dryPeat: {
+		en: `Dry summer, peat soil`,
+		fi: `Kuiva kesä, turvemaa`
+	},
+	winter: {
+		en: `Winter (BAD)`,
+		fi: `Talvi (huono)`
+	},
+	locationMarker: {
+		en: `Location marker`,
+		fi: `Sijaintimerkki`
+	},
+	trafficability: {
+		en: `Trafficability`,
+		fi: `Kuljetettavuus`
+	},
+	thuderForest: {
+		en: `Thunderforest`,
+		fi: `Ukkosmetsä`
+	},
+	terrainMap: {
+		en: `Terrain map`,
+		fi: `Maastokartta`
+	},
+	backgroundMap: {
+		en: `Background map`,
+		fi: `Taustakartta`
+	},
+  summmerIndex: {
+    en: `Summmer Index`,
+    fi: `Kesä Indeksi`
+  },
+  winterIndex: {
+    en: `Winter Index`,
+    fi: `Talvi Indeksi`
+  },
+  winterTenDays: {
+    en: `Winter 10 days`,
+    fi: `Talvi 10 päivää`
+  },
+  WindGust: {
+    en: `Wind Gust`,
+    fi: `Tuulenpuuska`
+  },
+  summerTenDays: {
+    en: `Summer 10 days`,
+    fi: `Kesä 10 päivää`
+  },
   info: {
     en: "Click for information",
     fi: "Lisätietoja suomeksi"
@@ -25,18 +89,18 @@ export const languages = {
       en: `When you open the page it can use your location information to zoom in on the surrounding area and show the 6 month forecast for it in a graph with summer and winter condition analysis. The blue circle indicates the area where the graph information is valid. You can navigate the date on the map below with a slider, back and forward buttons or play to go through all dates.`,
       fi: `Tarkenna kartta haluamaasi maastonkohtaan ja klikkaa hiirellä tai kosketa sormella sininen osoitinmerkki alueelle. Tällöin ohjelman tekee laskelman (kestää hetken) maaperän kosteudesta, roudasta ja lumen syvyydestä alueelle.`
     },
-		three: {
-			en: ``,
-			fi: `Zoomaa takaisin lähelle sinistä osoitinmerkkiä. Leimikkotasolla näkyvässä perustilanteessa on esillä perinteisen korjuukelpoisuuskartan esittämä tieto alueen korjuukelpoisuudesta.`
-		},
-		four: {
-			en:``,
-			fi: `Kun laitat ruksin Trafficability forecast -kohtaan kartan ylälaidassa, Play-toiminto aktivoituu ja voit tarkastella karttaruudun aikajanalla kelaten korjuukelpoisuusarviota eteenpäin seuraavalle kuudelle kuukaudelle sää- ja ilmasto-olosuhteet huomioiden. Voit ohjata kartan päivämäärää myös liukukytkimellä sekä eteen- ja taaksepäin painikkeilla.`
-		},
-		five: {
-			en: ``,
-			fi: `Kartan yläpuolella kuvaajassa on kaksi indeksiä (Summer Index ja Winter Index), jotka kuvaavat kohteen korjuukelpoisuutta kesä- ja talvitilanteiden kannalta asteikolla hyvä, epävarma (keskellä asteikkoa) ja huono.`
-		}
+    three: {
+      en: ``,
+      fi: `Zoomaa takaisin lähelle sinistä osoitinmerkkiä. Leimikkotasolla näkyvässä perustilanteessa on esillä perinteisen korjuukelpoisuuskartan esittämä tieto alueen korjuukelpoisuudesta.`
+    },
+    four: {
+      en: ``,
+      fi: `Kun laitat ruksin Trafficability forecast -kohtaan kartan ylälaidassa, Play-toiminto aktivoituu ja voit tarkastella karttaruudun aikajanalla kelaten korjuukelpoisuusarviota eteenpäin seuraavalle kuudelle kuukaudelle sää- ja ilmasto-olosuhteet huomioiden. Voit ohjata kartan päivämäärää myös liukukytkimellä sekä eteen- ja taaksepäin painikkeilla.`
+    },
+    five: {
+      en: ``,
+      fi: `Kartan yläpuolella kuvaajassa on kaksi indeksiä (Summer Index ja Winter Index), jotka kuvaavat kohteen korjuukelpoisuutta kesä- ja talvitilanteiden kannalta asteikolla hyvä, epävarma (keskellä asteikkoa) ja huono.`
+    }
   },
   mapTextOne: {
     en: ``,
@@ -46,99 +110,113 @@ export const languages = {
     en: ``,
     fi: `arttaikkunan oikeasta yläkulmassa olevasta valikosta voit valita karttatasoja maaperän kosteuden, maaperän lämpötilan, lumen paksuuden ja metsäpaloindeksin tarkastelemiseksi. Karttatasot toimivat vain riittävän isolla mittakaavalla tarkasteltaessa.`
   },
-	mapTextInstructionFive1: {
-		en: ``,
-		fi: `Summer Index muodostetaan maan pintakerroksen (0 – 28 cm) kosteuden perusteella. Arvo on Hyvä, jos maaperän kosteusprosentti on pienempi kuin 40 %. Menneet päivämäärät sekä tulevat ensimmäiset 10 päivää perustuvat vuodenaikaisennusteen sijaan lyhyemmän aikavälin sääennusteeseen, ja johtuen ennusteiden erosta maakerroksen syvyydessä, käytössä on tällöin maankosteuden osalta 20 % raja-arvo.`
-	},
-	mapTextInstructionFive2: {
-		en: ``,
-		fi: `Winter Index muodostetaan lumikerroksen paksuuden ja maaperän lämpötilan perusteella. Arvo on Hyvä, jos lunta on yli 40 cm tai routaa 20 cm.`
-	},
-	feedBack: {
-		en: `Send feedback`,
-		fi: `Lähetä palautetta`
-	},
-	feedbackPlaceholder: {
-		en: `Feedback`,
-		fi: `Paluate`
-	},
-	email: {
-		en: `E-mail address or phone number`,
-		fi: `Sähköpostiosoite tai puhelinnumero`
-	},
-	descriptionHeader: {
-		en: `Description`,
-		fi: `Kuvaus`
-	},
-	descriptionTextP1: {
-		en: `Each date map translates the forecasted indexes into changes to trafficability classes on the map for that day. Good winter conditions allow forest machines in all terrains, good summer conditions leave out winter classes. Bad conditions are identified for areas that need dry or winter conditions and these are not predicted. Seasonal forecasts are far from certain, so we also have situations where we can't predict conditions.`,
-		fi: `Jokaisen päivän kartalla ennustetut indexit vaihtavat korjuukelpoisuus luokitusta hyväksi tai huonoksi. Hyvät talviolosuhteet sallivat korjuun kaikialla, hyvät kuivat kesätilanteet sallivat korjuun muualla kuin talviluokissa. Huonoja olosuhteita esitetään kuivuutta tai talviolosuhteita edellyttävissä paikoissa, jos olosuhteita ei ennusteta. Vuodenaikaisennusteet eivät ole luotettavia kuten sääennusteet, siksi on myös tilanteita, joissa emme tohdi ennustaa olosuhteita.`
-	},
-	descriptionTextP2: {
-		en: `Below the map three graphs go into detail explaining the conditions background. The predictions use <a href="https://climate.copernicus.eu/seasonal-forecasts" target="_blank">EU Copernicus climate change service seasonal forecasts</a> using the <a href="https://cds.climate.copernicus.eu/#!/home" target="_blank">Copernicus climate data store</a>, which are a tool combining climatology and large scale weather pattern teleconnections to indicate directions of future climate. So graphs are not daily weather forecasts, but a range of possibilities for each day and our analysis is based on 90% of these to concure on a good or bad condition. The graphs show all 51 members of the bias-adjusted and post processed prediction ensemble interpolated to the location on the map. It represents many square kilometres, not one spot as the resolution of the models used ranges from 5 to 100 kilometers. The red lines represent short term weather forecasts by FMI. The soil moisture forecast is for a deeper layer than in seasonal predictions and thus shows smaller values.`,
-		fi: `Kartan alla kolme kuvaajaa selittää olosuhde-ennusteiden taustaa. Ennusteet perustuvat<a href="https://climate.copernicus.eu/seasonal-forecasts" target="_blank"> EU:n Copernicus ilmastonmuutospalveluiden vuodenaikaisennusteisiin</a> , jotka ovat saatavilla <a href="https://cds.climate.copernicus.eu/#!/home" target="_blank">Copernicus ilmastodatapalvelusta</a>. Vuodenaikaisennusteet ovat väline, joka yhdistää ilmastotietoa ja suursään kaukokulkeutumisyhteyksiä kuvaamaan tulevaa ilmastoa. Kuvaajat eivät siis ole päivittäisiä sääennusteita, vaan jakauma mahdollisuuksia kullekin päivälle. Meidän ennuste perustuu tilanteisiin, joissa 90 % jakauman jäsenistä puoltavat hyviä tai huonoja olosuhteita. Kuvaajissa näkyy kaikki 51 arvoa biaskorjattuja ja jatkojalostettuja ennusteen parven jäsentä interpoloituna kohteeseen. Tieto edustaa useiden neliökilometrien alueellista tilannetta, eivät pientä paikkaa kartalla, koska käytettyjen mallien erotuskyvyt liikkuvat 5 ja 100 kilometrin välillä. Punaiset viivat edustavat Ilmatieteen laitoksen sääennustetta. Maankosteuden ennuste edustaa syvempää kerrosta kuin vuodenaikaisennusteessa, mistä syystä se myös näyttää pienempiä arvoja.`
-	},
-	descriptionTextP3: {
-		en: `Summer good/dry conditions are based on soil wetness below 10 cm ground being under 40% with 90% of prediction members. Winter good conditions are either based on soil temperature at 20 cm below ground being under 0 °C or snow depth being more than 40 cm. Again 90% of the prediction members have to agree. Past dates and the coming first 10 days are using short term weather forecast instead of seasonal prediction, and also 20% limit for soil moisture because of a different soil layer depth.`,
-		fi: `Kesän hyvät/kuivat olosuhteet perustuvat maaperän kosteuteen 10 cm syvyyden alapuolella. Vettä on oltava alle 40 % maaperän tilavuudesta ja vähintään 90 % ennusteparven jäsenistä on ennustettava niin. Talven hyvät olosuhteet perustuvat joko routaan, jolloin 20 cm syvyydellä maaperän lämpötila on pakkasella tai lumensyvyyteen, jonka on oltava yli 40 cm. Ja siis 90 % parven ennusteista on oltava samaa mieltä. Menneet päivämäärät sekä tulevat ensimmäiset 10 päivää perustuvat vuodenaikaisennusteen sijaan lyhyemmän aikavälin sääennusteeseen, ja johtuen ennusteiden erosta maakerroksen syvyydessä, käytössä on tällöin maankosteuden osalta 20 % raja-arvo.`
-	},
-	descriptionTextP4: {
-		en: `The app allows browsing the map and clicking for analysis graphs all over Northern Europe, but trafficability analysis is available only in Finland with over 80% of land area covered. In areas without trafficability analysis the map shows average soil wetness, temperature and snow depth predictions, but the information is intended to be coarse as this information should not be considered precise, it is estimating future climatology of the variable. Also good and bad trafficability is analyzed in the graphs, but it can't be translated for particular parcels on the map.`,
-		fi:`Sovellus sallii kartan selaamisen ja analyysin laskemisen Pohjoismaissa, mutta korjuukelpoisuus analyysia on vain Suomessa (yli 80 % metsämaista on kartoitettu). Alueilla ilman korjuukelpoisuuskartta ja zoomaamalla suuria alueita voi tarkastella ennusteparven keskimääräistä maaperän kosteutta, lämpötilaa tai lumikerroksen paksuutta. Tieto on tarkoituksella epämääräistä, koska kyseessä on muuttujan tulevan ilmaston arvio. Kuvaajiin analysoidaan myös hyvät ja huonot korjuukelpoisuudet, mutta niitä ei voi esittää kartalla maastoa huomioiden.`,
-	},
-	descriptionTextP5: {
-		en:`The service is developed with EU support and it allows this service to be available for free for a one year trial phase. You can send feedback using the form above. Enjoy!`,
-		fi: `Palvelu on kehitetty EU:n tukemana ja tämä tarjoaa mahdolisuuden käyttää palvelua ilmaiseksi aina vuoden kestävän koekauden ajan. Voit lähettää palautetta yllä olevan lomakkeen avulla. Tervetuloa!`
-	},
-	viewSheet: {
-		en: `<ahref="https://harvesterseasons.com/altcolors/HarvesterSeasons_Description2pager_v2.pdf" target="_blank" rel="noreferrer">View infosheet (PDF)</a>`,
-		fi: ``
-	},
-	carbonEmmison: {
-		en: `<a href="https://harvesterseasons.com/altcolors/infotext_Carbon_HarvesterSeasons_eng.pdf" target="_blank" rel="noreferrer">Carbon emissions and forest operations: A short guideline for the forestry sector (PDF)</a>`,
-		fi:`<a href="https://harvesterseasons.com/altcolors/infotext_Carbon_HarvesterSeasons_fin.pdf" target="_blank" rel="noreferrer">Carbon emissions and forest operations: A short guideline for the forestry sector (PDF, Suomeksi)</a>`,
-	},
-	forestFires: {
-		en: `Forest Fire Index is provided by <a href="https://effis.jrc.ec.europa.eu/" target="_blank" rel="noreferrer">Copernicus Emergency Management Service.</a>`,
-		fi: `Metsäpaloindeksin (Forest Fire Index) tuottaa <a href="https://effis.jrc.ec.europa.eu/" target="_blank" rel="noreferrer"> Copernicus Emergency Management Service.</a>`
-	},
-	treeCoverDensity: {
-		en: `Tree Cover Density is for year 2018 and provided by <a href="https://land.copernicus.eu/pan-european/high-resolution-layers/forests/" target="_blank" rel="noreferrer"> Copernicus Land Monitoring Service.</a>`,
-		fi: `Latvuspeittävyys (Tree Cover Density) on vuodelle 2018 ja sen tuottaa <a href="https://land.copernicus.eu/pan-european/high-resolution-layers/forests/" target="_blank" rel="noreferrer"> Copernicus Land Monitoring Service.</a>`
-		},
-	partners: {
-		en: `Project partners`,
-		fi: `Projektin osapuolet`
-	},
-	serviceProvider: {
-		en: `Service provider`,
-		fi: `Palveluntuottajat`
-	},
-	contractor: {
-		en: `Subcontractor`,
-		fi: `Alihankkija`
-	},
-	testUser: {
-		en: `Test User`,
-		fi: `Testiasiakas`
-	},
-	service: {
-		en: `This service is funded by`,
-		fi : `Tätä palvelua rahoittaa`
-	},
-	italicEnglishText1: {
-		en: `This service is funded as a use case by the Destination Earth (DestinE) initiative of the European Commission under framework agreement ECMWF/DESTINE/2022/DE_370d_FMI.`,
-		fi: `Tätä palvelua rahoitetaan Euroopan komission Destination Earth (DestinE) Use Case palvelusopimuksella osana puitesopimusta ECMWF/DESTINE/2022/DE_370d_FMI.`
-	},
-	italicEnglishText2: {
-		en: `This service was funded as a use case by the Copernicus Programme's Climate Change Service (C3S) contract under framework agreement ECMWF/COPERNICUS/2019/C3S_428g_FMI.`,
-		fi: `Tämä palvelu rahoitettiin Copernicus Climate Change Service (C3S) Use Case palvelusopimuksella osana puitesopimusta ECMWF/COPERNICUS/2019/C3S_428g_FMI.`
-	},
-	italicEnglishText3: {
-		en: `The E-Shape project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement 820852.`,
-		fi: `E-Shape projekti on saanut rahoitusta Euroopan Unionin Horisontti 2020 tutkimus- ja innovaatio-ohjelmasta sopimusnumerolla 820852.`
-	},
-	soilCarbon: {
+  mapTextInstructionFive1: {
+    en: ``,
+    fi: `Summer Index muodostetaan maan pintakerroksen (0 – 28 cm) kosteuden perusteella. Arvo on Hyvä, jos maaperän kosteusprosentti on pienempi kuin 40 %. Menneet päivämäärät sekä tulevat ensimmäiset 10 päivää perustuvat vuodenaikaisennusteen sijaan lyhyemmän aikavälin sääennusteeseen, ja johtuen ennusteiden erosta maakerroksen syvyydessä, käytössä on tällöin maankosteuden osalta 20 % raja-arvo.`
+  },
+  mapTextInstructionFive2: {
+    en: ``,
+    fi: `Winter Index muodostetaan lumikerroksen paksuuden ja maaperän lämpötilan perusteella. Arvo on Hyvä, jos lunta on yli 40 cm tai routaa 20 cm.`
+  },
+  feedBack: {
+    en: `Send feedback`,
+    fi: `Lähetä palautetta`
+  },
+  feedbackPlaceholder: {
+    en: `Feedback`,
+    fi: `Paluate`
+  },
+  email: {
+    en: `E-mail address or phone number`,
+    fi: `Sähköpostiosoite tai puhelinnumero`
+  },
+  descriptionHeader: {
+    en: `Description`,
+    fi: `Kuvaus`
+  },
+  descriptionTextP1: {
+    en: `Each date map translates the forecasted indexes into changes to trafficability classes on the map for that day. Good winter conditions allow forest machines in all terrains, good summer conditions leave out winter classes. Bad conditions are identified for areas that need dry or winter conditions and these are not predicted. Seasonal forecasts are far from certain, so we also have situations where we can't predict conditions.`,
+    fi: `Jokaisen päivän kartalla ennustetut indexit vaihtavat korjuukelpoisuus luokitusta hyväksi tai huonoksi. Hyvät talviolosuhteet sallivat korjuun kaikialla, hyvät kuivat kesätilanteet sallivat korjuun muualla kuin talviluokissa. Huonoja olosuhteita esitetään kuivuutta tai talviolosuhteita edellyttävissä paikoissa, jos olosuhteita ei ennusteta. Vuodenaikaisennusteet eivät ole luotettavia kuten sääennusteet, siksi on myös tilanteita, joissa emme tohdi ennustaa olosuhteita.`
+  },
+  descriptionTextP2: {
+    en: `Below the map three graphs go into detail explaining the conditions background. The predictions use <a href="https://climate.copernicus.eu/seasonal-forecasts" target="_blank">EU Copernicus climate change service seasonal forecasts</a> using the <a href="https://cds.climate.copernicus.eu/#!/home" target="_blank">Copernicus climate data store</a>, which are a tool combining climatology and large scale weather pattern teleconnections to indicate directions of future climate. So graphs are not daily weather forecasts, but a range of possibilities for each day and our analysis is based on 90% of these to concure on a good or bad condition. The graphs show all 51 members of the bias-adjusted and post processed prediction ensemble interpolated to the location on the map. It represents many square kilometres, not one spot as the resolution of the models used ranges from 5 to 100 kilometers. The red lines represent short term weather forecasts by FMI. The soil moisture forecast is for a deeper layer than in seasonal predictions and thus shows smaller values.`,
+    fi: `Kartan alla kolme kuvaajaa selittää olosuhde-ennusteiden taustaa. Ennusteet perustuvat<a href="https://climate.copernicus.eu/seasonal-forecasts" target="_blank"> EU:n Copernicus ilmastonmuutospalveluiden vuodenaikaisennusteisiin</a> , jotka ovat saatavilla <a href="https://cds.climate.copernicus.eu/#!/home" target="_blank">Copernicus ilmastodatapalvelusta</a>. Vuodenaikaisennusteet ovat väline, joka yhdistää ilmastotietoa ja suursään kaukokulkeutumisyhteyksiä kuvaamaan tulevaa ilmastoa. Kuvaajat eivät siis ole päivittäisiä sääennusteita, vaan jakauma mahdollisuuksia kullekin päivälle. Meidän ennuste perustuu tilanteisiin, joissa 90 % jakauman jäsenistä puoltavat hyviä tai huonoja olosuhteita. Kuvaajissa näkyy kaikki 51 arvoa biaskorjattuja ja jatkojalostettuja ennusteen parven jäsentä interpoloituna kohteeseen. Tieto edustaa useiden neliökilometrien alueellista tilannetta, eivät pientä paikkaa kartalla, koska käytettyjen mallien erotuskyvyt liikkuvat 5 ja 100 kilometrin välillä. Punaiset viivat edustavat Ilmatieteen laitoksen sääennustetta. Maankosteuden ennuste edustaa syvempää kerrosta kuin vuodenaikaisennusteessa, mistä syystä se myös näyttää pienempiä arvoja.`
+  },
+  descriptionTextP3: {
+    en: `Summer good/dry conditions are based on soil wetness below 10 cm ground being under 40% with 90% of prediction members. Winter good conditions are either based on soil temperature at 20 cm below ground being under 0 °C or snow depth being more than 40 cm. Again 90% of the prediction members have to agree. Past dates and the coming first 10 days are using short term weather forecast instead of seasonal prediction, and also 20% limit for soil moisture because of a different soil layer depth.`,
+    fi: `Kesän hyvät/kuivat olosuhteet perustuvat maaperän kosteuteen 10 cm syvyyden alapuolella. Vettä on oltava alle 40 % maaperän tilavuudesta ja vähintään 90 % ennusteparven jäsenistä on ennustettava niin. Talven hyvät olosuhteet perustuvat joko routaan, jolloin 20 cm syvyydellä maaperän lämpötila on pakkasella tai lumensyvyyteen, jonka on oltava yli 40 cm. Ja siis 90 % parven ennusteista on oltava samaa mieltä. Menneet päivämäärät sekä tulevat ensimmäiset 10 päivää perustuvat vuodenaikaisennusteen sijaan lyhyemmän aikavälin sääennusteeseen, ja johtuen ennusteiden erosta maakerroksen syvyydessä, käytössä on tällöin maankosteuden osalta 20 % raja-arvo.`
+  },
+  descriptionTextP4: {
+    en: `The app allows browsing the map and clicking for analysis graphs all over Northern Europe, but trafficability analysis is available only in Finland with over 80% of land area covered. In areas without trafficability analysis the map shows average soil wetness, temperature and snow depth predictions, but the information is intended to be coarse as this information should not be considered precise, it is estimating future climatology of the variable. Also good and bad trafficability is analyzed in the graphs, but it can't be translated for particular parcels on the map.`,
+    fi: `Sovellus sallii kartan selaamisen ja analyysin laskemisen Pohjoismaissa, mutta korjuukelpoisuus analyysia on vain Suomessa (yli 80 % metsämaista on kartoitettu). Alueilla ilman korjuukelpoisuuskartta ja zoomaamalla suuria alueita voi tarkastella ennusteparven keskimääräistä maaperän kosteutta, lämpötilaa tai lumikerroksen paksuutta. Tieto on tarkoituksella epämääräistä, koska kyseessä on muuttujan tulevan ilmaston arvio. Kuvaajiin analysoidaan myös hyvät ja huonot korjuukelpoisuudet, mutta niitä ei voi esittää kartalla maastoa huomioiden.`
+  },
+  descriptionTextP5: {
+    en: `The service is developed with EU support and it allows this service to be available for free for a one year trial phase. You can send feedback using the form above. Enjoy!`,
+    fi: `Palvelu on kehitetty EU:n tukemana ja tämä tarjoaa mahdolisuuden käyttää palvelua ilmaiseksi aina vuoden kestävän koekauden ajan. Voit lähettää palautetta yllä olevan lomakkeen avulla. Tervetuloa!`
+  },
+  viewSheet: {
+    en: `<ahref="https://harvesterseasons.com/altcolors/HarvesterSeasons_Description2pager_v2.pdf" target="_blank" rel="noreferrer">View infosheet (PDF)</a>`,
+    fi: ``
+  },
+  carbonEmission: {
+    en: `<a href="https://harvesterseasons.com/altcolors/infotext_Carbon_HarvesterSeasons_eng.pdf" target="_blank" rel="noreferrer">Carbon emissions and forest operations: A short guideline for the forestry sector (PDF)</a>`,
+    fi: `<a href="https://harvesterseasons.com/altcolors/infotext_Carbon_HarvesterSeasons_fin.pdf" target="_blank" rel="noreferrer">Carbon emissions and forest operations: A short guideline for the forestry sector (PDF, Suomeksi)</a>`
+  },
+  forestFires: {
+    en: `Forest Fire Index is provided by <a href="https://effis.jrc.ec.europa.eu/" target="_blank" rel="noreferrer">Copernicus Emergency Management Service.</a>`,
+    fi: `Metsäpaloindeksin (Forest Fire Index) tuottaa <a href="https://effis.jrc.ec.europa.eu/" target="_blank" rel="noreferrer"> Copernicus Emergency Management Service.</a>`
+  },
+  treeCoverDensity: {
+    en: `Tree Cover Density is for year 2018 and provided by <a href="https://land.copernicus.eu/pan-european/high-resolution-layers/forests/" target="_blank" rel="noreferrer"> Copernicus Land Monitoring Service.</a>`,
+    fi: `Latvuspeittävyys (Tree Cover Density) on vuodelle 2018 ja sen tuottaa <a href="https://land.copernicus.eu/pan-european/high-resolution-layers/forests/" target="_blank" rel="noreferrer"> Copernicus Land Monitoring Service.</a>`
+  },
+  partners: {
+    en: `Project partners`,
+    fi: `Projektin osapuolet`
+  },
+  serviceProvider: {
+    en: `Service provider`,
+    fi: `Palveluntuottajat`
+  },
+  contractor: {
+    en: `Subcontractor`,
+    fi: `Alihankkija`
+  },
+  testUser: {
+    en: `Test User`,
+    fi: `Testiasiakas`
+  },
+  service: {
+    en: `This service is funded by`,
+    fi: `Tätä palvelua rahoittaa`
+  },
+  carbonButtonData: {
+    en: [
+      { index: 1, data: "Soil Carbon in General" },
+      { index: 2, data: "Forest Management and Soil Carbon" },
+      { index: 3, data: "Peatland vs. Mineral Soil" },
+      { index: 4, data: "Carbon Literature" }
+    ],
+    fi: [
+      { index: 1, data: "" },
+      { index: 2, data: "" },
+      { index: 3, data: "" },
+      { index: 4, data: "" }
+    ]
+  },
+  italicEnglishText1: {
+    en: `This service is funded as a use case by the Destination Earth (DestinE) initiative of the European Commission under framework agreement ECMWF/DESTINE/2022/DE_370d_FMI.`,
+    fi: `Tätä palvelua rahoitetaan Euroopan komission Destination Earth (DestinE) Use Case palvelusopimuksella osana puitesopimusta ECMWF/DESTINE/2022/DE_370d_FMI.`
+  },
+  italicEnglishText2: {
+    en: `This service was funded as a use case by the Copernicus Programme's Climate Change Service (C3S) contract under framework agreement ECMWF/COPERNICUS/2019/C3S_428g_FMI.`,
+    fi: `Tämä palvelu rahoitettiin Copernicus Climate Change Service (C3S) Use Case palvelusopimuksella osana puitesopimusta ECMWF/COPERNICUS/2019/C3S_428g_FMI.`
+  },
+  italicEnglishText3: {
+    en: `The E-Shape project has received funding from the European Union’s Horizon 2020 research and innovation programme under grant agreement 820852.`,
+    fi: `E-Shape projekti on saanut rahoitusta Euroopan Unionin Horisontti 2020 tutkimus- ja innovaatio-ohjelmasta sopimusnumerolla 820852.`
+  },
+  soilCarbon: {
     en: `Boreal forest soil is an immense storage of carbon (Crowther et al. 2019). The cold climate of the boreal region leads to slow and partial decomposition of dead plant material i.e. litter (Pan et al. 2011). Mineral soil consists of several layers with forest floor being on the top. Forest floor includes the litter layer, with organic residues such as leaves, branches, bark, and stems, and the finely textured organic humus layer. The mineral soil below the forest floor is generally stratified into various layers as well. The most common soil types in Finnish forests are different types of Podzols and Histosols (peat) (Tamminen 2009). In peat soils, the more decomposed layers are located deeper in the peat and less decomposed on the top. When undisturbed, the soil C storage in forests on mineral soil generally grows at a relatively steady pace, making them sinks of carbon. In forests growing on drained peatlands, the soil is usually a source of carbon to the atmosphere (Lehtonen et al. 2011, Suomen kasvihuonekaasupäästöt 1990-2020). Different natural and anthropogenic changes such as the warming air and soil temperatures or forest management operations can change the soil carbon storage.`,
     fi: ``
   },

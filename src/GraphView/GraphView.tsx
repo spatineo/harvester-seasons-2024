@@ -86,9 +86,6 @@ const Graphs: React.FC = () => {
           showNextBtn: true,
           itemSize: 18,
           itemGap: 8,
-          normal: {
-            color: "#333",
-          },
           emphasis: {
             color: "#1e90ff",
           },

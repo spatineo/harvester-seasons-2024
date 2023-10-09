@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable import/default */
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Container, Box } from "@mui/material";
 import { EChartOption } from "echarts";
 import TraficabilityGraph from "../TrafficabilityGraph/Trafficability";
@@ -11,9 +11,11 @@ import HarvesterMap from "../HarvesterMapComponent/HarvesterMap";
 import OpacityComponent from "../Opacity/OpacityComponent";
 import CarbonText from "../CarbonText/CarbonText";
 import { useAppSelector, useRootDispatch } from "../store/hooks";
+import { actions as action } from "../globalSlice";
+import { LanguageOptions } from "../Lang/languageSlice";
+import { languages } from "../Lang/languages";
 import { RootState } from "../store/store";
 import { createTrafficabilityGraphOptions } from "../utils/graphHelpers";
-import { actions } from "../globalSlice";
 import {
   harvidx,
   ensembleListSmartIdx,
@@ -21,18 +23,9 @@ import {
   ensover,
 } from "../utils/helpers";
 
-interface YValues {
-  seriesName: string | undefined;
-  yValue: number;
-}
-
-/* const useStyles = makeStyles((theme) => ({
-
-}) */
 function MainViewComponent() {
   const [trafficabilityGraphOption, setTrafficabilityGraphOption] =
     useState<EChartOption | null>(null);
-  const [yAxisValues, setYAxisValues] = useState<YValues[] | null>(null);
   const dispatch = useRootDispatch();
   const {
     soilWetnessData,
@@ -41,11 +34,12 @@ function MainViewComponent() {
     trafficabilityData,
     windSpeedData,
   } = useAppSelector((state: RootState) => state.global);
+  const information = useAppSelector((state) => state.language);
 
   const graphParameters = useAppSelector(
     (state: RootState) => state.global.parameters
   );
-  const { markLine }= useAppSelector((state: RootState) => state.global);
+  const { markLine } = useAppSelector((state: RootState) => state.global);
 
   useEffect(() => {
     dispatch({ type: constants.TRAFFICABILITY_API });
@@ -63,7 +57,7 @@ function MainViewComponent() {
       soilWetnessData,
       "SWVL2-M3M3:SMARTMET:5015"
     );
-   
+
     const ensembleSnowHeight = ensembleListSmartIdx(
       snowHeightData,
       "HSNOW-M:SMARTOBS:13:4"
@@ -75,7 +69,7 @@ function MainViewComponent() {
       50,
       "SWVL2-M3M3:SMARTMET:5015"
     );
-    
+
     const dataSHscaled = scalingFunction(
       snowHeightData,
       ensembleSnowHeight.ensembleList,
@@ -92,7 +86,7 @@ function MainViewComponent() {
       50,
       "SWVL2-M3M3:SMARTMET:5015"
     );
-    
+
     const winter1series = ensover(
       0.4,
       0.9,
@@ -100,28 +94,41 @@ function MainViewComponent() {
       ensembleSnowHeight.ensembleList,
       50,
       "HSNOW-M:SMARTOBS:13:4"
-    );   
-    if (trafficabilityData || windSpeedData) {
+    );
+   const languageObject = { 
+    summerIndex:
+      languages.summmerIndex[information.lang as keyof LanguageOptions] as string,
+    winterIndex:
+      languages.winterIndex[information.lang as keyof LanguageOptions] as string,
+    windGust:
+      languages.WindGust[information.lang as keyof LanguageOptions]as string,
+    winterTenDays:
+      languages.summerTenDays[information.lang as keyof LanguageOptions] as string,
+    summerTenDays:
+      languages.winterTenDays[information.lang as keyof LanguageOptions] as string
+    }
+    if (trafficabilityData || windSpeedData ) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       const trafficabilityOption = createTrafficabilityGraphOptions(
         graphParameters.twelveMonthParams.trafficability,
         trafficabilityData,
         windSpeedData,
         markLine,
-        yAxisValues,
         summer1series,
-        winter1series
+        winter1series,
+       languageObject
       );
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       setTrafficabilityGraphOption(trafficabilityOption);
     }
+
   }, [
     trafficabilityData,
     soilWetnessData,
     graphParameters.twelveMonthParams.trafficability,
     markLine,
     windSpeedData,
-    yAxisValues,
+    information.lang
   ]);
 
   return (
@@ -131,10 +138,7 @@ function MainViewComponent() {
           <TraficabilityGraph
             option={trafficabilityGraphOption}
             onGraphClick={function (xAxisData: string): void {
-              dispatch(actions.setMarkLine(xAxisData));
-            }}
-            onMouseOver={(newyAxisValues: YValues[]) => {
-              setYAxisValues(newyAxisValues);
+              dispatch(action.setMarkLine(xAxisData));
             }}
           />
         ) : (

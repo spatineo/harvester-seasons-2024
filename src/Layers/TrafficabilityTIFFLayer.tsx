@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable react/prop-types */
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import MapContext from "../MapComponent/MapContext";
 import { BaseLayerOptions } from "ol-layerswitcher";
 import GeoTIFF from "ol/source/GeoTIFF";
@@ -52,18 +52,26 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
   const opacityValue = useAppSelector(
     (state: RootState) => state.mapState.opacityValue
   );
+ 
+  const [layer, setLayer] = useState<TileLayer | null>(null);
+
+  useEffect(() => {
+    if (!layer) return;
+    const opacity = getOpacityFromPercentage(opacityValue)
+    layer.setOpacity(opacity);
+  }, [opacityValue]);
 
   useEffect(() => {
     if (!map || !url) return;
 
-    // mimimum and maximum resolution
-    const layer = new TileLayer({
+    const newLayer = new TileLayer({
       title,
       visible: true,
-      opacity: getOpacityFromPercentage(opacityValue),
+      opacity: 1,
       className: "class",
-      maxResolution: 300,
-      minResolution: 20,
+      maxResolution: 150,
+      updateWhileAnimating: true,
+      updateWhileInteracting: true,
       style: {
         color: colorExpression(),
         gamma: 1.0,
@@ -75,12 +83,18 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
       }),
     } as BaseLayerOptions);
 
-    map.addLayer(layer);
-
-    return () => {
+    if (layer) {
       map.removeLayer(layer);
+    }
+
+    map.addLayer(newLayer);
+
+    setLayer(newLayer);
+    
+    return () => {
+      map.removeLayer(newLayer);
     };
-  }, [map, url, title, opacityValue]);
+  }, [map, url, title]);
 
   return null;
 };

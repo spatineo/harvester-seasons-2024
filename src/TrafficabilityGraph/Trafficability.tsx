@@ -14,22 +14,16 @@ import { useAppSelector, useRootDispatch } from "../store/hooks";
 import { actions } from "../globalSlice";
 import { RootState } from "../store/store";
 
-interface YValues {
-  seriesName: string | undefined;
-  yValue: number;
-}
 
 interface TraficabilityGraphComponentProp {
   option: EChartOption | null;
   onGraphClick: (xAxisData: string) => void;
-  onMouseOver: (yAxisValues: YValues[]) => void;
 }
 
 const TraficabilityGraphComponent: React.FC<
   TraficabilityGraphComponentProp
-> = ({ option, onGraphClick, onMouseOver }) => {
+> = ({ option, onGraphClick }) => {
   const graphRef = useRef<HTMLDivElement>(null);
-  const [chart, setChart] = useState<echarts.ECharts | null>(null);
   const [arrowColor, setArrowColor] = useState<"primary" | "secondary">(
     "primary"
   );
@@ -60,7 +54,10 @@ const TraficabilityGraphComponent: React.FC<
     const newChart = echarts.init(graphRef.current, undefined, {
       height: "200",
     });
-    newChart.setOption(option);
+    window.addEventListener('resize', () => newChart.resize());
+    if(option !== null){
+       newChart.setOption(option, {notMerge: true, lazyUpdate: false});
+    }
     const calculateDataIndex = (seriesData, xAxisValue) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
       const formatDateWithoutTime = (dateString) => {
@@ -132,8 +129,6 @@ const TraficabilityGraphComponent: React.FC<
                   }
                 }
               }
-             
-              //dispatch(actions.changeTrafficabilityIndexColor(maxValue));
               onGraphClick(formattedDate);
             }
           });
@@ -145,54 +140,7 @@ const TraficabilityGraphComponent: React.FC<
       
     }
 
-    window.addEventListener('resize', () => newChart.resize())
-    setChart(newChart);
-
-    return () => {
-      if (newChart) {
-        newChart.dispose();
-      }
-    };
-  }, [graphRef, option]);
-
-  useEffect(() => {
-    if (!chart) {
-      return;
-    }
-
-    const mouseover = function (params) {
-      if (params.data) {
-        const xValue = params.data[0];
-        const chartOption = chart.getOption();
-
-        if (chartOption) {
-          const yValues: YValues[] | null = [];
-
-          chartOption.series?.forEach((series) => {
-            let yValue: number | null = null;
-
-            if (series.data) {
-              for (const dataPoint of series.data) {
-                if (dataPoint[0] === xValue) {
-                  yValue = dataPoint[1];
-                  break;
-                }
-              }
-            }
-
-            if (yValue !== null) {
-              yValues.push({
-                seriesName: series.name,
-                yValue,
-              });
-            }
-          });
-          onMouseOver(yValues);
-        }
-      }
-    };
-    //chart.on("mouseover", mouseover );
-  }, [chart, onMouseOver]);
+  }, [graphRef.current, option]);
 
   return (
     <Box
