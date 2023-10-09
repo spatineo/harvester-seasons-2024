@@ -4,20 +4,9 @@
 import { Parameter, Smartmet, GraphOptions } from "../types";
 import { EChartOption } from "echarts";
 
-const monthNames = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec"
-];
+const format = () => {
+  return `{MMM} {yyyy}`;
+}
 
 export function createTrafficabilityGraphOptions(
   parameters: Parameter[],
@@ -71,12 +60,7 @@ export function createTrafficabilityGraphOptions(
       type: "time",
       splitNumber: 12,
       axisLabel: {
-        formatter: (value: Date) => {
-          const date = new Date(value);
-          const month = monthNames[date.getMonth()];
-          const year = date.getFullYear();
-          return `${month} ${year}`;
-        }
+        formatter: format
       }
     },
     series: [
@@ -301,12 +285,7 @@ export function createOptions(
       type: "time",
       splitNumber: 12,
       axisLabel: {
-        formatter: (value: Date) => {
-          const date = new Date(value);
-          const month = monthNames[date.getMonth()];
-          const year = date.getFullYear();
-          return `${month} ${year}`;
-        }
+        formatter: format
       }
     },
     series: [
