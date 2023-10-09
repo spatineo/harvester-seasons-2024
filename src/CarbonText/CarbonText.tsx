@@ -127,7 +127,8 @@ const CarbonText: React.FC = () => {
         sx={{
           display: "flex",
           flexDirection: "row",
-          justifyContent: "space-between",
+          gap: 1,
+          flexWrap: 'wrap',
           width: "100%",
           margin: "auto",
         }}
