@@ -15,7 +15,7 @@ import {
   InputLabel,
   Typography,
 } from "@mui/material";
-import { US, FI } from 'country-flag-icons/react/3x2'
+import { GB, FI } from 'country-flag-icons/react/3x2'
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { ArrowDropDown, ArrowRight } from "@mui/icons-material";
 import { Link } from "react-router-dom";
@@ -118,7 +118,7 @@ const HeadingCompoment: React.FC = () => {
                   label="Lang"
                   onChange={handleSelectChange}
                 >
-                  <MenuItem value="en"><US title="English" /></MenuItem>
+                  <MenuItem value="en"><GB title="English" /></MenuItem>
                   <MenuItem value="fi"><FI title="Finnish" /></MenuItem>
                 </Select>
               </FormControl>
