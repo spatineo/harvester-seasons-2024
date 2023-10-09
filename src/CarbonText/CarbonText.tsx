@@ -20,7 +20,7 @@ const styles = {
     color: "#1976d2",
     display: "inline-flex",
     fontWeight: "500",
-    fontSize: "0.875rem",
+    fontSize: "0.865rem",
     lineHeight: "1.75",
     letterSpacing: "0.02857em",
     textTransform: "uppercase",
