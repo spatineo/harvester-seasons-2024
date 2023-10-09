@@ -5,17 +5,19 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable import/default */
 import React, { useRef, useEffect, useState } from "react";
-import { Box } from "@mui/material";
-import { useRootDispatch, useAppSelector } from "../store/hooks";
-import { MapPosition, mapActions } from "./MapComponentSlice";
-import MapContext from "./MapContext";
 import * as ol from "ol";
 import { defaults as defaultControls } from "ol/control";
-import * as constants from "../store/constants";
+import { register } from "ol/proj/proj4";
 import LayerSwitcher from "ol-layerswitcher";
 import proj4 from "proj4";
+import { Box } from "@mui/material";
+import { useRootDispatch, useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
-import { register } from "ol/proj/proj4";
+import { MapPosition, mapActions } from "./MapComponentSlice";
+import MapContext from "./MapContext";
+import * as constants from "../store/constants";
+import { LanguageOptions } from "../Lang/languageSlice";
+import { languages } from "../Lang/languages";
 
 const styles = {
   main: {
@@ -31,6 +33,7 @@ const styles = {
     flexWrap: "wrap",
     fontSize: "13px",
     gap: "0.4rem",
+    paddingTop: "0.5rem",
     margin: "auto",
   },
 };
@@ -61,6 +64,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
   const position: MapPosition = useAppSelector(
     (state: RootState) => state.mapState.position
   );
+  const information = useAppSelector((state: RootState) => state.language)
 
   useEffect(() => {
     const options = {
@@ -150,8 +154,8 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
                 border: "1px solid rgba(0, 0, 0, .8)",
               }}
             ></Box>
-            <Box component="span" sx={{}}>
-              Frost heave (kelirikko, GOOD)
+            <Box component="span">
+            {languages.frost[information.lang as keyof LanguageOptions] as string}
             </Box>
           </Box>
           <Box
@@ -167,7 +171,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
                 border: "1px solid rgba(0, 0, 0, .8)",
               }}
             ></Box>
-            <Box component="span">Normal summer, mineral soil</Box>
+            <Box>{languages.normal[information.lang as keyof LanguageOptions] as string}</Box>
           </Box>
           <Box
             sx={{ display: "flex", minWidth: "110px", padding: "0.2rem 0rem" }}
@@ -182,7 +186,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
                 border: "1px solid rgba(0, 0, 0, .8)",
               }}
             ></Box>
-            Dry summer, mineral soil
+            {languages.dry[information.lang as keyof LanguageOptions] as string}
           </Box>
           <Box
             sx={{ display: "flex", minWidth: "110px", padding: "0.2rem 0rem" }}
@@ -197,7 +201,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
                 border: "1px solid  rgba(0, 0, 0, .8)",
               }}
             ></Box>
-            <Box component="span">Normal summer, peat soil</Box>
+            <Box component="span"> {languages.normalPeat[information.lang as keyof LanguageOptions] as string}</Box>
           </Box>
           <Box
             sx={{ display: "flex", minWidth: "110px", padding: "0.2rem 0rem" }}
@@ -212,7 +216,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
                 border: "1px solid  rgba(0, 0, 0, .8)",
               }}
             ></Box>
-            <Box component="span">Dry summer, peat soil</Box>
+            <Box component="span"> {languages.dryPeat[information.lang as keyof LanguageOptions] as string}</Box>
           </Box>
           <Box
             sx={{ display: "flex", minWidth: "90px", padding: "0.2rem 0rem" }}
@@ -227,7 +231,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
                 border: "1px solid  rgba(0, 0, 0, .8)",
               }}
             ></Box>
-            <Box component="span">Winter (BAD)</Box>
+            <Box component="span"> {languages.winter[information.lang as keyof LanguageOptions] as string}</Box>
           </Box>
         </Box>
       </Box>
