@@ -54,6 +54,7 @@ export interface GlobalStateProps {
 }
 
 export interface Map {
+  colorPaletteSetter: boolean
   opacityValue: number;
   position: {
     lat: number | null;
