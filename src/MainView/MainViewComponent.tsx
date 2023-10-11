@@ -95,19 +95,24 @@ function MainViewComponent() {
       50,
       "HSNOW-M:SMARTOBS:13:4"
     );
-   const languageObject = { 
-    summerIndex:
-      languages.summmerIndex[information.lang as keyof LanguageOptions] as string,
-    winterIndex:
-      languages.winterIndex[information.lang as keyof LanguageOptions] as string,
-    windGust:
-      languages.WindGust[information.lang as keyof LanguageOptions]as string,
-    winterTenDays:
-      languages.summerTenDays[information.lang as keyof LanguageOptions] as string,
-    summerTenDays:
-      languages.winterTenDays[information.lang as keyof LanguageOptions] as string
-    }
-    if (trafficabilityData || windSpeedData ) {
+    const languageObject = {
+      summerIndex: languages.summmerIndex[
+        information.lang as keyof LanguageOptions
+      ] as string,
+      winterIndex: languages.winterIndex[
+        information.lang as keyof LanguageOptions
+      ] as string,
+      windGust: languages.WindGust[
+        information.lang as keyof LanguageOptions
+      ] as string,
+      winterTenDays: languages.summerTenDays[
+        information.lang as keyof LanguageOptions
+      ] as string,
+      summerTenDays: languages.winterTenDays[
+        information.lang as keyof LanguageOptions
+      ] as string,
+    };
+    if (trafficabilityData || windSpeedData) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       const trafficabilityOption = createTrafficabilityGraphOptions(
         graphParameters.twelveMonthParams.trafficability,
@@ -116,19 +121,18 @@ function MainViewComponent() {
         markLine,
         summer1series,
         winter1series,
-       languageObject
+        languageObject
       );
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       setTrafficabilityGraphOption(trafficabilityOption);
     }
-
   }, [
     trafficabilityData,
     soilWetnessData,
     graphParameters.twelveMonthParams.trafficability,
     markLine,
     windSpeedData,
-    information.lang
+    information.lang,
   ]);
 
   return (
@@ -146,16 +150,7 @@ function MainViewComponent() {
         )}
       </Box>
       <HarvesterMap />
-      <Box
-        sx={{
-          width: "30%",
-          marginLeft: "auto",
-          marginRight: "auto",
-          position: "relative",
-        }}
-      >
-        <OpacityComponent />
-      </Box>
+      <OpacityComponent />
       <Box sx={{ position: "relative", top: "4rem" }}>
         <CarbonText />
       </Box>
