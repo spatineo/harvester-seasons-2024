@@ -114,4 +114,10 @@ export interface ColorPalette {
         b: number;
         a: number;
     }[];
+    palette_base_color: {
+      r: number;
+      g: number;
+      b: number;
+      a: number;
+  }[];
 }
