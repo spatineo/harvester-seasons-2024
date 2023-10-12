@@ -73,17 +73,16 @@ export const createColorPalette = (color: boolean) => {
       selectedColors.KIVIMAAKELIRIKKO,
       selectedColors.KIVIMAAKELIRIKKO,
       selectedColors.TRANSPARENT
+    ],
+    palette_base_color: [
+      selectedColors.TRANSPARENT,
+      selectedColors.KIVIMAAKELIRIKKO,
+      selectedColors.KIVIMAANORMAALIKESA,
+      selectedColors.KIVIMAKUIVAESA,
+      selectedColors.TURVEMAANORMAALIKESA,
+      selectedColors.TURVEMAAKUIVAKESA,
+      selectedColors.KIVITURVEMAATALVI,
+      selectedColors.TRANSPARENT
     ]
   };
 };
-
-export const baseColor = [
-  colorSets.normal.TRANSPARENT,
-  colorSets.normal.KIVIMAAKELIRIKKO,
-  colorSets.normal.KIVIMAANORMAALIKESA,
-  colorSets.normal.KIVIMAKUIVAESA,
-  colorSets.normal.TURVEMAANORMAALIKESA,
-  colorSets.normal.TURVEMAAKUIVAKESA,
-  colorSets.normal.KIVITURVEMAATALVI,
-  colorSets.normal.TRANSPARENT
-];
