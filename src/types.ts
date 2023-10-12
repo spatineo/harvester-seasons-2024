@@ -24,6 +24,7 @@ export interface StartEndTimeSpan {
 }
 
 export interface GlobalStateProps {
+  defaultColorSwitch: boolean;
   trafficabilityIndexColor: number | null;
   hideNext: boolean;
   changeYear: string;
@@ -54,7 +55,6 @@ export interface GlobalStateProps {
 }
 
 export interface Map {
-  colorPaletteSetter: boolean
   opacityValue: number;
   position: {
     lat: number | null;
