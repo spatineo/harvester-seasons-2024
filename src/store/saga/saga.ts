@@ -14,8 +14,8 @@ import * as constants from "../constants";
 import * as utils from "../../utils/helpers";
 import { RootState, store } from "../store";
 import { EnqueueSnackbar } from "../hooks";
-import { Parameter, StartEndTimeSpan, Smartmet } from "../../types";
-import { MapPosition, mapActions } from "../../MapComponent/MapComponentSlice";
+import { Parameter, StartEndTimeSpan } from "../../types";
+import { mapActions } from "../../MapComponent/MapComponentSlice";
 
 const timeSeriesServiceURL = "https://desm.harvesterseasons.com/timeseries";
 export interface TimeSpan {
@@ -122,7 +122,11 @@ export function* triggerTimeSpanChange({
 function createTimeSeriesQueryParameters(
   startEndTimeSpan: StartEndTimeSpan,
   parameters: Parameter[],
-  userLocation: MapPosition
+  userLocation:  {
+    lat: number | null;
+    lon: number | null;
+    resolution: number;
+}
 ) {
   const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
   const modifiedEndDate = new Date(startEndTimeSpan.end_time).toISOString();
