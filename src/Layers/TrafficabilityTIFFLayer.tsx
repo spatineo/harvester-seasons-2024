@@ -18,8 +18,6 @@ interface TIFFLayerProps {
   url: string;
 }
 
-const color = createColorPalette(true);
-
 function colorExpression(palette, thresholds: number[]) {
   function process(channel: string) {
     const c = thresholds.reduce(
