@@ -84,7 +84,6 @@ export interface RecordObject {
 }
 
 export interface ColorPalette {
-  thresholds: number[];
     palette_huono: {
         r: number;
         g: number;
