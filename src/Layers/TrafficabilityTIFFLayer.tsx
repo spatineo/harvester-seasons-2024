@@ -18,9 +18,9 @@ interface TIFFLayerProps {
   url: string;
 }
 
-function colorExpression(palette, thresholds: number[]) {
+function colorExpression(palette) {
   function process(channel: string) {
-    const c = thresholds.reduce(
+    const c = [0, 1, 2, 3, 4, 5, 6].reduce(
       (memo, threshold, i) => {
         memo.push(["<=", ["band", 1], threshold]);
         memo.push(palette[i][channel] as number);
@@ -36,19 +36,20 @@ function colorExpression(palette, thresholds: number[]) {
 
 const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
   const { map } = useContext(MapContext);
-  const { opacityValue, colorPaletteSetter } = useAppSelector(
+  const { opacityValue } = useAppSelector(
     (state: RootState) => state.mapState
   );
-  const { trafficabilityIndexColor } = useAppSelector(
+  const { trafficabilityIndexColor, defaultColorSwitch } = useAppSelector(
     (state: RootState) => state.global
   );
   const [layer, setLayer] = useState<TileLayer | null>(null);
-  const [colorPalette, setColorPalette] = useState<ColorPalette>();
+  const [colorPalette, setColorPalette] = useState<ColorPalette | null>(null);
 
   useEffect(() => {
-    const result = createColorPalette(colorPaletteSetter);
+    const result = createColorPalette(defaultColorSwitch);
     setColorPalette(result);
-  }, [colorPaletteSetter]);
+    window.console.log(defaultColorSwitch, 'inside useEffect')
+  }, [defaultColorSwitch]);
 
   useEffect(() => {
     if (!layer) return;
@@ -85,9 +86,10 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
         return;
     }
 
-    if (colorPalette) {
+    if (palette) {
+      window.console.log(colorPalette);
       layer.setStyle({
-        color: colorExpression(palette, colorPalette.thresholds),
+        color: colorExpression(palette),
       });
     }
   }, [trafficabilityIndexColor, colorPalette]);
@@ -104,7 +106,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
       updateWhileAnimating: true,
       updateWhileInteracting: true,
       style: {
-        color: colorExpression(colorPalette?.palette_hyva_talvi_keli, []),
+        color: colorExpression(colorPalette?.palette_hyva_talvi_keli),
         gamma: 1.0,
       },
       source: new GeoTIFF({
