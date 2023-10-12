@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Map } from "../types";
 
 const initialState: Map = {
-  colorPaletteSetter: true,
   opacityValue: 70,
   position: {
     lat: null,
@@ -25,9 +24,6 @@ const mapComponentSlice = createSlice({
     setOpacity: (state, action: PayloadAction<number>) => {
       state.opacityValue = action.payload;
     },
-    setColorPaletteSetter: (state, action: PayloadAction<boolean>) => {
-      state.colorPaletteSetter = action.payload;
-    }
   }
 });
 
@@ -36,4 +32,4 @@ export default mapComponentSlice.reducer;
 export type ReduxActions =
   | ReturnType<typeof mapActions.setPosition>
   | ReturnType<typeof mapActions.setOpacity>
-	| ReturnType<typeof mapActions.setColorPaletteSetter>;
+
