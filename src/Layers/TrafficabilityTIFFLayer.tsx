@@ -10,81 +10,22 @@ import { ExpressionValue } from "ol/style/expressions";
 import { getOpacityFromPercentage } from "../utils/helpers";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
+import { createColorPalette } from "../utils/colors_palette";
+import { ColorPalette } from "../types";
 
 interface TIFFLayerProps {
   title: string;
   url: string;
 }
-const COLOR_TRANSPARENT = { r: 0, g: 0, b: 0, a: 0 };
-const COLOR_KIVIMAAKELIRIKKO = { r: 0, g: 0.38, b: 0, a: 1 };
-const COLOR_KIVIMAANORMAALIKESA = { r: 0.38, g: 0.6, b: 0, a: 1 };
-const COLOR_KIVIMAKUIVAESA = { r: 0.627, g: 0.859, b: 0, a: 1 };
-const COLOR_TURVEMAANORMAALIKESA = { r: 1.0, g: 0.98, b: 0, a: 1 };
-const COLOR_TURVEMAAKUIVAKESA = { r: 1.0, g: 0.518, b: 0, a: 1 };
-const COLOR_KIVITURVEMAATALVI = { r: 1.0, g: 0.149, b: 0, a: 1 };
 
-const color = {
-  // Note! There is one less threshold than colors in palette - the last color in the palette is for all values above last threshold
-  thresholds: [0, 1, 2, 3, 4, 5, 6],
-  palette_huono: [
-    COLOR_TRANSPARENT,
-    COLOR_KIVIMAAKELIRIKKO,
-    COLOR_KIVIMAANORMAALIKESA,
-    COLOR_KIVITURVEMAATALVI,
-    COLOR_TURVEMAANORMAALIKESA,
-    COLOR_KIVITURVEMAATALVI,
-    COLOR_KIVITURVEMAATALVI,
-    COLOR_TRANSPARENT,
-  ],
-  palette_epavarma_kesa_keli: [
-    COLOR_TRANSPARENT,
-    COLOR_KIVIMAAKELIRIKKO,
-    COLOR_KIVIMAANORMAALIKESA,
-    COLOR_KIVIMAKUIVAESA,
-    COLOR_TURVEMAANORMAALIKESA,
-    COLOR_TURVEMAAKUIVAKESA,
-    COLOR_KIVITURVEMAATALVI,
-    COLOR_TRANSPARENT,
-  ],
-  palette_epavarma_talvi_keli: [
-    COLOR_TRANSPARENT,
-    COLOR_KIVIMAAKELIRIKKO,
-    COLOR_KIVIMAANORMAALIKESA,
-    COLOR_KIVIMAKUIVAESA,
-    COLOR_TURVEMAANORMAALIKESA,
-    COLOR_TURVEMAAKUIVAKESA,
-    COLOR_KIVITURVEMAATALVI,
-    COLOR_TRANSPARENT,
-  ],
-  palette_hyva_kesa_keli: [
-    COLOR_TRANSPARENT,
-    COLOR_KIVIMAAKELIRIKKO,
-    COLOR_KIVIMAAKELIRIKKO,
-    COLOR_KIVIMAAKELIRIKKO,
-    COLOR_KIVIMAAKELIRIKKO,
-    COLOR_KIVIMAAKELIRIKKO,
-    COLOR_KIVIMAAKELIRIKKO,
-    COLOR_KIVITURVEMAATALVI,
-    COLOR_TRANSPARENT,
-  ],
-  palette_hyva_talvi_keli: [
-    COLOR_TRANSPARENT,
-    COLOR_KIVIMAAKELIRIKKO,
-    COLOR_KIVIMAAKELIRIKKO,
-    COLOR_KIVIMAAKELIRIKKO,
-    COLOR_KIVIMAAKELIRIKKO,
-    COLOR_KIVIMAAKELIRIKKO,
-    COLOR_KIVIMAAKELIRIKKO,
-    COLOR_TRANSPARENT,
-  ],
-};
-function colorExpression(palette) {
+const color = createColorPalette(true);
+
+function colorExpression(palette, thresholds: number[]) {
   function process(channel: string) {
-    const c = color.thresholds.reduce(
+    const c = thresholds.reduce(
       (memo, threshold, i) => {
         memo.push(["<=", ["band", 1], threshold]);
         memo.push(palette[i][channel] as number);
-        window.console.log(memo, "memo");
         return memo;
       },
       ["case"] as [ExpressionValue]
@@ -97,14 +38,21 @@ function colorExpression(palette) {
 
 const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
   const { map } = useContext(MapContext);
-  const opacityValue = useAppSelector(
-    (state: RootState) => state.mapState.opacityValue
+  const { opacityValue, colorPaletteSetter } = useAppSelector(
+    (state: RootState) => state.mapState
   );
   const { trafficabilityIndexColor } = useAppSelector(
     (state: RootState) => state.global
   );
   const [layer, setLayer] = useState<TileLayer | null>(null);
+  const [colorPalette, setColorPalette] = useState<ColorPalette>();
 
+  useEffect(() => {
+    const result = createColorPalette(colorPaletteSetter);
+    setColorPalette(result);
+  }, [colorPaletteSetter]);
+
+  window.console.log(colorPalette,)
   useEffect(() => {
     if (!layer) return;
     const opacity = getOpacityFromPercentage(opacityValue);
@@ -112,22 +60,25 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
   }, [opacityValue]);
 
   useEffect(() => {
-    if (!map || !url) return;
-
-    const summer = false
-    let palette: Array<{r: number, g: number, b: number, a: number}>;
+    if (!layer) {
+      return;
+    }
+    const summer = false;
+    let palette:
+      | Array<{ r: number; g: number; b: number; a?: number }>
+      | undefined;
     switch (trafficabilityIndexColor) {
       case 0:
-        palette = color.palette_huono;
+        palette = colorPalette?.palette_huono;
         break;
       case 1:
-        palette = color.palette_epavarma_kesa_keli;
+        palette = colorPalette?.palette_epavarma_kesa_keli;
         break;
       case 2:
         if (summer) {
-          palette = color.palette_hyva_kesa_keli;
+          palette = colorPalette?.palette_hyva_kesa_keli;
         } else {
-          palette = color.palette_hyva_talvi_keli;
+          palette = colorPalette?.palette_hyva_talvi_keli;
         }
         break;
       default:
@@ -136,6 +87,17 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
         );
         return;
     }
+
+    if (colorPalette) {
+      layer.setStyle({
+        color: colorExpression(palette, colorPalette.thresholds),
+      });
+    }
+  }, [trafficabilityIndexColor, colorPalette]);
+
+  useEffect(() => {
+    if (!map || !url) return;
+
     const newLayer = new TileLayer({
       title,
       visible: true,
@@ -145,7 +107,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
       updateWhileAnimating: true,
       updateWhileInteracting: true,
       style: {
-        color: colorExpression(palette),
+        color: colorExpression(colorPalette?.palette_hyva_talvi_keli, []),
         gamma: 1.0,
       },
       source: new GeoTIFF({
@@ -154,6 +116,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
         interpolate: false,
       }),
     } as BaseLayerOptions);
+
     if (layer) {
       map.removeLayer(layer);
     }
@@ -165,7 +128,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
     return () => {
       map.removeLayer(newLayer);
     };
-  }, [map, url, title, trafficabilityIndexColor]);
+  }, [map, url, title]);
 
   return null;
 };
