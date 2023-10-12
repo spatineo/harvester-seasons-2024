@@ -82,11 +82,10 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
         window.console.error(
           "tuntematon indeksiarvo, ei voida piirtää trafficabilityä"
         );
-        palette = colorPalette?.palette_base_color;
+        return;
     }
 
     if (palette) {
-      window.console.log(colorPalette);
       layer.setStyle({
         color: colorExpression(palette),
       });
@@ -105,7 +104,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
       updateWhileAnimating: true,
       updateWhileInteracting: true,
       style: {
-        color: colorExpression(colorPalette?.palette_hyva_talvi_keli),
+        color: colorExpression(colorPalette?.palette_base_color),
         gamma: 1.0,
       },
       source: new GeoTIFF({
