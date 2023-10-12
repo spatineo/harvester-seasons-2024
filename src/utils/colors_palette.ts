@@ -20,11 +20,9 @@ const colorSets = {
 };
 
 export const createColorPalette = (color: boolean) => {
-  const  thresholds = [0, 1, 2, 3, 4, 5, 6]
   const selectedColors = color ? colorSets.normal : colorSets.alternate;
-  
+
   return {
-    thresholds,
     palette_huono: [
       selectedColors.TRANSPARENT,
       selectedColors.KIVIMAAKELIRIKKO,
@@ -33,7 +31,7 @@ export const createColorPalette = (color: boolean) => {
       selectedColors.TURVEMAANORMAALIKESA,
       selectedColors.KIVITURVEMAATALVI,
       selectedColors.KIVITURVEMAATALVI,
-      selectedColors.TRANSPARENT,
+      selectedColors.TRANSPARENT
     ],
     palette_epavarma_kesa_keli: [
       selectedColors.TRANSPARENT,
@@ -43,7 +41,7 @@ export const createColorPalette = (color: boolean) => {
       selectedColors.TURVEMAANORMAALIKESA,
       selectedColors.TURVEMAAKUIVAKESA,
       selectedColors.KIVITURVEMAATALVI,
-      selectedColors.TRANSPARENT,
+      selectedColors.TRANSPARENT
     ],
     palette_epavarma_talvi_keli: [
       selectedColors.TRANSPARENT,
@@ -53,7 +51,7 @@ export const createColorPalette = (color: boolean) => {
       selectedColors.TURVEMAANORMAALIKESA,
       selectedColors.TURVEMAAKUIVAKESA,
       selectedColors.KIVITURVEMAATALVI,
-      selectedColors.TRANSPARENT,
+      selectedColors.TRANSPARENT
     ],
     palette_hyva_kesa_keli: [
       selectedColors.TRANSPARENT,
@@ -64,7 +62,7 @@ export const createColorPalette = (color: boolean) => {
       selectedColors.KIVIMAAKELIRIKKO,
       selectedColors.KIVIMAAKELIRIKKO,
       selectedColors.KIVITURVEMAATALVI,
-      selectedColors.TRANSPARENT,
+      selectedColors.TRANSPARENT
     ],
     palette_hyva_talvi_keli: [
       selectedColors.TRANSPARENT,
@@ -74,7 +72,18 @@ export const createColorPalette = (color: boolean) => {
       selectedColors.KIVIMAAKELIRIKKO,
       selectedColors.KIVIMAAKELIRIKKO,
       selectedColors.KIVIMAAKELIRIKKO,
-      selectedColors.TRANSPARENT,
-    ],
-  }
+      selectedColors.TRANSPARENT
+    ]
+  };
 };
+
+export const baseColor = [
+  colorSets.normal.TRANSPARENT,
+  colorSets.normal.KIVIMAAKELIRIKKO,
+  colorSets.normal.KIVIMAANORMAALIKESA,
+  colorSets.normal.KIVIMAKUIVAESA,
+  colorSets.normal.TURVEMAANORMAALIKESA,
+  colorSets.normal.TURVEMAAKUIVAKESA,
+  colorSets.normal.KIVITURVEMAATALVI,
+  colorSets.normal.TRANSPARENT
+];
