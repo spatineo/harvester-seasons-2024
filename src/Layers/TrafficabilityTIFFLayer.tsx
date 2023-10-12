@@ -50,7 +50,6 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
     setColorPalette(result);
   }, [colorPaletteSetter]);
 
-  window.console.log(colorPalette,)
   useEffect(() => {
     if (!layer) return;
     const opacity = getOpacityFromPercentage(opacityValue);
