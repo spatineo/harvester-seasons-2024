@@ -48,7 +48,6 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
   useEffect(() => {
     const result = createColorPalette(defaultColorSwitch);
     setColorPalette(result);
-    window.console.log(defaultColorSwitch, 'inside useEffect')
   }, [defaultColorSwitch]);
 
   useEffect(() => {
