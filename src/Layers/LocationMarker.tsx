@@ -10,7 +10,6 @@ import Fill from 'ol/style/Fill';
 import Style from 'ol/style/Style';
 import { RootState } from '../store/store';
 import { useAppSelector } from '../store/hooks';
-import { MapPosition } from '../MapComponent/MapComponentSlice';
 import VectorSource from 'ol/source/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
 import markerIcon from '../assets/map-pin-icon.svg'
@@ -48,7 +47,7 @@ const circleStyle = new Style({
 const LocationMarkerLayer: React.FC<MarkerProps> = ({ title }) => {
 	const { map } = useContext(MapContext);
 	const [source, setSource] = useState<VectorSource | null>(null);
-	const position: MapPosition = useAppSelector((state: RootState) => state.mapState.position);
+	const position = useAppSelector((state: RootState) => state.mapState.position);
 
 	useEffect(() => {
 		if (!map) return;
