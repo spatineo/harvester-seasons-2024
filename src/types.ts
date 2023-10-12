@@ -24,6 +24,7 @@ export interface StartEndTimeSpan {
 }
 
 export interface GlobalStateProps {
+  defaultColorSwitch: boolean;
   trafficabilityIndexColor: number | null;
   hideNext: boolean;
   changeYear: string;
@@ -80,4 +81,43 @@ export interface TimelineControlStyle {
 export interface RecordObject {
   [key: string]: number | null | string;
   utctime: string;
+}
+
+export interface ColorPalette {
+    palette_huono: {
+        r: number;
+        g: number;
+        b: number;
+        a: number;
+    }[];
+    palette_epavarma_kesa_keli: {
+        r: number;
+        g: number;
+        b: number;
+        a: number;
+    }[];
+    palette_epavarma_talvi_keli: {
+        r: number;
+        g: number;
+        b: number;
+        a: number;
+    }[];
+    palette_hyva_kesa_keli: {
+        r: number;
+        g: number;
+        b: number;
+        a: number;
+    }[];
+    palette_hyva_talvi_keli: {
+        r: number;
+        g: number;
+        b: number;
+        a: number;
+    }[];
+    palette_base_color: {
+      r: number;
+      g: number;
+      b: number;
+      a: number;
+  }[];
 }

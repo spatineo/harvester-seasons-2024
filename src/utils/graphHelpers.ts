@@ -274,6 +274,9 @@ export function createOptions(
     tooltip: {
       show: true,
       trigger: "axis",
+      borderWidth: 10,
+     
+      
     },
     yAxis: {
       name: opts.title,

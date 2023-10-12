@@ -13,7 +13,7 @@ import proj4 from "proj4";
 import { Box } from "@mui/material";
 import { useRootDispatch, useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
-import { MapPosition, mapActions } from "./MapComponentSlice";
+import { mapActions } from "./MapComponentSlice";
 import MapContext from "./MapContext";
 import * as constants from "../store/constants";
 import { LanguageOptions } from "../Lang/languageSlice";
@@ -61,7 +61,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
   const mapRef = useRef();
   const [map, setMap] = useState<ol.Map | null>(null);
   const dispatch = useRootDispatch();
-  const position: MapPosition = useAppSelector(
+  const position = useAppSelector(
     (state: RootState) => state.mapState.position
   );
   const information = useAppSelector((state: RootState) => state.language)

@@ -1,31 +1,43 @@
 /* eslint-disable import/default */
-import React, { FC } from "react";
+import React from "react";
 import { Switch, Box, Typography } from "@mui/material";
-import { useAppSelector, useRootDispatch } from "../store/hooks";
-import { RootState } from "../store/store";
-import { actions } from "../globalSlice";
 
-const SwitchComponent: FC = () => {
-  const dispatch = useRootDispatch();
-  const checked = useAppSelector((state: RootState) => state.global.checked);
+interface SwitchProps {
+  switchButtonState: boolean;
+  onChange: () => void;
+}
+
+const SwitchComponent: React.FC<SwitchProps> = ({
+  switchButtonState,
+  onChange,
+}) => {
   return (
-    <Box sx={{ position: "relative", top: "-1rem" }}>
-      <Switch
-        checked={checked}
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          dispatch(actions.setCheckedButton(event.target.checked));
-        }}
-        sx={{ margin: "0rem" }}
-      />
-      <Typography
-        sx={{
-          fontFamily: "Lato",
-          fontSize: "calc(12px + (18 - 14) * ((100vw - 300px) / (1600 - 300)))",
-        }}
-        component={"span"}
-      >
-        Turn on to change timestep between 1 year and 10 years{" "}
-      </Typography>
+    <Box sx={{ display: 'inline-flex', flexDirection: 'row', flexWrap: 'nowrap', alignItems: 'flex-start'}}>
+      <Box>
+        <Typography
+          component={"span"}
+          sx={{
+            fontFamily: "Lato",
+            fontSize: 'calc(32px + 16 * ((100vw - 568px) / (768 - 568))' 
+          }}
+        >
+          Default colors Off
+        </Typography>
+      </Box>
+      <Box>
+        <Switch checked={switchButtonState} onChange={onChange} sx={{ position: 'relative', top: '-4px'}}/>
+      </Box>
+      <Box>
+        <Typography
+          sx={{
+            fontFamily: "Lato",
+            fontSize: 'calc(32px + 16 * ((100vw - 568px) / (768 - 568))' 
+          }}
+          component={"span"}
+        >
+          On
+        </Typography>
+      </Box>
     </Box>
   );
 };
