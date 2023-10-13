@@ -83,41 +83,18 @@ export interface RecordObject {
   utctime: string;
 }
 
+export interface Color {
+  r: number;
+  g: number;
+  b: number;
+  a?: number;
+}
+
 export interface ColorPalette {
-    palette_huono: {
-        r: number;
-        g: number;
-        b: number;
-        a: number;
-    }[];
-    palette_epavarma_kesa_keli: {
-        r: number;
-        g: number;
-        b: number;
-        a: number;
-    }[];
-    palette_epavarma_talvi_keli: {
-        r: number;
-        g: number;
-        b: number;
-        a: number;
-    }[];
-    palette_hyva_kesa_keli: {
-        r: number;
-        g: number;
-        b: number;
-        a: number;
-    }[];
-    palette_hyva_talvi_keli: {
-        r: number;
-        g: number;
-        b: number;
-        a: number;
-    }[];
-    palette_base_color: {
-      r: number;
-      g: number;
-      b: number;
-      a: number;
-  }[];
+  palette_huono: Color[];
+  palette_epavarma_kesa_keli: Color[];
+  palette_epavarma_talvi_keli: Color[];
+  palette_hyva_kesa_keli: Color[];
+  palette_hyva_talvi_keli: Color[];
+  palette_base_color: Color[];
 }

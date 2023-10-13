@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable react/prop-types */
-import { useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import MapContext from "../MapComponent/MapContext";
 import { BaseLayerOptions } from "ol-layerswitcher";
 import GeoTIFF from "ol/source/GeoTIFF";
@@ -39,16 +39,27 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
   const { opacityValue } = useAppSelector(
     (state: RootState) => state.mapState
   );
-  const { trafficabilityIndexColor, defaultColorSwitch } = useAppSelector(
+  const { trafficabilityIndexColor, defaultColorSwitch, markLine } = useAppSelector(
     (state: RootState) => state.global
   );
   const [layer, setLayer] = useState<TileLayer | null>(null);
   const [colorPalette, setColorPalette] = useState<ColorPalette | null>(null);
+  const [ summerState, setSummerState] = useState<boolean>(false)
 
   useEffect(() => {
     const result = createColorPalette(defaultColorSwitch);
     setColorPalette(result);
   }, [defaultColorSwitch]);
+
+  useEffect(() => {
+    const checkSummer = new Date(markLine)
+    const month = checkSummer.getMonth()
+    if(month >= 5 && month < 7) {
+      setSummerState(true)
+    } else {
+      setSummerState(false)
+    }
+  }, [markLine])
 
   useEffect(() => {
     if (!layer) return;
@@ -60,7 +71,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
     if (!layer) {
       return;
     }
-    const summer = false;
+
     let palette:
       | Array<{ r: number; g: number; b: number; a?: number }>
       | undefined;
@@ -72,7 +83,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
         palette = colorPalette?.palette_epavarma_kesa_keli;
         break;
       case 2:
-        if (summer) {
+        if (summerState) {
           palette = colorPalette?.palette_hyva_kesa_keli;
         } else {
           palette = colorPalette?.palette_hyva_talvi_keli;
@@ -82,7 +93,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
         window.console.error(
           "tuntematon indeksiarvo, ei voida piirtää trafficabilityä"
         );
-        return;
+       return;
     }
 
     if (palette) {
@@ -90,7 +101,8 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
         color: colorExpression(palette),
       });
     }
-  }, [trafficabilityIndexColor, colorPalette]);
+
+  }, [trafficabilityIndexColor, colorPalette, summerState]);
 
   useEffect(() => {
     if (!map || !url) return;
@@ -130,4 +142,6 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
   return null;
 };
 
-export default TIFFLayer;
+const MemoizedTIFFLayer = React.memo(TIFFLayer)
+export default MemoizedTIFFLayer;
+

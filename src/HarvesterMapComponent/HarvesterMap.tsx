@@ -8,10 +8,7 @@ import Thunderforest from "../Layers/Thunderforest";
 import XYZ from "ol/source/XYZ";
 import "../Map.css";
 import LocationMarkerLayer from "../Layers/LocationMarker";
-import { LanguageOptions } from "../Lang/languageSlice";
-import { languages } from "../Lang/languages";
 import WMSLayer, { WMSLayerTimeStrategy } from "../Layers/WMSLayer";
-//import STACLayers from "../Layers/STACLayers";
 import TrafficabilityTIFFLayer from "../Layers/TrafficabilityTIFFLayer";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
@@ -20,7 +17,7 @@ import WMSCapabilities from "ol/format/WMSCapabilities";
 const HarvesterMap: React.FC = () => {
   const [harvesterWMSCapabilities, setHarvesterWMSCapabilities] =
     useState<Document | null>(null);
-  const information = useAppSelector((state) => state.language);
+  //const information = useAppSelector((state) => state.language);
   useEffect(() => {
     const parser = new WMSCapabilities();
     const capabilitiesUrl =
@@ -46,14 +43,14 @@ const HarvesterMap: React.FC = () => {
       <MapComponent>
         <Layers>
           <Maastokartta
-            title={languages.backgroundMap[information.lang as keyof LanguageOptions] as string}
+            title="Taustakartta"
             source={new XYZ({
               url: "https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/taustakartta/default/WGS84_Pseudo-Mercator/{z}/{y}/{x}.png?api-key=45deef08-fd2f-42ae-9953-5550fff43b17",
               attributions: '<a href="https://www.maanmittauslaitos.fi/karttakuvapalvelu/tekninen-kuvaus-wmts" target="_blank">Maanmittauslaitoksen avoin data</a>',
             })} 
           visible={false}/>
           <Maastokartta
-              title={languages.terrainMap[information.lang as keyof LanguageOptions] as string}
+          title="Maastokartta"
             source={new XYZ({
               url: "https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/maastokartta/default/WGS84_Pseudo-Mercator/{z}/{y}/{x}.png?api-key=45deef08-fd2f-42ae-9953-5550fff43b17",
               attributions: '<a href="https://www.maanmittauslaitos.fi/karttakuvapalvelu/tekninen-kuvaus-wmts" target="_blank">Maanmittauslaitoksen avoin data</a>',
@@ -61,7 +58,7 @@ const HarvesterMap: React.FC = () => {
           visible={false}
           />
           <Thunderforest
-                title={languages.thuderForest[information.lang as keyof LanguageOptions] as string}
+          title="Thunderforest"
             source={new XYZ({
               url: "https://{a-c}.tile.opentopomap.org/{z}/{x}/{y}.png",
               attributions: '<a href="https://www.thunderforest.com/" target="_blank">Thunderforest</a> Data by <a href="https://www.fmi.fi/">Finnish Meteorological Institute</a>',
@@ -107,11 +104,13 @@ const HarvesterMap: React.FC = () => {
             title="Trafficability"
             url="https://pta.data.lit.fmi.fi/geo/harvestability/KKL_SMK_Suomi_2021_06_01-UTM35.tif"
           />
-          <LocationMarkerLayer title={languages.locationMarker[information.lang as keyof LanguageOptions] as string} />
+          <LocationMarkerLayer title="Location Marker" />
         </Layers>
       </MapComponent>
     </Box>
   );
 };
 
-export default HarvesterMap;
+//export default HarvesterMap;
+const MemoizedHarvesterMap = React.memo(HarvesterMap);
+export default MemoizedHarvesterMap;
