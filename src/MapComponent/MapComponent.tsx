@@ -64,8 +64,10 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
   const position = useAppSelector(
     (state: RootState) => state.mapState.position
   );
-  const { defaultColorSwitch } = useAppSelector((state: RootState) => state.global)
-  const information = useAppSelector((state: RootState) => state.language)
+  const { defaultColorSwitch } = useAppSelector(
+    (state: RootState) => state.global
+  );
+  const information = useAppSelector((state: RootState) => state.language);
 
   useEffect(() => {
     const options = {
@@ -149,14 +151,20 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
               component="span"
               sx={{
                 margin: "0.1rem 0.2rem 0rem 0rem",
-                backgroundColor: defaultColorSwitch ? "rgba(0, 97, 0, .8)" : "rgb(54, 75, 154) ",
+                backgroundColor: defaultColorSwitch
+                  ? "rgba(0, 97, 0, .8)"
+                  : "rgb(54, 75, 154) ",
                 width: "10px",
                 height: "10px",
                 border: "1px solid rgba(0, 0, 0, .8)",
               }}
             ></Box>
             <Box component="span">
-            {languages.frost[information.lang as keyof LanguageOptions] as string}
+              {
+                languages.frost[
+                  information.lang as keyof LanguageOptions
+                ] as string
+              }
             </Box>
           </Box>
           <Box
@@ -166,13 +174,21 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
               component="span"
               sx={{
                 margin: "0.1rem 0.2rem 0rem 0rem",
-                backgroundColor: defaultColorSwitch ? "rgba(97, 153, 0, .8)" : "rgb(74, 123, 183)",
+                backgroundColor: defaultColorSwitch
+                  ? "rgba(97, 153, 0, .8)"
+                  : "rgb(74, 123, 183)",
                 width: "10px",
                 height: "10px",
                 border: "1px solid rgba(0, 0, 0, .8)",
               }}
             ></Box>
-            <Box>{languages.normal[information.lang as keyof LanguageOptions] as string}</Box>
+            <Box>
+              {
+                languages.normal[
+                  information.lang as keyof LanguageOptions
+                ] as string
+              }
+            </Box>
           </Box>
           <Box
             sx={{ display: "flex", minWidth: "110px", padding: "0.2rem 0rem" }}
@@ -181,7 +197,9 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
               component="span"
               sx={{
                 margin: "0.1rem 0.2rem 0rem 0rem",
-                background: defaultColorSwitch ? "rgba(160, 219, 0, .8)" : "rgb(110, 166, 205)",
+                background: defaultColorSwitch
+                  ? "rgba(160, 219, 0, .8)"
+                  : "rgb(110, 166, 205)",
                 width: "10px",
                 height: "10px",
                 border: "1px solid rgba(0, 0, 0, .8)",
@@ -196,13 +214,22 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
               component="span"
               sx={{
                 margin: "0.1rem 0.2rem 0rem 0rem",
-                background: defaultColorSwitch ? "rgba(255, 250, 0, .8)" : "rgb(254, 218, 139)",
+                background: defaultColorSwitch
+                  ? "rgba(255, 250, 0, .8)"
+                  : "rgb(254, 218, 139)",
                 width: "10px",
                 height: "10px",
                 border: "1px solid  rgba(0, 0, 0, .8)",
               }}
             ></Box>
-            <Box component="span"> {languages.normalPeat[information.lang as keyof LanguageOptions] as string}</Box>
+            <Box component="span">
+              {" "}
+              {
+                languages.normalPeat[
+                  information.lang as keyof LanguageOptions
+                ] as string
+              }
+            </Box>
           </Box>
           <Box
             sx={{ display: "flex", minWidth: "110px", padding: "0.2rem 0rem" }}
@@ -211,13 +238,22 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
               component="span"
               sx={{
                 margin: "0.15rem 0.2rem 0rem 0rem",
-                background: defaultColorSwitch ? "rgba(255, 132, 0, .8)" : "rgb(246, 126, 75)",
+                background: defaultColorSwitch
+                  ? "rgba(255, 132, 0, .8)"
+                  : "rgb(246, 126, 75)",
                 width: "10px",
                 height: "10px",
                 border: "1px solid  rgba(0, 0, 0, .8)",
               }}
             ></Box>
-            <Box component="span"> {languages.dryPeat[information.lang as keyof LanguageOptions] as string}</Box>
+            <Box component="span">
+              {" "}
+              {
+                languages.dryPeat[
+                  information.lang as keyof LanguageOptions
+                ] as string
+              }
+            </Box>
           </Box>
           <Box
             sx={{ display: "flex", minWidth: "90px", padding: "0.2rem 0rem" }}
@@ -226,13 +262,22 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
               component="span"
               sx={{
                 margin: "0.1rem 0.2rem 0rem 0rem",
-                background: defaultColorSwitch ?  "rgba(255, 38, 0, .8)" : " rgb(165, 0, 38)",
+                background: defaultColorSwitch
+                  ? "rgba(255, 38, 0, .8)"
+                  : " rgb(165, 0, 38)",
                 width: "10px",
                 height: "10px",
                 border: "1px solid  rgba(0, 0, 0, .8)",
               }}
             ></Box>
-            <Box component="span"> {languages.winter[information.lang as keyof LanguageOptions] as string}</Box>
+            <Box component="span">
+              {" "}
+              {
+                languages.winter[
+                  information.lang as keyof LanguageOptions
+                ] as string
+              }
+            </Box>
           </Box>
         </Box>
       </Box>
