@@ -64,6 +64,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
   const position = useAppSelector(
     (state: RootState) => state.mapState.position
   );
+  const { defaultColorSwitch } = useAppSelector((state: RootState) => state.global)
   const information = useAppSelector((state: RootState) => state.language)
 
   useEffect(() => {
@@ -148,7 +149,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
               component="span"
               sx={{
                 margin: "0.1rem 0.2rem 0rem 0rem",
-                backgroundColor: "rgba(0, 97, 0, .8)",
+                backgroundColor: defaultColorSwitch ? "rgba(0, 97, 0, .8)" : "rgb(54, 75, 154) ",
                 width: "10px",
                 height: "10px",
                 border: "1px solid rgba(0, 0, 0, .8)",
@@ -165,7 +166,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
               component="span"
               sx={{
                 margin: "0.1rem 0.2rem 0rem 0rem",
-                backgroundColor: "rgba(97, 153, 0, .8)",
+                backgroundColor: defaultColorSwitch ? "rgba(97, 153, 0, .8)" : "rgb(74, 123, 183)",
                 width: "10px",
                 height: "10px",
                 border: "1px solid rgba(0, 0, 0, .8)",
@@ -180,7 +181,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
               component="span"
               sx={{
                 margin: "0.1rem 0.2rem 0rem 0rem",
-                background: "rgba(160, 219, 0, .8)",
+                background: defaultColorSwitch ? "rgba(160, 219, 0, .8)" : "rgb(110, 166, 205)",
                 width: "10px",
                 height: "10px",
                 border: "1px solid rgba(0, 0, 0, .8)",
@@ -195,7 +196,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
               component="span"
               sx={{
                 margin: "0.1rem 0.2rem 0rem 0rem",
-                background: "rgba(255, 250, 0, .8)",
+                background: defaultColorSwitch ? "rgba(255, 250, 0, .8)" : "rgb(254, 218, 139)",
                 width: "10px",
                 height: "10px",
                 border: "1px solid  rgba(0, 0, 0, .8)",
@@ -210,7 +211,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
               component="span"
               sx={{
                 margin: "0.15rem 0.2rem 0rem 0rem",
-                background: "rgba(255, 132, 0, .8)",
+                background: defaultColorSwitch ? "rgba(255, 132, 0, .8)" : "rgb(246, 126, 75)",
                 width: "10px",
                 height: "10px",
                 border: "1px solid  rgba(0, 0, 0, .8)",
@@ -225,7 +226,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
               component="span"
               sx={{
                 margin: "0.1rem 0.2rem 0rem 0rem",
-                background: "rgba(255, 38, 0, .8)",
+                background: defaultColorSwitch ?  "rgba(255, 38, 0, .8)" : " rgb(165, 0, 38)",
                 width: "10px",
                 height: "10px",
                 border: "1px solid  rgba(0, 0, 0, .8)",
