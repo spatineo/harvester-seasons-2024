@@ -155,16 +155,18 @@ export function* fetchWindSpeedData({
     (state: RootState) => state.mapState.position
   );
 
+  if (userLocation.lon === null || userLocation.lon === undefined) {
+    return;
+  }
+
   const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
   const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
   const modifiedEndDate = new Date(startEndTimeSpan.end_time).toISOString();
-  const lat =
-    userLocation.latitude !== null ? userLocation.latitude : 60.1891711;
-  const lon =
-    userLocation.longitude === null ? 24.9724435 : userLocation.longitude;
-  const url = `https://desm.harvesterseasons.com/timeseries?latlon=60.1891711,24.9724435&param=utctime,FFG-MS:CERRA:5057:6:10:0&starttime=${modifiedStartDate}&endtime=${modifiedEndDate}&timestep=1440&format=json&source=grid&tz=utc&timeformat=xml&precision=full`;
+  const lonlat = `${userLocation.lat},${userLocation.lon}`;
+    window.console.log(lonlat, 'longitude and latitude')
+  const url = `https://desm.harvesterseasons.com/timeseries?latlon=${lonlat}&param=utctime,FFG-MS:CERRA:5057:6:10:0&starttime=${modifiedStartDate}&endtime=${modifiedEndDate}&timestep=1440&format=json&source=grid&tz=utc&timeformat=xml&precision=full`;
   try {
     const response = yield call(axios.get, url);
     if (response.status === 200) {
