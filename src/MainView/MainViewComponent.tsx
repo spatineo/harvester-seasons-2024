@@ -123,12 +123,14 @@ function MainViewComponent() {
         winter1series,
         languageObject
       );
+      window.console.log(trafficabilityOption, 'check data series')
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       setTrafficabilityGraphOption(trafficabilityOption);
     }
   }, [
     trafficabilityData,
     soilWetnessData,
+    snowHeightData,
     graphParameters.twelveMonthParams.trafficability,
     markLine,
     windSpeedData,
