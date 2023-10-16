@@ -165,7 +165,6 @@ export function* fetchWindSpeedData({
   const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
   const modifiedEndDate = new Date(startEndTimeSpan.end_time).toISOString();
   const lonlat = `${userLocation.lat},${userLocation.lon}`;
-    window.console.log(lonlat, 'longitude and latitude')
   const url = `https://desm.harvesterseasons.com/timeseries?latlon=${lonlat}&param=utctime,FFG-MS:CERRA:5057:6:10:0&starttime=${modifiedStartDate}&endtime=${modifiedEndDate}&timestep=1440&format=json&source=grid&tz=utc&timeformat=xml&precision=full`;
   try {
     const response = yield call(axios.get, url);
