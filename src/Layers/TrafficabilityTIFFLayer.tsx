@@ -109,7 +109,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
     const newLayer = new TileLayer({
       title,
       visible: true,
-      opacity: 1,
+      opacity:  getOpacityFromPercentage(opacityValue),
       className: "class",
       maxResolution: 150,
       updateWhileAnimating: true,
