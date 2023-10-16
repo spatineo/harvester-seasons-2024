@@ -23,6 +23,10 @@ const EchartsComponent: React.FC<ChartProps> = ({ option, height }) => {
    const myChart = echarts.init(chartRef.current, undefined, );
    window.addEventListener('resize', () => myChart.resize());
     myChart.setOption(option);
+
+    return () => {
+      myChart.dispose();
+    }
   }, [option, chartRef.current]);
 
   return (

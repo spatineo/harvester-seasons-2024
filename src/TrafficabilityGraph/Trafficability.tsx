@@ -140,6 +140,9 @@ const TraficabilityGraphComponent: React.FC<
       
     }
 
+    return () => {
+      newChart.dispose();
+    }
   }, [graphRef.current, option]);
 
   return (
