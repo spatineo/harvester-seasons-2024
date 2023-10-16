@@ -93,7 +93,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
         window.console.error(
           "tuntematon indeksiarvo, ei voida piirtää trafficabilityä"
         );
-       return;
+       palette = colorPalette?.palette_base_color
     }
 
     if (palette) {
@@ -107,6 +107,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
   useEffect(() => {
     if (!map || !url) return;
 
+    window.console.log(colorPalette?.palette_base_color, 'base color')
     const newLayer = new TileLayer({
       title,
       visible: true,
