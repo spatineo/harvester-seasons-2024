@@ -16,7 +16,7 @@ import { RootState } from "../store/store";
 
 
 interface TraficabilityGraphComponentProp {
-  option: EChartOption | null;
+  option: EChartOption | null ;
   onGraphClick: (xAxisData: string) => void;
 }
 
@@ -50,11 +50,14 @@ const TraficabilityGraphComponent: React.FC<
 
   useEffect(() => {
     if (!graphRef.current || !option) return;
-
     const newChart = echarts.init(graphRef.current, undefined, {
       height: "200",
+      useCoarsePointer: undefined,
     });
-    window.addEventListener('resize', () => newChart.resize());
+
+    window.addEventListener('resize', () => newChart.resize({
+    
+    }));
     if(option !== null){
        newChart.setOption(option, {notMerge: true, lazyUpdate: false});
     }
@@ -142,6 +145,7 @@ const TraficabilityGraphComponent: React.FC<
 
     return () => {
       newChart.dispose();
+      window.removeEventListener('resize', () => newChart.resize());
     }
   }, [graphRef.current, option]);
 
@@ -156,7 +160,7 @@ const TraficabilityGraphComponent: React.FC<
         color={arrowColor}
         fontSize="large"
       />
-      <Box ref={graphRef} style={{ width: "100%", margin: "auto" }}></Box>
+      <Box ref={graphRef} style={{ width: "100%", margin: "auto" }} component="div"></Box>
       {hideNext && (
         <ArrowForwardIos
           color={arrowColor}
