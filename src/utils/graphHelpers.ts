@@ -295,7 +295,8 @@ export function createOptions(
   parameters: Parameter[],
   values: Smartmet[],
   mark: string,
-  padding: [number, number, number, number]
+  padding: [number, number, number, number],
+  locale: string
 ) {
   return {
     animation: false,
@@ -322,8 +323,9 @@ export function createOptions(
       type: "time",
       splitNumber: 12,
       axisLabel: {
-        formatter: format
-      }
+        formatter: locale === "en" ? enFormat : fiFormat,
+        fontSize: 10
+      },
     },
     series: [
       {
