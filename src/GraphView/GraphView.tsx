@@ -31,6 +31,8 @@ const Graphs: React.FC = () => {
     startEndTimeSpan,
   } = useAppSelector((state: RootState) => state.global);
 
+  const { lang } = useAppSelector((state: RootState) => state.language);
+
   const graphParameters = useAppSelector(
     (state: RootState) => state.global.parameters
   );
@@ -142,14 +144,16 @@ const Graphs: React.FC = () => {
           graphParameters.twelveMonthParams.soilWetness,
           soilWetnessScaled,
           markLineDate,
-          [0, 0, 16, 0]
+          [0, 0, 16, 0],
+          lang
         );
         const soilTemperature = createOptions(
           { title: "Soil Temperature (°C)" },
           graphParameters.twelveMonthParams.soilTemperature,
           soilTemperatureData,
           markLineDate,
-          [0, 0, 16, 0]
+          [0, 0, 16, 0],
+          lang
         );
 
         const snowHeight = createOptions(
@@ -157,7 +161,8 @@ const Graphs: React.FC = () => {
           graphParameters.twelveMonthParams.snowHeight,
           snowHeightScaled,
           markLineDate,
-          [0, 0, 16, 0]
+          [0, 0, 16, 0],
+          lang
         );
         setSoilWetnessOption(soilWetness);
         setSnowHeightOption(snowHeight);
@@ -168,21 +173,24 @@ const Graphs: React.FC = () => {
           graphParameters.tenYearParams.soilWetness,
           soilWetnessScaled,
           markLineDate,
-          [0, 0, 16, 0]
+          [0, 0, 16, 0],
+          lang
         );
         const soilTemperature = createOptions(
           { title: "Soil Temperature (°C)" },
           graphParameters.tenYearParams.soilTemperature,
           soilTemperatureData,
           markLineDate,
-          [0, 0, 16, 0]
+          [0, 0, 16, 0],
+          lang
         );
         const snowHeight = createOptions(
           { title: "Snow Height (m)" },
           graphParameters.tenYearParams.snowHeight,
           snowHeightScaled,
           markLineDate,
-          [0, 0, 16 , 0]
+          [0, 0, 16 , 0],
+          lang
         );
         setSnowHeightOption(snowHeight);
         setSoilTemperatureOption(soilTemperature);
@@ -200,6 +208,7 @@ const Graphs: React.FC = () => {
     graphParameters.tenYearParams.snowHeight,
     graphParameters.tenYearParams.soilWetness,
     markLineDate,
+    lang
   ]);
 
   return (

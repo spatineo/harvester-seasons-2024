@@ -26,6 +26,7 @@ import {
 function MainViewComponent() {
   const [trafficabilityGraphOption, setTrafficabilityGraphOption] =
     useState<EChartOption | null>(null);
+
   const dispatch = useRootDispatch();
   const {
     soilWetnessData,
@@ -40,6 +41,7 @@ function MainViewComponent() {
     (state: RootState) => state.global.parameters
   );
   const { markLine } = useAppSelector((state: RootState) => state.global);
+  const { lang } = useAppSelector((state: RootState) => state.language);
 
   useEffect(() => {
     dispatch({ type: constants.TRAFFICABILITY_API });
@@ -121,7 +123,8 @@ function MainViewComponent() {
         markLine,
         summer1series,
         winter1series,
-        languageObject
+        languageObject,
+        lang
       );
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       setTrafficabilityGraphOption(trafficabilityOption);
@@ -144,8 +147,8 @@ function MainViewComponent() {
             option={trafficabilityGraphOption}
             onGraphClick={function (xAxisData: string): void {
               dispatch(action.setMarkLine(xAxisData));
-            }}
-          />
+            }}        
+           />
         ) : (
           <Box className="loading"> Loading ....</Box>
         )}

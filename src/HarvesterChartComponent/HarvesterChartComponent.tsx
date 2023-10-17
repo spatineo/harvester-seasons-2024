@@ -1,8 +1,11 @@
 import React from "react";
 import { Box } from "@mui/material";
 import EchartsComponent from "../EchartsComponent/EchartsComponent";
-import { HarvesterChartProps } from "../types";
 
+interface HarvesterChartProps {
+  option: {},
+  height: number
+}
 const HarvesterSeasons: React.FC<HarvesterChartProps> = ({
   option,
   height,
