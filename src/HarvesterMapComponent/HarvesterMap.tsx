@@ -68,32 +68,32 @@ const HarvesterMap: React.FC = () => {
           <WMSLayer
             layerName="gui:isobands:CERRA_FFG-MS"
             capabilities={harvesterWMSCapabilities}
-            strategy={WMSLayerTimeStrategy.LatestBeforeNow}
+            strategy={WMSLayerTimeStrategy.ForceSelectedDate}
             opacity={0.5}
             date={markLine}
           />
           <WMSLayer
             layerName="gui:isobands:SWI_SWI2"
             capabilities={harvesterWMSCapabilities}
-            strategy={WMSLayerTimeStrategy.LatestBeforeNow}
+            strategy={WMSLayerTimeStrategy.ForceSelectedDate}
             opacity={0.5}
             date={markLine}
           />
           <WMSLayer
             layerName="gui:isobands:ERA5L_TSOIL-K"
             capabilities={harvesterWMSCapabilities}
-            strategy={WMSLayerTimeStrategy.LatestBeforeNow}
+            strategy={WMSLayerTimeStrategy.ForceSelectedDate}
             opacity={0.5}
             date={markLine}
           />
           <WMSLayer
             layerName="harvester:ecsf:HSNOW-M"
             capabilities={harvesterWMSCapabilities}
-            strategy={WMSLayerTimeStrategy.LatestBeforeNow}
+            strategy={WMSLayerTimeStrategy.ForceSelectedDate}
             opacity={0.5}
             date={markLine}
           />
-          {/* 
+          {/*
 					<STACLayers 
 						title='Latvuskorkeusmalli'
 						searchUrl='https://paituli.csc.fi/geoserver/ogc/stac/search' 

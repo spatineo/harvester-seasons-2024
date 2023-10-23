@@ -18,15 +18,16 @@ export enum WMSLayerTimeStrategy {
 	NoTimeDimesion,
 	Latest,
 	LatestBeforeNow,
-	EarliestAfterNow
+	EarliestAfterNow,
+	ForceSelectedDate
 }
 
 interface WMSLayerProps {
 	layerName: string,
 	capabilities: any,
 	strategy: WMSLayerTimeStrategy,
-	date?: any,
-	opacity?: number
+	date?: string,
+	opacity?: number,
 };
 
 interface DimensionType {
@@ -186,7 +187,9 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilities, strategy, d
 			}
 			return ret
 		}
+
 		const layer = findLayer(capabilities.Capability.Layer);
+
 		if (!layer) {
 			window.console.error('NO LAYER', layerName)
 			return;
@@ -202,12 +205,15 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilities, strategy, d
 
 		let timeStamp : Date | null = null;
 
-		if (strategy === WMSLayerTimeStrategy.Latest) {
+		if (strategy === WMSLayerTimeStrategy.ForceSelectedDate) {
+			timeStamp = new Date(date ? (date.substring(0,10)+"T00:00:00Z") : new Date());
+
+		} else if (strategy === WMSLayerTimeStrategy.Latest) {
 			timeStamp = getLatestTimestamp(layerInfo);
 
 		} else if (strategy !== WMSLayerTimeStrategy.NoTimeDimesion) {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-			const nearest = getNearestTimestamps(layerInfo, date || new Date());
+			const nearest = getNearestTimestamps(layerInfo, new Date(date || new Date()));
 
 			if (nearest) {
 				if (strategy === WMSLayerTimeStrategy.LatestBeforeNow) {
@@ -223,7 +229,7 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilities, strategy, d
 			return;
 		}
 
-		const tmp = timeStamp.toISOString().replace(/[:-]/g,'').substring(0,15)
+		const tmp = timeStamp.toISOString();
 		setTime(tmp)
 	}, [layerInfo, strategy, date])
 
@@ -251,7 +257,7 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilities, strategy, d
 				source: new TileWMS({
 					url: layerInfo.url,
 					params
-				})
+				}),
 			} as BaseLayerOptions);
 
 			map.addLayer(layer);
