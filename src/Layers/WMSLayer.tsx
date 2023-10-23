@@ -174,7 +174,19 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilities, strategy, d
 	useEffect(() => {
 		if (!capabilities || !layerName) return;
 
-		const layer = capabilities.Capability.Layer.Layer.find((l : any) => l.Name === layerName)
+		function findLayer(layer) {
+			let ret = null;
+			if (layer.Name === layerName) {
+				ret = layer;
+			} else  if (layer.Layer) {
+				for (let i = 0; i < layer.Layer.length; i++) {
+					ret = findLayer(layer.Layer[i])
+					if (ret) break;
+				}
+			}
+			return ret
+		}
+		const layer = findLayer(capabilities.Capability.Layer);
 		if (!layer) {
 			window.console.error('NO LAYER', layerName)
 			return;
