@@ -56,6 +56,7 @@ export interface Map {
     lon: number | null;
     resolution: number;
   };
+  WMSLayer: WMSLayers[]
 }
 
 export interface TimelineControlStyle {
@@ -92,4 +93,19 @@ export interface ColorPalette {
   palette_hyva_kesa_keli: Color[];
   palette_hyva_talvi_keli: Color[];
   palette_base_color: Color[];
+}
+
+export enum WMSLayerTimeStrategy {
+	NoTimeDimesion,
+	Latest,
+	LatestBeforeNow,
+	EarliestAfterNow,
+	ForceSelectedDate
+}
+
+export interface WMSLayers {
+  layerName: string;
+  visibility: boolean;
+  opacity: number;
+  WMSLayerTimeStrategy: WMSLayerTimeStrategy
 }
