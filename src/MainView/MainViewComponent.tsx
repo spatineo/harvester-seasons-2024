@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable import/default */
-import { useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import { Container, Box } from "@mui/material";
 import { EChartOption } from "echarts";
 import TraficabilityGraph from "../TrafficabilityGraph/Trafficability";
@@ -27,6 +27,7 @@ function MainViewComponent() {
   const [trafficabilityGraphOption, setTrafficabilityGraphOption] =
     useState<EChartOption | null>(null);
 
+
   const dispatch = useRootDispatch();
   const {
     soilWetnessData,
@@ -42,6 +43,7 @@ function MainViewComponent() {
   );
   const { markLine } = useAppSelector((state: RootState) => state.global);
   const { lang } = useAppSelector((state: RootState) => state.language);
+ 
 
   useEffect(() => {
     dispatch({ type: constants.TRAFFICABILITY_API });
@@ -50,6 +52,8 @@ function MainViewComponent() {
     dispatch({ type: constants.SNOWHEIGHT_API });
     dispatch({ type: constants.WINDGUST_API });
   }, []);
+
+ 
 
   useEffect(() => {
     if (!soilWetnessData || !snowHeightData || !soilTemperatureData) {
@@ -139,6 +143,7 @@ function MainViewComponent() {
     information.lang,
   ]);
 
+ 
   return (
     <Container maxWidth="lg">
       <Box>
@@ -147,8 +152,8 @@ function MainViewComponent() {
             option={trafficabilityGraphOption}
             onGraphClick={function (xAxisData: string): void {
               dispatch(action.setMarkLine(xAxisData));
-            }}        
-           />
+            }}
+          />
         ) : (
           <Box className="loading"> Loading ....</Box>
         )}
