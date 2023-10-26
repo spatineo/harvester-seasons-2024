@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable import/default */
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Container, Box } from "@mui/material";
 import { EChartOption } from "echarts";
 import TraficabilityGraph from "../TrafficabilityGraph/Trafficability";
@@ -27,7 +27,6 @@ function MainViewComponent() {
   const [trafficabilityGraphOption, setTrafficabilityGraphOption] =
     useState<EChartOption | null>(null);
 
-
   const dispatch = useRootDispatch();
   const {
     soilWetnessData,
@@ -43,7 +42,6 @@ function MainViewComponent() {
   );
   const { markLine } = useAppSelector((state: RootState) => state.global);
   const { lang } = useAppSelector((state: RootState) => state.language);
- 
 
   useEffect(() => {
     dispatch({ type: constants.TRAFFICABILITY_API });
@@ -52,8 +50,6 @@ function MainViewComponent() {
     dispatch({ type: constants.SNOWHEIGHT_API });
     dispatch({ type: constants.WINDGUST_API });
   }, []);
-
- 
 
   useEffect(() => {
     if (!soilWetnessData || !snowHeightData || !soilTemperatureData) {
@@ -143,7 +139,6 @@ function MainViewComponent() {
     information.lang,
   ]);
 
- 
   return (
     <Container maxWidth="lg">
       <Box>
@@ -158,12 +153,16 @@ function MainViewComponent() {
           <Box className="loading"> Loading ....</Box>
         )}
       </Box>
-      <HarvesterMap />
-      <OpacityComponent />
-      <Box sx={{ position: "relative", top: "4rem" }}>
+      <Box>
+        <HarvesterMap />
+      </Box>
+      <Box sx={{ position: "relative", top: "4rem"}}>
+        <OpacityComponent />
+      </Box>
+      <Box sx={{ position: "relative", top: "5rem" }}>
         <CarbonText />
       </Box>
-      <Box sx={{ top: "4rem", position: "relative" }}>
+      <Box sx={{ top: "6rem", position: "relative" }}>
         <GraphView />
       </Box>
       <Box sx={{ marginTop: "2rem" }}></Box>
