@@ -15,12 +15,12 @@ interface OSMLayerProps {
   visible: boolean;
 }
 
-const Thunderforest: React.FC<OSMLayerProps> = ({ source, title,visible }) => {
+const Thunderforest: React.FC<OSMLayerProps> = ({ source, title, visible }) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { map } = useContext(MapContext);
+  const { map, layersToAdd } = useContext(MapContext);
 
   useEffect(() => {
-    if (!map) return;
+    if (!map || !layersToAdd) return;
 
     const thunderForestLayer = new LayerTile({
       title,
@@ -29,14 +29,14 @@ const Thunderforest: React.FC<OSMLayerProps> = ({ source, title,visible }) => {
       visible,
       source,
     } as BaseLayerOptions);
-    map.addLayer(thunderForestLayer);
+    layersToAdd.getLayers().push(thunderForestLayer)
 
     return () => {
       if (map) {
         map.removeLayer(thunderForestLayer);
       }
     };
-  }, [map, title]);
+  }, [map, title, layersToAdd]);
   return null;
 };
 
