@@ -49,16 +49,6 @@ export interface GlobalStateProps {
   };
 }
 
-export interface Map {
-  opacityValue: number;
-  position: {
-    lat: number | null;
-    lon: number | null;
-    resolution: number;
-  };
-  WMSLayer: WMSLayers[]
-}
-
 export interface TimelineControlStyle {
   itemSize?: number;
   itemGap?: number;
@@ -108,4 +98,14 @@ export interface WMSLayers {
   visibility: boolean;
   opacity: number;
   WMSLayerTimeStrategy: WMSLayerTimeStrategy
+}
+
+export interface Map {
+  opacityValue: number;
+  position: {
+    lat: number | null;
+    lon: number | null;
+    resolution: number;
+  };
+  WMSLayer: WMSLayers[]
 }
