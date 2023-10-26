@@ -6,6 +6,7 @@ import LayerGroup from 'ol/layer/Group';
 interface MapContextType {
 	map: Map | null;
 	layersToAdd: LayerGroup
+	WMSLayerGroup: LayerGroup
 }
 
 const MapContext = createContext({} as MapContextType);
