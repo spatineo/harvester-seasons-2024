@@ -12,10 +12,9 @@ import MapContext from "../MapComponent/MapContext";
 interface OSMLayerProps {
   source: TileSource;
   title: string;
-  visible: boolean;
 }
 
-const Thunderforest: React.FC<OSMLayerProps> = ({ source, title, visible }) => {
+const Thunderforest: React.FC<OSMLayerProps> = ({ source, title }) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { map, layersToAdd } = useContext(MapContext);
 
@@ -26,7 +25,6 @@ const Thunderforest: React.FC<OSMLayerProps> = ({ source, title, visible }) => {
       title,
       type: "base",
       className: "class",
-      visible,
       source,
     } as BaseLayerOptions);
     layersToAdd.getLayers().push(thunderForestLayer)
