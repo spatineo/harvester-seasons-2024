@@ -11,31 +11,29 @@ import LayerTile from 'ol/layer/Tile';
 interface TileLayerProps {
 	source: TileSource;
 	title: string;
-	visible: boolean;
 }
 
 // eslint-disable-next-line react/prop-types
-const TileLayer: React.FC<TileLayerProps> = ({ source, title, visible }) => {
-	const { map } = useContext(MapContext);
+const TileLayer: React.FC<TileLayerProps> = ({ source, title }) => {
+  const { map, layersToAdd } = useContext(MapContext);
 
 	useEffect(() => {
-		if (!map) return;
+    if (!map || !layersToAdd) return;
 
 		const tileLayer = new LayerTile({
 			title,
 			type: 'base',
-			visible,
 			source,
 			className: 'class',
 		} as BaseLayerOptions);
-		map.addLayer(tileLayer);
+    layersToAdd.getLayers().push(tileLayer)
 
 		return () => {
 			if (map) {
 				map.removeLayer(tileLayer);
 			}
 		};
-	}, [map, title]);
+	}, [map, title, layersToAdd]);
 	return null;
 };
 
