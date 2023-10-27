@@ -5,8 +5,9 @@ import LayerGroup from 'ol/layer/Group';
 
 interface MapContextType {
 	map: Map | null;
-	layersToAdd: LayerGroup
-	WMSLayerGroup: LayerGroup
+	layersToAdd: LayerGroup;
+	WMSLayerGroup: LayerGroup;
+	locationMarkerLayer: LayerGroup;
 }
 
 const MapContext = createContext({} as MapContextType);
