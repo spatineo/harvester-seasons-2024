@@ -97,7 +97,7 @@ export interface WMSLayers {
   layerName: string;
   visibility: boolean;
   opacity: number;
-  WMSLayerTimeStrategy: WMSLayerTimeStrategy
+  WMSTimeStrategy: WMSLayerTimeStrategy
 }
 
 export interface Map {
@@ -107,5 +107,5 @@ export interface Map {
     lon: number | null;
     resolution: number;
   };
-  WMSLayer: WMSLayers[]
+  WMSLayerState: WMSLayers[]
 }
