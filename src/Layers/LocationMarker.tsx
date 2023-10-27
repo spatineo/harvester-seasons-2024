@@ -45,12 +45,12 @@ const circleStyle = new Style({
 
 // eslint-disable-next-line react/prop-types
 const LocationMarkerLayer: React.FC<MarkerProps> = ({ title }) => {
-	const { map, WMSLayerGroup } = useContext(MapContext);
+	const { map, locationMarkerLayer } = useContext(MapContext);
 	const [source, setSource] = useState<VectorSource | null>(null);
 	const position = useAppSelector((state: RootState) => state.mapState.position);
 
 	useEffect(() => {
-		if (!map || !WMSLayerGroup) return;
+		if (!map || !locationMarkerLayer) return;
 
 		const src = new VectorSource();
 
@@ -61,11 +61,7 @@ const LocationMarkerLayer: React.FC<MarkerProps> = ({ title }) => {
 			zIndex: 1000,
 		} as BaseLayerOptions);
 
-		//map.addLayer(layer);
-		//layersToAdd.push(layer)
-	
-		WMSLayerGroup.getLayers().push(layer)
-		//map.getLayers().push(layer);
+		locationMarkerLayer.getLayers().push(layer)
 		setSource(src);
 
 		return () => {
@@ -73,7 +69,7 @@ const LocationMarkerLayer: React.FC<MarkerProps> = ({ title }) => {
 				map.removeLayer(layer);
 			}
 		};
-	}, [map, title, WMSLayerGroup]);
+	}, [map, title, locationMarkerLayer]);
 
 	useEffect(() => {
 		if (!source || !map) return;
