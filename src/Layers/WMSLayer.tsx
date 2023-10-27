@@ -6,28 +6,29 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable react/prop-types */
 import { useEffect, useContext, useState } from 'react';
-
 import MapContext from '../MapComponent/MapContext';
 import TileLayer from 'ol/layer/Tile';
 import { TileWMS } from 'ol/source';
 import { BaseLayerOptions } from 'ol-layerswitcher';
 import add from 'date-fns/add';
 import { Duration } from 'date-fns';
+import { WMSLayerTimeStrategy } from '../types'
 
-export enum WMSLayerTimeStrategy {
+/* export enum WMSLayerTimeStrategy {
 	NoTimeDimesion,
 	Latest,
 	LatestBeforeNow,
 	EarliestAfterNow,
 	ForceSelectedDate
 }
-
+ */
 interface WMSLayerProps {
 	layerName: string,
 	capabilities: any,
 	strategy: WMSLayerTimeStrategy,
 	date?: string,
 	opacity?: number,
+	visible?: boolean,
 };
 
 interface DimensionType {
@@ -165,9 +166,9 @@ function getNearestTimestamps(layerInfo: LayerInfo, date : Date) : (null | Date)
 	return [availableTimestamps[availableTimestamps.length-1], null];
 }
 
-const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilities, strategy, date, opacity}) => {
+const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilities, strategy, date, opacity, visible}) => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const { map } = useContext(MapContext);
+	const { map, WMSLayerGroup } = useContext(MapContext);
 
 	const [ layerInfo, setLayerInfo ] = useState<LayerInfo>();
 	const [ time, setTime ] = useState<string>("");
@@ -236,7 +237,7 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilities, strategy, d
 	useEffect(() => {
 		// add try catch
 		try {
-			if (!map || !layerInfo) return;
+			if (!map || !layerInfo || !WMSLayerGroup) return;
 
 			if (time === "" && strategy !== WMSLayerTimeStrategy.NoTimeDimesion) return;
 
@@ -260,15 +261,18 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilities, strategy, d
 				}),
 			} as BaseLayerOptions);
 
-			map.addLayer(layer);
-
+			//map.addLayer(layer);
+			WMSLayerGroup.getLayers().push(layer)
 			return () => {
-				map.removeLayer(layer);
+				//map.removeLayer(layer);
+				if(WMSLayerGroup){
+					WMSLayerGroup.getLayers().remove(layer);
+				}
 			};
 		} catch (error){
 			window.console.error(error)
 		}
-	}, [map, layerInfo, time, strategy, opacity]);
+	}, [map, layerInfo, time, strategy, opacity, WMSLayerGroup]);
 
 	return null;
 };
