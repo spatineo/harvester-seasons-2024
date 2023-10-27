@@ -94,8 +94,8 @@ export enum WMSLayerTimeStrategy {
 }
 
 export interface WMSLayers {
+  visible: boolean
   layerName: string;
-  visibility: boolean;
   opacity: number;
   WMSTimeStrategy: WMSLayerTimeStrategy
 }
