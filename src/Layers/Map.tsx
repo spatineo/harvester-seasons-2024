@@ -25,7 +25,6 @@ const TileLayer: React.FC<TileLayerProps> = ({ url, title, visible, attributions
 
 		const tileLayer = new LayerTile({
 			title,
-			type: 'base',
 			source: new XYZ({
 				url,
 				attributions
@@ -36,8 +35,8 @@ const TileLayer: React.FC<TileLayerProps> = ({ url, title, visible, attributions
     baseLayers.getLayers().push(tileLayer)
 
 		return () => {
-			if (map) {
-				map.removeLayer(tileLayer);
+			if(baseLayers){
+				baseLayers.getLayers().remove(tileLayer);
 			}
 		};
 	}, [map, title, baseLayers]);
