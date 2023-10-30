@@ -153,16 +153,16 @@ function MainViewComponent() {
           <Box className="loading"> Loading ....</Box>
         )}
       </Box>
-      <Box>
+      <Box sx={{ position: "relative", top: "-4rem"}}>
         <HarvesterMap />
       </Box>
-      <Box sx={{ position: "relative", top: "4rem"}}>
+      <Box sx={{ position: "relative", top: "0.4rem"}}>
         <OpacityComponent />
       </Box>
-      <Box sx={{ position: "relative", top: "5rem" }}>
+      <Box sx={{ position: "relative", top: "1.4rem" }}>
         <CarbonText />
       </Box>
-      <Box sx={{ top: "6rem", position: "relative" }}>
+      <Box sx={{ top: "2rem", position: "relative" }}>
         <GraphView />
       </Box>
       <Box sx={{ marginTop: "2rem" }}></Box>
