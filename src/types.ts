@@ -100,6 +100,13 @@ export interface WMSLayers {
   WMSTimeStrategy: WMSLayerTimeStrategy
 }
 
+export interface MapsStateProps {
+  title: string;
+  url: string;
+  visible: boolean;
+  attributions: string;
+}
+
 export interface Map {
   opacityValue: number;
   position: {
@@ -107,5 +114,6 @@ export interface Map {
     lon: number | null;
     resolution: number;
   };
+  maps: MapsStateProps[]
   WMSLayerState: WMSLayers[]
 }
