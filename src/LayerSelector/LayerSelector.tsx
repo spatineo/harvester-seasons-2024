@@ -3,14 +3,14 @@ import { Box, Radio } from "@mui/material";
 
 interface LayerSelectionProps {
   value: string;
-  handleStateChange: (value: string) => void;
-  name: string;
+  handleChange: (value: string) => void;
+  checked: boolean;
 }
 
 const LayerSeclectorComponent: FC<LayerSelectionProps> = ({
   value,
-  handleStateChange,
-  name,
+  handleChange,
+  checked,
 }) => {
   return (
     <Box
@@ -23,16 +23,15 @@ const LayerSeclectorComponent: FC<LayerSelectionProps> = ({
     >
       <Radio
         size="small"
-        sx={{ margin: "0rem", padding: "0rem", fontSize: "0.6rem" }}
-        checked={value === name}
+        sx={{ margin: "0.1rem", padding: "0rem", fontSize: "0.6rem" }}
         onChange={(event) => {
-          handleStateChange(event.target.name);
+          handleChange(event.target.value);
         }}
         value={value}
-        name={name}
+        checked={checked}
         inputProps={{ "aria-label": value }}
       />
-      <span>{name}</span>
+      <span>{value}</span>
     </Box>
   );
 };
