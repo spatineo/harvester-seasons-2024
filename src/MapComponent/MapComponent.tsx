@@ -62,7 +62,7 @@ register(proj4);
 const MapComponent: React.FC<MapProps> = ({ children }) => {
   const mapRef = useRef();
   const [map, setMap] = useState<ol.Map | null>(null);
-  const [baseLayers, setBaseLayers] = useState([] as any)
+  const [baseLayers, setBaseLayers] = useState<any>([]);
   const [WMSLayerGroup, setWMSLayer] = useState([] as any)
   const [locationMarkerLayer, setLocationMarkerLayer] = useState<any>([]);
   const dispatch = useRootDispatch();
@@ -91,9 +91,10 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
       dispatch(mapActions.setPosition({ lat: coord[1], lon: coord[0] }));
     });
 
-    setMap(mapObject);
+    
+    const actualLayers: LayerGroup[] = [];
     const layerGroups = new LayerGroup({
-      layers: baseLayers
+      layers: actualLayers
     })
     const WMSLayersGroup = new LayerGroup({
       layers: WMSLayerGroup
@@ -102,6 +103,8 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
     const locationMarker = new LayerGroup({
       layers: locationMarkerLayer
     })
+
+    setMap(mapObject);
     setBaseLayers(layerGroups);
     setWMSLayer(WMSLayersGroup);
     setLocationMarkerLayer(locationMarker);
@@ -135,11 +138,6 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
       window.console.error("Application cannot access your location");
     }
   }, [map]);
-
-  useEffect(() => {
-    if(!map || !baseLayers) return;
-   
-  }, [baseLayers, map])
 
   useEffect(() => {
     if (
