@@ -5,7 +5,7 @@ import LayerGroup from 'ol/layer/Group';
 
 interface MapContextType {
 	map: Map | null;
-	layersToAdd: LayerGroup;
+	baseLayers: LayerGroup;
 	WMSLayerGroup: LayerGroup;
 	locationMarkerLayer: LayerGroup;
 }
