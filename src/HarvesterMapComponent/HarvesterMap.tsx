@@ -3,12 +3,11 @@ import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import MapComponent from "../MapComponent/MapComponent";
 import Layers from "../Layers/Layers";
-import Maastokartta from "../Layers/Maastokartta";
-import Thunderforest from "../Layers/Thunderforest";
+import Map from "../Layers/Map";
 import XYZ from "ol/source/XYZ";
 import LocationMarkerLayer from "../Layers/LocationMarker";
 import WMSLayer from "../Layers/WMSLayer";
-import { WMSLayerTimeStrategy } from "../types";
+import { WMSLayerTimeStrategy, MapsStateProps } from "../types";
 import TrafficabilityTIFFLayer from "../Layers/TrafficabilityTIFFLayer";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
@@ -20,7 +19,11 @@ const HarvesterMap: React.FC = () => {
   const [harvesterWMSCapabilities, setHarvesterWMSCapabilities] =
     useState<Document | null>(null);
   const markLine = useAppSelector((state: RootState) => state.global.markLine);
-  const { WMSLayerState } = useAppSelector((state: RootState) => state.mapState);
+  const { WMSLayerState } = useAppSelector(
+    (state: RootState) => state.mapState
+  );
+  const { maps } = useAppSelector((state: RootState) => state.mapState);
+  const [stateMap, setStateMap] = useState<MapsStateProps[]>([])
 
   useEffect(() => {
     const parser = new WMSCapabilities();
@@ -41,56 +44,44 @@ const HarvesterMap: React.FC = () => {
       });
   }, []);
 
+  useEffect(() => {
+    if(!maps) return;
+    setStateMap(maps)
+  }, [maps])
+
   return (
     <>
       <Box sx={{ clear: "both" }}>
         <MapComponent>
           <Controls />
           <Layers>
-            <Maastokartta
-              title="Taustakartta"
-              source={
-                new XYZ({
-                  url: "https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/taustakartta/default/WGS84_Pseudo-Mercator/{z}/{y}/{x}.png?api-key=45deef08-fd2f-42ae-9953-5550fff43b17",
-                  attributions:
-                    '<a href="https://www.maanmittauslaitos.fi/karttakuvapalvelu/tekninen-kuvaus-wmts" target="_blank">Maanmittauslaitoksen avoin data</a>',
-                })
-              }
-            />
-            <Maastokartta
-              title="Maastokartta"
-              source={
-                new XYZ({
-                  url: "https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/maastokartta/default/WGS84_Pseudo-Mercator/{z}/{y}/{x}.png?api-key=45deef08-fd2f-42ae-9953-5550fff43b17",
-                  attributions:
-                    '<a href="https://www.maanmittauslaitos.fi/karttakuvapalvelu/tekninen-kuvaus-wmts" target="_blank">Maanmittauslaitoksen avoin data</a>',
-                })
-              }
-            />
-            <Thunderforest
-              title="Thunderforest"
-              source={
-                new XYZ({
-                  url: "https://{a-c}.tile.opentopomap.org/{z}/{x}/{y}.png",
-                  attributions:
-                    '<a href="https://www.thunderforest.com/" target="_blank">Thunderforest</a> Data by <a href="https://www.fmi.fi/">Finnish Meteorological Institute</a>',
-                })
-              }
-            />
-            {WMSLayerState.length > 0 &&
-              WMSLayerState.map((wms) => {
-            
-                return(
-                <Box key={wms.layerName}>
-                  <WMSLayer
-                    layerName={wms.layerName}
-                    capabilities={harvesterWMSCapabilities}
-                    strategy={WMSLayerTimeStrategy.ForceSelectedDate}
-                    date={markLine}
-                    opacity={wms.opacity}
+            {stateMap && stateMap.map((mapArray) => {
+              return (
+                <Box key={mapArray.title}>
+                  <Map
+                    url={mapArray.url}
+                    title={mapArray.title}
+                    visible={mapArray.visible}
+                    attributions={mapArray.attributions}
                   />
                 </Box>
-                )
+              );
+            })}
+           
+            {WMSLayerState.length > 0 &&
+              WMSLayerState.map((wms) => {
+                return (
+                  <Box key={wms.layerName}>
+                    <WMSLayer
+                      layerName={wms.layerName}
+                      capabilities={harvesterWMSCapabilities}
+                      strategy={WMSLayerTimeStrategy.ForceSelectedDate}
+                      date={markLine}
+                      opacity={wms.opacity}
+                      visible={wms.visible}
+                    />
+                  </Box>
+                );
               })}
             {/*
 					<STACLayers 
