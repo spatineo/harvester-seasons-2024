@@ -62,7 +62,7 @@ register(proj4);
 const MapComponent: React.FC<MapProps> = ({ children }) => {
   const mapRef = useRef();
   const [map, setMap] = useState<ol.Map | null>(null);
-  const [layersToAdd, setLayersToAdd] = useState([] as any)
+  const [baseLayers, setBaseLayers] = useState([] as any)
   const [WMSLayerGroup, setWMSLayer] = useState([] as any)
   const [locationMarkerLayer, setLocationMarkerLayer] = useState<any>([]);
   const dispatch = useRootDispatch();
@@ -93,7 +93,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
 
     setMap(mapObject);
     const layerGroups = new LayerGroup({
-      layers: layersToAdd
+      layers: baseLayers
     })
     const WMSLayersGroup = new LayerGroup({
       layers: WMSLayerGroup
@@ -102,7 +102,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
     const locationMarker = new LayerGroup({
       layers: locationMarkerLayer
     })
-    setLayersToAdd(layerGroups);
+    setBaseLayers(layerGroups);
     setWMSLayer(WMSLayersGroup);
     setLocationMarkerLayer(locationMarker);
     mapObject.addLayer(layerGroups)
@@ -137,9 +137,9 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
   }, [map]);
 
   useEffect(() => {
-    if(!map || !layersToAdd) return;
+    if(!map || !baseLayers) return;
    
-  }, [layersToAdd, map])
+  }, [baseLayers, map])
 
   useEffect(() => {
     if (
@@ -162,7 +162,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
   }, [map, position]);
 
   return (
-    <MapContext.Provider value={{ map, layersToAdd, WMSLayerGroup, locationMarkerLayer }}>
+    <MapContext.Provider value={{ map, baseLayers, WMSLayerGroup, locationMarkerLayer }}>
       <Box ref={mapRef} className="ol-map">
         {children}
         <div id="select"></div>
