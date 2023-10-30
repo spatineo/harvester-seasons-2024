@@ -255,6 +255,7 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilities, strategy, d
 			const layer = new TileLayer({
 				opacity: (opacity !== null && opacity !== undefined) ? opacity : 0.5,
 				title: layerInfo.layer.Title,
+				visible,
 				source: new TileWMS({
 					url: layerInfo.url,
 					params
