@@ -93,12 +93,19 @@ export enum WMSLayerTimeStrategy {
 	ForceSelectedDate
 }
 
+export interface Legend {
+  enabled: boolean;
+  width: number;
+  height: number;
+}
+
 export interface WMSLayers {
   id: number;
   visible: boolean
   layerName: string;
   opacity: number;
-  WMSTimeStrategy: WMSLayerTimeStrategy
+  WMSTimeStrategy: WMSLayerTimeStrategy;
+  legend: Legend
 }
 
 export interface MapsStateProps {
