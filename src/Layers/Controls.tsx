@@ -32,16 +32,6 @@ const Controls = () => {
     dispatch(mapActions.setBaseLayers(newValue));
   };
 
-  const handleLayers = (newValue: string, index: number) => {
-    setWmsLayerName(newValue);
-    dispatch(
-      mapActions.setWMSLayer({
-        layerName: newValue,
-        index,
-      })
-    );
-  };
-
   useEffect(() => {
     if (!map || !baseLayers || !WMSLayerState) return;
     setLayersForWMS(WMSLayerState)
@@ -51,7 +41,7 @@ const Controls = () => {
       layer.setVisible(mapTitle === title);
     });
 
-  }, [baseLayers, title, map, wmsLayerName]);
+  }, [baseLayers, title, map, WMSLayerState]);
 
   return (
     <Box>
@@ -71,15 +61,16 @@ const Controls = () => {
         </Box>
 
         {layerForWMS.length > 0 &&
-          layerForWMS.map((wmsLayer, index) => {
+          layerForWMS.map((wmsLayer) => {
             return (
               <Box key={wmsLayer.layerName}>
                 <WMSLayersComponent
                   name={wmsLayer.layerName}
                   checked={wmsLayer.visible}
                   value={wmsLayer.layerName}
-                  handleChange={handleLayers}
-                  index={index}
+                  handleChange={() => {
+                    dispatch(mapActions.setWMSLayer(wmsLayer.id))
+                  }}
                 />
               </Box>
             );
