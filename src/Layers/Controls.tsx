@@ -29,7 +29,6 @@ const Controls = () => {
 
   const handleBaseLayerChange = (newValue: string) => {
     setTitle(newValue);
-    window.console.log(newValue);
     dispatch(mapActions.setBaseLayers(newValue));
   };
 
@@ -53,8 +52,6 @@ const Controls = () => {
     });
 
   }, [baseLayers, title, map, wmsLayerName]);
-
-  window.console.log(layerForWMS)
 
   return (
     <Box>
