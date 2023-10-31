@@ -24,9 +24,7 @@ const Controls = () => {
   const dispatch = useRootDispatch();
   const [layerForWMS, setLayersForWMS] = useState<WMSLayers[]>([])
   const [title, setTitle] = useState<string>("Taustakartta");
-  const [wmsLayerName, setWmsLayerName] = useState("gui:isobands:CERRA_FFG-MS");
   
-
   const handleBaseLayerChange = (newValue: string) => {
     setTitle(newValue);
     dispatch(mapActions.setBaseLayers(newValue));
