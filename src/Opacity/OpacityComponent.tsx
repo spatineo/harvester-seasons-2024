@@ -16,14 +16,6 @@ const OpacityComponent: React.FC = () => {
   );
   return (
     <Box
-      sx={{
-        display: "flex",
-        flexDirection: "row",
-        gap: "1em",
-        position: "relative",
-        top: "1rem",
-        width: "100%",
-      }}
     >
       <Grid container>
         <Grid item  xs={0} sm={3} md={6}></Grid>

@@ -5,37 +5,41 @@
 import { useEffect, useContext } from 'react';
 import MapContext from '../MapComponent/MapContext';
 import { BaseLayerOptions } from 'ol-layerswitcher';
-import TileSource from 'ol/source/Tile';
+//import TileSource from 'ol/source/Tile';
 import LayerTile from 'ol/layer/Tile';
+import XYZ from "ol/source/XYZ";
 
 interface TileLayerProps {
-	source: TileSource;
+	url: string;
 	title: string;
 	visible: boolean;
+	attributions: string;
 }
 
 // eslint-disable-next-line react/prop-types
-const TileLayer: React.FC<TileLayerProps> = ({ source, title, visible }) => {
-	const { map } = useContext(MapContext);
+const TileLayer: React.FC<TileLayerProps> = ({ url, title, visible, attributions }) => {
+  const { map, baseLayers } = useContext(MapContext);
 
 	useEffect(() => {
-		if (!map) return;
+    if (!map || !baseLayers) return;
 
 		const tileLayer = new LayerTile({
 			title,
-			type: 'base',
+			source: new XYZ({
+				url,
+				attributions
+			}), 
 			visible,
-			source,
 			className: 'class',
 		} as BaseLayerOptions);
-		map.addLayer(tileLayer);
+    baseLayers.getLayers().push(tileLayer)
 
 		return () => {
-			if (map) {
-				map.removeLayer(tileLayer);
+			if(baseLayers){
+				baseLayers.getLayers().remove(tileLayer);
 			}
 		};
-	}, [map, title]);
+	}, [map, title, baseLayers]);
 	return null;
 };
 

@@ -49,15 +49,6 @@ export interface GlobalStateProps {
   };
 }
 
-export interface Map {
-  opacityValue: number;
-  position: {
-    lat: number | null;
-    lon: number | null;
-    resolution: number;
-  };
-}
-
 export interface TimelineControlStyle {
   itemSize?: number;
   itemGap?: number;
@@ -92,4 +83,45 @@ export interface ColorPalette {
   palette_hyva_kesa_keli: Color[];
   palette_hyva_talvi_keli: Color[];
   palette_base_color: Color[];
+}
+
+export enum WMSLayerTimeStrategy {
+	NoTimeDimesion,
+	Latest,
+	LatestBeforeNow,
+	EarliestAfterNow,
+	ForceSelectedDate
+}
+
+export interface Legend {
+  enabled: boolean;
+  width: number;
+  height: number;
+}
+
+export interface WMSLayers {
+  id: number;
+  visible: boolean
+  layerName: string;
+  opacity: number;
+  WMSTimeStrategy: WMSLayerTimeStrategy;
+  legend: Legend
+}
+
+export interface MapsStateProps {
+  title: string;
+  url: string;
+  visible: boolean;
+  attributions: string;
+}
+
+export interface Map {
+  opacityValue: number;
+  position: {
+    lat: number | null;
+    lon: number | null;
+    resolution: number;
+  };
+  maps: MapsStateProps[]
+  WMSLayerState: WMSLayers[]
 }

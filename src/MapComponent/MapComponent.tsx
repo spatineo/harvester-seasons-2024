@@ -6,9 +6,8 @@
 /* eslint-disable import/default */
 import React, { useRef, useEffect, useState } from "react";
 import * as ol from "ol";
-import { defaults as defaultControls } from "ol/control";
+import LayerGroup from 'ol/layer/Group'; 
 import { register } from "ol/proj/proj4";
-import LayerSwitcher from "ol-layerswitcher";
 import proj4 from "proj4";
 import { Box } from "@mui/material";
 import { useRootDispatch, useAppSelector } from "../store/hooks";
@@ -25,16 +24,19 @@ const styles = {
     flexDirection: "column",
     width: "100%",
     margin: "auto",
+    position: "relative",
+    top: "3rem"
   },
   container: {
     display: "flex",
     width: "99%",
     flexDirection: "row",
     flexWrap: "wrap",
-    fontSize: "13px",
+    fontSize: "13.2px",
     gap: "0.4rem",
     paddingTop: "0.5rem",
     margin: "auto",
+    position: "relative"
   },
 };
 
@@ -60,6 +62,9 @@ register(proj4);
 const MapComponent: React.FC<MapProps> = ({ children }) => {
   const mapRef = useRef();
   const [map, setMap] = useState<ol.Map | null>(null);
+  const [baseLayers, setBaseLayers] = useState<any>([]);
+  const [WMSLayerGroup, setWMSLayer] = useState([] as any)
+  const [locationMarkerLayer, setLocationMarkerLayer] = useState<any>([]);
   const dispatch = useRootDispatch();
   const position = useAppSelector(
     (state: RootState) => state.mapState.position
@@ -75,8 +80,6 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
         resolution: 3550,
         projection: "EPSG:3857",
       }),
-      layers: [],
-      controls: defaultControls().extend([new LayerSwitcher()]),
       overlays: [],
     };
 
@@ -88,7 +91,27 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
       dispatch(mapActions.setPosition({ lat: coord[1], lon: coord[0] }));
     });
 
+    
+    const actualLayers: LayerGroup[] = [];
+    const layerGroups = new LayerGroup({
+      layers: actualLayers
+    })
+    const WMSLayersGroup = new LayerGroup({
+      layers: WMSLayerGroup
+    })
+
+    const locationMarker = new LayerGroup({
+      layers: locationMarkerLayer
+    })
+
     setMap(mapObject);
+    setBaseLayers(layerGroups);
+    setWMSLayer(WMSLayersGroup);
+    setLocationMarkerLayer(locationMarker);
+    mapObject.addLayer(layerGroups)
+    mapObject.addLayer(WMSLayersGroup)
+    mapObject.addLayer(locationMarker)
+   
     return () => mapObject.setTarget(undefined);
   }, [mapRef]);
 
@@ -137,7 +160,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
   }, [map, position]);
 
   return (
-    <MapContext.Provider value={{ map }}>
+    <MapContext.Provider value={{ map, baseLayers, WMSLayerGroup, locationMarkerLayer }}>
       <Box ref={mapRef} className="ol-map">
         {children}
         <div id="select"></div>

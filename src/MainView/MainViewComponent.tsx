@@ -147,18 +147,22 @@ function MainViewComponent() {
             option={trafficabilityGraphOption}
             onGraphClick={function (xAxisData: string): void {
               dispatch(action.setMarkLine(xAxisData));
-            }}        
-           />
+            }}
+          />
         ) : (
           <Box className="loading"> Loading ....</Box>
         )}
       </Box>
-      <HarvesterMap />
-      <OpacityComponent />
-      <Box sx={{ position: "relative", top: "4rem" }}>
+      <Box sx={{ position: "relative", top: "-4rem"}}>
+        <HarvesterMap />
+      </Box>
+      <Box sx={{ position: "relative", top: "0.4rem"}}>
+        <OpacityComponent />
+      </Box>
+      <Box sx={{ position: "relative", top: "1.4rem" }}>
         <CarbonText />
       </Box>
-      <Box sx={{ top: "4rem", position: "relative" }}>
+      <Box sx={{ top: "2rem", position: "relative" }}>
         <GraphView />
       </Box>
       <Box sx={{ marginTop: "2rem" }}></Box>

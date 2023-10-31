@@ -1,0 +1,28 @@
+.image {
+  display: block;
+  width: 90%;
+  height: 90%;
+  padding: 0rem;
+  margin: 0.2rem auto;
+  padding: auto;
+
+}
+
+.none {
+  display: none;
+}
+
+.layer {
+  position: absolute;
+  background: white;
+  border: none;
+  padding: 0.6rem 0.4rem 1rem;
+  display: block;
+  right: 0rem;
+  top: -1rem;
+  min-width: 350px;
+  z-index: 999;
+  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 3px;
+}
