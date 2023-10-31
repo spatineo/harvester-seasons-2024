@@ -37,28 +37,48 @@ const initialState: Map = {
       visible: false,
       layerName: "gui:isobands:CERRA_FFG-MS",
       opacity: 0.5,
-      WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion
+      WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion,
+      legend: {
+        enabled: true,
+        width: 65,
+        height: 345
+      }
     },
     {
       id: 2,
       visible: false,
       layerName: "gui:isobands:SWI_SWI2",
       opacity: 0.5,
-      WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion
+      WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion,
+      legend: {
+        enabled: true,
+        width: 65,
+        height: 345
+      }
     },
     {
       id: 3,
       visible: false,
       layerName: "gui:isobands:ERA5L_TSOIL-K",
       opacity: 0.5,
-      WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion
+      WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion,
+      legend: {
+        enabled: true,
+        width: 65,
+        height: 345
+      }
     },
     {
       id: 4,
       visible: true,
       layerName: "harvester:ecsf:HSNOW-M",
       opacity: 0.5,
-      WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion
+      WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion,
+      legend: {
+        enabled: false,
+        width: 65,
+        height: 345
+      }
     }
   ]
 };
