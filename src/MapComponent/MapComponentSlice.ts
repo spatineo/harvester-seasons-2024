@@ -33,24 +33,28 @@ const initialState: Map = {
   ],
   WMSLayerState: [
     {
+      id: 1,
       visible: false,
       layerName: "gui:isobands:CERRA_FFG-MS",
       opacity: 0.5,
       WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion
     },
     {
+      id: 2,
       visible: false,
       layerName: "gui:isobands:SWI_SWI2",
       opacity: 0.5,
       WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion
     },
     {
+      id: 3,
       visible: false,
       layerName: "gui:isobands:ERA5L_TSOIL-K",
       opacity: 0.5,
       WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion
     },
     {
+      id: 4,
       visible: true,
       layerName: "harvester:ecsf:HSNOW-M",
       opacity: 0.5,
@@ -85,11 +89,10 @@ const mapComponentSlice = createSlice({
     },
     setWMSLayer: (
       state,
-      action: PayloadAction<{ layerName: string; index: number }>
+      action: PayloadAction<number>
     ) => {
-      window.console.log(action.payload, 'Slice')
-      const newState = state.WMSLayerState.map((item, i) => {
-        if (i === action.payload.index && item.layerName === action.payload.layerName) {
+      const newState = state.WMSLayerState.map((item) => {
+        if (item.id === action.payload) {
           return { ...item, visible: true };
         } else {
           return { ...item, visible: false };
