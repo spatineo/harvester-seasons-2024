@@ -23,7 +23,7 @@ const HarvesterMap: React.FC = () => {
     (state: RootState) => state.mapState
   );
   const { maps } = useAppSelector((state: RootState) => state.mapState);
-  const [stateMap, setStateMap] = useState<MapsStateProps[]>([])
+  const [stateMap, setStateMap] = useState<MapsStateProps[]>([]);
 
   useEffect(() => {
     const parser = new WMSCapabilities();
@@ -45,9 +45,9 @@ const HarvesterMap: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if(!maps) return;
-    setStateMap(maps)
-  }, [maps])
+    if (!maps) return;
+    setStateMap(maps);
+  }, [maps]);
 
   return (
     <>
@@ -55,19 +55,20 @@ const HarvesterMap: React.FC = () => {
         <MapComponent>
           <Controls />
           <Layers>
-            {stateMap && stateMap.map((mapArray) => {
-              return (
-                <Box key={mapArray.title}>
-                  <Map
-                    url={mapArray.url}
-                    title={mapArray.title}
-                    visible={mapArray.visible}
-                    attributions={mapArray.attributions}
-                  />
-                </Box>
-              );
-            })}
-           
+            {stateMap &&
+              stateMap.map((mapArray) => {
+                return (
+                  <Box key={mapArray.title}>
+                    <Map
+                      url={mapArray.url}
+                      title={mapArray.title}
+                      visible={mapArray.visible}
+                      attributions={mapArray.attributions}
+                    />
+                  </Box>
+                );
+              })}
+
             {WMSLayerState.length > 0 &&
               WMSLayerState.map((wms) => {
                 return (
@@ -95,6 +96,11 @@ const HarvesterMap: React.FC = () => {
               url="https://pta.data.lit.fmi.fi/geo/harvestability/KKL_SMK_Suomi_2021_06_01-UTM35.tif"
             />
             <LocationMarkerLayer title="Location Marker" />
+            <Box
+              sx={{ position: 'absolute', zIndex: '100', height: '60%', bottom: '0rem'}}
+              component="img"
+              src="https://desm.harvesterseasons.com/wms?REQUEST=GetLegendGraphic&VERSION=1.3.0&LAYER=gui:isobands:SWI_SWI2&sld_version=1.1.0&style=&FORMAT=image/png&WIDTH=65&HEIGHT=345"
+            ></Box>
           </Layers>
         </MapComponent>
       </Box>
