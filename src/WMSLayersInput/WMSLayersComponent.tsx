@@ -4,8 +4,7 @@ import { Box, Radio } from "@mui/material";
 interface WMSLayersComponentProps {
   name: string;
   value: string;
-  handleChange: (value: string, index: number) => void;
-  index: number;
+  handleChange: () => void;
   checked: boolean;
 }
 const WMSLayersComponent: FC<WMSLayersComponentProps> = ({
@@ -13,7 +12,6 @@ const WMSLayersComponent: FC<WMSLayersComponentProps> = ({
   checked,
   handleChange,
   value,
-  index
 }) => {
   return (
     <Box sx={{ marginBottom: "-0.9rem", padding: "0rem" }}>
@@ -22,9 +20,7 @@ const WMSLayersComponent: FC<WMSLayersComponentProps> = ({
         size="small"
         checked={checked}
         value={value}
-        onChange={(event) => {
-          handleChange(event.target.value, index);
-        }}
+        onChange={handleChange}
         inputProps={{ "aria-label": value }}
       />
       <Box component={"span"}>{name}</Box>
