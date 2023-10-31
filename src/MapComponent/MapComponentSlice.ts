@@ -39,8 +39,8 @@ const initialState: Map = {
       opacity: 0.5,
       WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion,
       legend: {
-        enabled: true,
-        width: 65,
+        enabled: false,
+        width: 20,
         height: 345
       }
     },
@@ -51,7 +51,7 @@ const initialState: Map = {
       opacity: 0.5,
       WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion,
       legend: {
-        enabled: true,
+        enabled: false,
         width: 65,
         height: 345
       }
@@ -63,9 +63,9 @@ const initialState: Map = {
       opacity: 0.5,
       WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion,
       legend: {
-        enabled: true,
-        width: 65,
-        height: 345
+        enabled: false,
+        width: 100,
+        height: 400
       }
     },
     {
@@ -75,8 +75,8 @@ const initialState: Map = {
       opacity: 0.5,
       WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion,
       legend: {
-        enabled: false,
-        width: 65,
+        enabled: true,
+        width: 10,
         height: 345
       }
     }
@@ -113,9 +113,11 @@ const mapComponentSlice = createSlice({
     ) => {
       const newState = state.WMSLayerState.map((item) => {
         if (item.id === action.payload) {
-          return { ...item, visible: true };
+          return { ...item, visible: true, legend: {...item.legend,
+            enabled: true
+          } };
         } else {
-          return { ...item, visible: false };
+          return { ...item, visible: false, legend: {...item.legend, enabled: false}};
         }
       });
       return { ...state, WMSLayerState: newState };
