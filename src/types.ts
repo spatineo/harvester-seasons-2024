@@ -125,7 +125,6 @@ export interface MapsStateProps {
 }
 
 export interface Map {
-  layerNames: string[];
   harvesterWMSCapabilities: any;
   opacityValue: number;
   position: {
