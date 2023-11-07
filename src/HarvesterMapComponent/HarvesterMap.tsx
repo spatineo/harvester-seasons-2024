@@ -83,18 +83,10 @@ const HarvesterMap: React.FC = () => {
 
                           if (Array.isArray(legendURL)) {
                             legendURL.forEach((lg) => {
-                              window.console.log(
-                                lg.size[0],
-                                "inside legendURL"
-                              );
                               width = lg.size[0];
                               height = lg.size[1];
                             });
-                            window.console.log("Accessing legend", legendURL);
                           }
-
-                          window.console.log(width);
-
                           return (
                             <Box
                               key={i}
