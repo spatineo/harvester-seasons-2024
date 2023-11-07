@@ -50,6 +50,7 @@ export function* triggerCheckUpdate({
     yield put({ type: constants.SOILWETNESS_API });
     yield put({ type: constants.SNOWHEIGHT_API });
     yield put({ type: constants.WINDGUST_API });
+    yield put({ type: constants.SETWMSLAYERINFORMATION });
   } else {
     const oneYear = utils
       .addMonths(utils.getStartSearchDate(), 12)
@@ -182,6 +183,10 @@ export function* fetchWindSpeedData({
 }
 
 export function* getCapabilitiesSaga(): SagaIterator {
+   const layers =  yield select(
+    (state: RootState) => state.mapState.WMSLayerState
+  ); 
+
   const parser = new WMSCapabilities();
   const capabilitiesUrl =
     "https://desm.harvesterseasons.com/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0";
@@ -191,47 +196,39 @@ export function* getCapabilitiesSaga(): SagaIterator {
       const responseBody = yield response.text();
       const result = yield parser.read(responseBody);
       if (result) {
-        yield put(mapActions.setHarvesterWMSCapabilities(result))
-        const layers =  yield select(
-          (state: RootState) => state.mapState.WMSLayerState
-        );
-        yield all(layers.map((l) => {
-          function findLayer(layer) {
-            let ret = null;
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-            if (l.layerName === layer.Name) {
+        window.console.log(result);
+        //yield put(mapActions.setHarvesterWMSCapabilities(result));
+        yield put(mapActions.setWMSLayerInformation(result));
+
+        yield all(
+          layers.map((l) => {
+            function findLayer(layer) {
+              let ret = null;
               // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-              ret = layer;
-            } else if (layer.Layer) {
-              for (let i = 0; i < layer.Layer.length; i++) {
-                ret = findLayer(layer.Layer[i]);
-                if (ret) break;
+              if (l.layerName === layer.Name) {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                ret = layer;
+              } else if (layer.Layer) {
+                for (let i = 0; i < layer.Layer.length; i++) {
+                  ret = findLayer(layer.Layer[i]);
+                  if (ret) break;
+                }
               }
+              return ret;
             }
-            return ret;
-          }
-      
-          const layer = findLayer(result.Capability.Layer);
-          if(layer !== null){
-            return put(mapActions.setWMSLayerInformation(layer));
-          }else {
-            put(mapActions.setWMSLayerInformation({
-              message: "Layer not found",
-              Name: "",
-              Title: "",
-              Dimension: [],
-              Style: []
-            }))
-          }
-         
-      
-        }))
-       // Todo jos findLayer ei löydy mitään - vaikka undefined
+
+            const layer = findLayer(result.Capability.Layer);
+            if (layer !== null) {
+              return put(mapActions.setWMSLayerInformation(layer));
+            } else {
+             
+              window.console.error("No layers not found");
+            }
+          })
+        ); 
+        // Todo jos findLayer ei löydy mitään - vaikka undefined
       }
-    } /* else {
-      // Handle non-OK responses, e.g., status code 4xx or 5xx
-      throw new Error(`HTTP error: ${response.status}`);
-    } */
+    }
   } catch (error) {
     if (axios.isAxiosError(error)) {
       yield call(
@@ -441,5 +438,5 @@ export function* watchHarvesterRequests(): SagaIterator {
   yield takeLatest(constants.SOILTEMPERATUE_API, soilTemperatureDataSaga);
   yield takeLatest(constants.SNOWHEIGHT_API, fetchSnowHeightDataSaga);
   yield takeLatest(actions.changeYear.type, triggerTimeSpanChange);
-  yield takeLatest(mapActions.setCapabilityLayers.type, getCapabilitiesSaga);
+  yield takeLatest(constants.SETWMSLAYERINFORMATION, getCapabilitiesSaga);
 }
