@@ -99,11 +99,20 @@ export interface Legend {
   height: number;
 }
 
+export interface LayerType {
+	Name: string,
+	Title: string,
+	Dimension: DimensionType[]
+  Style: []
+  message?: string
+}; 
+
 export interface WMSLayers {
   id: number;
   visible: boolean
   layerName: string;
   opacity: number;
+  layerInfo: null | LayerType;
   WMSTimeStrategy: WMSLayerTimeStrategy;
   legend: Legend
 }
@@ -116,6 +125,8 @@ export interface MapsStateProps {
 }
 
 export interface Map {
+  layerNames: string[];
+  harvesterWMSCapabilities: any;
   opacityValue: number;
   position: {
     lat: number | null;
@@ -124,4 +135,14 @@ export interface Map {
   };
   maps: MapsStateProps[]
   WMSLayerState: WMSLayers[]
+}
+
+export interface DimensionType {
+	name: string,
+	values: string,
+};
+
+export interface LayerInfo {
+	layer: LayerType,
+	url: string
 }
