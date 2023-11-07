@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Map, WMSLayerTimeStrategy } from "../types";
+import { Map, WMSLayerTimeStrategy, LayerType } from "../types";
 
 const initialState: Map = {
+  harvesterWMSCapabilities: null,
   opacityValue: 70,
   position: {
     lat: null,
@@ -37,6 +38,7 @@ const initialState: Map = {
       visible: false,
       layerName: "gui:isobands:CERRA_FFG-MS",
       opacity: 0.5,
+      layerInfo: null,
       WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion,
       legend: {
         enabled: false,
@@ -49,6 +51,7 @@ const initialState: Map = {
       visible: false,
       layerName: "gui:isobands:SWI_SWI2",
       opacity: 0.5,
+      layerInfo: null,
       WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion,
       legend: {
         enabled: false,
@@ -61,6 +64,7 @@ const initialState: Map = {
       visible: false,
       layerName: "gui:isobands:ERA5L_TSOIL-K",
       opacity: 0.5,
+      layerInfo: null,
       WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion,
       legend: {
         enabled: false,
@@ -73,6 +77,7 @@ const initialState: Map = {
       visible: true,
       layerName: "harvester:ecsf:HSNOW-M",
       opacity: 0.5,
+      layerInfo: null,
       WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion,
       legend: {
         enabled: true,
@@ -107,20 +112,45 @@ const mapComponentSlice = createSlice({
       });
       return { ...state, maps: newState };
     },
-    setWMSLayer: (
-      state,
-      action: PayloadAction<number>
-    ) => {
+    setWMSLayer: (state, action: PayloadAction<number>) => {
       const newState = state.WMSLayerState.map((item) => {
         if (item.id === action.payload) {
-          return { ...item, visible: true, legend: {...item.legend,
-            enabled: true
-          } };
+          return {
+            ...item,
+            visible: true,
+            legend: { ...item.legend, enabled: true }
+          };
         } else {
-          return { ...item, visible: false, legend: {...item.legend, enabled: false}};
+          return {
+            ...item,
+            visible: false,
+            legend: { ...item.legend, enabled: false }
+          };
         }
       });
       return { ...state, WMSLayerState: newState };
+    },
+    setHarvesterWMSCapabilities: (
+      state,
+      action: PayloadAction<null | Document>
+    ) => {
+      state.harvesterWMSCapabilities = action.payload;
+    },
+    setWMSLayerInformation: (state, action: PayloadAction<LayerType>) => {
+      const foundLayer = state.WMSLayerState.find(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        (layer) => {
+          if(action.payload && action.payload.Name){
+            return layer.layerName === action.payload.Name
+          }
+        }
+      );
+      if(foundLayer !== undefined) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        foundLayer.layerInfo = action.payload
+      } else {
+        window.console.error("could not find layer")
+      }
     }
   }
 });
@@ -131,4 +161,6 @@ export type ReduxActions =
   | ReturnType<typeof mapActions.setPosition>
   | ReturnType<typeof mapActions.setOpacity>
   | ReturnType<typeof mapActions.setBaseLayers>
+  | ReturnType<typeof mapActions.setHarvesterWMSCapabilities>
+  | ReturnType<typeof mapActions.setWMSLayerInformation>
   | ReturnType<typeof mapActions.setWMSLayer>;
