@@ -58,8 +58,9 @@ const Controls = () => {
           })}
         </Box>
 
-        {layerForWMS.length > 0 &&
-          layerForWMS.map((wmsLayer) => {
+        {
+          layerForWMS.filter(l => l.layerInfo).map((wmsLayer) => {
+            // layerInfo !== null ? layerInfo.Title : layerName
             return (
               <Box key={wmsLayer.layerName}>
                 <WMSLayersComponent
