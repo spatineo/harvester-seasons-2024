@@ -82,7 +82,6 @@ const HarvesterMap: React.FC = () => {
                           let height = 0;
 
                           if (Array.isArray(legendURL)) {
-                            // Access the legendURL with size: []
                             legendURL.forEach((lg) => {
                               window.console.log(
                                 lg.size[0],
