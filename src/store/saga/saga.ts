@@ -196,8 +196,6 @@ export function* getCapabilitiesSaga(): SagaIterator {
       const responseBody = yield response.text();
       const result = yield parser.read(responseBody);
       if (result) {
-        window.console.log(result);
-        //yield put(mapActions.setHarvesterWMSCapabilities(result));
         yield put(mapActions.setWMSLayerInformation(result));
 
         yield all(
@@ -221,12 +219,10 @@ export function* getCapabilitiesSaga(): SagaIterator {
             if (layer !== null) {
               return put(mapActions.setWMSLayerInformation(layer));
             } else {
-             
               window.console.error("No layers not found");
             }
           })
         ); 
-        // Todo jos findLayer ei löydy mitään - vaikka undefined
       }
     }
   } catch (error) {
@@ -340,8 +336,6 @@ export function* soilTemperatureDataSaga(): SagaIterator {
     if (axios.isAxiosError(error)) {
       const errorMessage: string | [] = error.message;
       window.console.error(errorMessage);
-      //from origin 'http://localhost:5173' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
-      //error message 408
       yield call(
         EnqueueSnackbar,
         "Error in network for soil temperature",
