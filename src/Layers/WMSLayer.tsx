@@ -12,7 +12,7 @@ import { TileWMS } from 'ol/source';
 import { BaseLayerOptions } from 'ol-layerswitcher';
 import add from 'date-fns/add';
 import { Duration } from 'date-fns';
-import { WMSLayerTimeStrategy, LayerType, LayerInfo } from '../types'
+import { WMSLayerTimeStrategy, LayerInfo } from '../types'
 
 interface WMSLayerProps {
 	layerInfo: LayerInfo | null,
@@ -24,22 +24,7 @@ interface WMSLayerProps {
 	url: string,
 };
 
-interface DimensionType {
-	name: string,
-	values: string,
-};
 
-/* interface LayerType {
-	Name: string,
-	Title: string,
-	Dimension: DimensionType[]
-}; */
-
-/* interface LayerInfo {
-	layer: LayerType,
-	url: string
-}
- */
 const TIME_DIMENSION_PERIOD_MATCHER = /([0-9-T:Z]+)\/([0-9-T:Z]+)\/(P.*)/
 
 // https://stackoverflow.com/a/69295907, modified to work with date-fns (types, plural names in output dict)
@@ -201,7 +186,6 @@ const WMSLayer: React.FC<WMSLayerProps> = ({strategy, date, opacity, visible, la
 		// add try catch
 		try {
 			if (!map || !layerInfo || !WMSLayerGroup) return;
-			//window.console.log(strategy, "stratgey")
 
 			if (time === "" && strategy !== WMSLayerTimeStrategy.NoTimeDimesion) return;
 
@@ -226,10 +210,8 @@ const WMSLayer: React.FC<WMSLayerProps> = ({strategy, date, opacity, visible, la
 				}),
 			} as BaseLayerOptions);
 
-			//map.addLayer(layer);
 			WMSLayerGroup.getLayers().push(layer)
 			return () => {
-				//map.removeLayer(layer);
 				if(WMSLayerGroup){
 					WMSLayerGroup.getLayers().remove(layer);
 				}
