@@ -60,12 +60,15 @@ const Controls = () => {
         <br/>
 
         {
-          layerForWMS.filter(l => l.layerInfo).map((wmsLayer) => {
-            // layerInfo !== null ? layerInfo.Title : layerName
+          layerForWMS.filter(l => l.layerInfo).map((wmsLayer) => {  
+            window.console.log(wmsLayer)
+            if (!wmsLayer.layerInfo) {
+              return <></>;
+            }
             return (
               <Box key={wmsLayer.layerName}>
                 <WMSLayersComponent
-                  name={wmsLayer.layerName}
+                  name={wmsLayer.layerInfo.Title ? wmsLayer.layerInfo.Title : wmsLayer.layerName}
                   checked={wmsLayer.visible}
                   value={wmsLayer.layerName}
                   handleChange={() => {
