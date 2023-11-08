@@ -5,10 +5,10 @@ import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import MapComponent from "../MapComponent/MapComponent";
 import Layers from "../Layers/Layers";
-import Map from "../Layers/BaseMap";
+import BaseMap from "../Layers/BaseMap";
 import LocationMarkerLayer from "../Layers/LocationMarker";
 import WMSLayer from "../Layers/WMSLayer";
-import { MapsStateProps, WMSLayers } from "../types";
+import { MapsStateProps, WMSLayers, Map } from "../types";
 import TrafficabilityTIFFLayer from "../Layers/TrafficabilityTIFFLayer";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
@@ -18,17 +18,17 @@ import "../Map.css";
 
 const HarvesterMap: React.FC = () => {
   const markLine = useAppSelector((state: RootState) => state.global.markLine);
-  const { maps, WMSLayerState } = useAppSelector(
+  const mapState: Map = useAppSelector(
     (state: RootState) => state.mapState
   );
   const [stateMap, setStateMap] = useState<MapsStateProps[]>([]);
   const [wmLayer, setWMLayer] = useState<WMSLayers[]>([]);
 
   useEffect(() => {
-    if (!maps || !WMSLayerState) return;
-    setStateMap(maps);
-    setWMLayer(WMSLayerState);
-  }, [maps, WMSLayerState]);
+    if (!mapState.maps || !mapState.WMSLayerState) return;
+    setStateMap(mapState.maps);
+    setWMLayer(mapState.WMSLayerState);
+  }, [mapState.maps, mapState.WMSLayerState]);
 
   return (
     <>
@@ -40,7 +40,7 @@ const HarvesterMap: React.FC = () => {
               stateMap.map((mapArray) => {
                 return (
                   <Box key={mapArray.title}>
-                    <Map
+                    <BaseMap
                       url={mapArray.url}
                       title={mapArray.title}
                       visible={mapArray.visible}

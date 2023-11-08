@@ -11,16 +11,17 @@ import Overlay from "../Overlay/Overlay";
 import WMSLayersComponent from "../WMSLayersInput/WMSLayersControl";
 import { useAppSelector, useRootDispatch } from "../store/hooks";
 import { RootState } from "../store/store";
-import { WMSLayers } from "../types";
+import { WMSLayers, Map } from "../types";
 import { mapActions } from "../MapComponent/MapComponentSlice";
 
 const Controls = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { baseLayers, map } = useContext(MapContext);
   
-  const { WMSLayerState, maps } = useAppSelector(
+  const mapState: Map = useAppSelector(
     (state: RootState) => state.mapState
   );
+
   const dispatch = useRootDispatch();
   const [layerForWMS, setLayersForWMS] = useState<WMSLayers[]>([])
   const [title, setTitle] = useState<string>("Taustakartta");
@@ -31,21 +32,21 @@ const Controls = () => {
   };
 
   useEffect(() => {
-    if (!map || !baseLayers || !WMSLayerState) return;
-    setLayersForWMS(WMSLayerState)
+    if (!map || !baseLayers || !mapState.WMSLayerState) return;
+    setLayersForWMS(mapState.WMSLayerState)
     const layers = baseLayers.getLayers();
     layers.forEach((layer) => {
       const mapTitle = layer.get("title");
       layer.setVisible(mapTitle === title);
     });
 
-  }, [baseLayers, title, map, WMSLayerState]);
+  }, [baseLayers, title, map, mapState.WMSLayerState]);
 
   return (
     <Box>
       <Overlay>
         <Box>
-          {maps.map((m) => {
+          {mapState.maps.map((m) => {
             return (
               <Box key={m.title}>
                 <LayerSeclectorComponent

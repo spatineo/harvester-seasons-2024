@@ -148,9 +148,7 @@ function createTimeSeriesQueryParameters(
   };
 }
 
-export function* fetchWindSpeedData({
-  payload
-}: ReturnType<typeof actions.setWindSpeedData>): SagaIterator {
+export function* fetchWindSpeedData(): SagaIterator {
   const userLocation = yield select(
     (state: RootState) => state.mapState.position
   );

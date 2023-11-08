@@ -9,7 +9,7 @@ import SwitchComponent from "../SwitchComponent/SwitchComponent";
 
 const OpacityComponent: React.FC = () => {
   const dispatch = useRootDispatch();
-  const { opacityValue } = useAppSelector((state: RootState) => state.mapState);
+  const opacityValue: number  = useAppSelector((state: RootState) => state.mapState.opacityValue);
 
   const { defaultColorSwitch } = useAppSelector(
     (state: RootState) => state.global

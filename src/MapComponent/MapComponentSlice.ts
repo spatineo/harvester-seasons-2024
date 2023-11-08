@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Map, WMSLayerTimeStrategy, WMSCapabilitiesLayerType } from "../types";
+import WMSCapabilities from "ol/format/WMSCapabilities";
 
 const initialState: Map = {
   harvesterWMSCapabilities: null,
@@ -134,6 +135,7 @@ const mapComponentSlice = createSlice({
       state,
       action: PayloadAction<null | WMSCapabilities>
     ) => {
+      window.console.log(action.payload)
       state.harvesterWMSCapabilities = action.payload;
     },
     setWMSLayerInformation: (state, action: PayloadAction<WMSCapabilitiesLayerType>) => {
