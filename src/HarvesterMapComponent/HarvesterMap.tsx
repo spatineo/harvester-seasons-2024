@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import MapComponent from "../MapComponent/MapComponent";
 import Layers from "../Layers/Layers";
-import Map from "../Layers/Map";
+import Map from "../Layers/BaseMap";
 import LocationMarkerLayer from "../Layers/LocationMarker";
 import WMSLayer from "../Layers/WMSLayer";
 import { MapsStateProps, WMSLayers } from "../types";
