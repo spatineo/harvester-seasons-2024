@@ -61,7 +61,6 @@ const Controls = () => {
 
         {
           layerForWMS.filter(l => l.layerInfo).map((wmsLayer) => {  
-            window.console.log(wmsLayer)
             if (!wmsLayer.layerInfo) {
               return <></>;
             }
