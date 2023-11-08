@@ -1,5 +1,10 @@
 import { FC } from "react";
-import { Box, Radio } from "@mui/material";
+import {
+  FormControl,
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+} from "@mui/material";
 
 interface LayerSelectionProps {
   value: string;
@@ -13,26 +18,29 @@ const LayerSeclectorComponent: FC<LayerSelectionProps> = ({
   checked,
 }) => {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        paddingLeft: "0.4rem",
-      }}
-    >
-      <Radio
-        size="small"
-        sx={{ margin: "0.1rem", padding: "0rem", fontSize: "0.6rem" }}
+    <FormControl>
+      <RadioGroup
+        aria-labelledby="demo-controlled-radio-buttons-group"
+        name="controlled-radio-buttons-group"
+        value={value}
         onChange={(event) => {
           handleChange(event.target.value);
         }}
-        value={value}
-        checked={checked}
-        inputProps={{ "aria-label": value }}
-      />
-      <span>{value}</span>
-    </Box>
+        sx={{ marginLeft: "1.2rem"}}
+      >
+        <FormControlLabel
+          value={value}
+          control={
+            <Radio
+              checked={checked}
+              sx={{ padding: "0rem"}}
+              size="small"
+            />
+          }
+          label={value}
+        />
+      </RadioGroup>
+    </FormControl>
   );
 };
 
