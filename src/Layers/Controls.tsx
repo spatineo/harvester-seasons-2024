@@ -8,7 +8,7 @@ import { Box } from "@mui/material";
 import MapContext from "../MapComponent/MapContext";
 import LayerSeclectorComponent from "../LayerSelector/LayerSelector";
 import Overlay from "../Overlay/Overlay";
-import WMSLayersComponent from "../WMSLayersInput/WMSLayersComponent";
+import WMSLayersComponent from "../WMSLayersInput/WMSLayersControl";
 import { useAppSelector, useRootDispatch } from "../store/hooks";
 import { RootState } from "../store/store";
 import { WMSLayers } from "../types";
@@ -57,13 +57,17 @@ const Controls = () => {
             );
           })}
         </Box>
+        <br/>
 
-        {layerForWMS.length > 0 &&
-          layerForWMS.map((wmsLayer) => {
+        {
+          layerForWMS.filter(l => l.layerInfo).map((wmsLayer) => {  
+            if (!wmsLayer.layerInfo) {
+              return <></>;
+            }
             return (
               <Box key={wmsLayer.layerName}>
                 <WMSLayersComponent
-                  name={wmsLayer.layerName}
+                  name={wmsLayer.layerInfo.Title ? wmsLayer.layerInfo.Title : wmsLayer.layerName}
                   checked={wmsLayer.visible}
                   value={wmsLayer.layerName}
                   handleChange={() => {

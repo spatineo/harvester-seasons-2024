@@ -1,3 +1,5 @@
+import WMSCapabilities from "ol/format/WMSCapabilities";
+
 export interface GraphOptions {
   title: string;
 }
@@ -99,11 +101,20 @@ export interface Legend {
   height: number;
 }
 
+export interface LayerType {
+	Name: string,
+	Title: string,
+	Dimension: DimensionType[]
+  Style: []
+  message?: string
+}; 
+
 export interface WMSLayers {
   id: number;
   visible: boolean
   layerName: string;
   opacity: number;
+  layerInfo: WMSCapabilitiesLayerType | null;
   WMSTimeStrategy: WMSLayerTimeStrategy;
   legend: Legend
 }
@@ -116,6 +127,7 @@ export interface MapsStateProps {
 }
 
 export interface Map {
+  harvesterWMSCapabilities: WMSCapabilities | null;
   opacityValue: number;
   position: {
     lat: number | null;
@@ -125,3 +137,28 @@ export interface Map {
   maps: MapsStateProps[]
   WMSLayerState: WMSLayers[]
 }
+
+export interface DimensionType {
+	name: string,
+	values: string,
+};
+
+export interface WMSCapabilitiesStyleType {
+  LegendURL: {
+    Format: string,
+    OnlineResource: string,
+    size: number[]
+  }
+}
+
+export interface WMSCapabilitiesDimensionType {
+  name: string
+  values: string
+}
+
+export interface WMSCapabilitiesLayerType {
+  Name: string,
+  Title?: string,
+  Style: WMSCapabilitiesStyleType[],
+  Dimension: WMSCapabilitiesDimensionType[]
+};

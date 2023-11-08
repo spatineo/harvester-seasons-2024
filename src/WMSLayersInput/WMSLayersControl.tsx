@@ -1,31 +1,25 @@
 import { FC } from "react";
-import {
-  FormControl,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-} from "@mui/material";
+import { FormControl, FormControlLabel, Radio, RadioGroup } from "@mui/material";
 
-interface LayerSelectionProps {
+interface WMSLayersComponentProps {
+  name: string;
   value: string;
-  handleChange: (value: string) => void;
+  handleChange: () => void;
   checked: boolean;
 }
-
-const LayerSeclectorComponent: FC<LayerSelectionProps> = ({
-  value,
-  handleChange,
+const WMSLayersComponent: FC<WMSLayersComponentProps> = ({
+  name,
   checked,
+  handleChange,
+  value,
 }) => {
   return (
-    <FormControl>
+    <FormControl size="small" >
       <RadioGroup
         aria-labelledby="demo-controlled-radio-buttons-group"
         name="controlled-radio-buttons-group"
         value={value}
-        onChange={(event) => {
-          handleChange(event.target.value);
-        }}
+        onChange={handleChange}
         sx={{ marginLeft: "1.2rem"}}
       >
         <FormControlLabel
@@ -37,11 +31,11 @@ const LayerSeclectorComponent: FC<LayerSelectionProps> = ({
               size="small"
             />
           }
-          label={value}
+          label={name}
         />
       </RadioGroup>
     </FormControl>
   );
 };
 
-export default LayerSeclectorComponent;
+export default WMSLayersComponent;

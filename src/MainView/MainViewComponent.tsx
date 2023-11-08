@@ -49,6 +49,7 @@ function MainViewComponent() {
     dispatch({ type: constants.SOILTEMPERATUE_API });
     dispatch({ type: constants.SNOWHEIGHT_API });
     dispatch({ type: constants.WINDGUST_API });
+    dispatch({ type: constants.SETWMSLAYERINFORMATION})
   }, []);
 
   useEffect(() => {

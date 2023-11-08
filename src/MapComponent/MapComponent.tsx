@@ -91,7 +91,6 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
       dispatch(mapActions.setPosition({ lat: coord[1], lon: coord[0] }));
     });
 
-    
     const actualLayers: LayerGroup[] = [];
     const layerGroups = new LayerGroup({
       layers: actualLayers

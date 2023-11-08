@@ -12,40 +12,18 @@ import { TileWMS } from 'ol/source';
 import { BaseLayerOptions } from 'ol-layerswitcher';
 import add from 'date-fns/add';
 import { Duration } from 'date-fns';
-import { WMSLayerTimeStrategy } from '../types'
+import { WMSLayerTimeStrategy, WMSCapabilitiesLayerType } from '../types'
 
-/* export enum WMSLayerTimeStrategy {
-	NoTimeDimesion,
-	Latest,
-	LatestBeforeNow,
-	EarliestAfterNow,
-	ForceSelectedDate
-}
- */
 interface WMSLayerProps {
-	layerName: string,
-	capabilities: any,
+	layerInfo: WMSCapabilitiesLayerType,
 	strategy: WMSLayerTimeStrategy,
 	date?: string,
-	opacity?: number,
-	visible?: boolean,
+	opacity: number,
+	visible: boolean,
+	title: string,
+	url: string,
 };
 
-interface DimensionType {
-	name: string,
-	values: string,
-};
-
-interface LayerType {
-	Name: string,
-	Title: string,
-	Dimension: DimensionType[]
-};
-
-interface LayerInfo {
-	layer: LayerType,
-	url: string
-}
 
 const TIME_DIMENSION_PERIOD_MATCHER = /([0-9-T:Z]+)\/([0-9-T:Z]+)\/(P.*)/
 
@@ -87,8 +65,8 @@ function parseISODuration(s) : Duration {
 
 }
 
-function getLatestTimestamp(layerInfo : LayerInfo) : Date | null {
-	const values = layerInfo.layer.Dimension.find((d) => d.name === 'time')?.values
+function getLatestTimestamp(layerInfo : WMSCapabilitiesLayerType) : Date | null {
+	const values = layerInfo.Dimension.find((d) => d.name === 'time')?.values
 
 	if (!values) {
 		window.console.error('No time dimension values in layer', layerInfo);
@@ -112,8 +90,8 @@ function getLatestTimestamp(layerInfo : LayerInfo) : Date | null {
 	return availableTimestamps[availableTimestamps.length-1]
 }
 
-function getNearestTimestamps(layerInfo: LayerInfo, date : Date) : (null | Date)[] | undefined {
-	const values = layerInfo.layer.Dimension.find((d) => d.name === 'time')?.values
+function getNearestTimestamps(layerInfo: WMSCapabilitiesLayerType, date : Date) : (null | Date)[] | undefined {
+	const values = layerInfo.Dimension.find((d) => d.name === 'time')?.values
 
 	if (!values) {
 		window.console.error('No time dimension values in layer', layerInfo);
@@ -166,50 +144,20 @@ function getNearestTimestamps(layerInfo: LayerInfo, date : Date) : (null | Date)
 	return [availableTimestamps[availableTimestamps.length-1], null];
 }
 
-const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilities, strategy, date, opacity, visible}) => {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const WMSLayer: React.FC<WMSLayerProps> = ({strategy, date, opacity, visible, layerInfo, url}) => {
 	const { map, WMSLayerGroup } = useContext(MapContext);
-
-	const [ layerInfo, setLayerInfo ] = useState<LayerInfo>();
 	const [ time, setTime ] = useState<string>("");
-
-	useEffect(() => {
-		if (!capabilities || !layerName) return;
-
-		function findLayer(layer) {
-			let ret = null;
-			if (layer.Name === layerName) {
-				ret = layer;
-			} else  if (layer.Layer) {
-				for (let i = 0; i < layer.Layer.length; i++) {
-					ret = findLayer(layer.Layer[i])
-					if (ret) break;
-				}
-			}
-			return ret
-		}
-
-		const layer = findLayer(capabilities.Capability.Layer);
-
-		if (!layer) {
-			window.console.error('NO LAYER', layerName)
-			return;
-		}
-		const url = capabilities.Capability.Request.GetMap.DCPType.find((d : any) => d.HTTP).HTTP.Get.OnlineResource;
-
-		setLayerInfo({ layer, url });
-
-	}, [layerName, capabilities]);
-
+	
 	useEffect(() => {
 		if (!map || !layerInfo) return;
-
+		
 		let timeStamp : Date | null = null;
 
 		if (strategy === WMSLayerTimeStrategy.ForceSelectedDate) {
 			timeStamp = new Date(date ? (date.substring(0,10)+"T00:00:00Z") : new Date());
 
 		} else if (strategy === WMSLayerTimeStrategy.Latest) {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 			timeStamp = getLatestTimestamp(layerInfo);
 
 		} else if (strategy !== WMSLayerTimeStrategy.NoTimeDimesion) {
@@ -242,7 +190,7 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilities, strategy, d
 			if (time === "" && strategy !== WMSLayerTimeStrategy.NoTimeDimesion) return;
 
 			const params : Record<string, string | boolean> = {
-				'LAYERS': layerInfo.layer.Name,
+				'LAYERS': layerInfo.Name,
 				'TILED': true,
 				'VERSION': '1.3.0',
 				'TRANSPARENT': true
@@ -254,18 +202,16 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilities, strategy, d
 
 			const layer = new TileLayer({
 				opacity: (opacity !== null && opacity !== undefined) ? opacity : 0.5,
-				title: layerInfo.layer.Title,
+				title: layerInfo?.Title,
 				visible,
 				source: new TileWMS({
-					url: layerInfo.url,
+					url,
 					params
 				}),
 			} as BaseLayerOptions);
 
-			//map.addLayer(layer);
 			WMSLayerGroup.getLayers().push(layer)
 			return () => {
-				//map.removeLayer(layer);
 				if(WMSLayerGroup){
 					WMSLayerGroup.getLayers().remove(layer);
 				}
@@ -273,7 +219,7 @@ const WMSLayer: React.FC<WMSLayerProps> = ({layerName, capabilities, strategy, d
 		} catch (error){
 			window.console.error(error)
 		}
-	}, [map, layerInfo, time, strategy, opacity, WMSLayerGroup]);
+	}, [map, layerInfo, time, strategy, opacity, visible, WMSLayerGroup]);
 
 	return null;
 };
