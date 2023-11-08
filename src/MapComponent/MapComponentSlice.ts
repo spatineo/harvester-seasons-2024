@@ -39,7 +39,7 @@ const initialState: Map = {
       layerName: "gui:isobands:CERRA_FFG-MS",
       opacity: 0.5,
       layerInfo: null,
-      WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion,
+      WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate,
       legend: {
         enabled: false,
         width: 20,
@@ -52,7 +52,7 @@ const initialState: Map = {
       layerName: "gui:isobands:SWI_SWI2",
       opacity: 0.5,
       layerInfo: null,
-      WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion,
+      WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate,
       legend: {
         enabled: false,
         width: 65,
@@ -65,7 +65,7 @@ const initialState: Map = {
       layerName: "gui:isobands:ERA5L_TSOIL-K",
       opacity: 0.5,
       layerInfo: null,
-      WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion,
+      WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate,
       legend: {
         enabled: false,
         width: 100,
@@ -78,7 +78,7 @@ const initialState: Map = {
       layerName: "harvester:ecsf:HSNOW-M",
       opacity: 0.5,
       layerInfo: null,
-      WMSTimeStrategy: WMSLayerTimeStrategy.NoTimeDimesion,
+      WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate,
       legend: {
         enabled: true,
         width: 10,

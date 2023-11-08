@@ -26,7 +26,6 @@ const HarvesterMap: React.FC = () => {
     useAppSelector((state: RootState) => state.mapState);
   const [stateMap, setStateMap] = useState<MapsStateProps[]>([]);
   const [wmLayer, setWMLayer] = useState<WMSLayers[]>([]);
-  const strategy =  WMSLayerTimeStrategy.ForceSelectedDate;
 
   useEffect(() => {
     if (!maps || !WMSLayerState) return;
@@ -59,10 +58,12 @@ const HarvesterMap: React.FC = () => {
                 return (
                   <Box key={l.layerName}>
                     <WMSLayer
-                      strategy={strategy}
+                      strategy={l.WMSTimeStrategy}
                       date={markLine}
                       title={l.layerInfo ? l.layerInfo.Title : l.layerName}
                       layerInfo={l.layerInfo}
+                      opacity={l.opacity}
+                      visible={l.visible}
                       url={"https://desm.harvesterseasons.com/wms"}
                     />
                     {l.legend.enabled &&

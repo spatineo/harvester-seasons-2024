@@ -15,11 +15,11 @@ import { Duration } from 'date-fns';
 import { WMSLayerTimeStrategy, LayerType, LayerInfo } from '../types'
 
 interface WMSLayerProps {
-	layerInfo: LayerInfo,
+	layerInfo: LayerInfo | null,
 	strategy: WMSLayerTimeStrategy,
 	date?: string,
-	opacity?: number,
-	visible?: boolean,
+	opacity: number,
+	visible: boolean,
 	title: string,
 	url: string,
 };
@@ -218,7 +218,7 @@ const WMSLayer: React.FC<WMSLayerProps> = ({strategy, date, opacity, visible, la
 
 			const layer = new TileLayer({
 				opacity: (opacity !== null && opacity !== undefined) ? opacity : 0.5,
-				title: layerInfo.Title,
+				title: layerInfo?.Title,
 				visible,
 				source: new TileWMS({
 					url,
@@ -237,7 +237,7 @@ const WMSLayer: React.FC<WMSLayerProps> = ({strategy, date, opacity, visible, la
 		} catch (error){
 			window.console.error(error)
 		}
-	}, [map, layerInfo, time, strategy, opacity, WMSLayerGroup]);
+	}, [map, layerInfo, time, strategy, opacity, visible, WMSLayerGroup]);
 
 	return null;
 };
