@@ -51,7 +51,7 @@ const HarvesterMap: React.FC = () => {
               })}
             {wmLayer.map((l) => {
               if (!l.layerInfo) {
-                return <></>;
+                return <Box key={l.layerName}></Box>;
               }
 
               return (
