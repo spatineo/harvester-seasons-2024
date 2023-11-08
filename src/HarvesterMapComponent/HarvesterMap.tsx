@@ -9,7 +9,6 @@ import Map from "../Layers/Map";
 import LocationMarkerLayer from "../Layers/LocationMarker";
 import WMSLayer from "../Layers/WMSLayer";
 import {
-  WMSLayerTimeStrategy,
   MapsStateProps,
   WMSLayers,
 } from "../types";
@@ -53,14 +52,17 @@ const HarvesterMap: React.FC = () => {
                 );
               })}
             {wmLayer
-              .filter((f) => f.layerInfo)
               .map((l) => {
+                if (!l.layerInfo) {
+                  return <></>;
+                }
+
                 return (
                   <Box key={l.layerName}>
                     <WMSLayer
                       strategy={l.WMSTimeStrategy}
                       date={markLine}
-                      title={l.layerInfo ? l.layerInfo.Title : l.layerName}
+                      title={(l.layerInfo && l.layerInfo.Title) ? l.layerInfo.Title : l.layerName}
                       layerInfo={l.layerInfo}
                       opacity={l.opacity}
                       visible={l.visible}

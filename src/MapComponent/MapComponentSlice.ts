@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Map, WMSLayerTimeStrategy, LayerType } from "../types";
+import { Map, WMSLayerTimeStrategy, WMSCapabilitiesLayerType } from "../types";
 
 const initialState: Map = {
   harvesterWMSCapabilities: null,
@@ -132,11 +132,11 @@ const mapComponentSlice = createSlice({
     },
     setHarvesterWMSCapabilities: (
       state,
-      action: PayloadAction<null | Document>
+      action: PayloadAction<null | WMSCapabilities>
     ) => {
       state.harvesterWMSCapabilities = action.payload;
     },
-    setWMSLayerInformation: (state, action: PayloadAction<LayerType>) => {
+    setWMSLayerInformation: (state, action: PayloadAction<WMSCapabilitiesLayerType>) => {
       const foundLayer = state.WMSLayerState.find(
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         (layer) => {

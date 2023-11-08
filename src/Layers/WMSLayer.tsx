@@ -12,10 +12,10 @@ import { TileWMS } from 'ol/source';
 import { BaseLayerOptions } from 'ol-layerswitcher';
 import add from 'date-fns/add';
 import { Duration } from 'date-fns';
-import { WMSLayerTimeStrategy, LayerInfo } from '../types'
+import { WMSLayerTimeStrategy, WMSCapabilitiesLayerType } from '../types'
 
 interface WMSLayerProps {
-	layerInfo: LayerInfo | null,
+	layerInfo: WMSCapabilitiesLayerType,
 	strategy: WMSLayerTimeStrategy,
 	date?: string,
 	opacity: number,
@@ -65,8 +65,8 @@ function parseISODuration(s) : Duration {
 
 }
 
-function getLatestTimestamp(layerInfo : LayerInfo) : Date | null {
-	const values = layerInfo.layer.Dimension.find((d) => d.name === 'time')?.values
+function getLatestTimestamp(layerInfo : WMSCapabilitiesLayerType) : Date | null {
+	const values = layerInfo.Dimension.find((d) => d.name === 'time')?.values
 
 	if (!values) {
 		window.console.error('No time dimension values in layer', layerInfo);
@@ -90,8 +90,8 @@ function getLatestTimestamp(layerInfo : LayerInfo) : Date | null {
 	return availableTimestamps[availableTimestamps.length-1]
 }
 
-function getNearestTimestamps(layerInfo: LayerInfo, date : Date) : (null | Date)[] | undefined {
-	const values = layerInfo.layer.Dimension.find((d) => d.name === 'time')?.values
+function getNearestTimestamps(layerInfo: WMSCapabilitiesLayerType, date : Date) : (null | Date)[] | undefined {
+	const values = layerInfo.Dimension.find((d) => d.name === 'time')?.values
 
 	if (!values) {
 		window.console.error('No time dimension values in layer', layerInfo);
