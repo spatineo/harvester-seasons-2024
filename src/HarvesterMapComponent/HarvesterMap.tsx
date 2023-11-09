@@ -120,7 +120,7 @@ const HarvesterMap: React.FC = () => {
 					*/}
             <TrafficabilityTIFFLayer
               title="Trafficability"
-              url="https://pta.data.lit.fmi.fi/geo/harvestability/KKL_SMK_Suomi_2021_06_01-UTM35.tif"
+              url="https://copernicus.data.lit.fmi.fi/trafficability/Europe-2023-trfy-r30m.tif"
             />
             <LocationMarkerLayer title="Location Marker" />
           </Layers>
