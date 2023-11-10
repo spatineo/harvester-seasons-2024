@@ -120,7 +120,6 @@ const TraficabilityGraphComponent: React.FC<
                       .map((value) => Number(value));
 
                     if (numericValues.length > 0) {
-                      //window.console.log(new Set([...numericValues]))
                       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                       const uniqueNumericValues = Array.from(
                         new Set([...numericValues])

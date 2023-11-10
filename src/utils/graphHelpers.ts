@@ -34,16 +34,12 @@ const enFormat = (value: Date) => {
   const month = monthNames[date.getMonth()];
   return `${month} {yyyy}`;
 }
-const format = () => {
-  return `{MMM} {yyyy}`;
-}
 
 export function createTrafficabilityGraphOptions(
   parameters: Parameter[],
   values: [],
   windGustArray: [],
   mark,
-  summerSeries: (string | number)[],
   winterSeries: (string | number)[],
   languageObject: {
     summerIndex: string,
@@ -126,21 +122,21 @@ export function createTrafficabilityGraphOptions(
         name: `${languageObject.summerIndex}`,
         symbol: "none",
         itemStyle: {
-          color: "#028A0F"
+          color: "#0073CF"
         },
         lineStyle: {
           type: "solid",
-          width: 1.5
+          width: 2
         },
         areaStyle: {
-          color: "rgba(0, 12, 0, 0.3)"
+          color: "rgba(0,115,207, 0.3)"
         },
         yAxisIndex: 0,
         data: [
           ...values.map(
-            (t: { utctime: string; [key: string]: string }, index) => {
+            (t: { utctime: string}) => {
               const summerValue =
-                summerSeries[index] !== undefined ? summerSeries[index] : "nan";
+                t['HARVIDX{55;SWI2:ECXSF:5062:1:0:0:0-50}'] !== null ? t['HARVIDX{55;SWI2:ECXSF:5062:1:0:0:0-50}'] : "nan";
               return [new Date(t.utctime).toISOString(), summerValue];
             }
           )
@@ -151,7 +147,7 @@ export function createTrafficabilityGraphOptions(
         symbol: "none",
         name: `${languageObject.winterIndex}`,
         itemStyle: {
-          color: "#0080FF"
+          color: "green"
         },
         lineStyle: {
           type: "solid",
@@ -166,7 +162,7 @@ export function createTrafficabilityGraphOptions(
             (t: { utctime: string; [key: string]: string }, index) => {
               return [
                 new Date(t.utctime).toISOString(),
-                ...parameters.map((p) => {
+                ...parameters.map(() => {
                   if (t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"] !== null) {
                     return Math.max(
                       Number(
@@ -180,7 +176,7 @@ export function createTrafficabilityGraphOptions(
                     t[
                       "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"
                     ] !== null ||
-                    (winterSeries[index] !== null &&
+                    (!isNaN(Number(winterSeries[index]))&&
                       winterSeries.length == values.length)
                   ) {
                     return Math.max(
@@ -223,11 +219,14 @@ export function createTrafficabilityGraphOptions(
         name: `${languageObject.summerTenDays}`,
         symbol: "none",
         itemStyle: {
-          color: "purple"
+          color: "#610C04"
         },
         lineStyle: {
           type: "solid",
-          width: 1
+          width: 2
+        },
+        areaStyle: {
+          color: "rgba(97,12,4, 0.3)"
         },
         yAxisIndex: 0,
         data: [
@@ -245,18 +244,18 @@ export function createTrafficabilityGraphOptions(
         name: `${languageObject.winterTenDays}`,
         symbol: "none",
         itemStyle: {
-          color: "#1D5B79"
+          color: "black"
         },
         lineStyle: {
           type: "solid",
-          width: 1
+          width: 2
         },
         yAxisIndex: 0,
         data: [
           ...values.map((t: { utctime: string; [key: string]: string }) => {
             return [
               new Date(t.utctime).toISOString(),
-              ...parameters.map((p) => {
+              ...parameters.map(() => {
                 if (t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"] !== null) {
                   return Math.max(
                     Number(
@@ -296,7 +295,9 @@ export function createOptions(
   values: Smartmet[],
   mark: string,
   padding: [number, number, number, number],
-  locale: string
+  locale: string,
+  yValueMax: number,
+  yValueMin: number
 ) {
   return {
     animation: false,
@@ -317,7 +318,9 @@ export function createOptions(
       nameLocation: "middle",
       nameTextStyle: {
         padding
-      }
+      },
+      max: yValueMax,
+      min: yValueMin
     },
     xAxis: {
       type: "time",
@@ -357,10 +360,10 @@ export function createOptions(
         const codes = p.code;
         return {
           type: "line",
-          symbolSize: 2,
+          symbolSize: 1,
           name: `SH-${i}`,
           data: values.map(
-            (d: { utctime: string; [key: string]: string | number | null }) => {
+            (d: { utctime: string }) => {
               // eslint-disable-next-line @typescript-eslint/no-unsafe-return
               return [d.utctime, d[codes]];
             }

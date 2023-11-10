@@ -97,7 +97,7 @@ const HarvesterMap: React.FC = () => {
                             sx={{
                               position: "absolute",
                               zIndex: "100",
-                              bottom: "-0.6rem",
+                              bottom: "1rem",
                               left: "0.4rem",
                               background: "white",
                             }}

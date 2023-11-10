@@ -129,23 +129,22 @@ const Graphs: React.FC = () => {
   }, [timelineRef]);
 
   useEffect(() => {
+    if (!soilWetnessData || !soilTemperatureData || !snowHeightData) return;
+
     const snowHeightScaled: Smartmet[] = scaleEnsembleData(
       snowHeightData,
       "HSNOW-M:SMARTOBS:13:4"
     );
-    const soilWetnessScaled: Smartmet[] = scaleEnsembleData(
-      soilWetnessData,
-      "SWVL2-M3M3:SMARTMET:5015"
-    );
-    if (soilWetnessData || soilTemperatureData || snowHeightData) {
       if (!checked) {
         const soilWetness = createOptions(
           { title: "Soil Wetness (m³/m³)" },
           graphParameters.twelveMonthParams.soilWetness,
-          soilWetnessScaled,
+          soilWetnessData,
           markLineDate,
           [0, 0, 16, 0],
-          lang
+          lang,
+          1,
+          0
         );
         const soilTemperature = createOptions(
           { title: "Soil Temperature (°C)" },
@@ -153,28 +152,34 @@ const Graphs: React.FC = () => {
           soilTemperatureData,
           markLineDate,
           [0, 0, 16, 0],
-          lang
+          lang,
+          30,
+          -30
         );
-
         const snowHeight = createOptions(
           { title: "Snow Height (m)" },
           graphParameters.twelveMonthParams.snowHeight,
           snowHeightScaled,
           markLineDate,
           [0, 0, 16, 0],
-          lang
+          lang,
+          1.5,
+          0
         );
         setSoilWetnessOption(soilWetness);
         setSnowHeightOption(snowHeight);
         setSoilTemperatureOption(soilTemperature);
+        
       } else {
         const soilWetness = createOptions(
           { title: "Soil Wetness (m³/m³)" },
           graphParameters.tenYearParams.soilWetness,
-          soilWetnessScaled,
+          soilWetnessData,
           markLineDate,
           [0, 0, 16, 0],
-          lang
+          lang,
+          1,
+          0
         );
         const soilTemperature = createOptions(
           { title: "Soil Temperature (°C)" },
@@ -182,7 +187,9 @@ const Graphs: React.FC = () => {
           soilTemperatureData,
           markLineDate,
           [0, 0, 16, 0],
-          lang
+          lang,
+          30,
+          -30
         );
         const snowHeight = createOptions(
           { title: "Snow Height (m)" },
@@ -190,13 +197,14 @@ const Graphs: React.FC = () => {
           snowHeightScaled,
           markLineDate,
           [0, 0, 16 , 0],
-          lang
+          lang,
+          1.5,
+          0
         );
         setSnowHeightOption(snowHeight);
         setSoilTemperatureOption(soilTemperature);
         setSoilWetnessOption(soilWetness);
       }
-    }
   }, [
     soilWetnessData,
     snowHeightData,

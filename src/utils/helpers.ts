@@ -60,12 +60,13 @@ export function soilWetnesstApiParams() {
   const arr: Parameter[] = [];
   for (let i = 0; i <= 50; i++) {
     arr.push({
-      code: `VSW-M3M3:ECBSF:5022:9:7:0:${i}`
+     // code: `VSW-M3M3:ECBSF:5022:9:7:0:${i}`,
+      code: `SWI2-0TO1:ECXSF:5062:1:0:0:${i};100}`
     });
   }
   return arr;
 }
-
+//DIV{SWI2:ECXSF:5062:1:0:0:X;100} sijaan voi käyttää nyt myös SWI2-0TO1:ECXSF:5062:1:0:0:X
 export function getValueFromRedux(value: StartEndTimeSpan): StartEndTimeSpan {
   const startEndTimeSpan = value;
   return startEndTimeSpan;
