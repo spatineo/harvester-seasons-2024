@@ -255,33 +255,19 @@ export function* fetchTrafficabilityDataSaga(): SagaIterator {
         (state: RootState) =>
           state.global.parameters.twelveMonthParams.trafficability
       );
-
-  const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
-  const modifiedEndDate = new Date(startEndTimeSpan.end_time).toISOString();
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-  const lonlat = `${userLocation.lat},${userLocation.lon}`;
   try {
     const response = yield call(
-      // eslint-disable-next-line @typescript-eslint/unbound-method
       axios.get,
       timeSeriesServiceURL,
-      {
-        params: {
-          latlon: `${lonlat}`,
-          param:
-            "utctime," + parameters.map((p: Parameter) => p.code).join(","),
-          starttime: modifiedStartDate,
-          endtime: modifiedEndDate,
-          timestep: startEndTimeSpan.time_step,
-          format: "json",
-          source: "grid",
-          tz: "utc",
-          timeformat: "xml"
-        }
-      }
+      createTimeSeriesQueryParameters(
+        startEndTimeSpan,
+        parameters,
+        userLocation
+      )
     );
-
+   
     if (response.status === 200) {
+     
       yield put(actions.setTrafficabilityData(response.data));
     }
   } catch (error) {
@@ -315,7 +301,6 @@ export function* soilTemperatureDataSaga(): SagaIterator {
         (state: RootState) =>
           state.global.parameters.twelveMonthParams.soilTemperature
       );
-
   try {
     const response = yield call(
       axios.get,
