@@ -368,7 +368,6 @@ export function createOptions(
           data: values.map(
             (d: { utctime: string }) => {
               // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-              //window.console.log([d.utctime, d[codes]])
               return [d.utctime, d[codes]];
             }
           )
