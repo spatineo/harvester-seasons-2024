@@ -129,6 +129,8 @@ const Graphs: React.FC = () => {
   }, [timelineRef]);
 
   useEffect(() => {
+    if (!soilWetnessData || !soilTemperatureData || !snowHeightData) return;
+
     const snowHeightScaled: Smartmet[] = scaleEnsembleData(
       snowHeightData,
       "HSNOW-M:SMARTOBS:13:4"
@@ -137,7 +139,7 @@ const Graphs: React.FC = () => {
       soilWetnessData,
       "SWVL2-M3M3:SMARTMET:5015"
     );
-    if (soilWetnessData || soilTemperatureData || snowHeightData) {
+    
       if (!checked) {
         const soilWetness = createOptions(
           { title: "Soil Wetness (m³/m³)" },
@@ -167,6 +169,7 @@ const Graphs: React.FC = () => {
         setSoilWetnessOption(soilWetness);
         setSnowHeightOption(snowHeight);
         setSoilTemperatureOption(soilTemperature);
+        
       } else {
         const soilWetness = createOptions(
           { title: "Soil Wetness (m³/m³)" },
@@ -196,7 +199,6 @@ const Graphs: React.FC = () => {
         setSoilTemperatureOption(soilTemperature);
         setSoilWetnessOption(soilWetness);
       }
-    }
   }, [
     soilWetnessData,
     snowHeightData,
