@@ -138,7 +138,6 @@ export function createTrafficabilityGraphOptions(
         data: [
           ...values.map(
             (t: { utctime: string}) => {
-              //window.console.log(t)
               const summerValue =
                 t['HARVIDX{55;SWI2:ECXSF:5062:1:0:0:0-50}'] !== null ? t['HARVIDX{55;SWI2:ECXSF:5062:1:0:0:0-50}'] : "nan";
               return [new Date(t.utctime).toISOString(), summerValue];
