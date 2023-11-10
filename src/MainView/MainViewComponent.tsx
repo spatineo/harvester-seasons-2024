@@ -143,7 +143,7 @@ function MainViewComponent() {
   return (
     <Container maxWidth="lg">
       <Box>
-        {trafficabilityData.length > 0 ? (
+        {(trafficabilityData.length > 0 &&  soilWetnessData.length > 0 ) ? (
           <TraficabilityGraph
             option={trafficabilityGraphOption}
             onGraphClick={function (xAxisData: string): void {
