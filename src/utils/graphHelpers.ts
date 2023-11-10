@@ -132,7 +132,7 @@ export function createTrafficabilityGraphOptions(
           width: 2
         },
         areaStyle: {
-          color: "rgba(0, 12, 0, 0.3)"
+          color: "rgba(0,115,207, 0.3)"
         },
         yAxisIndex: 0,
         data: [
@@ -155,7 +155,7 @@ export function createTrafficabilityGraphOptions(
         },
         lineStyle: {
           type: "solid",
-          width: 2
+          width: 1.5
         },
         areaStyle: {
           color: "rgba(2, 138, 15, 0.5)"
@@ -192,7 +192,6 @@ export function createTrafficabilityGraphOptions(
                       Number(winterSeries[index])
                     );
                   } else {
-                    window.console.log('nan')
                     return "nan";
                   }
                 })
@@ -229,6 +228,9 @@ export function createTrafficabilityGraphOptions(
         lineStyle: {
           type: "solid",
           width: 2
+        },
+        areaStyle: {
+          color: "rgba(97,12,4, 0.3)"
         },
         yAxisIndex: 0,
         data: [
