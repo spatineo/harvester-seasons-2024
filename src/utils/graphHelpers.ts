@@ -361,7 +361,6 @@ export function createOptions(
         }
       },
       ...parameters.map((p: { code: string }, i: number) => {
-        window.console.log(p)
         const codes = p.code;
         return {
           type: "line",
