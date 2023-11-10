@@ -34,9 +34,6 @@ const enFormat = (value: Date) => {
   const month = monthNames[date.getMonth()];
   return `${month} {yyyy}`;
 }
-const format = () => {
-  return `{MMM} {yyyy}`;
-}
 
 export function createTrafficabilityGraphOptions(
   parameters: Parameter[],
