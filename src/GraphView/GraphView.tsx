@@ -135,10 +135,6 @@ const Graphs: React.FC = () => {
       snowHeightData,
       "HSNOW-M:SMARTOBS:13:4"
     );
-    const soilWetnessScaled: Smartmet[] = scaleEnsembleData(
-      soilWetnessData,
-      "SWVL2-M3M3:SMARTMET:5015"
-    );
       if (!checked) {
         const soilWetness = createOptions(
           { title: "Soil Wetness (m³/m³)" },
