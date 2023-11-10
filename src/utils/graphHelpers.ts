@@ -299,7 +299,9 @@ export function createOptions(
   values: Smartmet[],
   mark: string,
   padding: [number, number, number, number],
-  locale: string
+  locale: string,
+  yValueMax: number,
+  yValueMin: number
 ) {
   return {
     animation: false,
@@ -320,7 +322,9 @@ export function createOptions(
       nameLocation: "middle",
       nameTextStyle: {
         padding
-      }
+      },
+      max: yValueMax,
+      min: yValueMin
     },
     xAxis: {
       type: "time",
@@ -357,14 +361,16 @@ export function createOptions(
         }
       },
       ...parameters.map((p: { code: string }, i: number) => {
+        window.console.log(p)
         const codes = p.code;
         return {
           type: "line",
           symbolSize: 1,
           name: `SH-${i}`,
           data: values.map(
-            (d: { utctime: string; [key: string]: string | number | null }) => {
+            (d: { utctime: string }) => {
               // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+              //window.console.log([d.utctime, d[codes]])
               return [d.utctime, d[codes]];
             }
           )
