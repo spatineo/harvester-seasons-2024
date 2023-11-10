@@ -171,7 +171,7 @@ export function* fetchWindSpeedData(): SagaIterator {
       yield put(actions.setWindSpeedData(tmp));
     }
   } catch (e) {
-    window.console.log(e);
+    window.console.error(e);
     yield call(
       EnqueueSnackbar,
       "Error in network for Wind gust server",
