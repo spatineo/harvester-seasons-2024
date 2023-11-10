@@ -17,7 +17,6 @@ import { languages } from "../Lang/languages";
 import { RootState } from "../store/store";
 import { createTrafficabilityGraphOptions } from "../utils/graphHelpers";
 import {
-  harvidx,
   ensembleListSmartIdx,
   scalingFunction,
   ensover,
@@ -56,23 +55,12 @@ function MainViewComponent() {
     if (!soilWetnessData || !snowHeightData || !soilTemperatureData) {
       return;
     }
-    const ensembleSoilWetness = ensembleListSmartIdx(
-      soilWetnessData,
-      "SWVL2-M3M3:SMARTMET:5015"
-    );
 
     const ensembleSnowHeight = ensembleListSmartIdx(
       snowHeightData,
       "HSNOW-M:SMARTOBS:13:4"
     );
-    const dataSWscaled = scalingFunction(
-      soilWetnessData,
-      ensembleSoilWetness.ensembleList,
-      ensembleSoilWetness.smartId,
-      50,
-      "SWVL2-M3M3:SMARTMET:5015"
-    );
-
+   
     const dataSHscaled = scalingFunction(
       snowHeightData,
       ensembleSnowHeight.ensembleList,
@@ -80,14 +68,6 @@ function MainViewComponent() {
       50,
       "HSNOW-M:SMARTOBS:13:4",
       "HSNOW-M:SMARTMET:5027"
-    );
-
-    const summer1series = harvidx(
-      0.4,
-      dataSWscaled,
-      ensembleSoilWetness.ensembleList,
-      50,
-      "SWVL2-M3M3:SMARTMET:5015"
     );
 
     const winter1series = ensover(
@@ -122,7 +102,6 @@ function MainViewComponent() {
         trafficabilityData,
         windSpeedData,
         markLine,
-        summer1series,
         winter1series,
         languageObject,
         lang
