@@ -139,7 +139,6 @@ const Graphs: React.FC = () => {
       soilWetnessData,
       "SWVL2-M3M3:SMARTMET:5015"
     );
-    window.console.log(soilWetnessData)
       if (!checked) {
         const soilWetness = createOptions(
           { title: "Soil Wetness (m³/m³)" },
