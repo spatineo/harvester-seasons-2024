@@ -43,7 +43,6 @@ export function createTrafficabilityGraphOptions(
   values: [],
   windGustArray: [],
   mark,
-  summerSeries: (string | number)[],
   winterSeries: (string | number)[],
   languageObject: {
     summerIndex: string,
@@ -126,11 +125,11 @@ export function createTrafficabilityGraphOptions(
         name: `${languageObject.summerIndex}`,
         symbol: "none",
         itemStyle: {
-          color: "#028A0F"
+          color: "#0073CF"
         },
         lineStyle: {
           type: "solid",
-          width: 1.5
+          width: 2
         },
         areaStyle: {
           color: "rgba(0, 12, 0, 0.3)"
@@ -138,9 +137,10 @@ export function createTrafficabilityGraphOptions(
         yAxisIndex: 0,
         data: [
           ...values.map(
-            (t: { utctime: string; [key: string]: string }, index) => {
+            (t: { utctime: string}) => {
+              //window.console.log(t)
               const summerValue =
-                summerSeries[index] !== undefined ? summerSeries[index] : "nan";
+                t['HARVIDX{55;SWI2:ECXSF:5062:1:0:0:0-50}'] !== null ? t['HARVIDX{55;SWI2:ECXSF:5062:1:0:0:0-50}'] : "nan";
               return [new Date(t.utctime).toISOString(), summerValue];
             }
           )
@@ -151,11 +151,11 @@ export function createTrafficabilityGraphOptions(
         symbol: "none",
         name: `${languageObject.winterIndex}`,
         itemStyle: {
-          color: "#0080FF"
+          color: "green"
         },
         lineStyle: {
           type: "solid",
-          width: 1.5
+          width: 2
         },
         areaStyle: {
           color: "rgba(2, 138, 15, 0.5)"
@@ -166,7 +166,7 @@ export function createTrafficabilityGraphOptions(
             (t: { utctime: string; [key: string]: string }, index) => {
               return [
                 new Date(t.utctime).toISOString(),
-                ...parameters.map((p) => {
+                ...parameters.map(() => {
                   if (t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"] !== null) {
                     return Math.max(
                       Number(
@@ -180,7 +180,7 @@ export function createTrafficabilityGraphOptions(
                     t[
                       "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"
                     ] !== null ||
-                    (winterSeries[index] !== null &&
+                    (!isNaN(Number(winterSeries[index]))&&
                       winterSeries.length == values.length)
                   ) {
                     return Math.max(
@@ -192,6 +192,7 @@ export function createTrafficabilityGraphOptions(
                       Number(winterSeries[index])
                     );
                   } else {
+                    window.console.log('nan')
                     return "nan";
                   }
                 })
@@ -223,11 +224,11 @@ export function createTrafficabilityGraphOptions(
         name: `${languageObject.summerTenDays}`,
         symbol: "none",
         itemStyle: {
-          color: "purple"
+          color: "#610C04"
         },
         lineStyle: {
           type: "solid",
-          width: 1
+          width: 2
         },
         yAxisIndex: 0,
         data: [
@@ -245,11 +246,11 @@ export function createTrafficabilityGraphOptions(
         name: `${languageObject.winterTenDays}`,
         symbol: "none",
         itemStyle: {
-          color: "#1D5B79"
+          color: "black"
         },
         lineStyle: {
           type: "solid",
-          width: 1
+          width: 2
         },
         yAxisIndex: 0,
         data: [
