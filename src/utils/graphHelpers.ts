@@ -256,7 +256,7 @@ export function createTrafficabilityGraphOptions(
           ...values.map((t: { utctime: string; [key: string]: string }) => {
             return [
               new Date(t.utctime).toISOString(),
-              ...parameters.map((p) => {
+              ...parameters.map(() => {
                 if (t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"] !== null) {
                   return Math.max(
                     Number(
@@ -357,7 +357,7 @@ export function createOptions(
         const codes = p.code;
         return {
           type: "line",
-          symbolSize: 2,
+          symbolSize: 1,
           name: `SH-${i}`,
           data: values.map(
             (d: { utctime: string; [key: string]: string | number | null }) => {
