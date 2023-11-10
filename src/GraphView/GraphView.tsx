@@ -139,15 +139,17 @@ const Graphs: React.FC = () => {
       soilWetnessData,
       "SWVL2-M3M3:SMARTMET:5015"
     );
-    
+    window.console.log(soilWetnessData)
       if (!checked) {
         const soilWetness = createOptions(
           { title: "Soil Wetness (m³/m³)" },
           graphParameters.twelveMonthParams.soilWetness,
-          soilWetnessScaled,
+          soilWetnessData,
           markLineDate,
           [0, 0, 16, 0],
-          lang
+          lang,
+          1,
+          0
         );
         const soilTemperature = createOptions(
           { title: "Soil Temperature (°C)" },
@@ -155,16 +157,19 @@ const Graphs: React.FC = () => {
           soilTemperatureData,
           markLineDate,
           [0, 0, 16, 0],
-          lang
+          lang,
+          30,
+          -30
         );
-
         const snowHeight = createOptions(
           { title: "Snow Height (m)" },
           graphParameters.twelveMonthParams.snowHeight,
           snowHeightScaled,
           markLineDate,
           [0, 0, 16, 0],
-          lang
+          lang,
+          1.5,
+          0
         );
         setSoilWetnessOption(soilWetness);
         setSnowHeightOption(snowHeight);
@@ -174,10 +179,12 @@ const Graphs: React.FC = () => {
         const soilWetness = createOptions(
           { title: "Soil Wetness (m³/m³)" },
           graphParameters.tenYearParams.soilWetness,
-          soilWetnessScaled,
+          soilWetnessData,
           markLineDate,
           [0, 0, 16, 0],
-          lang
+          lang,
+          1,
+          0
         );
         const soilTemperature = createOptions(
           { title: "Soil Temperature (°C)" },
@@ -185,7 +192,9 @@ const Graphs: React.FC = () => {
           soilTemperatureData,
           markLineDate,
           [0, 0, 16, 0],
-          lang
+          lang,
+          30,
+          -30
         );
         const snowHeight = createOptions(
           { title: "Snow Height (m)" },
@@ -193,7 +202,9 @@ const Graphs: React.FC = () => {
           snowHeightScaled,
           markLineDate,
           [0, 0, 16 , 0],
-          lang
+          lang,
+          1.5,
+          0
         );
         setSnowHeightOption(snowHeight);
         setSoilTemperatureOption(soilTemperature);
