@@ -40,23 +40,19 @@ const initialState: GlobalStateProps = {
         { code: "HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}" },
         { code: "ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}" },
         { code: "ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}" },
-        
       ],
       soilWetness: [
          ...soilWetnessParams,
         { code: "SWVL2-M3M3:SMARTMET:5015" },
-        //{ code: "SWI2:SWI:5059:1:0:0" }
-        ////SWI2:SWI:5059:1:0:0
+        { code: "SWI2:SWI:5059"}
       ],
       soilTemperature: [
          ...soilTemperaturCodeArray,
         { code: "K2C{TSOIL-K:ECBSF:::7:1:0}" },
-        // { code: "TSOIL-K:ERA5L:5022:9:1820:1" }
       ],
       snowHeight: [
         { code: "HSNOW-M:ECBSF::1:0:1:0" },
         { code: "HSNOW-M:SMARTOBS:13:4" }, 
-       // { code: "SD-M:CLMS:5051:1:0:1" }
         ...snowHeightParams
       ]
     },
