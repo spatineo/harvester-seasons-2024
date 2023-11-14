@@ -15,7 +15,7 @@ import * as constants from "../constants";
 import * as utils from "../../utils/helpers";
 import { RootState, store } from "../store";
 import { EnqueueSnackbar } from "../hooks";
-import { Parameter, StartEndTimeSpan } from "../../types";
+import { Parameter, StartEndTimeSpan, Smartmet } from "../../types";
 import { mapActions } from "../../MapComponent/MapComponentSlice";
 
 const timeSeriesServiceURL = "https://desm.harvesterseasons.com/timeseries";
@@ -356,7 +356,26 @@ export function* fetchSoilWetnessDataSaga(): SagaIterator {
       )
     );
     if (response.status === 200) {
-      yield put(actions.setSoilWetnessData(response.data));
+      const newData: Smartmet[] = []
+      response.data.forEach((data: { utctime: string; [key: string]: string | number | null }) => {
+        const modifiedData: { utctime: string; [key: string]: string | number | null } = {
+          utctime: data.utctime.replace(/-/g, "/"),
+        };
+        for (const key in data) {
+          if (key !== 'utctime') {
+            if(key === "SWI2:SWI:5059"){
+              if(data["SWI2:SWI:5059"] !== null && Number(data["SWI2:SWI:5059"]) > 0 ){
+                modifiedData[key] = Number(data["SWI2:SWI:5059"]) / 100
+              }
+            } else {
+              modifiedData[key] = data[key];
+            }
+          }
+        }
+    
+        newData.push(modifiedData);
+      });
+      yield put(actions.setSoilWetnessData(newData));
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
