@@ -231,6 +231,7 @@ export function createTrafficabilityGraphOptions(
         yAxisIndex: 0,
         data: [
           ...values.map((t: { utctime: string; [key: string]: string }) => {
+            //HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}
             if (t["HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}"] !== null) {
               return [t.utctime, t["HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}"]];
             } else {
