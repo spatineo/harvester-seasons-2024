@@ -329,6 +329,7 @@ export function* soilTemperatureDataSaga(): SagaIterator {
 }
 
 export function* fetchSoilWetnessDataSaga(): SagaIterator {
+ 
   const userLocation = store.getState().mapState.position;
   if (userLocation.lon === null || userLocation.lon === undefined) {
     return;
@@ -346,6 +347,7 @@ export function* fetchSoilWetnessDataSaga(): SagaIterator {
           state.global.parameters.twelveMonthParams.soilWetness
       );
   try {
+  
     const response = yield call(
       axios.get,
       timeSeriesServiceURL,
@@ -355,27 +357,10 @@ export function* fetchSoilWetnessDataSaga(): SagaIterator {
         userLocation
       )
     );
+   
     if (response.status === 200) {
-      const newData: Smartmet[] = []
-      response.data.forEach((data: { utctime: string; [key: string]: string | number | null }) => {
-        const modifiedData: { utctime: string; [key: string]: string | number | null } = {
-          utctime: data.utctime.replace(/-/g, "/"),
-        };
-        for (const key in data) {
-          if (key !== 'utctime') {
-            if(key === "SWI2:SWI:5059"){
-              if(data["SWI2:SWI:5059"] !== null && Number(data["SWI2:SWI:5059"]) > 0 ){
-                modifiedData[key] = Number(data["SWI2:SWI:5059"]) / 100
-              }
-            } else {
-              modifiedData[key] = data[key];
-            }
-          }
-        }
-    
-        newData.push(modifiedData);
-      });
-      yield put(actions.setSoilWetnessData(newData));
+     const data = response.data
+      yield put(actions.setSoilWetnessData(data));
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
