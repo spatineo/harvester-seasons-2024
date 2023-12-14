@@ -33,25 +33,23 @@ const initialState: GlobalStateProps = {
     twelveMonthParams: {
       windSpeed: [],
       trafficability: [
-        { code: "SWI2:SWI:5059"},
-        { code: "SWVL2-M3M3:SMARTMET:5015"},
-        {code: "HARVIDX{55;SWI2:ECXSF:5062:1:0:0:0-50}"},
-        { code: "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}" },
-        { code: "HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}" },
+        { code: "HARVIDX{55;SWI2:ECXSF:5062:1:0:0:0-50}"},
+        { code: "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"},
+        { code: "HARVIDX{0.55;SWI2-0TO1:SWI}"},
         { code: "ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}" },
         { code: "ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}" },
       ],
       soilWetness: [
          ...soilWetnessParams,
         { code: "SWVL2-M3M3:SMARTMET:5015" },
-        { code: "SWI2:SWI:5059"}
+        { code: "SWI2-0TO1:SWI:5059"}
       ],
       soilTemperature: [
          ...soilTemperaturCodeArray,
         { code: "K2C{TSOIL-K:ECBSF:::7:1:0}" },
       ],
       snowHeight: [
-        { code: "HSNOW-M:ECBSF::1:0:1:0" },
+        { code: "HSNOW-M:SMARTMET:5027" },
         { code: "HSNOW-M:SMARTOBS:13:4" }, 
         ...snowHeightParams
       ]
