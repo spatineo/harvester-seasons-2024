@@ -98,8 +98,8 @@ const HarvesterMap: React.FC = () => {
                               position: "absolute",
                               zIndex: "100",
                               bottom: "1rem",
-                              left: "0.4rem",
-                              background: "white",
+                              right: "0.4rem",
+                              background: "rgba(255, 255, 255, 0.5)",
                             }}
                             component="img"
                             src={`https://desm.harvesterseasons.com/wms?REQUEST=GetLegendGraphic&VERSION=1.3.0&LAYER=${l.layerName}&sld_version=1.1.0&style=&FORMAT=image/png&WIDTH=${width}&HEIGHT=${height}`}
