@@ -5,10 +5,25 @@ import { Parameter, Smartmet, GraphOptions } from "../types";
 import { EChartOption } from "echarts";
 
 const monthFI = [
-  'Tammi', 'Hel', 'Maalis', 'Huhti', 'Touko', 'Kesä',
-  'Heinä', 'Elo', 'Syys', 'Loka', 'Marras', 'Joulu'
-]
+  "Tammi",
+  "Hel",
+  "Maalis",
+  "Huhti",
+  "Touko",
+  "Kesä",
+  "Heinä",
+  "Elo",
+  "Syys",
+  "Loka",
+  "Marras",
+  "Joulu"
+];
 
+const param2 = "HARVIDX{55;SWI2:ECXSF:5062:1:0:0:0-50}";
+const param3 = "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}";
+const param5 = "HARVIDX{0.55;SWI2-0TO1:SWI}";
+const param7 = "ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}";
+const param8 = "ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}";
 const monthNames = [
   "Jan",
   "Feb",
@@ -27,13 +42,13 @@ const fiFormat = (value: Date) => {
   const date = new Date(value);
   const month = monthFI[date.getMonth()];
   return `${month} {yyyy}`;
-}
+};
 
 const enFormat = (value: Date) => {
   const date = new Date(value);
   const month = monthNames[date.getMonth()];
   return `${month} {yyyy}`;
-}
+};
 
 export function createTrafficabilityGraphOptions(
   parameters: Parameter[],
@@ -42,11 +57,11 @@ export function createTrafficabilityGraphOptions(
   mark,
   winterSeries: (string | number)[],
   languageObject: {
-    summerIndex: string,
-    winterIndex: string,
-    windGust: string,
-    winterTenDays: string,
-    summerTenDays: string
+    summerIndex: string;
+    winterIndex: string;
+    windGust: string;
+    winterTenDays: string;
+    summerTenDays: string;
   },
   locale: string
 ) {
@@ -89,8 +104,7 @@ export function createTrafficabilityGraphOptions(
       axisLabel: {
         formatter: locale === "en" ? enFormat : fiFormat,
         fontSize: 10
-      },
-      
+      }
     },
     series: [
       {
@@ -133,13 +147,10 @@ export function createTrafficabilityGraphOptions(
         },
         yAxisIndex: 0,
         data: [
-          ...values.map(
-            (t: { utctime: string}) => {
-              const summerValue =
-                t['HARVIDX{55;SWI2:ECXSF:5062:1:0:0:0-50}'] !== null ? t['HARVIDX{55;SWI2:ECXSF:5062:1:0:0:0-50}'] : "nan";
-              return [new Date(t.utctime).toISOString(), summerValue];
-            }
-          )
+          ...values.map((t: { utctime: string }) => {
+            const summerValue = t[param2] !== null ? t[param2] : "nan";
+            return [new Date(t.utctime).toISOString(), summerValue];
+          })
         ]
       },
       {
@@ -163,28 +174,15 @@ export function createTrafficabilityGraphOptions(
               return [
                 new Date(t.utctime).toISOString(),
                 ...parameters.map(() => {
-                  if (t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"] !== null) {
-                    return Math.max(
-                      Number(
-                        t[
-                          "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"
-                        ]
-                      ),
-                      Number(t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"])
-                    );
+                  if (t[param8] !== null) {
+                    return Math.max(Number(t[param3]), Number(t[param8]));
                   } else if (
-                    t[
-                      "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"
-                    ] !== null ||
-                    (!isNaN(Number(winterSeries[index]))&&
+                    t[param3] !== null ||
+                    (!isNaN(Number(winterSeries[index])) &&
                       winterSeries.length == values.length)
                   ) {
                     return Math.max(
-                      Number(
-                        t[
-                          "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"
-                        ]
-                      ),
+                      Number(t[param3]),
                       Number(winterSeries[index])
                     );
                   } else {
@@ -231,9 +229,8 @@ export function createTrafficabilityGraphOptions(
         yAxisIndex: 0,
         data: [
           ...values.map((t: { utctime: string; [key: string]: string }) => {
-            //HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}
-            if (t["HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}"] !== null) {
-              return [t.utctime, t["HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}"]];
+            if (t[param5] !== null) {
+              return [t.utctime, t[param5]];
             } else {
               return [t.utctime, "nan"];
             }
@@ -251,32 +248,19 @@ export function createTrafficabilityGraphOptions(
           type: "solid",
           width: 2
         },
+        areaStyle: {
+          color: "rgba(50,50,50, 0.3)"
+        },
         yAxisIndex: 0,
         data: [
           ...values.map((t: { utctime: string; [key: string]: string }) => {
             return [
               new Date(t.utctime).toISOString(),
               ...parameters.map(() => {
-                if (t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"] !== null) {
-                  return Math.max(
-                    Number(
-                      t[
-                        "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"
-                      ]
-                    ),
-                    Number(t["ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}"])
-                  );
-                } else if (
-                  t["ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}"] !== null
-                ) {
-                  return Math.max(
-                    Number(
-                      t[
-                        "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"
-                      ]
-                    ),
-                    Number(t["ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}"])
-                  );
+                if (t[param8] !== null) {
+                  return Math.max(Number(t[param3]), Number(t[param8]));
+                } else if (t[param7] !== null) {
+                  return Math.max(Number(t[param7]), Number(t[param3]));
                 } else {
                   return "nan";
                 }
@@ -310,9 +294,7 @@ export function createOptions(
     tooltip: {
       show: true,
       trigger: "axis",
-      borderWidth: 10,
-     
-      
+      borderWidth: 10
     },
     yAxis: {
       name: opts.title,
@@ -329,7 +311,7 @@ export function createOptions(
       axisLabel: {
         formatter: locale === "en" ? enFormat : fiFormat,
         fontSize: 10
-      },
+      }
     },
     series: [
       {
@@ -363,12 +345,10 @@ export function createOptions(
           type: "line",
           symbolSize: 1,
           name: `SH-${i}`,
-          data: values.map(
-            (d: { utctime: string }) => {
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-              return [d.utctime, d[codes]];
-            }
-          )
+          data: values.map((d: { utctime: string }) => {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+            return [d.utctime, d[codes]];
+          })
         };
       })
     ]
