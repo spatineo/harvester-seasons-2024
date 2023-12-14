@@ -65,7 +65,7 @@ export function soilWetnesstApiParams() {
   }
   return arr;
 }
-//DIV{SWI2:ECXSF:5062:1:0:0:X;100} sijaan voi käyttää nyt myös SWI2-0TO1:ECXSF:5062:1:0:0:X
+
 export function getValueFromRedux(value: StartEndTimeSpan): StartEndTimeSpan {
   const startEndTimeSpan = value;
   return startEndTimeSpan;
