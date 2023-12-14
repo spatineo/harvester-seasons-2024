@@ -15,7 +15,7 @@ import * as constants from "../constants";
 import * as utils from "../../utils/helpers";
 import { RootState, store } from "../store";
 import { EnqueueSnackbar } from "../hooks";
-import { Parameter, StartEndTimeSpan, Smartmet } from "../../types";
+import { Parameter, StartEndTimeSpan } from "../../types";
 import { mapActions } from "../../MapComponent/MapComponentSlice";
 
 const timeSeriesServiceURL = "https://desm.harvesterseasons.com/timeseries";
