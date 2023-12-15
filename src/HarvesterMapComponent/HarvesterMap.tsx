@@ -18,9 +18,7 @@ import "../Map.css";
 
 const HarvesterMap: React.FC = () => {
   const markLine = useAppSelector((state: RootState) => state.global.markLine);
-  const mapState: Map = useAppSelector(
-    (state: RootState) => state.mapState
-  );
+  const mapState: Map = useAppSelector((state: RootState) => state.mapState);
   const [stateMap, setStateMap] = useState<MapsStateProps[]>([]);
   const [wmLayer, setWMLayer] = useState<WMSLayers[]>([]);
 
@@ -95,18 +93,28 @@ const HarvesterMap: React.FC = () => {
                           <Box
                             key={i}
                             sx={{
-                              position: "absolute",
+                              maxWidth: "180px",
+                              background: "transparent",
                               zIndex: "100",
+                              position: "absolute",
+                              minHeight: "180px",
                               bottom: "1rem",
-                              right: "0.4rem",
-                              background: "rgba(255, 255, 255, 0.5)",
+                              right: "2rem",
+                              overflow: "hidden",
                             }}
-                            component="img"
-                            src={`https://desm.harvesterseasons.com/wms?REQUEST=GetLegendGraphic&VERSION=1.3.0&LAYER=${l.layerName}&sld_version=1.1.0&style=&FORMAT=image/png&WIDTH=${width}&HEIGHT=${height}`}
-                          />
+                          >
+                            <Box
+                              sx={{
+                                position: "relative",
+                                zIndex: "100",
+                                background: "rgba(255, 255, 255, 0.5)",
+                              }}
+                              component="img"
+                              src={`https://desm.harvesterseasons.com/wms?REQUEST=GetLegendGraphic&VERSION=1.3.0&LAYER=${l.layerName}&sld_version=1.1.0&style=&FORMAT=image/png&WIDTH=${width}&HEIGHT=${height}`}
+                            />
+                          </Box>
                         );
                       }
-                      /* */
                     )}
                 </Box>
               );
