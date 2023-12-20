@@ -121,7 +121,6 @@ const globalSlice = createSlice({
       state.snowHeightData = action.payload;
     },
     setMarkLine: (state, action: PayloadAction<string | number>) => {
-      window.console.log(action.payload, "mark line value");
       const modifyDate = new Date(action.payload).toISOString();
       state.markLine = modifyDate;
     },
