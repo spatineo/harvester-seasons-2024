@@ -29,7 +29,6 @@ const HarvesterMap: React.FC = () => {
   }, [mapState.maps, mapState.WMSLayerState]);
 
   return (
-    <>
       <Box sx={{ clear: "both" }}>
         <MapComponent>
           <Controls />
@@ -98,8 +97,8 @@ const HarvesterMap: React.FC = () => {
                               zIndex: "100",
                               position: "absolute",
                               minHeight: "180px",
-                              bottom: "1rem",
-                              right: "2rem",
+                              bottom: "4rem",
+                              right: "1rem",
                               overflow: "hidden",
                             }}
                           >
@@ -134,7 +133,6 @@ const HarvesterMap: React.FC = () => {
           </Layers>
         </MapComponent>
       </Box>
-    </>
   );
 };
 

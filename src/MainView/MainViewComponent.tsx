@@ -10,6 +10,7 @@ import * as constants from "../store/constants";
 import HarvesterMap from "../HarvesterMapComponent/HarvesterMap";
 import OpacityComponent from "../Opacity/OpacityComponent";
 import CarbonText from "../CarbonText/CarbonText";
+import TimelineSlider from "../TimelineSlider/TimelineSlider";
 import { useAppSelector, useRootDispatch } from "../store/hooks";
 import { actions as action } from "../globalSlice";
 import { LanguageOptions } from "../Lang/languageSlice";
@@ -133,10 +134,13 @@ function MainViewComponent() {
           <Box className="loading"> Loading ....</Box>
         )}
       </Box>
-      <Box sx={{ position: "relative", top: "-4rem"}}>
+      <Box sx={{position: "relative", bottom: "0rem"}}>
+        <TimelineSlider />
+      </Box>
+      <Box sx={{ position: "relative", top: "0rem"}}>
         <HarvesterMap />
       </Box>
-      <Box sx={{ position: "relative", top: "0.4rem"}}>
+      <Box sx={{ position: "relative", top: "0rem"}}>
         <OpacityComponent />
       </Box>
       <Box sx={{ position: "relative", top: "1.4rem" }}>

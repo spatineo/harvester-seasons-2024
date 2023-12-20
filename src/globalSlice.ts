@@ -33,24 +33,24 @@ const initialState: GlobalStateProps = {
     twelveMonthParams: {
       windSpeed: [],
       trafficability: [
-        { code: "HARVIDX{55;SWI2:ECXSF:5062:1:0:0:0-50}"},
-        { code: "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}"},
-        { code: "HARVIDX{0.55;SWI2-0TO1:SWI}"},
+        { code: "HARVIDX{55;SWI2:ECXSF:5062:1:0:0:0-50}" },
+        { code: "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}" },
+        { code: "HARVIDX{0.55;SWI2-0TO1:SWI}" },
         { code: "ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}" },
-        { code: "ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}" },
+        { code: "ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}" }
       ],
       soilWetness: [
-         ...soilWetnessParams,
+        ...soilWetnessParams,
         { code: "SWVL2-M3M3:SMARTMET:5015" },
-        { code: "SWI2-0TO1:SWI:5059"}
+        { code: "SWI2-0TO1:SWI:5059" }
       ],
       soilTemperature: [
-         ...soilTemperaturCodeArray,
-        { code: "K2C{TSOIL-K:ECBSF:::7:1:0}" },
+        ...soilTemperaturCodeArray,
+        { code: "K2C{TSOIL-K:ECBSF:::7:1:0}" }
       ],
       snowHeight: [
         { code: "HSNOW-M:SMARTMET:5027" },
-        { code: "HSNOW-M:SMARTOBS:13:4" }, 
+        { code: "HSNOW-M:SMARTOBS:13:4" },
         ...snowHeightParams
       ]
     },
@@ -119,7 +119,7 @@ const globalSlice = createSlice({
     setSnowHeightData: (state, action: PayloadAction<Smartmet[]>) => {
       state.snowHeightData = action.payload;
     },
-    setMarkLine: (state, action: PayloadAction<string>) => {
+    setMarkLine: (state, action: PayloadAction<string | number>) => {
       const modifyDate = new Date(action.payload).toISOString();
       state.markLine = modifyDate;
     },
@@ -130,15 +130,15 @@ const globalSlice = createSlice({
       state.hideNext = action.payload;
     },
     changeTrafficabilityIndexColor: (state, action: PayloadAction<number>) => {
-      if(typeof action.payload !== "number" || isNaN(action.payload)){
-        state.trafficabilityIndexColor = null
+      if (typeof action.payload !== "number" || isNaN(action.payload)) {
+        state.trafficabilityIndexColor = null;
       } else {
         state.trafficabilityIndexColor = action.payload;
       }
     },
     changeDefaultColor: (state, action: PayloadAction<boolean>) => {
-      state.defaultColorSwitch = action.payload
-    }
+      state.defaultColorSwitch = action.payload;
+    },
   }
 });
 

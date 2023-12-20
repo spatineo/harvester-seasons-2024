@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -25,7 +26,7 @@ const styles = {
     width: "100%",
     margin: "auto",
     position: "relative",
-    top: "3rem"
+    top: "0rem"
   },
   container: {
     display: "flex",

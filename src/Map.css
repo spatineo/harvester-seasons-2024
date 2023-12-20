@@ -8,10 +8,9 @@
   border-radius: 4px;
   padding: 2px;
 }
-.ol-map > .ol-viewport {
-  position: relative;
-  top: 0rem;
-  padding: 0rem !important;
+
+.ol-viewport {
+  overflow: visible !important;
 }
 
 .base-control {
