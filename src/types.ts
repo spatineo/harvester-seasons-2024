@@ -21,7 +21,7 @@ export interface StartEndTimeSpan {
 }
 
 export interface GlobalStateProps {
-  timelineDataIndex: number | null;
+  currentIndex: string | null;
   defaultColorSwitch: boolean;
   trafficabilityIndexColor: number | null;
   hideNext: boolean;
