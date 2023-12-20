@@ -13,7 +13,6 @@ const marked = new Date(
 ).toISOString();
 
 const initialState: GlobalStateProps = {
-  currentIndex: null,
   defaultColorSwitch: true,
   trafficabilityIndexColor: null,
   hideNext: false,
@@ -140,10 +139,6 @@ const globalSlice = createSlice({
     changeDefaultColor: (state, action: PayloadAction<boolean>) => {
       state.defaultColorSwitch = action.payload;
     },
-    setCurrentIndex: (state, action: PayloadAction<string>) => {
-      const modifiedDate = new Date(action.payload).toISOString()
-      state.currentIndex = modifiedDate
-    }
   }
 });
 
@@ -160,5 +155,4 @@ export type ReduxActions =
   | ReturnType<typeof actions.setMarkLine>
   | ReturnType<typeof actions.changeHideNextArrowState>
   | ReturnType<typeof actions.changeYear>
-  | ReturnType<typeof actions.setCurrentIndex>
   | ReturnType<typeof actions.changeDefaultColor>;
