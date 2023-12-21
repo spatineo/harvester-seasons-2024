@@ -66,6 +66,8 @@ export function createTrafficabilityGraphOptions(
   locale: string
 ) {
   const trafficabilityOptionData: EChartOption = {
+    animation: false,
+    animationThreshold: 1,
     legend: {},
     grid: {
       show: true,
