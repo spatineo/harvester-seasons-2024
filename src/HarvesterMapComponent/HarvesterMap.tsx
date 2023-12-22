@@ -29,110 +29,121 @@ const HarvesterMap: React.FC = () => {
   }, [mapState.maps, mapState.WMSLayerState]);
 
   return (
-      <Box sx={{ clear: "both" }}>
-        <MapComponent>
-          <Controls />
-          <Layers>
-            {stateMap &&
-              stateMap.map((mapArray) => {
-                return (
-                  <Box key={mapArray.title}>
-                    <BaseMap
-                      url={mapArray.url}
-                      title={mapArray.title}
-                      visible={mapArray.visible}
-                      attributions={mapArray.attributions}
-                    />
-                  </Box>
-                );
-              })}
-            {wmLayer.map((l) => {
-              if (!l.layerInfo) {
-                return <Box key={l.layerName}></Box>;
-              }
-
+    <Box sx={{ clear: "both" }}>
+      <MapComponent>
+        <Controls />
+        <Layers>
+          {stateMap &&
+            stateMap.map((mapArray) => {
               return (
-                <Box key={l.layerName}>
-                  <WMSLayer
-                    strategy={l.WMSTimeStrategy}
-                    date={markLine}
-                    title={
-                      l.layerInfo && l.layerInfo.Title
-                        ? l.layerInfo.Title
-                        : l.layerName
-                    }
-                    layerInfo={l.layerInfo}
-                    opacity={l.opacity}
-                    visible={l.visible}
-                    url={"https://desm.harvesterseasons.com/wms"}
+                <Box key={mapArray.title}>
+                  <BaseMap
+                    url={mapArray.url}
+                    title={mapArray.title}
+                    visible={mapArray.visible}
+                    attributions={mapArray.attributions}
                   />
-                  {l.legend.enabled &&
-                    l.layerInfo?.Style.map(
-                      (
-                        legends: {
-                          LegendURL: {
-                            Format: string;
-                            OnlineResource: string;
-                            size: Array<number>;
-                          };
-                        },
-                        i
-                      ) => {
-                        const legendURL = legends.LegendURL;
-                        let width = 0;
-                        let height = 0;
-
-                        if (Array.isArray(legendURL)) {
-                          legendURL.forEach((lg) => {
-                            width = lg.size[0];
-                            height = lg.size[1];
-                          });
-                        }
-                        return (
-                          <Box
-                            key={i}
-                            sx={{
-                              maxWidth: "180px",
-                              background: "transparent",
-                              zIndex: "100",
-                              position: "absolute",
-                              minHeight: "180px",
-                              bottom: "4rem",
-                              right: "1rem",
-                              overflow: "hidden",
-                            }}
-                          >
-                            <Box
-                              sx={{
-                                position: "relative",
-                                zIndex: "100",
-                                background: "rgba(255, 255, 255, 0.5)",
-                              }}
-                              component="img"
-                              src={`https://desm.harvesterseasons.com/wms?REQUEST=GetLegendGraphic&VERSION=1.3.0&LAYER=${l.layerName}&sld_version=1.1.0&style=&FORMAT=image/png&WIDTH=${width}&HEIGHT=${height}`}
-                            />
-                          </Box>
-                        );
-                      }
-                    )}
                 </Box>
               );
             })}
-            {/*
+          {wmLayer.map((l) => {
+            if (!l.layerInfo) {
+              return <Box key={l.layerName}></Box>;
+            }
+
+            return (
+              <Box key={l.layerName}>
+                <WMSLayer
+                  strategy={l.WMSTimeStrategy}
+                  date={markLine}
+                  title={
+                    l.layerInfo && l.layerInfo.Title
+                      ? l.layerInfo.Title
+                      : l.layerName
+                  }
+                  layerInfo={l.layerInfo}
+                  opacity={l.opacity}
+                  visible={l.visible}
+                  url={"https://desm.harvesterseasons.com/wms"}
+                />
+                {l.legend.enabled &&
+                  l.layerInfo?.Style.map(
+                    (
+                      legends: {
+                        LegendURL: {
+                          Format: string;
+                          OnlineResource: string;
+                          size: Array<number>;
+                        };
+                      },
+                      i
+                    ) => {
+                      const legendURL = legends.LegendURL;
+                      let width = 0;
+                      let height = 0;
+
+                      if (Array.isArray(legendURL)) {
+                        legendURL.forEach((lg) => {
+                          width = lg.size[0];
+                          height = lg.size[1];
+                        });
+                      }
+                      window.console.log(l.layerName, width, 'legend width')
+                      return (
+                        <Box
+                          key={i}
+                          sx={{
+                            maxWidth: l.layerName === "gui:isobands:ERA5L_TSOIL-K" ? "110px" : "70px",
+                            background: "transparent",
+                            zIndex: "100",
+                            position: "absolute",
+                            bottom: "4rem",
+                            right: "0.6rem",
+                            overflowY: "hidden",
+                            overflowX: "hidden",
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              position: "relative",
+                              left: l.layerName === "gui:isobands:SWI_SWI2" ? "-0.8rem" : "-1.4rem",
+                              height: "90%",
+                              top: l.layerName === "gui:isobands:SWI_SWI2" ? "" : "-2rem",
+                              zIndex: "100",
+                              margin: "auto",
+                              background: "rgba(255, 255, 255, 0.5)",
+                            }}
+                            component="img"
+                            src={`https://desm.harvesterseasons.com/wms?REQUEST=GetLegendGraphic&VERSION=1.3.0&LAYER=${l.layerName}&sld_version=1.1.0&style=&FORMAT=image/png&WIDTH=${width}&HEIGHT=${height}`}
+                          />
+                        </Box>
+                      );
+                    }
+                  )}
+              </Box>
+            );
+          })}
+          {/*
 					<STACLayers 
 						title='Latvuskorkeusmalli'
 						searchUrl='https://paituli.csc.fi/geoserver/ogc/stac/search' 
 						collection='canopy_height_model_at_fmi'
 						band='latvuskorkeusmalli'/>
 					*/}
-            <TrafficabilityTIFFLayer
-              title="Trafficability"
-              url="https://copernicus.data.lit.fmi.fi/trafficability/Europe-2023-trfy-r30m.tif"
-            />
-            <LocationMarkerLayer title="Location Marker" />
-          </Layers>
-        </MapComponent>
-      </Box>
+          <TrafficabilityTIFFLayer
+            title="Trafficability Finland"
+            url="https://pta.data.lit.fmi.fi/geo/harvestability/KKL_SMK_Suomi_2021_06_01-UTM35.tif"
+            zIndex={1}
+          />
+          <TrafficabilityTIFFLayer
+            zIndex={0}
+            title="Trafficability Europe"
+            url="https://copernicus.data.lit.fmi.fi/trafficability/Europe-2023-trfy-r30m.tif"
+          />
+          <LocationMarkerLayer title="Location Marker" />
+        </Layers>
+      </MapComponent>
+    </Box>
   );
 };
 

@@ -15,7 +15,7 @@ const OpacityComponent: React.FC = () => {
     (state: RootState) => state.global
   );
   return (
-    <Box
+    <Box sx={{ position: "relative", top: "1rem"}}
     >
       <Grid container>
         <Grid item  xs={0} sm={3} md={6}></Grid>

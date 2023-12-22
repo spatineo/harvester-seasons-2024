@@ -16,6 +16,7 @@ import { ColorPalette } from "../types";
 interface TIFFLayerProps {
   title: string;
   url: string;
+  zIndex: number;
 }
 
 function colorExpression(palette) {
@@ -34,7 +35,7 @@ function colorExpression(palette) {
   return ["array", process("r"), process("g"), process("b"), process("a")];
 }
 
-const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
+const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url, zIndex }) => {
   const { map } = useContext(MapContext);
   const { opacityValue } = useAppSelector(
     (state: RootState) => state.mapState
@@ -111,6 +112,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url }) => {
       visible: true,
       opacity:  getOpacityFromPercentage(opacityValue),
       className: "class",
+      zIndex,
       maxResolution: 150,
       updateWhileAnimating: true,
       updateWhileInteracting: true,

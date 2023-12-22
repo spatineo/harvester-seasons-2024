@@ -43,7 +43,7 @@ const Controls = () => {
   }, [baseLayers, title, map, mapState.WMSLayerState]);
 
   return (
-    <Box>
+    <Box sx={{ position: "relative", top: "-3rem"}}>
       <Overlay>
         <Box>
           {mapState.maps.map((m) => {
