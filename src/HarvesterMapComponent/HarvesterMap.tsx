@@ -88,24 +88,29 @@ const HarvesterMap: React.FC = () => {
                           height = lg.size[1];
                         });
                       }
+                      window.console.log(l.layerName, width, 'legend width')
                       return (
                         <Box
                           key={i}
                           sx={{
-                            maxWidth: "180px",
+                            maxWidth: l.layerName === "gui:isobands:ERA5L_TSOIL-K" ? "110px" : "70px",
                             background: "transparent",
                             zIndex: "100",
                             position: "absolute",
-                            minHeight: "180px",
                             bottom: "4rem",
-                            right: "1rem",
-                            overflow: "hidden",
+                            right: "0.6rem",
+                            overflowY: "hidden",
+                            overflowX: "hidden",
                           }}
                         >
                           <Box
                             sx={{
                               position: "relative",
+                              left: l.layerName === "gui:isobands:SWI_SWI2" ? "-0.8rem" : "-1.4rem",
+                              height: "90%",
+                              top: l.layerName === "gui:isobands:SWI_SWI2" ? "" : "-2rem",
                               zIndex: "100",
+                              margin: "auto",
                               background: "rgba(255, 255, 255, 0.5)",
                             }}
                             component="img"
