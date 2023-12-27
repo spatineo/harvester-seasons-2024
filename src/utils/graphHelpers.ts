@@ -207,10 +207,18 @@ export function createTrafficabilityGraphOptions(
         yAxisIndex: 1,
         data: [
           ...windGustArray.map((t: { utctime: string }) => {
-            return [
-              new Date(t.utctime).toISOString(),
-              t["FFG-MS:CERRA:5057:6:10:0"]
-            ];
+            if(t["FFG-MS:CERRA:5057:6:10:0"] !== null){
+              return [
+                new Date(t.utctime).toISOString(),
+                t["FFG-MS:CERRA:5057:6:10:0"]
+              ];
+            } else {
+              return [
+                new Date(t.utctime).toISOString(),
+                'nan'
+              ]
+            }
+            
           })
         ]
       },
@@ -232,9 +240,9 @@ export function createTrafficabilityGraphOptions(
         data: [
           ...values.map((t: { utctime: string; [key: string]: string }) => {
             if (t[param5] !== null) {
-              return [t.utctime, t[param5]];
+              return [new Date(t.utctime).toISOString(), t[param5]];
             } else {
-              return [t.utctime, "nan"];
+              return [new Date(t.utctime).toISOString(), "nan"];
             }
           })
         ]

@@ -88,7 +88,6 @@ const HarvesterMap: React.FC = () => {
                           height = lg.size[1];
                         });
                       }
-                      window.console.log(l.layerName, width, 'legend width')
                       return (
                         <Box
                           key={i}

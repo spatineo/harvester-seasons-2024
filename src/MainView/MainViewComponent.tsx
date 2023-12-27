@@ -125,6 +125,7 @@ function MainViewComponent() {
       <Box>
         {(trafficabilityData.length > 0 &&  soilWetnessData.length > 0 ) ? (
           <TraficabilityGraph
+            markline={markLine}
             option={trafficabilityGraphOption}
             onGraphClick={function (xAxisData: string): void {
               dispatch(action.setMarkLine(xAxisData));
