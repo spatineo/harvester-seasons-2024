@@ -28,18 +28,12 @@ const TimelineSlider: React.FC = () => {
     number | null
   >(null);
   const [timelineChart, setTimelineChart] = useState<any | null>(null);
-  //const localMarkline: string | Date = markLine
   const timelineRef = useRef(null);
   const dispatch = useRootDispatch();
 
   useEffect(() => {
     const result = new Date(new Date(startEndTimeSpan.start_time));
-    result.setDate(result.getDate() + 2);
-    const dateValue: Array<string | Date> = getDatesForTimelineDuration(
-      result,
-      11,
-      true
-    );
+    const dateValue: Array<string | Date> = getDatesForTimelineDuration(result);
     setTimelineData(dateValue);
   }, []);
 
@@ -47,11 +41,8 @@ const TimelineSlider: React.FC = () => {
     if (markLine) {
       const result = new Date(new Date(startEndTimeSpan.start_time));
       result.setDate(result.getDate() + 2);
-      const dateValue: Array<string | Date> = getDatesForTimelineDuration(
-        result,
-        11,
-        true
-      );
+      const dateValue: Array<string | Date> =
+        getDatesForTimelineDuration(result);
 
       const index = dateValue.findIndex((date) => {
         if (markLine !== "") {
@@ -73,6 +64,8 @@ const TimelineSlider: React.FC = () => {
     setTimelineChart(chart);
     const baseOption = {
       timeline: {
+        animationDuration: 0,
+        axisType: "time",
         autoPlay: false,
         playInterval: 1000,
         left: "center",
@@ -80,11 +73,11 @@ const TimelineSlider: React.FC = () => {
         width: "100%",
         height: "50%",
         data: timelineData,
-        replaceMerge: "series",
+        symbolSize: 5,
         controlStyle: {
-          showPrevBtn: false,
+          showPrevBtn: true,
           showNextBtn: true,
-          itemSize: 20,
+          itemSize: 24,
           showPlayBtn: true,
           position: "left",
         },
@@ -133,6 +126,13 @@ const TimelineSlider: React.FC = () => {
       }
     });
     timelineChart.on("click", function (params) {
+      if (params.componentType === "timeline") {
+        timelineChart.setOption({
+          timeline: {
+            currentIndex: params.timelineIndex,
+          },
+        });
+      }
       const index = params.dataIndex;
       dispatch(actions.setMarkLine(index));
     });

@@ -3,7 +3,7 @@ import { GlobalStateProps, Smartmet } from "./types";
 import * as utils from "./utils/helpers";
 
 const endDate = utils.addMonths(utils.getStartSearchDate(), 12).toISOString();
-const startDate = utils.getStartSearchDate().toISOString();
+const startDate = new Date(utils.getStartSearchDate()).toISOString()
 const soilTemperaturCodeArray = utils.soilTemperatureParams([]);
 const trafficabilityApiParams = utils.trafficabilityApiParams();
 const snowHeightParams = utils.snowHeightApiParams();
