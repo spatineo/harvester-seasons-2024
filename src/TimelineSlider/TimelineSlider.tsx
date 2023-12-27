@@ -33,12 +33,10 @@ const TimelineSlider: React.FC = () => {
 
   useEffect(() => {
     const result = new Date(new Date(startEndTimeSpan.start_time));
-    window.console.log(result);
     const dateValue: Array<string | Date> = getDatesForTimelineDuration(result);
     setTimelineData(dateValue);
   }, []);
 
-  window.console.log(timelineData);
   useEffect(() => {
     if (markLine) {
       const result = new Date(new Date(startEndTimeSpan.start_time));
