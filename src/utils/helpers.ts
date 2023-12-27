@@ -18,7 +18,30 @@ export function getStartSearchDate() {
   const today = new Date();
   const year = today.getFullYear();
   const startDate = new Date(year, 0, 1);
+  startDate.setHours(0, 0, 0, 0);
   return startDate; 
+}
+
+export function getValueFromRedux(value: StartEndTimeSpan): StartEndTimeSpan {
+  const startEndTimeSpan = value;
+  return startEndTimeSpan;
+}
+
+export function asStartEndTimeSpan(value: StartEndTimeSpan): StartEndTimeSpan {
+  const startEndTimeSpan = value;
+  return startEndTimeSpan;
+}
+
+export function getDatesForTimelineDuration(startDate: Date) {
+  const result: Date[] = [];
+  const currentDate = new Date(startDate.getFullYear(), 0, 1); // January 1st of the given year
+  const endDate = new Date(startDate.getFullYear(), 11, 31); // December 31st of the given year
+
+  while (currentDate <= endDate) {
+    result.push(new Date(currentDate));
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return result;
 }
 
 export function marklineStartDate(current: Date) {
@@ -64,41 +87,6 @@ export function soilWetnesstApiParams() {
     });
   }
   return arr;
-}
-
-export function getValueFromRedux(value: StartEndTimeSpan): StartEndTimeSpan {
-  const startEndTimeSpan = value;
-  return startEndTimeSpan;
-}
-
-export function asStartEndTimeSpan(value: StartEndTimeSpan): StartEndTimeSpan {
-  const startEndTimeSpan = value;
-  return startEndTimeSpan;
-}
-
-export function getDatesForTimelineDuration(
-  startDate: Date,
-  duration: number,
-  isMonths: boolean
-) {
-  const result: (string | Date)[] = [];
-  const currentDate = new Date(startDate);
-  const endDate = new Date(startDate);
-  if (isMonths) {
-    endDate.setMonth(endDate.getMonth() + duration);
-  } else {
-    endDate.setMonth(endDate.getMonth() + duration * 12);
-  }
-
-  while (currentDate <= endDate) {
-    const year = currentDate.getFullYear();
-    const month = currentDate.toLocaleString("default", { month: "short" });
-    const day = currentDate.getDate();
-    const dateString = `${month} ${day} ${year}`;
-    result.push(new Date(dateString));
-    currentDate.setDate(currentDate.getDate() + 1);
-  }
-  return result;
 }
 
 export function scaleEnsembleData(arr: Smartmet[], smartmet: string) {
