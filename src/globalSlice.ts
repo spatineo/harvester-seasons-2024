@@ -13,6 +13,7 @@ const marked = new Date(
 ).toISOString();
 
 const initialState: GlobalStateProps = {
+  searchParams: "Historical reanalysis",
   defaultColorSwitch: true,
   trafficabilityIndexColor: null,
   hideNext: false,
@@ -139,6 +140,9 @@ const globalSlice = createSlice({
     changeDefaultColor: (state, action: PayloadAction<boolean>) => {
       state.defaultColorSwitch = action.payload;
     },
+    setSearchParams: (state, action: PayloadAction<string>) => {
+      state.searchParams = action.payload;
+    }
   }
 });
 
@@ -155,4 +159,5 @@ export type ReduxActions =
   | ReturnType<typeof actions.setMarkLine>
   | ReturnType<typeof actions.changeHideNextArrowState>
   | ReturnType<typeof actions.changeYear>
+  | ReturnType<typeof actions.setSearchParams>
   | ReturnType<typeof actions.changeDefaultColor>;
