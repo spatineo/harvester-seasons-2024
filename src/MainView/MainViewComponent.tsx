@@ -11,6 +11,7 @@ import HarvesterMap from "../HarvesterMapComponent/HarvesterMap";
 import OpacityComponent from "../Opacity/OpacityComponent";
 import CarbonText from "../CarbonText/CarbonText";
 import TimelineSlider from "../TimelineSlider/TimelineSlider";
+import HarvestParamterSwitch from "../HarversterParameterSwitch/HarvesterParameterSwitch";
 import { useAppSelector, useRootDispatch } from "../store/hooks";
 import { actions as action } from "../globalSlice";
 import { LanguageOptions } from "../Lang/languageSlice";
@@ -122,7 +123,10 @@ function MainViewComponent() {
 
   return (
     <Container maxWidth="lg">
-      <Box>
+      <Box sx={{position: "relative", top: "0rem"}} >
+        <HarvestParamterSwitch />
+      </Box>
+      <Box sx={{position: "relative", bottom: "0rem", top: "0.6rem"}}>
         {(trafficabilityData.length > 0 &&  soilWetnessData.length > 0 ) ? (
           <TraficabilityGraph
             markline={markLine}
