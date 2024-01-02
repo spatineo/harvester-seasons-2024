@@ -20,8 +20,71 @@ export interface StartEndTimeSpan {
   time_step: number;
 }
 
+export type HistoricalReanalysisParams = {
+  soilTemperature: Parameter[];
+  soilWetness: Parameter[];
+  snowHeight: Parameter[];
+  windGust: Parameter[];
+};
+
+export type DailyObservationsParams = {
+  soilTemperature: Parameter[];
+  soilWetness: Parameter[];
+  snowHeight: Parameter[];
+  windGust: Parameter[];
+};
+
+export type SeasonalForecastDailyDnsembles = {
+  soilTemperature: Parameter[];
+  soilWetness: Parameter[];
+  snowHeight: Parameter[];
+  windGust: Parameter[];
+};
+
+export type ShortPredictionDailyParams = {
+  soilTemperature: Parameter[];
+  soilWetness: Parameter[];
+  snowHeight: Parameter[];
+  windGust: Parameter[];
+}
+
+export type ClimateProjection = {
+  soilTemperature: Parameter[];
+  soilWetness: Parameter[];
+  snowHeight: Parameter[];
+  windGust: Parameter[];
+}
+
+export type Configurations = {
+  "Historical reanalysis": {
+    parameters: {
+      historicalReanalysis: HistoricalReanalysisParams;
+    };
+  };
+  "Daily observations": {
+    parameters: {
+      dailyObservations: DailyObservationsParams;
+    };
+  };
+  "Seasonal forecast daily ensembles": {
+    parameters: {
+      seasonalForecastDailyEnsembles: SeasonalForecastDailyDnsembles;
+    };
+  };
+  "Short prediction daily": {
+    parameters: {
+      shortPredictionDaily: ShortPredictionDailyParams;
+    }
+  };
+  "Climate projection": {
+    parameters: {
+      climateProjection: SeasonalForecastDailyDnsembles;
+    };
+  }
+};
+
 export interface GlobalStateProps {
-  searchParams: string;
+  searchParams: keyof Configurations;
   defaultColorSwitch: boolean;
   trafficabilityIndexColor: number | null;
   hideNext: boolean;
@@ -34,6 +97,7 @@ export interface GlobalStateProps {
   soilTemperatureData: [];
   snowHeightData: Smartmet[];
   checked: boolean;
+  params: Configurations;
   parameters: {
     twelveMonthParams: {
       windSpeed: Parameter[];
@@ -89,11 +153,11 @@ export interface ColorPalette {
 }
 
 export enum WMSLayerTimeStrategy {
-	NoTimeDimesion,
-	Latest,
-	LatestBeforeNow,
-	EarliestAfterNow,
-	ForceSelectedDate
+  NoTimeDimesion,
+  Latest,
+  LatestBeforeNow,
+  EarliestAfterNow,
+  ForceSelectedDate
 }
 
 export interface Legend {
@@ -103,21 +167,21 @@ export interface Legend {
 }
 
 export interface LayerType {
-	Name: string,
-	Title: string,
-	Dimension: DimensionType[]
-  Style: []
-  message?: string
-}; 
+  Name: string;
+  Title: string;
+  Dimension: DimensionType[];
+  Style: [];
+  message?: string;
+}
 
 export interface WMSLayers {
   id: number;
-  visible: boolean
+  visible: boolean;
   layerName: string;
   opacity: number;
   layerInfo: WMSCapabilitiesLayerType | null;
   WMSTimeStrategy: WMSLayerTimeStrategy;
-  legend: Legend
+  legend: Legend;
 }
 
 export interface MapsStateProps {
@@ -135,31 +199,31 @@ export interface Map {
     lon: number | null;
     resolution: number;
   };
-  maps: MapsStateProps[]
-  WMSLayerState: WMSLayers[]
+  maps: MapsStateProps[];
+  WMSLayerState: WMSLayers[];
 }
 
 export interface DimensionType {
-	name: string,
-	values: string,
-};
+  name: string;
+  values: string;
+}
 
 export interface WMSCapabilitiesStyleType {
   LegendURL: {
-    Format: string,
-    OnlineResource: string,
-    size: number[]
-  }
+    Format: string;
+    OnlineResource: string;
+    size: number[];
+  };
 }
 
 export interface WMSCapabilitiesDimensionType {
-  name: string
-  values: string
+  name: string;
+  values: string;
 }
 
 export interface WMSCapabilitiesLayerType {
-  Name: string,
-  Title?: string,
-  Style: WMSCapabilitiesStyleType[],
-  Dimension: WMSCapabilitiesDimensionType[]
-};
+  Name: string;
+  Title?: string;
+  Style: WMSCapabilitiesStyleType[];
+  Dimension: WMSCapabilitiesDimensionType[];
+}

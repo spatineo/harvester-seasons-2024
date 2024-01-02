@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { GlobalStateProps, Smartmet } from "./types";
+import { GlobalStateProps, Smartmet, Configurations } from "./types";
 import * as utils from "./utils/helpers";
 
 const endDate = utils.addMonths(utils.getStartSearchDate(), 12).toISOString();
-const startDate = new Date(utils.getStartSearchDate()).toISOString()
+const startDate = new Date(utils.getStartSearchDate()).toISOString();
 const soilTemperaturCodeArray = utils.soilTemperatureParams([]);
 const trafficabilityApiParams = utils.trafficabilityApiParams();
 const snowHeightParams = utils.snowHeightApiParams();
@@ -30,6 +30,58 @@ const initialState: GlobalStateProps = {
   soilTemperatureData: [],
   snowHeightData: [],
   checked: false,
+  params: {
+    "Historical reanalysis": {
+      parameters: {
+        historicalReanalysis: {
+          soilTemperature: [{ code: "TSOIL-C:CERRA-L" }],
+          soilWetness: [{ code: "SWVL2-M3M3:CERRA-L-0.4" }],
+          snowHeight: [{ code: "HSNOW-M:CERRA" }],
+          windGust: [{ code: "FFG-MS:CERRA" }]
+        }
+      }
+    },
+    "Daily observations": {
+      parameters: {
+        dailyObservations: {
+          soilTemperature: [{ code: "SKT-C:LSASAF" }],
+          soilWetness: [{ code: "SWI2-0TO1:SWI" }],
+          snowHeight: [{ code: "HSNOW-M:ERA5L" }],
+          windGust: [{ code: "FFG-MS:ERA5" }]
+        }
+      }
+    },
+    "Seasonal forecast daily ensembles": {
+      parameters: {
+        seasonalForecastDailyEnsembles: {
+          soilTemperature: [{ code: "TSOIL-C:ECBSF-TSOIL-C:ECXSF" }],
+          soilWetness: [{ code: "SWI2-0TO1:ECXSF" }],
+          snowHeight: [{ code: "HSNOW-M:ECBSF-HSNOW-M:ECXSF" }],
+          windGust: [{ code: "FFG-MS:ECSF" }]
+        }
+      }
+    },
+    "Short prediction daily": {
+      parameters: {
+        shortPredictionDaily: {
+          soilTemperature: [{ code: "TSOIL-C:EDTE" }],
+          soilWetness: [{ code: "SWI2-0TO1:EDTE" }],
+          snowHeight: [{ code: "HSNOW-M:EDTE" }],
+          windGust: [{ code: "FFG-MS:EDTE" }]
+        }
+      }
+    },
+    "Climate projection": {
+      parameters: {
+        climateProjection: {
+          soilTemperature: [{ code: "TSOIL-C:CDTE" }],
+          soilWetness: [{ code: "SWI2-0TO1:CDTE" }],
+          snowHeight: [{ code: "HSNOW-M:CDTE" }],
+          windGust: [{ code: "FFG-MS:CDTE" }]
+        }
+      }
+    }
+  },
   parameters: {
     twelveMonthParams: {
       windSpeed: [],
@@ -140,7 +192,7 @@ const globalSlice = createSlice({
     changeDefaultColor: (state, action: PayloadAction<boolean>) => {
       state.defaultColorSwitch = action.payload;
     },
-    setSearchParams: (state, action: PayloadAction<string>) => {
+    setSearchParams: (state, action: PayloadAction<keyof Configurations>) => {
       state.searchParams = action.payload;
     }
   }

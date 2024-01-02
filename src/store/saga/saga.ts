@@ -181,9 +181,9 @@ export function* fetchWindSpeedData(): SagaIterator {
 }
 
 export function* getCapabilitiesSaga(): SagaIterator {
-   const layers =  yield select(
+  const layers = yield select(
     (state: RootState) => state.mapState.WMSLayerState
-  ); 
+  );
 
   const parser = new WMSCapabilities();
   const capabilitiesUrl =
@@ -220,7 +220,7 @@ export function* getCapabilitiesSaga(): SagaIterator {
               window.console.error("No layers not found");
             }
           })
-        ); 
+        );
       }
     }
   } catch (error) {
@@ -265,9 +265,8 @@ export function* fetchTrafficabilityDataSaga(): SagaIterator {
         userLocation
       )
     );
-   
+
     if (response.status === 200) {
-     
       yield put(actions.setTrafficabilityData(response.data));
     }
   } catch (error) {
@@ -329,7 +328,6 @@ export function* soilTemperatureDataSaga(): SagaIterator {
 }
 
 export function* fetchSoilWetnessDataSaga(): SagaIterator {
- 
   const userLocation = store.getState().mapState.position;
   if (userLocation.lon === null || userLocation.lon === undefined) {
     return;
@@ -347,7 +345,6 @@ export function* fetchSoilWetnessDataSaga(): SagaIterator {
           state.global.parameters.twelveMonthParams.soilWetness
       );
   try {
-  
     const response = yield call(
       axios.get,
       timeSeriesServiceURL,
@@ -357,9 +354,9 @@ export function* fetchSoilWetnessDataSaga(): SagaIterator {
         userLocation
       )
     );
-   
+
     if (response.status === 200) {
-     const data = response.data
+      const data = response.data;
       yield put(actions.setSoilWetnessData(data));
     }
   } catch (error) {
@@ -410,6 +407,27 @@ export function* fetchSnowHeightDataSaga(): SagaIterator {
   }
 }
 
+export function* fetchData() {
+  try {
+    const searchParam = yield select(
+      (state: RootState) => state.global.searchParams
+    );
+    window.console.log(searchParam);
+    const config = yield select(
+       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      (state: RootState) => state.global.params[searchParam]
+    );
+
+    if (config) {
+      //const result = yield //call(apiCallFunction, config.parameters);
+      window.console.log(config);
+      /* 
+      yield put(actions.fetchDataSuccess(result)); */
+    }
+  } catch (error) {
+    //yield put(actions.fetchDataFailure(error));
+  }
+}
 export function* watchHarvesterRequests(): SagaIterator {
   yield takeLatest(constants.POSITION, setUserLocation);
   yield takeLatest(actions.setCheckedButton.type, triggerCheckUpdate);
@@ -420,4 +438,5 @@ export function* watchHarvesterRequests(): SagaIterator {
   yield takeLatest(constants.SNOWHEIGHT_API, fetchSnowHeightDataSaga);
   yield takeLatest(actions.changeYear.type, triggerTimeSpanChange);
   yield takeLatest(constants.SETWMSLAYERINFORMATION, getCapabilitiesSaga);
+  yield takeLatest("CONFIG_SEARCH", fetchData);
 }
