@@ -1,6 +1,7 @@
 import { Box, Button } from "@mui/material";
 import { useRootDispatch } from "../store/hooks";
 import { actions } from "../globalSlice";
+import { Configurations } from "../types";
 
 const styles = {
   main: {
@@ -20,7 +21,7 @@ const buttonTexts = [
   "Climate projection",
 ];
 const HarvestParamterSwitch = () => {
-  const dispatch = useRootDispatch()
+  const dispatch = useRootDispatch();
   return (
     <Box sx={styles.main}>
       {buttonTexts.map((txt) => (
@@ -28,8 +29,14 @@ const HarvestParamterSwitch = () => {
           <Button
             variant="outlined"
             onClick={() => {
-              dispatch(actions.setSearchParams(txt))}}
-            sx={{ padding: "0.2rem 0.4rem", textAlign: "center", fontSize: "0.8rem" }}
+              dispatch(actions.setSearchParams(txt as keyof Configurations));
+              dispatch({ type: "CONFIG_SEARCH" });
+            }}
+            sx={{
+              padding: "0.2rem 0.4rem",
+              textAlign: "center",
+              fontSize: "0.8rem",
+            }}
           >
             {txt}
           </Button>
