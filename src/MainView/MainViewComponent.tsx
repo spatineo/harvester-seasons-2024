@@ -51,6 +51,7 @@ function MainViewComponent() {
     dispatch({ type: constants.SNOWHEIGHT_API });
     dispatch({ type: constants.WINDGUST_API });
     dispatch({ type: constants.SETWMSLAYERINFORMATION})
+    dispatch({ type: constants.FETCH_DATA})
   }, []);
 
   useEffect(() => {
