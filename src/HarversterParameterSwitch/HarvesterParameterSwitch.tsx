@@ -2,6 +2,7 @@ import { Box, Button } from "@mui/material";
 import { useRootDispatch } from "../store/hooks";
 import { actions } from "../globalSlice";
 import { Configurations } from "../types";
+import *  as constant from "../store/constants";
 
 const styles = {
   main: {
@@ -30,7 +31,7 @@ const HarvestParamterSwitch = () => {
             variant="outlined"
             onClick={() => {
               dispatch(actions.setSearchParams(txt as keyof Configurations));
-              dispatch({ type: "CONFIG_SEARCH" });
+              dispatch({ type: constant.FETCH_DATA });
             }}
             sx={{
               padding: "0.2rem 0.4rem",
