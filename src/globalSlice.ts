@@ -3,11 +3,14 @@ import { GlobalStateProps, Smartmet, Configurations } from "./types";
 import * as utils from "./utils/helpers";
 
 const endDate = utils.addMonths(utils.getStartSearchDate(), 12).toISOString();
+const lastDayPreviousYear = utils.lastDayOfPreviousYear()
 const startDate = new Date(utils.getStartSearchDate()).toISOString();
 const soilTemperaturCodeArray = utils.soilTemperatureParams([]);
 const trafficabilityApiParams = utils.trafficabilityApiParams();
 const snowHeightParams = utils.snowHeightApiParams();
 const soilWetnessParams = utils.soilWetnesstApiParams();
+const backDateOneMonth =  utils.oneMonthBack(lastDayPreviousYear).toISOString()
+
 const marked = new Date(
   utils.marklineStartDate(utils.getStartSearchDate())
 ).toISOString();
@@ -33,52 +36,67 @@ const initialState: GlobalStateProps = {
   params: {
     "Historical reanalysis": {
       parameters: {
-        historicalReanalysis: {
-          soilTemperature: [{ code: "TSOIL-C:CERRA-L" }],
-          soilWetness: [{ code: "SWVL2-M3M3:CERRA-L-0.4" }],
-          snowHeight: [{ code: "HSNOW-M:CERRA" }],
-          windGust: [{ code: "FFG-MS:CERRA" }]
-        }
+        soilTemperature: [{ code: "TSOIL-C:CERRA-L" }],
+        soilWetness: [{ code: "SWVL2-M3M3:CERRA-L-0.4" }],
+        snowHeight: [{ code: "HSNOW-M:CERRA" }],
+        windGust: [{ code: "FFG-MS:CERRA:5057:6:10:0" }],
+        startEndTimeSpan: {
+          start_time: utils.tenYearsBack(new Date(lastDayPreviousYear)).toISOString(),
+          end_time: lastDayPreviousYear.toISOString(),
+          time_step: 1440
+        },
       }
     },
     "Daily observations": {
       parameters: {
-        dailyObservations: {
-          soilTemperature: [{ code: "SKT-C:LSASAF" }],
-          soilWetness: [{ code: "SWI2-0TO1:SWI" }],
-          snowHeight: [{ code: "HSNOW-M:ERA5L" }],
-          windGust: [{ code: "FFG-MS:ERA5" }]
-        }
+        soilTemperature: [{ code: "SKT-K:LSASAF" }],
+        soilWetness: [{ code: "SWI2-0TO1:SWI" }],
+        snowHeight: [{ code: "HSNOW-M:ERA5L" }],
+        windGust: [{ code: "FFG-MS:ERA5" }],
+        startEndTimeSpan: {
+          start_time: backDateOneMonth,
+          end_time: lastDayPreviousYear.toISOString(),
+          time_step: 1440
+        },
       }
     },
     "Seasonal forecast daily ensembles": {
       parameters: {
-        seasonalForecastDailyEnsembles: {
-          soilTemperature: [{ code: "TSOIL-C:ECBSF-TSOIL-C:ECXSF" }],
-          soilWetness: [{ code: "SWI2-0TO1:ECXSF" }],
-          snowHeight: [{ code: "HSNOW-M:ECBSF-HSNOW-M:ECXSF" }],
-          windGust: [{ code: "FFG-MS:ECSF" }]
-        }
+        soilTemperature: [{ code: "TSOIL-C:ECBSF-TSOIL-C:ECXSF" }],
+        soilWetness: [{ code: "SWI2-0TO1:ECXSF" }],
+        snowHeight: [{ code: "HSNOW-M:ECBSF-HSNOW-M:ECXSF" }],
+        windGust: [{ code: "FFG-MS:ECSF" }],
+        startEndTimeSpan: {
+          start_time: utils.oneYearsBack(lastDayPreviousYear).toISOString(),
+          end_time: lastDayPreviousYear.toISOString(),
+          time_step: 1440
+        },
       }
     },
     "Short prediction daily": {
       parameters: {
-        shortPredictionDaily: {
-          soilTemperature: [{ code: "TSOIL-C:EDTE" }],
-          soilWetness: [{ code: "SWI2-0TO1:EDTE" }],
-          snowHeight: [{ code: "HSNOW-M:EDTE" }],
-          windGust: [{ code: "FFG-MS:EDTE" }]
-        }
+        soilTemperature: [{ code: "TSOIL-C:EDTE" }],
+        soilWetness: [{ code: "SWI2-0TO1:EDTE" }],
+        snowHeight: [{ code: "HSNOW-M:EDTE" }],
+        windGust: [{ code: "FFG-MS:EDTE" }],
+        startEndTimeSpan: {
+          start_time: backDateOneMonth,
+          end_time: lastDayPreviousYear.toISOString(),
+          time_step: 1440
+        },
       }
     },
     "Climate projection": {
       parameters: {
-        climateProjection: {
-          soilTemperature: [{ code: "TSOIL-C:CDTE" }],
-          soilWetness: [{ code: "SWI2-0TO1:CDTE" }],
-          snowHeight: [{ code: "HSNOW-M:CDTE" }],
-          windGust: [{ code: "FFG-MS:CDTE" }]
-        }
+        soilTemperature: [{ code: "TSOIL-C:CDTE" }],
+        soilWetness: [{ code: "SWI2-0TO1:CDTE" }],
+        snowHeight: [{ code: "HSNOW-M:CDTE" }],
+        windGust: [{ code: "FFG-MS:CDTE" }],
+        startEndTimeSpan: {
+          start_time: utils.tenYearsBack(new Date(lastDayPreviousYear)).toISOString(),
+          end_time: lastDayPreviousYear.toISOString(),
+          time_step: 1440
+        },
       }
     }
   },

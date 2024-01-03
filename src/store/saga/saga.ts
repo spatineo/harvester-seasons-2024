@@ -17,6 +17,7 @@ import { RootState, store } from "../store";
 import { EnqueueSnackbar } from "../hooks";
 import { Parameter, StartEndTimeSpan } from "../../types";
 import { mapActions } from "../../MapComponent/MapComponentSlice";
+import * as configFile from "./config.saga";
 
 const timeSeriesServiceURL = "https://desm.harvesterseasons.com/timeseries";
 export interface TimeSpan {
@@ -31,6 +32,7 @@ export function* setUserLocation(): SagaIterator {
   yield put({ type: constants.SOILWETNESS_API });
   yield put({ type: constants.SNOWHEIGHT_API });
   yield put({ type: constants.WINDGUST_API });
+  yield put({ type: constants.FETCH_DATA });
 }
 
 export function* triggerCheckUpdate({
@@ -67,6 +69,7 @@ export function* triggerCheckUpdate({
     yield put({ type: constants.SOILWETNESS_API });
     yield put({ type: constants.SNOWHEIGHT_API });
     yield put({ type: constants.WINDGUST_API });
+    yield put({ type: constants.FETCH_DATA });
   }
 }
 
@@ -375,6 +378,7 @@ export function* fetchSnowHeightDataSaga(): SagaIterator {
   const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
+
   const checked = yield select((state: RootState) => state.global.checked);
   const parameters = checked
     ? yield select(
@@ -408,24 +412,67 @@ export function* fetchSnowHeightDataSaga(): SagaIterator {
 }
 
 export function* fetchData() {
-  try {
-    const searchParam = yield select(
-      (state: RootState) => state.global.searchParams
-    );
-    window.console.log(searchParam);
-    const config = yield select(
-       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      (state: RootState) => state.global.params[searchParam]
-    );
+  const searchParam = yield select(
+    (state: RootState) => state.global.searchParams
+  );
+  const config = yield select(
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    (state: RootState) => state.global.params[searchParam]
+  );
+  const userLocation = store.getState().mapState.position;
 
+  if (userLocation.lon === null || userLocation.lon === undefined) return;
+
+  const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
+    yield select((state: RootState) => state.global.startEndTimeSpan)
+  );
+
+  const lonlat = `${userLocation.lat},${userLocation.lon}`;
+  try {
     if (config) {
-      //const result = yield //call(apiCallFunction, config.parameters);
-      window.console.log(config);
-      /* 
-      yield put(actions.fetchDataSuccess(result)); */
+      const fetchDataForParamter = function* (params) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return yield call(axios.get, timeSeriesServiceURL, {
+          params: {
+            latlon: `${lonlat}`,
+            param: `utctime,${config.parameters[params]
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+              .map((p) => p.code)
+              .join(",")}`,
+            starttime: config.parameters.startEndTimeSpan.start_time,
+            endtime: config.parameters.startEndTimeSpan.end_time,
+            timestep: startEndTimeSpan.time_step,
+            format: "json",
+            source: "grid",
+            tz: "utc",
+            timeformat: "xml",
+            precision: "full"
+          }
+        });
+      };
+
+      const [soilTemp, soilWetness, snowHeight, windGust] = yield all([
+        call(fetchDataForParamter, "soilTemperature"),
+        call(fetchDataForParamter, "soilWetness"),
+        call(fetchDataForParamter, "snowHeight"),
+        call(fetchDataForParamter, "windGust")
+      ]);
+      
+      const filteredArray = configFile.filterFirstDayOfMonth(snowHeight.data);
+      window.console.log(snowHeight.data, 'snow height');
+      window.console.log(soilTemp.data, 'soil temperature');
+      window.console.log(soilWetness.data, 'soil wetness')
     }
   } catch (error) {
-    //yield put(actions.fetchDataFailure(error));
+    if (axios.isAxiosError(error)) {
+      const errorMessage: string | [] = error.message;
+      window.console.error(errorMessage);
+      yield call(
+        EnqueueSnackbar,
+        `Error in network for ${searchParam}`,
+        "error"
+      );
+    }
   }
 }
 export function* watchHarvesterRequests(): SagaIterator {
@@ -438,5 +485,5 @@ export function* watchHarvesterRequests(): SagaIterator {
   yield takeLatest(constants.SNOWHEIGHT_API, fetchSnowHeightDataSaga);
   yield takeLatest(actions.changeYear.type, triggerTimeSpanChange);
   yield takeLatest(constants.SETWMSLAYERINFORMATION, getCapabilitiesSaga);
-  yield takeLatest("CONFIG_SEARCH", fetchData);
+  yield takeLatest(constants.FETCH_DATA, fetchData);
 }

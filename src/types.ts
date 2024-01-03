@@ -25,6 +25,7 @@ export type HistoricalReanalysisParams = {
   soilWetness: Parameter[];
   snowHeight: Parameter[];
   windGust: Parameter[];
+  startEndTimeSpan: StartEndTimeSpan;
 };
 
 export type DailyObservationsParams = {
@@ -32,6 +33,7 @@ export type DailyObservationsParams = {
   soilWetness: Parameter[];
   snowHeight: Parameter[];
   windGust: Parameter[];
+  startEndTimeSpan: StartEndTimeSpan;
 };
 
 export type SeasonalForecastDailyDnsembles = {
@@ -39,6 +41,7 @@ export type SeasonalForecastDailyDnsembles = {
   soilWetness: Parameter[];
   snowHeight: Parameter[];
   windGust: Parameter[];
+  startEndTimeSpan: StartEndTimeSpan;
 };
 
 export type ShortPredictionDailyParams = {
@@ -46,41 +49,32 @@ export type ShortPredictionDailyParams = {
   soilWetness: Parameter[];
   snowHeight: Parameter[];
   windGust: Parameter[];
-}
+  startEndTimeSpan: StartEndTimeSpan;
+};
 
 export type ClimateProjection = {
   soilTemperature: Parameter[];
   soilWetness: Parameter[];
   snowHeight: Parameter[];
   windGust: Parameter[];
-}
+};
 
 export type Configurations = {
   "Historical reanalysis": {
-    parameters: {
-      historicalReanalysis: HistoricalReanalysisParams;
-    };
+    parameters: HistoricalReanalysisParams;
   };
   "Daily observations": {
-    parameters: {
-      dailyObservations: DailyObservationsParams;
-    };
+    parameters: DailyObservationsParams;
   };
   "Seasonal forecast daily ensembles": {
-    parameters: {
-      seasonalForecastDailyEnsembles: SeasonalForecastDailyDnsembles;
-    };
+    parameters: SeasonalForecastDailyDnsembles;
   };
   "Short prediction daily": {
-    parameters: {
-      shortPredictionDaily: ShortPredictionDailyParams;
-    }
+    parameters: ShortPredictionDailyParams;
   };
   "Climate projection": {
-    parameters: {
-      climateProjection: SeasonalForecastDailyDnsembles;
-    };
-  }
+    parameters: SeasonalForecastDailyDnsembles;
+  };
 };
 
 export interface GlobalStateProps {
