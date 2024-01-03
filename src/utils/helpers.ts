@@ -4,15 +4,42 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Parameter, StartEndTimeSpan, Smartmet, RecordObject } from "../types";
 
+export function oneMonthBack(today: Date) {
+  const oneMonth = new Date(today.getFullYear(), today.getMonth() - 1, today.getDay());
+  return oneMonth;
+} 
+
+export function oneMonthForward(today: Date) {
+  const oneMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDay());
+  return oneMonth;
+} 
+
 export function addTenYears(date: Date, years: number) {
   const tenYears = new Date(date.setFullYear(date.getFullYear() + years));
   return tenYears;
 }
 
-export function reduceTenYears(date: Date, years: number) {
-  const tenYears = new Date(date.setFullYear(date.getFullYear() - years));
-  return tenYears;
+export function lastDayOfPreviousYear(): Date {
+  const today = new Date();
+  const lastDay = new Date(today.getFullYear() - 1, 11, 31);
+  return lastDay;
 } 
+
+export function tenYearsBack(date: Date): Date {
+  const tenYearsAgo = new Date(date.getFullYear() - 10, 0, 1);
+    return tenYearsAgo;
+}
+
+export function oneYearsBack(date: Date): Date {
+  const tenYearsAgo = new Date(date.getFullYear(), 0, 1);
+    return tenYearsAgo;
+}
+
+export function oneYearsForward() {
+  const date = new Date()
+  const oneYear = new Date(date.getFullYear() + 1, date.getMonth(), date.getDay());
+    return oneYear;
+}
 
 export function addMonths(date: Date, months: number) {
   const newDate = new Date(date.setMonth(date.getMonth() + months));
