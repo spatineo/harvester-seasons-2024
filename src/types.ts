@@ -17,7 +17,7 @@ export interface Parameter {
 export interface StartEndTimeSpan {
   start_time: string;
   end_time: string;
-  time_step: number;
+  time_step: number | string;
 }
 
 export type HistoricalReanalysisParams = {
@@ -89,7 +89,7 @@ export interface GlobalStateProps {
   trafficabilityData: [];
   soilWetnessData: Smartmet[];
   soilTemperatureData: [];
-  snowHeightData: Smartmet[];
+  snowHeightData: (string | number)[][] ;
   checked: boolean;
   params: Configurations;
   parameters: {
