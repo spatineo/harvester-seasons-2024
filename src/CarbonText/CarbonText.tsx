@@ -3,7 +3,7 @@ import { Box, Collapse } from "@mui/material";
 import { useAppSelector } from "../store/hooks";
 import { LanguageOptions } from "../Lang/languageSlice";
 import { languages } from "../Lang/languages";
-import { checkIfFinnishText } from '../utils/helpers'
+import { checkIfFinnishText } from '../utils/carbonTextComponentHelpers'
 import "./CarbonText.css";
 
 interface ButtonSectionProp {
