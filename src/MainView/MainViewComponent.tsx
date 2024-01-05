@@ -34,7 +34,7 @@ function MainViewComponent() {
     soilTemperatureData,
     snowHeightData,
     trafficabilityData,
-    windSpeedData,
+    windGustData,
   } = useAppSelector((state: RootState) => state.global);
   const information = useAppSelector((state) => state.language);
 
@@ -98,12 +98,12 @@ function MainViewComponent() {
         information.lang as keyof LanguageOptions
       ] as string,
     };
-    if (trafficabilityData || windSpeedData) {
+    if (trafficabilityData || windGustData) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       const trafficabilityOption = createTrafficabilityGraphOptions(
         graphParameters.twelveMonthParams.trafficability,
         trafficabilityData,
-        windSpeedData,
+        windGustData,
         markLine,
         winter1series,
         languageObject,
@@ -118,7 +118,7 @@ function MainViewComponent() {
     snowHeightData,
     graphParameters.twelveMonthParams.trafficability,
     markLine,
-    windSpeedData,
+    windGustData,
     information.lang,
   ]);
 
