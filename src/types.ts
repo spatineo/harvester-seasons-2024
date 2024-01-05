@@ -85,7 +85,7 @@ export interface GlobalStateProps {
   changeYear: string;
   markLine: string;
   startEndTimeSpan: StartEndTimeSpan;
-  windSpeedData: [];
+  windGustData: (string | number)[][];
   trafficabilityData: [];
   soilWetnessData: (string | number)[][];
   soilTemperatureData: (string | number)[][];
