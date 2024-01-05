@@ -12,8 +12,14 @@ import WMSCapabilities from "ol/format/WMSCapabilities";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { actions } from "../../globalSlice";
 import * as constants from "../constants";
-import { tenYearsForward, getStartSearchDate, addMonths, oneYearForward, oneYearBackward} from "../../utils/dateHelperFunctions";
-import { asStartEndTimeSpan } from "../../utils/helpers"
+import {
+  tenYearsForward,
+  getStartSearchDate,
+  addMonths,
+  oneYearForward,
+  oneYearBackward
+} from "../../utils/dateHelperFunctions";
+import { asStartEndTimeSpan } from "../../utils/helpers";
 import { RootState, store } from "../store";
 import { EnqueueSnackbar } from "../hooks";
 import { Parameter, StartEndTimeSpan } from "../../types";
@@ -55,8 +61,7 @@ export function* triggerCheckUpdate({
     yield put({ type: constants.WINDGUST_API });
     yield put({ type: constants.SETWMSLAYERINFORMATION });
   } else {
-    const oneYear = addMonths(getStartSearchDate(), 12)
-      .toISOString();
+    const oneYear = addMonths(getStartSearchDate(), 12).toISOString();
     yield put(
       actions.setTimeEndStartSpan({
         start_time: getStartSearchDate().toISOString(),
@@ -83,30 +88,22 @@ export function* triggerTimeSpanChange({
   const markline = yield select((state: RootState) => state.global.markLine);
 
   if (payload === "next") {
-    const newDate = new Date(
-      oneYearForward(markline)
-    ).toISOString();
+    const newDate = new Date(oneYearForward(markline)).toISOString();
     yield put(actions.setMarkLine(newDate));
     yield put(
       actions.setTimeEndStartSpan({
-        start_time: oneYearForward(new Date(start.start_time))
-          .toISOString(),
-        end_time: oneYearForward(new Date(start.end_time))
-          .toISOString(),
+        start_time: oneYearForward(new Date(start.start_time)).toISOString(),
+        end_time: oneYearForward(new Date(start.end_time)).toISOString(),
         time_step: 24 * 60
       })
     );
   } else if (payload === "previous") {
-    const newDate = new Date(
-      oneYearBackward(markline)
-    ).toISOString();
+    const newDate = new Date(oneYearBackward(markline)).toISOString();
     yield put(actions.setMarkLine(newDate));
     yield put(
       actions.setTimeEndStartSpan({
-        start_time: oneYearBackward(new Date(start.start_time))
-          .toISOString(),
-        end_time: oneYearBackward(new Date(start.end_time))
-          .toISOString(),
+        start_time: oneYearBackward(new Date(start.start_time)).toISOString(),
+        end_time: oneYearBackward(new Date(start.end_time)).toISOString(),
         time_step: 24 * 60
       })
     );
@@ -454,32 +451,24 @@ export function* fetchData() {
         call(fetchDataForParamter, "windGust")
       ]);
 
-// short prediction 3kk tästä eteenpäin
+      // short prediction 3kk tästä eteenpäin
 
-
-      
-     /*  const filteredArray = configFile.filterFirstDayOfMonth(snowHeight.data);
+      /*  const filteredArray = configFile.filterFirstDayOfMonth(snowHeight.data);
       const snow = configFile.mapArray(snowHeight.data, '') */
 
+      const snowHeightData: (string | number)[][] = createGraphData(
+        snowHeight.data
+      );
+      const soilWetnessData = createGraphData(soilWetness.data);
+      const soilTemperatureData = createGraphData(soilTemp.data);
+      const windGustData = createGraphData(windGust.data);
 
-
-
-      const snowHeightData: (string | number)[][]  = createGraphData(snowHeight.data)
-      const soilWetnessData = createGraphData(soilWetness.data)
-      const soilTemperatureData = createGraphData(soilTemp.data)
-      const windGustData = createGraphData(windGust.data)
-      
-      window.console.log(snowHeight)
+      window.console.log(snowHeight);
       yield put(actions.setSnowHeightData(snowHeightData));
       yield put(actions.setSoilTemperatureData(soilTemperatureData));
       yield put(actions.setSoilWetnessData(soilWetnessData));
       yield put(actions.setWindSpeedData(windGustData));
     }
-
-
-
-
-
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const errorMessage: string | [] = error.message;
