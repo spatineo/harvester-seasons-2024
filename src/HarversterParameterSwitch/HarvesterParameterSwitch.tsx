@@ -17,7 +17,7 @@ const buttonTexts = [
 
 const ButtonWrapper = styled(Box)({
   display: "flex",
-  gap: 4,
+  gap:4,
   margin: "auto",
   maxWidth: "1000px",
   flexDirection: "row",
@@ -48,8 +48,7 @@ const HarvestParamterSwitch = () => {
       {buttonTexts.map((txt) => (
         <ButtonStyled
           style={{
-            backgroundColor:
-              selectedParameter === txt ? "#D3D3D3" : "transparent",
+            backgroundColor: selectedParameter === txt ? "#D3D3D3" : "transparent",
           }}
           key={txt}
           variant="outlined"
