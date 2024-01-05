@@ -125,11 +125,6 @@ export interface TimelineControlStyle {
   };
 }
 
-export interface RecordObject {
-  [key: string]: number | null | string;
-  utctime: string;
-}
-
 export interface Color {
   r: number;
   g: number;
