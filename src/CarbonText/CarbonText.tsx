@@ -17,6 +17,7 @@ interface ButtonSectionProp {
 
 const ButtonWrapper = styled(Box)({
   display: "flex",
+  justifyContent: "center",
   gap: 4,
   margin: "auto",
   maxWidth: "1000px",
