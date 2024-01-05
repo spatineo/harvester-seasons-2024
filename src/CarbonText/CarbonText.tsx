@@ -1,10 +1,11 @@
-import React, { useState, CSSProperties } from "react";
-import { Box, Collapse } from "@mui/material";
+import React, { useState } from "react";
+import { Box, Collapse, Button } from "@mui/material";
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { styled } from "@mui/system";
 import { useAppSelector } from "../store/hooks";
 import { LanguageOptions } from "../Lang/languageSlice";
 import { languages } from "../Lang/languages";
 import { checkIfFinnishText } from '../utils/carbonTextComponentHelpers'
-import "./CarbonText.css";
 
 interface ButtonSectionProp {
   buttonIndex: number;
@@ -14,30 +15,20 @@ interface ButtonSectionProp {
   getTextForButton: (buttonIndex: number) => string;
 }
 
-const styles = {
-  button: {
-    border: "1px solid #2196f3",
-    color: "#1976d2",
-    display: "inline-flex",
-    fontWeight: "500",
-    fontSize: "0.8rem",
-    lineHeight: "1.75",
-    letterSpacing: "0.02857em",
-    textTransform: "uppercase",
-    minWidth: "64px",
-    padding: "0.2rem 0.4rem",
-    borderRadius: "4px",
-    justifyContent: "center",
-    position: "relative",
-    boxSizing: "border-box",
-    outline: "0",
-    margin: "auto",
-    alignItems: "center",
-    boxAlign: "center",
-    flexAlign: "center",
-    boxPack: "center",
-  },
-};
+const ButtonWrapper = styled(Box)({
+  display: "flex",
+  gap: 4,
+  margin: "auto",
+  maxWidth: "1000px",
+  flexDirection: "row",
+  flexWrap: "wrap",
+});
+
+const ButtonStyled = styled(Button)({
+  padding: "0.2rem 0.4rem",
+  textAlign: "center",
+  fontSize: "0.8rem",
+});
 
 const ButtonSection: React.FC<ButtonSectionProp> = ({
   buttonIndex,
@@ -123,31 +114,20 @@ const CarbonText: React.FC = () => {
 
   return (
     <Box sx={{ maxWidth: "1000px", margin: "auto" }}>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          gap: 1,
-          flexWrap: 'wrap',
-          width: "100%",
-          margin: "auto",
-        }}
-      >
+      <ButtonWrapper>
         {buttonTextResult.map(({ index, data }) => (
-          <button
+          <ButtonStyled
+            variant="outlined"
             key={index}
             onClick={() => handleButtonClick(index)}
-            style={styles.button as CSSProperties}
-            className={
-              selectedButton === index
-                ? "colouredBackgroundButton"
-                : "notColouredBackgroundButton"
-            }
+            style={{backgroundColor: selectedButton === index ?
+              "#D3D3D3" : "transparent"
+        }}
           >
             {data}
-          </button>
+          </ButtonStyled>
         ))}
-      </Box>
+      </ButtonWrapper>
 
       {buttonTextResult.map(({ index, data }) => (
         <ButtonSection
