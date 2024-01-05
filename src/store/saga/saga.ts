@@ -12,12 +12,19 @@ import WMSCapabilities from "ol/format/WMSCapabilities";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { actions } from "../../globalSlice";
 import * as constants from "../constants";
-import * as utils from "../../utils/helpers";
+import {
+  tenYearsForward,
+  getStartSearchDate,
+  addMonths,
+  oneYearForward,
+  oneYearBackward
+} from "../../utils/dateHelperFunctions";
+import { asStartEndTimeSpan } from "../../utils/helpers";
 import { RootState, store } from "../store";
 import { EnqueueSnackbar } from "../hooks";
 import { Parameter, StartEndTimeSpan } from "../../types";
 import { mapActions } from "../../MapComponent/MapComponentSlice";
-import * as configFile from "./config.saga";
+import { createGraphData } from "./config.saga";
 
 const timeSeriesServiceURL = "https://desm.harvesterseasons.com/timeseries";
 export interface TimeSpan {
@@ -39,10 +46,10 @@ export function* triggerCheckUpdate({
   payload
 }: ReturnType<typeof actions.setCheckedButton>): SagaIterator {
   if (payload !== false) {
-    const tenYearsTimeSpan = utils.addTenYears(new Date(), 10).toISOString();
+    const tenYearsTimeSpan = tenYearsForward(new Date(), 10).toISOString();
     yield put(
       actions.setTimeEndStartSpan({
-        start_time: utils.getStartSearchDate().toISOString(),
+        start_time: getStartSearchDate().toISOString(),
         end_time: tenYearsTimeSpan,
         time_step: 1440 // one week
       })
@@ -54,12 +61,10 @@ export function* triggerCheckUpdate({
     yield put({ type: constants.WINDGUST_API });
     yield put({ type: constants.SETWMSLAYERINFORMATION });
   } else {
-    const oneYear = utils
-      .addMonths(utils.getStartSearchDate(), 12)
-      .toISOString();
+    const oneYear = addMonths(getStartSearchDate(), 12).toISOString();
     yield put(
       actions.setTimeEndStartSpan({
-        start_time: utils.getStartSearchDate().toISOString(),
+        start_time: getStartSearchDate().toISOString(),
         end_time: oneYear,
         time_step: 24 * 60 // 24 hours
       })
@@ -83,34 +88,22 @@ export function* triggerTimeSpanChange({
   const markline = yield select((state: RootState) => state.global.markLine);
 
   if (payload === "next") {
-    const newDate = new Date(
-      utils.increaseByOneYear(markline, 1)
-    ).toISOString();
+    const newDate = new Date(oneYearForward(markline)).toISOString();
     yield put(actions.setMarkLine(newDate));
     yield put(
       actions.setTimeEndStartSpan({
-        start_time: utils
-          .increaseByOneYear(new Date(start.start_time), 1)
-          .toISOString(),
-        end_time: utils
-          .increaseByOneYear(new Date(start.end_time), 1)
-          .toISOString(),
+        start_time: oneYearForward(new Date(start.start_time)).toISOString(),
+        end_time: oneYearForward(new Date(start.end_time)).toISOString(),
         time_step: 24 * 60
       })
     );
   } else if (payload === "previous") {
-    const newDate = new Date(
-      utils.decreaseByOneYear(markline, 1)
-    ).toISOString();
+    const newDate = new Date(oneYearBackward(markline)).toISOString();
     yield put(actions.setMarkLine(newDate));
     yield put(
       actions.setTimeEndStartSpan({
-        start_time: utils
-          .decreaseByOneYear(new Date(start.start_time), 1)
-          .toISOString(),
-        end_time: utils
-          .decreaseByOneYear(new Date(start.end_time), 1)
-          .toISOString(),
+        start_time: oneYearBackward(new Date(start.start_time)).toISOString(),
+        end_time: oneYearBackward(new Date(start.end_time)).toISOString(),
         time_step: 24 * 60
       })
     );
@@ -160,7 +153,7 @@ export function* fetchWindSpeedData(): SagaIterator {
     return;
   }
 
-  const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
+  const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
   const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
@@ -171,7 +164,7 @@ export function* fetchWindSpeedData(): SagaIterator {
     const response = yield call(axios.get, url);
     if (response.status === 200) {
       const tmp = response.data;
-      yield put(actions.setWindSpeedData(tmp));
+      //yield put(actions.setWindSpeedData(tmp));
     }
   } catch (e) {
     window.console.error(e);
@@ -244,7 +237,7 @@ export function* fetchTrafficabilityDataSaga(): SagaIterator {
   if (userLocation.lon === null || userLocation.lon === undefined) {
     return;
   }
-  const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
+  const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
 
@@ -290,7 +283,7 @@ export function* soilTemperatureDataSaga(): SagaIterator {
   if (userLocation.lon === null || userLocation.lon === undefined) {
     return;
   }
-  const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
+  const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
   const checked = yield select((state: RootState) => state.global.checked);
@@ -314,8 +307,8 @@ export function* soilTemperatureDataSaga(): SagaIterator {
       )
     );
     if (response.status === 200) {
-      const tmp = response.data;
-      yield put(actions.setSoilTemperatureData(tmp));
+      //const tmp = response.data;
+      //yield put(actions.setSoilTemperatureData(tmp));
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -335,7 +328,7 @@ export function* fetchSoilWetnessDataSaga(): SagaIterator {
   if (userLocation.lon === null || userLocation.lon === undefined) {
     return;
   }
-  const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
+  const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
   const checked = yield select((state: RootState) => state.global.checked);
@@ -360,7 +353,7 @@ export function* fetchSoilWetnessDataSaga(): SagaIterator {
 
     if (response.status === 200) {
       const data = response.data;
-      yield put(actions.setSoilWetnessData(data));
+      //yield put(actions.setSoilWetnessData(data));
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -375,7 +368,7 @@ export function* fetchSnowHeightDataSaga(): SagaIterator {
   const userLocation = store.getState().mapState.position;
   if (userLocation.lon === null || userLocation.lon === undefined) return;
 
-  const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
+  const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
 
@@ -400,7 +393,7 @@ export function* fetchSnowHeightDataSaga(): SagaIterator {
       )
     );
     if (response.status === 200) {
-      yield put(actions.setSnowHeightData(response.data));
+      //yield put(actions.setSnowHeightData(response.data));
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -423,7 +416,7 @@ export function* fetchData() {
 
   if (userLocation.lon === null || userLocation.lon === undefined) return;
 
-  const startEndTimeSpan: StartEndTimeSpan = utils.asStartEndTimeSpan(
+  const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
 
@@ -457,11 +450,24 @@ export function* fetchData() {
         call(fetchDataForParamter, "snowHeight"),
         call(fetchDataForParamter, "windGust")
       ]);
-      
-      const filteredArray = configFile.filterFirstDayOfMonth(snowHeight.data);
-      window.console.log(snowHeight.data, 'snow height');
-      window.console.log(soilTemp.data, 'soil temperature');
-      window.console.log(soilWetness.data, 'soil wetness')
+
+      // short prediction 3kk tästä eteenpäin
+
+      /*  const filteredArray = configFile.filterFirstDayOfMonth(snowHeight.data);
+      const snow = configFile.mapArray(snowHeight.data, '') */
+
+      const snowHeightData: (string | number)[][] = createGraphData(
+        snowHeight.data
+      );
+      const soilWetnessData = createGraphData(soilWetness.data);
+      const soilTemperatureData = createGraphData(soilTemp.data);
+      const windGustData = createGraphData(windGust.data);
+
+      window.console.log(snowHeight);
+      yield put(actions.setSnowHeightData(snowHeightData));
+      yield put(actions.setSoilTemperatureData(soilTemperatureData));
+      yield put(actions.setSoilWetnessData(soilWetnessData));
+      yield put(actions.setWindSpeedData(windGustData));
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {

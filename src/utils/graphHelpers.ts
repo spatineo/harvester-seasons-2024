@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Parameter, Smartmet, GraphOptions } from "../types";
+import { Parameter, GraphOptions } from "../types";
 import { EChartOption } from "echarts";
 
 const monthFI = [
@@ -53,7 +53,7 @@ const enFormat = (value: Date) => {
 export function createTrafficabilityGraphOptions(
   parameters: Parameter[],
   values: [],
-  windGustArray: [],
+  windGustArray: (string | number)[][],
   mark,
   winterSeries: (string | number)[],
   languageObject: {
@@ -205,22 +205,7 @@ export function createTrafficabilityGraphOptions(
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         name: `${languageObject.windGust}`,
         yAxisIndex: 1,
-        data: [
-          ...windGustArray.map((t: { utctime: string }) => {
-            if(t["FFG-MS:CERRA:5057:6:10:0"] !== null){
-              return [
-                new Date(t.utctime).toISOString(),
-                t["FFG-MS:CERRA:5057:6:10:0"]
-              ];
-            } else {
-              return [
-                new Date(t.utctime).toISOString(),
-                'nan'
-              ]
-            }
-            
-          })
-        ]
+        data: windGustArray.map(item => [new Date(item[0]).getTime(), item[1]])
       },
       {
         type: "line",
@@ -285,9 +270,10 @@ export function createTrafficabilityGraphOptions(
 }
 
 export function createOptions(
+  data,
   opts: GraphOptions,
   parameters: Parameter[],
-  values: Smartmet[],
+  values: any,
   mark: string,
   padding: [number, number, number, number],
   locale: string,
@@ -347,9 +333,12 @@ export function createOptions(
             arrow: "none",
             color: "#666362"
           }
-        }
+        },
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument
+        data: data.map(item => [new Date(item[0]).getTime(), item[1]])
       },
-      ...parameters.map((p: { code: string }, i: number) => {
+     
+     /*  ...parameters.map((p: { code: string }, i: number) => {
         const codes = p.code;
         return {
           type: "line",
@@ -360,7 +349,7 @@ export function createOptions(
             return [d.utctime, d[codes]];
           })
         };
-      })
+      }) */
     ]
   };
 }

@@ -1,19 +1,33 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { GlobalStateProps, Smartmet, Configurations } from "./types";
-import * as utils from "./utils/helpers";
+import { GlobalStateProps, Configurations } from "./types";
+import {
+  getStartSearchDate,
+  addMonths,
+  lastDayOfPreviousYear,
+  oneMonthBack,
+  oneMonthForward,
+  oneYearForward,
+  tenYearsBack
+} from "./utils/dateHelperFunctions";
+import {
+  soilTemperatureParams,
+  trafficabilityApiParams,
+  snowHeightApiParams,
+  soilWetnesstApiParams,
+  marklineStartDate
+} from "./utils/helpers";
 
-const endDate = utils.addMonths(utils.getStartSearchDate(), 12).toISOString();
-const lastDayPreviousYear = utils.lastDayOfPreviousYear()
-const startDate = new Date(utils.getStartSearchDate()).toISOString();
-const soilTemperaturCodeArray = utils.soilTemperatureParams([]);
-const trafficabilityApiParams = utils.trafficabilityApiParams();
-const snowHeightParams = utils.snowHeightApiParams();
-const soilWetnessParams = utils.soilWetnesstApiParams();
-const backDateOneMonth =  utils.oneMonthBack(lastDayPreviousYear).toISOString()
-
-const marked = new Date(
-  utils.marklineStartDate(utils.getStartSearchDate())
-).toISOString();
+const endDate = addMonths(getStartSearchDate(), 12).toISOString();
+const lastDayPreviousYear = lastDayOfPreviousYear();
+const startDate = new Date(getStartSearchDate()).toISOString();
+const soilTemperaturCodeArray = soilTemperatureParams([]);
+const trafficabilityApiParameters = trafficabilityApiParams();
+const snowHeightParams = snowHeightApiParams();
+const soilWetnessParams = soilWetnesstApiParams();
+const backDateOneMonth = oneMonthBack(new Date()).toISOString();
+const oneMonthForwardDate = oneMonthForward(new Date()).toISOString();
+const oneYearAhead = oneYearForward(new Date()).toISOString();
+const marked = new Date(marklineStartDate(getStartSearchDate())).toISOString();
 
 const initialState: GlobalStateProps = {
   searchParams: "Historical reanalysis",
@@ -27,7 +41,7 @@ const initialState: GlobalStateProps = {
     end_time: endDate,
     time_step: 1440
   },
-  windSpeedData: [],
+  windGustData: [],
   trafficabilityData: [],
   soilWetnessData: [],
   soilTemperatureData: [],
@@ -41,10 +55,10 @@ const initialState: GlobalStateProps = {
         snowHeight: [{ code: "HSNOW-M:CERRA" }],
         windGust: [{ code: "FFG-MS:CERRA:5057:6:10:0" }],
         startEndTimeSpan: {
-          start_time: utils.tenYearsBack(new Date(lastDayPreviousYear)).toISOString(),
+          start_time: tenYearsBack(new Date(lastDayPreviousYear)).toISOString(),
           end_time: lastDayPreviousYear.toISOString(),
           time_step: 1440
-        },
+        }
       }
     },
     "Daily observations": {
@@ -55,9 +69,9 @@ const initialState: GlobalStateProps = {
         windGust: [{ code: "FFG-MS:ERA5" }],
         startEndTimeSpan: {
           start_time: backDateOneMonth,
-          end_time: lastDayPreviousYear.toISOString(),
+          end_time: new Date().toISOString(),
           time_step: 1440
-        },
+        }
       }
     },
     "Seasonal forecast daily ensembles": {
@@ -67,10 +81,10 @@ const initialState: GlobalStateProps = {
         snowHeight: [{ code: "HSNOW-M:ECBSF-HSNOW-M:ECXSF" }],
         windGust: [{ code: "FFG-MS:ECSF" }],
         startEndTimeSpan: {
-          start_time: utils.oneYearsBack(lastDayPreviousYear).toISOString(),
-          end_time: lastDayPreviousYear.toISOString(),
+          start_time: new Date().toISOString(),
+          end_time: oneYearAhead,
           time_step: 1440
-        },
+        }
       }
     },
     "Short prediction daily": {
@@ -80,10 +94,10 @@ const initialState: GlobalStateProps = {
         snowHeight: [{ code: "HSNOW-M:EDTE" }],
         windGust: [{ code: "FFG-MS:EDTE" }],
         startEndTimeSpan: {
-          start_time: backDateOneMonth,
-          end_time: lastDayPreviousYear.toISOString(),
+          start_time: new Date().toISOString(),
+          end_time: oneMonthForwardDate,
           time_step: 1440
-        },
+        }
       }
     },
     "Climate projection": {
@@ -93,10 +107,10 @@ const initialState: GlobalStateProps = {
         snowHeight: [{ code: "HSNOW-M:CDTE" }],
         windGust: [{ code: "FFG-MS:CDTE" }],
         startEndTimeSpan: {
-          start_time: utils.tenYearsBack(new Date(lastDayPreviousYear)).toISOString(),
+          start_time: tenYearsBack(new Date(lastDayPreviousYear)).toISOString(),
           end_time: lastDayPreviousYear.toISOString(),
           time_step: 1440
-        },
+        }
       }
     }
   },
@@ -129,7 +143,7 @@ const initialState: GlobalStateProps = {
       windSpeed: [],
       trafficability: [
         { code: "TSOIL-K:ECBSF:::7:1:0" },
-        ...trafficabilityApiParams
+        ...trafficabilityApiParameters
       ],
       soilWetness: [...soilWetnessParams, { code: "SWVL2-M3M3:SMARTMET:5015" }],
       soilTemperature: [
@@ -178,16 +192,19 @@ const globalSlice = createSlice({
     setTrafficabilityData: (state, action: PayloadAction<[]>) => {
       state.trafficabilityData = action.payload;
     },
-    setSoilWetnessData: (state, action: PayloadAction<Smartmet[]>) => {
+    setSoilWetnessData: (state, action: PayloadAction<(string | number)[][]>) => {
       state.soilWetnessData = action.payload;
     },
-    setSoilTemperatureData: (state, action: PayloadAction<[]>) => {
+    setSoilTemperatureData: (state, action: PayloadAction<(string | number)[][]>) => {
       state.soilTemperatureData = action.payload;
     },
-    setWindSpeedData: (state, action: PayloadAction<[]>) => {
-      state.windSpeedData = action.payload;
+    setWindSpeedData: (state, action: PayloadAction<(string | number)[][]>) => {
+      state.windGustData = action.payload;
     },
-    setSnowHeightData: (state, action: PayloadAction<Smartmet[]>) => {
+    setSnowHeightData: (
+      state,
+      action: PayloadAction<(string | number)[][]>
+    ) => {
       state.snowHeightData = action.payload;
     },
     setMarkLine: (state, action: PayloadAction<string | number>) => {

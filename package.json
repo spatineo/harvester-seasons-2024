@@ -11,10 +11,10 @@
     "lint:fix": "eslint src/**/*.ts{,x} --fix"
   },
   "dependencies": {
-    "@emotion/react": "^11.10.6",
-    "@emotion/styled": "^11.10.6",
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.11.11",
-    "@mui/material": "^5.11.13",
+    "@mui/system": "^5.15.3",
     "@reduxjs/toolkit": "^1.9.3",
     "@turf/turf": "^6.5.0",
     "@types/openlayers": "^4.6.18",

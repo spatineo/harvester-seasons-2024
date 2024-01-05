@@ -17,7 +17,7 @@ export interface Parameter {
 export interface StartEndTimeSpan {
   start_time: string;
   end_time: string;
-  time_step: number;
+  time_step: number | string;
 }
 
 export type HistoricalReanalysisParams = {
@@ -85,11 +85,11 @@ export interface GlobalStateProps {
   changeYear: string;
   markLine: string;
   startEndTimeSpan: StartEndTimeSpan;
-  windSpeedData: [];
+  windGustData: (string | number)[][];
   trafficabilityData: [];
-  soilWetnessData: Smartmet[];
-  soilTemperatureData: [];
-  snowHeightData: Smartmet[];
+  soilWetnessData: (string | number)[][];
+  soilTemperatureData: (string | number)[][];
+  snowHeightData: (string | number)[][] ;
   checked: boolean;
   params: Configurations;
   parameters: {
@@ -123,11 +123,6 @@ export interface TimelineControlStyle {
     shadowOffsetX?: number;
     shadowOffsetY?: number;
   };
-}
-
-export interface RecordObject {
-  [key: string]: number | null | string;
-  utctime: string;
 }
 
 export interface Color {
