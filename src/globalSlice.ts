@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { GlobalStateProps, Smartmet, Configurations } from "./types";
+import { GlobalStateProps, Configurations } from "./types";
 import {
   getStartSearchDate,
   addMonths,
