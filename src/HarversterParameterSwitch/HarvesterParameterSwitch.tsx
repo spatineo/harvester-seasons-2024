@@ -17,7 +17,7 @@ const buttonTexts = [
 
 const ButtonWrapper = styled(Box)({
   display: "flex",
-  gap:4,
+  gap: 4,
   margin: "auto",
   maxWidth: "1000px",
   flexDirection: "row",
@@ -37,21 +37,19 @@ const HarvestParamterSwitch = () => {
   const dispatch = useRootDispatch();
 
   const handleButtonClick = (parameter: string) => {
-    setSelectedParameter((prevSelectedParameter) =>
-      prevSelectedParameter === parameter ? null : parameter
-    );
+    setSelectedParameter(parameter);
 
     dispatch(actions.setSearchParams(parameter as keyof Configurations));
     dispatch({ type: constant.FETCH_DATA });
   };
 
-  window.console.log(selectedParameter);
   return (
     <ButtonWrapper>
       {buttonTexts.map((txt) => (
         <ButtonStyled
           style={{
-            backgroundColor: selectedParameter === txt ? "#D3D3D3" : "transparent",
+            backgroundColor:
+              selectedParameter === txt ? "#D3D3D3" : "transparent",
           }}
           key={txt}
           variant="outlined"
