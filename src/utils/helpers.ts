@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -126,7 +127,7 @@ export function getOpacityFromPercentage(percentage: number): number {
 }
 
 export function ensembleListSmartIdx(
-  scaledData: Smartmet[] | (string | number)[][],
+  scaledData,
   smartmet: string
 ) {
   const ensembleList: string[] = [];
