@@ -87,8 +87,8 @@ export interface GlobalStateProps {
   startEndTimeSpan: StartEndTimeSpan;
   windSpeedData: [];
   trafficabilityData: [];
-  soilWetnessData: Smartmet[];
-  soilTemperatureData: [];
+  soilWetnessData: (string | number)[][];
+  soilTemperatureData: (string | number)[][];
   snowHeightData: (string | number)[][] ;
   checked: boolean;
   params: Configurations;
