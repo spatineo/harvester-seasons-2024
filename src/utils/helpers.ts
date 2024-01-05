@@ -4,56 +4,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Parameter, StartEndTimeSpan, Smartmet, RecordObject } from "../types";
 
-export function oneMonthBack(today: Date) {
-  const oneMonth = new Date(today.getFullYear(), today.getMonth() - 1, today.getDay());
-  return oneMonth;
-} 
-
-export function oneMonthForward(today: Date) {
-  const oneMonth = new Date(today.getFullYear(), today.getMonth() + 1, today.getDay());
-  return oneMonth;
-} 
-
-export function addTenYears(date: Date, years: number) {
-  const tenYears = new Date(date.setFullYear(date.getFullYear() + years));
-  return tenYears;
-}
-
-export function lastDayOfPreviousYear(): Date {
-  const today = new Date();
-  const lastDay = new Date(today.getFullYear() - 1, 11, 31);
-  return lastDay;
-} 
-
-export function tenYearsBack(date: Date): Date {
-  const tenYearsAgo = new Date(date.getFullYear() - 10, 0, 1);
-    return tenYearsAgo;
-}
-
-export function oneYearsBack(date: Date): Date {
-  const tenYearsAgo = new Date(date.getFullYear(), 0, 1);
-    return tenYearsAgo;
-}
-
-export function oneYearsForward() {
-  const date = new Date()
-  const oneYear = new Date(date.getFullYear() + 1, date.getMonth(), date.getDay());
-    return oneYear;
-}
-
-export function addMonths(date: Date, months: number) {
-  const newDate = new Date(date.setMonth(date.getMonth() + months));
-  return newDate;
-}
-
-export function getStartSearchDate() {
-  const today = new Date();
-  const year = today.getFullYear();
-  const startDate = new Date(year, 0, 1);
-  startDate.setHours(0, 0, 0, 0);
-  return startDate; 
-}
-
 export function getValueFromRedux(value: StartEndTimeSpan): StartEndTimeSpan {
   const startEndTimeSpan = value;
   return startEndTimeSpan;
@@ -220,12 +170,12 @@ export function harvidx(
       datascaled[k][smartvariable] !== null ||
       datascaled[k][ensemblelist[0]] == null
     ) {
-      
       resultseries[k] = "nan";
     } else {
       let nans = 0;
       // let threshold = 0.4;
       for (let i = 0; i <= perturbations; i++) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const value: any = datascaled[k][ensemblelist[i]];
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         if (isNaN(value)) {
@@ -297,7 +247,7 @@ export function ensover(
   smartvariable: string
 ) {
   const resultseries: any = [];
-  let agree: number, count: number
+  let agree: number, count: number;
 
   for (let k = 0; k < datascaled.length; k++) {
     // No result when smartvariable !== null
@@ -333,64 +283,4 @@ export function ensover(
     }
   }
   return resultseries;
-}
-
-export function increaseByOneYear(date: Date, years: number) {
-  const newDate = new Date(date);
-  newDate.setFullYear(newDate.getFullYear() + years);
-  return newDate;
-}
-
-export function decreaseByOneYear(date: Date, years: number) {
-  const newDate = new Date(date);
-  newDate.setFullYear(newDate.getFullYear() - years);
-  return newDate;
-}
-
-export const checkIfFinnishText = (array: Array<{index: number, data: string}>) => {
-  const finalArray: Array<{index: number, data: string}> = []
-  const buttonDataEnglish = [
-    { index: 1, data: "Soil Carbon in General" },
-    { index: 2, data: "Forest Management and Soil Carbon" },
-    { index: 3, data: "Peatland vs. Mineral Soil" },
-    { index: 4, data: "Carbon Literature" },
-  ];
-  let hasEmptyData = false; 
-
-  array.forEach((arr: { index: number; data: string }) => {
-    if (arr.data === '') {
-      hasEmptyData = true; 
-    } else {
-      finalArray.push({ index: arr.index, data: arr.data });
-    }
-  });
-
-  if (hasEmptyData) {
-    finalArray.push(...buttonDataEnglish);
-  }
-  return finalArray
-}
-
-export const checkIfFinnishTextBody = (array: Array<{index: number, data: string}>) => {
-  const finalArray: Array<{index: number, data: string}> = []
-  const buttonDataEnglish = [
-    { index: 1, data: "Soil Carbon in General" },
-    { index: 2, data: "Forest Management and Soil Carbon" },
-    { index: 3, data: "Peatland vs. Mineral Soil" },
-    { index: 4, data: "Carbon Literature" },
-  ];
-  let hasEmptyData = false; 
-
-  array.forEach((arr: { index: number; data: string }) => {
-    if (arr.data === '') {
-      hasEmptyData = true; 
-    } else {
-      finalArray.push({ index: arr.index, data: arr.data });
-    }
-  });
-
-  if (hasEmptyData) {
-    finalArray.push(...buttonDataEnglish);
-  }
-  return finalArray
 }
