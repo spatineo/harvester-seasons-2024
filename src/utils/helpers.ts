@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Parameter, StartEndTimeSpan, Smartmet, RecordObject } from "../types";
+import { Parameter, StartEndTimeSpan, Smartmet } from "../types";
 
 export function getValueFromRedux(value: StartEndTimeSpan): StartEndTimeSpan {
   const startEndTimeSpan = value;
@@ -16,8 +16,8 @@ export function asStartEndTimeSpan(value: StartEndTimeSpan): StartEndTimeSpan {
 
 export function getDatesForTimelineDuration(startDate: Date) {
   const result: Date[] = [];
-  const currentDate = new Date(startDate.getFullYear(), 0, 1); // January 1st of the given year
-  const endDate = new Date(startDate.getFullYear(), 11, 31); // December 31st of the given year
+  const currentDate = new Date(startDate.getFullYear(), 0, 1);
+  const endDate = new Date(startDate.getFullYear(), 11, 31);
 
   while (currentDate <= endDate) {
     result.push(new Date(currentDate));
@@ -72,7 +72,7 @@ export function soilWetnesstApiParams() {
 }
 
 export function scaleEnsembleData(arr: Smartmet[], smartmet: string) {
-  const lastNonNull: RecordObject | undefined = arr.findLast(
+  const lastNonNull: Smartmet | undefined = arr.findLast(
     (obj) => obj[smartmet] !== null
   );
 
@@ -125,15 +125,15 @@ export function getOpacityFromPercentage(percentage: number): number {
   }
 }
 
-export function ensembleListSmartIdx(scaledData: Smartmet[], smartmet: string) {
+export function ensembleListSmartIdx(
+  scaledData: Smartmet[] | (string | number)[][],
+  smartmet: string
+) {
   const ensembleList: string[] = [];
   const smartId: number = scaledData.findLastIndex(
     (obj) => obj[smartmet] !== null
   );
-  const foundObject: Smartmet | undefined = scaledData.findLast(
-    //"SWVL2-M3M3:SMARTMET:5015"
-    (obj) => obj[smartmet] !== null
-  );
+  const foundObject = scaledData.findLast((obj) => obj[smartmet] !== null);
 
   const smartmetValue: number | null =
     foundObject !== undefined ? (foundObject[smartmet] as number) : null;
@@ -154,7 +154,7 @@ export function ensembleListSmartIdx(scaledData: Smartmet[], smartmet: string) {
 
 export function harvidx(
   threshold: number,
-  datascaled: RecordObject[],
+  datascaled: Smartmet[],
   ensemblelist: Array<string>,
   perturbations: number,
   smartvariable: string
@@ -202,14 +202,14 @@ export function harvidx(
 }
 
 export function scalingFunction(
-  data: RecordObject[],
+  data,
   ensemblelist: string[],
   smartIdx: number,
   perturbations: number,
   smartvariable1: string,
   smartvariable2?: string
-): RecordObject[] {
-  const datascaled: RecordObject[] = [];
+): Smartmet[] {
+  const datascaled: Smartmet[] = [];
   for (let i = 0; i < data.length; i++) {
     datascaled[i] = {
       utctime: data[i].utctime,
@@ -241,7 +241,7 @@ export function scalingFunction(
 export function ensover(
   threshold: number,
   percent: number,
-  datascaled: RecordObject[],
+  datascaled: Smartmet[],
   ensemblelist: string[],
   perturbations: number,
   smartvariable: string
