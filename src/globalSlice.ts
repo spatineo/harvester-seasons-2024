@@ -41,7 +41,7 @@ const initialState: GlobalStateProps = {
     end_time: endDate,
     time_step: 1440
   },
-  windSpeedData: [],
+  windGustData: [],
   trafficabilityData: [],
   soilWetnessData: [],
   soilTemperatureData: [],
@@ -198,8 +198,8 @@ const globalSlice = createSlice({
     setSoilTemperatureData: (state, action: PayloadAction<(string | number)[][]>) => {
       state.soilTemperatureData = action.payload;
     },
-    setWindSpeedData: (state, action: PayloadAction<[]>) => {
-      state.windSpeedData = action.payload;
+    setWindSpeedData: (state, action: PayloadAction<(string | number)[][]>) => {
+      state.windGustData = action.payload;
     },
     setSnowHeightData: (
       state,
