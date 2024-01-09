@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Parameter, GraphOptions } from "../types";
-import { EChartOption } from "echarts";
+import { EChartOption, time } from "echarts";
 
 const monthFI = [
   "Tammi",
@@ -47,7 +47,7 @@ const fiFormat = (value: Date) => {
 const enFormat = (value: Date) => {
   const date = new Date(value);
   const month = monthNames[date.getMonth()];
-  return `${month} {yyyy}`;
+  return `{MMM} {yy}`;
 };
 
 export function createTrafficabilityGraphOptions(
@@ -106,7 +106,10 @@ export function createTrafficabilityGraphOptions(
       axisLabel: {
         formatter: locale === "en" ? enFormat : fiFormat,
         fontSize: 10
-      }
+      },
+      axisTick: {
+        interval: 10,
+    }
     },
     series: [
       {
@@ -277,15 +280,14 @@ export function createOptions(
   mark: string,
   padding: [number, number, number, number],
   locale: string,
-  yValueMax: number,
-  yValueMin: number
 ) {
   return {
     animation: false,
     animationThreshold: 1,
     grid: {
-      left: 46,
-      width: "98%"
+      left: 50,
+      right: 50,
+      width: "100%",
     },
     tooltip: {
       show: true,
@@ -298,16 +300,36 @@ export function createOptions(
       nameTextStyle: {
         padding
       },
-      max: yValueMax,
-      min: yValueMin
     },
     xAxis: {
       type: "time",
-      splitNumber: 12,
+      //splitNumber: 12,
+      boundaryGap: false,
       axisLabel: {
-        formatter: locale === "en" ? enFormat : fiFormat,
+        //formatter: locale === "en" ? enFormat : fiFormat',
+       /*  formatter: (value: Date | number | string, index)  => {
+          // Convert value to a JavaScript Date object
+          const date = new Date(value);
+      
+          // Calculate the time range (in milliseconds) between the first and last data points
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+          const timeRange = new Date(data[data.length - 1]) - new Date(data[0]);
+      
+          // Adjust the date format based on the time range
+          if (timeRange > 365 * 24 * 60 * 60 * 1000) { // If the range is more than 1 year
+              return echarts.format.formatTime('yyyy', date);
+          } else if (timeRange > 30 * 24 * 60 * 60 * 1000) { // If the range is more than 1 month
+              return echarts.format.formatTime('yyyy-MM', date);
+          } else if (timeRange > 3 * 30 * 24 * 60 * 60 * 1000) { // If the range is more than 3 months
+              return echarts.format.formatTime('yyyy-MM', date);
+          } else { // Default format for other ranges (e.g., 1 month)
+              return echarts.format.formatTime('yyyy-MM-dd', date);
+          }
+      }, */
+     
         fontSize: 10
-      }
+      },
+      minInterval: 0
     },
     series: [
       {
@@ -315,6 +337,7 @@ export function createOptions(
           show: false
         },
         type: "line",
+        symbol: "none",
         seriesLayoutBy: "row",
         markLine: {
           data: [

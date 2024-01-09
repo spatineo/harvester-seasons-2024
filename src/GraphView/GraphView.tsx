@@ -49,8 +49,6 @@ const Graphs: React.FC = () => {
         markLineDate,
         [0, 0, 16, 0],
         lang,
-        1,
-        0
       );
       const soilTemperature = createOptions(
         soilTemperatureData,
@@ -60,8 +58,6 @@ const Graphs: React.FC = () => {
         markLineDate,
         [0, 0, 16, 0],
         lang,
-        30,
-        -30
       );
       const snowHeight = createOptions(
         snowHeightData,
@@ -71,8 +67,6 @@ const Graphs: React.FC = () => {
         markLineDate,
         [0, 0, 16, 0],
         lang,
-        1.5,
-        0
       );
       setSoilWetnessOption(soilWetness);
       setSnowHeightOption(snowHeight);
@@ -86,8 +80,6 @@ const Graphs: React.FC = () => {
         markLineDate,
         [0, 0, 16, 0],
         lang,
-        1,
-        0
       );
       const soilTemperature = createOptions(
         soilTemperatureData,
@@ -97,8 +89,6 @@ const Graphs: React.FC = () => {
         markLineDate,
         [0, 0, 16, 0],
         lang,
-        30,
-        -30
       );
       const snowHeight = createOptions(
         snowHeightData,
@@ -108,8 +98,6 @@ const Graphs: React.FC = () => {
         markLineDate,
         [0, 0, 16, 0],
         lang,
-        1.5,
-        0
       );
       setSnowHeightOption(snowHeight);
       setSoilTemperatureOption(soilTemperature);

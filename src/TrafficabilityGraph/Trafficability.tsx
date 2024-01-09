@@ -56,7 +56,6 @@ const TraficabilityGraphComponent: React.FC<
       useCoarsePointer: undefined,
     });
 
-    window.addEventListener("resize", () => newChart.resize({}));
     if (option !== null) {
       newChart.setOption(option, { notMerge: true, lazyUpdate: false });
     }
@@ -141,6 +140,8 @@ const TraficabilityGraphComponent: React.FC<
       const max = Math.max(...finals);
       dispatch(actions.changeTrafficabilityIndexColor(max));
     }
+
+    window.addEventListener('resize', () => newChart.resize());;
 
     return () => {
       newChart.dispose();

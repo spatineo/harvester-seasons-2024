@@ -9,72 +9,58 @@ export interface Smartmet {
   [key: string]: string | null | number;
 }
 
-export interface Parameter {
-  code: string;
-  title?: string;
-}
-
 export interface StartEndTimeSpan {
   start_time: string;
   end_time: string;
   time_step: number | string;
 }
 
-export type HistoricalReanalysisParams = {
-  soilTemperature: Parameter[];
-  soilWetness: Parameter[];
-  snowHeight: Parameter[];
-  windGust: Parameter[];
-  startEndTimeSpan: StartEndTimeSpan;
-};
+export interface WMSLayers {
+  id: number;
+  visible: boolean;
+  layerName: string;
+  opacity: number;
+  layerInfo: WMSCapabilitiesLayerType | null;
+  WMSTimeStrategy: WMSLayerTimeStrategy;
+  legend: Legend;
+}
 
-export type DailyObservationsParams = {
-  soilTemperature: Parameter[];
-  soilWetness: Parameter[];
-  snowHeight: Parameter[];
-  windGust: Parameter[];
-  startEndTimeSpan: StartEndTimeSpan;
-};
+export interface ModeForLayers {
+  layerName: string;
+  opacity: number;
+  layerInfo: WMSCapabilitiesLayerType | null;
+  WMSTimeStrategy: WMSLayerTimeStrategy;
+}
 
-export type SeasonalForecastDailyDnsembles = {
-  soilTemperature: Parameter[];
-  soilWetness: Parameter[];
-  snowHeight: Parameter[];
-  windGust: Parameter[];
-  startEndTimeSpan: StartEndTimeSpan;
-};
+export interface Parameter {
+  code: string;
+  title?: string;
+}
 
-export type ShortPredictionDailyParams = {
-  soilTemperature: Parameter[];
-  soilWetness: Parameter[];
-  snowHeight: Parameter[];
-  windGust: Parameter[];
-  startEndTimeSpan: StartEndTimeSpan;
-};
+export interface ConfigMode<T extends Parameter[]> {
+  parameters: {
+    [key: string]: T;
+  };
+  startEndTimeSpan?: StartEndTimeSpan;
+  layers: {
+    [key: string]: ModeForLayers;
+  };
+}
 
-export type ClimateProjection = {
+export type SeasonDesignParams = {
   soilTemperature: Parameter[];
   soilWetness: Parameter[];
   snowHeight: Parameter[];
   windGust: Parameter[];
+  startEndTimeSpan?: StartEndTimeSpan;
 };
 
 export type Configurations = {
-  "Historical reanalysis": {
-    parameters: HistoricalReanalysisParams;
-  };
-  "Daily observations": {
-    parameters: DailyObservationsParams;
-  };
-  "Seasonal forecast daily ensembles": {
-    parameters: SeasonalForecastDailyDnsembles;
-  };
-  "Short prediction daily": {
-    parameters: ShortPredictionDailyParams;
-  };
-  "Climate projection": {
-    parameters: SeasonalForecastDailyDnsembles;
-  };
+  "Historical reanalysis": ConfigMode<Parameter[]>;
+  "Daily observations": ConfigMode<Parameter[]>;
+  "Seasonal forecast daily ensembles": ConfigMode<Parameter[]>;
+  "Short prediction daily": ConfigMode<Parameter[]>;
+  "Climate projection": ConfigMode<Parameter[]>;
 };
 
 export interface GlobalStateProps {
@@ -89,7 +75,7 @@ export interface GlobalStateProps {
   trafficabilityData: [];
   soilWetnessData: (string | number)[][];
   soilTemperatureData: (string | number)[][];
-  snowHeightData: (string | number)[][] ;
+  snowHeightData: (string | number)[][];
   checked: boolean;
   params: Configurations;
   parameters: {
@@ -161,16 +147,6 @@ export interface LayerType {
   Dimension: DimensionType[];
   Style: [];
   message?: string;
-}
-
-export interface WMSLayers {
-  id: number;
-  visible: boolean;
-  layerName: string;
-  opacity: number;
-  layerInfo: WMSCapabilitiesLayerType | null;
-  WMSTimeStrategy: WMSLayerTimeStrategy;
-  legend: Legend;
 }
 
 export interface MapsStateProps {

@@ -8,7 +8,7 @@ import Layers from "../Layers/Layers";
 import BaseMap from "../Layers/BaseMap";
 import LocationMarkerLayer from "../Layers/LocationMarker";
 import WMSLayer from "../Layers/WMSLayer";
-import { MapsStateProps, WMSLayers, Map } from "../types";
+import { MapsStateProps, WMSLayers, Map, ModeForLayers} from "../types";
 import TrafficabilityTIFFLayer from "../Layers/TrafficabilityTIFFLayer";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
@@ -17,17 +17,29 @@ import Controls from "../Layers/Controls";
 import "../Map.css";
 
 const HarvesterMap: React.FC = () => {
-  const markLine = useAppSelector((state: RootState) => state.global.markLine);
+  const {markLine, searchParams, params} = useAppSelector((state: RootState) => state.global);
   const mapState: Map = useAppSelector((state: RootState) => state.mapState);
   const [stateMap, setStateMap] = useState<MapsStateProps[]>([]);
   const [wmLayer, setWMLayer] = useState<WMSLayers[]>([]);
+  const [WMLayer, setWLayer] = useState<ModeForLayers[]>([]);
 
   useEffect(() => {
     if (!mapState.maps || !mapState.WMSLayerState) return;
+    const layer = Object.values(params[searchParams].layers)
     setStateMap(mapState.maps);
     setWMLayer(mapState.WMSLayerState);
+    setWLayer(layer)
   }, [mapState.maps, mapState.WMSLayerState]);
 
+  const layer = Object.values(params[searchParams].layers)
+  window.console.log(searchParams, "Layers to map from",layer)
+
+  const layerModal = () => {
+    return <Box>
+
+    </Box>
+  }
+  
   return (
     <Box sx={{ clear: "both" }}>
       <MapComponent>

@@ -1,11 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { GlobalStateProps, Configurations } from "./types";
+import {
+  GlobalStateProps,
+  Configurations,
+  WMSLayerTimeStrategy,
+  WMSCapabilitiesLayerType
+} from "./types";
 import {
   getStartSearchDate,
   addMonths,
   lastDayOfPreviousYear,
   oneMonthBack,
-  oneMonthForward,
   oneYearForward,
   tenYearsBack
 } from "./utils/dateHelperFunctions";
@@ -25,7 +29,7 @@ const trafficabilityApiParameters = trafficabilityApiParams();
 const snowHeightParams = snowHeightApiParams();
 const soilWetnessParams = soilWetnesstApiParams();
 const backDateOneMonth = oneMonthBack(new Date()).toISOString();
-const oneMonthForwardDate = oneMonthForward(new Date()).toISOString();
+const threeMonthsForwardDate = addMonths(new Date(), 3).toISOString();
 const oneYearAhead = oneYearForward(new Date()).toISOString();
 const marked = new Date(marklineStartDate(getStartSearchDate())).toISOString();
 
@@ -50,14 +54,40 @@ const initialState: GlobalStateProps = {
   params: {
     "Historical reanalysis": {
       parameters: {
-        soilTemperature: [{ code: "TSOIL-C:CERRA-L" }],
+        soilTemperature: [{ code: "TSOIL-K:CERRA-L:5067::2:0" }],
         soilWetness: [{ code: "SWVL2-M3M3:CERRA-L-0.4" }],
         snowHeight: [{ code: "HSNOW-M:CERRA" }],
         windGust: [{ code: "FFG-MS:CERRA:5057:6:10:0" }],
-        startEndTimeSpan: {
-          start_time: tenYearsBack(new Date(lastDayPreviousYear)).toISOString(),
-          end_time: lastDayPreviousYear.toISOString(),
-          time_step: 1440
+      },
+      startEndTimeSpan: {
+        start_time: tenYearsBack(new Date(lastDayPreviousYear)).toISOString(),
+        end_time: lastDayPreviousYear.toISOString(),
+        time_step: 1440
+      },
+      layers: {
+        soilTemperature: {
+          layerName: "harvester:cerra5:TSOIL-C",
+          opacity: 0.5,
+          layerInfo: null,
+          WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate
+        },
+        soilWetness: {
+          layerName: "harvester:cerra5:SWVL2-M3M3",
+          opacity: 0.5,
+          layerInfo: null,
+          WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate
+        },
+        snowHeight: {
+          layerName: "harvester:cerra5:HSNOW-M",
+          opacity: 0.5,
+          layerInfo: null,
+          WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate
+        },
+        windGust: {
+          layerName: "harvester:cerra:FFG-MS",
+          opacity: 0.5,
+          layerInfo: null,
+          WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate
         }
       }
     },
@@ -66,24 +96,37 @@ const initialState: GlobalStateProps = {
         soilTemperature: [{ code: "SKT-K:LSASAF" }],
         soilWetness: [{ code: "SWI2-0TO1:SWI" }],
         snowHeight: [{ code: "HSNOW-M:ERA5L" }],
-        windGust: [{ code: "FFG-MS:ERA5" }],
-        startEndTimeSpan: {
-          start_time: backDateOneMonth,
-          end_time: new Date().toISOString(),
-          time_step: 1440
-        }
-      }
-    },
-    "Seasonal forecast daily ensembles": {
-      parameters: {
-        soilTemperature: [{ code: "TSOIL-C:ECBSF-TSOIL-C:ECXSF" }],
-        soilWetness: [{ code: "SWI2-0TO1:ECXSF" }],
-        snowHeight: [{ code: "HSNOW-M:ECBSF-HSNOW-M:ECXSF" }],
-        windGust: [{ code: "FFG-MS:ECSF" }],
-        startEndTimeSpan: {
-          start_time: new Date().toISOString(),
-          end_time: oneYearAhead,
-          time_step: 1440
+        windGust: [{ code: "FFG-MS:ERA5" }]
+      },
+      startEndTimeSpan: {
+        start_time: backDateOneMonth,
+        end_time: new Date().toISOString(),
+        time_step: 1440
+      },
+      layers: {
+        soilTemperature: {
+          layerName: "harvester:era5l:TSOIL-C",
+          opacity: 0.5,
+          layerInfo: null,
+          WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate
+        },
+        soilWetness: {
+          layerName: "harvester:era5l:SWI2-0TO1",
+          opacity: 0.5,
+          layerInfo: null,
+          WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate
+        },
+        snowHeight: {
+          layerName: "harvester:era5l:HSNOW-M",
+          opacity: 0.5,
+          layerInfo: null,
+          WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate
+        },
+        windGust: {
+          layerName: "harvester:era5:FFG-MS",
+          opacity: 0.5,
+          layerInfo: null,
+          WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate
         }
       }
     },
@@ -93,10 +136,75 @@ const initialState: GlobalStateProps = {
         soilWetness: [{ code: "SWI2-0TO1:EDTE" }],
         snowHeight: [{ code: "HSNOW-M:EDTE" }],
         windGust: [{ code: "FFG-MS:EDTE" }],
-        startEndTimeSpan: {
-          start_time: new Date().toISOString(),
-          end_time: oneMonthForwardDate,
-          time_step: 1440
+      },
+      startEndTimeSpan: {
+        start_time: new Date().toISOString(),
+        end_time: threeMonthsForwardDate,
+        time_step: 1440
+      },
+      layers: {
+        soilTemperature: {
+          layerName: "harvester:edte:TSOIL-C",
+          opacity: 0.5,
+          layerInfo: null,
+          WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate
+        },
+        soilWetness: {
+          layerName: "harvester:edte:SWI2-0TO1",
+          opacity: 0.5,
+          layerInfo: null,
+          WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate
+        },
+        snowHeight: {
+          layerName: "harvester:edte:HSNOW-M",
+          opacity: 0.5,
+          layerInfo: null,
+          WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate
+        },
+        windGust: {
+          layerName: "harvester:edte:FFG-MS",
+          opacity: 0.5,
+          layerInfo: null,
+          WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate
+        }
+      }
+    },
+    "Seasonal forecast daily ensembles": {
+      parameters: {
+        soilTemperature: [{ code: "TSOIL-C:ECBSF-TSOIL-C:ECXSF" }],
+        soilWetness: [{ code: "SWI2-0TO1:ECXSF" }],
+        snowHeight: [{ code: "HSNOW-M:ECBSF-HSNOW-M:ECXSF" }],
+        windGust: [{ code: "FFG-MS:ECSF" }],
+      },
+      startEndTimeSpan: {
+        start_time: new Date().toISOString(),
+        end_time: oneYearAhead,
+        time_step: 1440
+      },
+      layers: {
+        soilTemperature: {
+          layerName: "harvester:ecbsf:TSOIL-C",
+          opacity: 0.5,
+          layerInfo: null,
+          WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate
+        },
+        soilWetness: {
+          layerName: "harvester:ecbsf:SWI2-0TO1",
+          opacity: 0.5,
+          layerInfo: null,
+          WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate
+        },
+        snowHeight: {
+          layerName: "harvester:ecbsf:HSNOW-M",
+          opacity: 0.5,
+          layerInfo: null,
+          WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate
+        },
+        windGust: {
+          layerName: "harvester:ecbsf:FFG-MS",
+          opacity: 0.5,
+          layerInfo: null,
+          WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate
         }
       }
     },
@@ -106,10 +214,36 @@ const initialState: GlobalStateProps = {
         soilWetness: [{ code: "SWI2-0TO1:CDTE" }],
         snowHeight: [{ code: "HSNOW-M:CDTE" }],
         windGust: [{ code: "FFG-MS:CDTE" }],
-        startEndTimeSpan: {
-          start_time: tenYearsBack(new Date(lastDayPreviousYear)).toISOString(),
-          end_time: lastDayPreviousYear.toISOString(),
-          time_step: 1440
+      },
+      startEndTimeSpan: {
+        start_time: tenYearsBack(new Date(lastDayPreviousYear)).toISOString(),
+        end_time: lastDayPreviousYear.toISOString(),
+        time_step: 1440
+      },
+      layers: {
+        soilTemperature: {
+          layerName: "",
+          opacity: 0.5,
+          layerInfo: null,
+          WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate
+        },
+        soilWetness: {
+          layerName: "",
+          opacity: 0.5,
+          layerInfo: null,
+          WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate
+        },
+        snowHeight: {
+          layerName: "",
+          opacity: 0.5,
+          layerInfo: null,
+          WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate
+        },
+        windGust: {
+          layerName: "",
+          opacity: 0.5,
+          layerInfo: null,
+          WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate
         }
       }
     }
@@ -127,7 +261,7 @@ const initialState: GlobalStateProps = {
       soilWetness: [
         ...soilWetnessParams,
         { code: "SWVL2-M3M3:SMARTMET:5015" },
-        { code: "SWI2-0TO1:SWI:5059" }
+        { code: "SWI2-0TO1:SWI:5059" },
       ],
       soilTemperature: [
         ...soilTemperaturCodeArray,
@@ -192,10 +326,16 @@ const globalSlice = createSlice({
     setTrafficabilityData: (state, action: PayloadAction<[]>) => {
       state.trafficabilityData = action.payload;
     },
-    setSoilWetnessData: (state, action: PayloadAction<(string | number)[][]>) => {
+    setSoilWetnessData: (
+      state,
+      action: PayloadAction<(string | number)[][]>
+    ) => {
       state.soilWetnessData = action.payload;
     },
-    setSoilTemperatureData: (state, action: PayloadAction<(string | number)[][]>) => {
+    setSoilTemperatureData: (
+      state,
+      action: PayloadAction<(string | number)[][]>
+    ) => {
       state.soilTemperatureData = action.payload;
     },
     setWindSpeedData: (state, action: PayloadAction<(string | number)[][]>) => {
@@ -229,6 +369,25 @@ const globalSlice = createSlice({
     },
     setSearchParams: (state, action: PayloadAction<keyof Configurations>) => {
       state.searchParams = action.payload;
+    },
+    setWMLayerInformation: (state, action: PayloadAction<WMSCapabilitiesLayerType>) => {
+      window.console.log(action.payload)
+      const layer = Object.values(state.params[state.searchParams].layers)
+      const foundLayer = layer.find(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        (l) => {
+          if(action.payload && action.payload.Name){
+            return l.layerName === action.payload.Name
+          }
+        }
+      );
+      if(foundLayer !== undefined) {
+        window.console.log('LayerInfo')
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        foundLayer.layerInfo = action.payload
+      } else {
+        window.console.error("could not find layer")
+      }
     }
   }
 });

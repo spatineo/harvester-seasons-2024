@@ -81,6 +81,7 @@ function MainViewComponent() {
       50,
       "HSNOW-M:SMARTOBS:13:4"
     );
+    
     const languageObject = {
       summerIndex: languages.summmerIndex[
         information.lang as keyof LanguageOptions

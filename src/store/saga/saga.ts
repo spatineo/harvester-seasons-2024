@@ -211,7 +211,9 @@ export function* getCapabilitiesSaga(): SagaIterator {
 
             const layer = findLayer(result.Capability.Layer);
             if (layer !== null) {
+              // put(actions.setWMLayerInformation(layer))
               return put(mapActions.setWMSLayerInformation(layer));
+
             } else {
               window.console.error("No layers not found");
             }
@@ -432,8 +434,8 @@ export function* fetchData() {
               // eslint-disable-next-line @typescript-eslint/no-unsafe-return
               .map((p) => p.code)
               .join(",")}`,
-            starttime: config.parameters.startEndTimeSpan.start_time,
-            endtime: config.parameters.startEndTimeSpan.end_time,
+            starttime: config.startEndTimeSpan.start_time,
+            endtime: config.startEndTimeSpan.end_time,
             timestep: startEndTimeSpan.time_step,
             format: "json",
             source: "grid",
@@ -455,15 +457,11 @@ export function* fetchData() {
 
       /*  const filteredArray = configFile.filterFirstDayOfMonth(snowHeight.data);
       const snow = configFile.mapArray(snowHeight.data, '') */
-
-      const snowHeightData: (string | number)[][] = createGraphData(
-        snowHeight.data
-      );
+      const snowHeightData = createGraphData(snowHeight.data);
       const soilWetnessData = createGraphData(soilWetness.data);
       const soilTemperatureData = createGraphData(soilTemp.data);
       const windGustData = createGraphData(windGust.data);
 
-      window.console.log(snowHeight);
       yield put(actions.setSnowHeightData(snowHeightData));
       yield put(actions.setSoilTemperatureData(soilTemperatureData));
       yield put(actions.setSoilWetnessData(soilWetnessData));
