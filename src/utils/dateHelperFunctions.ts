@@ -33,15 +33,14 @@ export function oneYearForward(date: Date) {
   return oneMonth;
 }
 
-export function addMonths(date: Date, months: number) {
-  const newDate = new Date(date.setMonth(date.getMonth() + months));
+export function addMonths(date: Date, months: number): Date {
+  const newDate = new Date(date);
+  newDate.setUTCMonth(date.getUTCMonth() + months, 0);
   return newDate;
 }
 
-export function getStartSearchDate() {
+export function getFirstDayOfTheYear() {
   const today = new Date();
-  const year = today.getFullYear();
-  const startDate = new Date(year, 0, 1);
-  startDate.setHours(0, 0, 0, 0);
-  return startDate; 
+  const startDate = new Date(Date.UTC(today.getUTCFullYear(), 0, 1));
+  return startDate.toISOString();
 }
