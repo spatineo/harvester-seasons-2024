@@ -12,6 +12,7 @@ export interface Smartmet {
 export interface Parameter {
   code: string;
   title?: string;
+  layerName?: string;
 }
 
 export interface StartEndTimeSpan {
@@ -20,94 +21,25 @@ export interface StartEndTimeSpan {
   time_step: number | string;
 }
 
-export type HistoricalReanalysisParams = {
-  soilTemperature: Parameter[];
-  soilWetness: Parameter[];
-  snowHeight: Parameter[];
-  windGust: Parameter[];
-  startEndTimeSpan: StartEndTimeSpan;
-};
-
-export type DailyObservationsParams = {
-  soilTemperature: Parameter[];
-  soilWetness: Parameter[];
-  snowHeight: Parameter[];
-  windGust: Parameter[];
-  startEndTimeSpan: StartEndTimeSpan;
-};
-
-export type SeasonalForecastDailyDnsembles = {
-  soilTemperature: Parameter[];
-  soilWetness: Parameter[];
-  snowHeight: Parameter[];
-  windGust: Parameter[];
-  startEndTimeSpan: StartEndTimeSpan;
-};
-
-export type ShortPredictionDailyParams = {
-  soilTemperature: Parameter[];
-  soilWetness: Parameter[];
-  snowHeight: Parameter[];
-  windGust: Parameter[];
-  startEndTimeSpan: StartEndTimeSpan;
-};
-
-export type ClimateProjection = {
-  soilTemperature: Parameter[];
-  soilWetness: Parameter[];
-  snowHeight: Parameter[];
-  windGust: Parameter[];
-};
-
-export type Configurations = {
-  "Historical reanalysis": {
-    parameters: HistoricalReanalysisParams;
-  };
-  "Daily observations": {
-    parameters: DailyObservationsParams;
-  };
-  "Seasonal forecast daily ensembles": {
-    parameters: SeasonalForecastDailyDnsembles;
-  };
-  "Short prediction daily": {
-    parameters: ShortPredictionDailyParams;
-  };
-  "Climate projection": {
-    parameters: SeasonalForecastDailyDnsembles;
-  };
-};
-
 export interface GlobalStateProps {
-  searchParams: keyof Configurations;
   defaultColorSwitch: boolean;
   trafficabilityIndexColor: number | null;
   hideNext: boolean;
   changeYear: string;
   markLine: string;
   startEndTimeSpan: StartEndTimeSpan;
-  windGustData: (string | number)[][];
+  windGustData: Smartmet[];
   trafficabilityData: [];
-  soilWetnessData: (string | number)[][];
-  soilTemperatureData: (string | number)[][];
-  snowHeightData: (string | number)[][] ;
-  checked: boolean;
-  params: Configurations;
-  parameters: {
-    twelveMonthParams: {
-      windSpeed: Parameter[];
-      trafficability: Parameter[];
-      snowHeight: Parameter[];
-      soilTemperature: Parameter[];
-      soilWetness: Parameter[];
-    };
-    tenYearParams: {
-      windSpeed: Parameter[];
-      trafficability: Parameter[];
-      snowHeight: Parameter[];
-      soilTemperature: Parameter[];
-      soilWetness: Parameter[];
-    };
-  };
+  soilWetnessData: Smartmet[];
+  soilTemperatureData: Smartmet[];
+  snowHeightData: Smartmet[];
+  params: {
+    trafficability: Parameter[];
+    snowHeight: Parameter[];
+    soilTemperature: Parameter[];
+    windGust: Parameter[];
+    soilWetness: Parameter[];
+  }
 }
 
 export interface TimelineControlStyle {
