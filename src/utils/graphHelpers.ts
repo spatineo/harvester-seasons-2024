@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Parameter, GraphOptions } from "../types";
+import { Parameter, GraphOptions, Smartmet } from "../types";
 import { EChartOption } from "echarts";
 
 const monthFI = [
@@ -53,7 +53,7 @@ const enFormat = (value: Date) => {
 export function createTrafficabilityGraphOptions(
   parameters: Parameter[],
   values: [],
-  windGustArray: (string | number)[][],
+  windGustArray: Smartmet[],
   mark,
   winterSeries: (string | number)[],
   languageObject: {
@@ -205,7 +205,15 @@ export function createTrafficabilityGraphOptions(
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         name: `${languageObject.windGust}`,
         yAxisIndex: 1,
-        data: windGustArray.map(item => [new Date(item[0]).getTime(), item[1]])
+        data: [
+          ...values.map((t: { utctime: string; [key: string]: string }) => {
+            const code = t.code;
+            return [
+              new Date(t.utctime).toISOString(),
+              code !== null ? code : "nan"
+            ];
+          })
+        ]
       },
       {
         type: "line",
@@ -270,15 +278,12 @@ export function createTrafficabilityGraphOptions(
 }
 
 export function createOptions(
-  data,
   opts: GraphOptions,
-  parameters: Parameter[],
-  values: any,
+  parameters,
+  values,
   mark: string,
   padding: [number, number, number, number],
-  locale: string,
-  yValueMax: number,
-  yValueMin: number
+  locale: string
 ) {
   return {
     animation: false,
@@ -297,9 +302,7 @@ export function createOptions(
       nameLocation: "middle",
       nameTextStyle: {
         padding
-      },
-      max: yValueMax,
-      min: yValueMin
+      }
     },
     xAxis: {
       type: "time",
@@ -333,23 +336,85 @@ export function createOptions(
             arrow: "none",
             color: "#666362"
           }
-        },
+        }
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument
-        data: data.map(item => [new Date(item[0]).getTime(), item[1]])
+        //data: data.map((item) => [new Date(item[0]).getTime(), item[1], item[2], item[3]]),
       },
-     
-     /*  ...parameters.map((p: { code: string }, i: number) => {
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      ...parameters.map((p: { code: string }, i: number) => {
         const codes = p.code;
         return {
           type: "line",
           symbolSize: 1,
           name: `SH-${i}`,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
           data: values.map((d: { utctime: string }) => {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-return
             return [d.utctime, d[codes]];
           })
         };
-      }) */
+      })
     ]
+  };
+}
+
+/* 
+const data = []
+for(let i = 0; i < 10; i++){
+  let date = new Date()
+  date.setDate(date.getDate() + i) 
+  data.push(date.toISOString().split('T')[0])
+}
+
+const serie = [
+   [150, 230, 224, 218, 135, 147, 260],
+   [160, 240, 204, 220, 13, 17, 2],
+   [10, 150, 214, 218, 135, 147, 260],
+   [110, 240, 204, 220, 13, 17, 2],
+   ]
+option = {
+  tooltip: {
+    show: true
+  },
+  xAxis: {
+    type: 'category',
+    data: data
+  },
+  yAxis: {
+    type: 'value'
+  },
+  series: serie.map(item => {
+    return {
+      type: 'line',
+      data: item
+    }
+  })
+};
+
+*/
+export function graphOption(data: (string | number | Date)[][]) {
+  const d: string[] = [];
+  for (let i = 0; i < 10; i++) {
+    const date = new Date();
+    date.setDate(date.getDate() + i);
+    d.push(date.toISOString());
+  }
+
+  return {
+    tooltip: {
+      show: true,
+      trigger: "axis"
+    },
+    xAxis: {
+      type: "time",
+    },
+    yAxis: {},
+    series: data.map((item) => {
+      return {
+        type: "line",
+        data: item.map((value, i) => [d[i], value])
+      };
+    })
   };
 }
