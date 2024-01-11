@@ -11,7 +11,6 @@ import HarvesterMap from "../HarvesterMapComponent/HarvesterMap";
 import OpacityComponent from "../Opacity/OpacityComponent";
 import CarbonText from "../CarbonText/CarbonText";
 import TimelineSlider from "../TimelineSlider/TimelineSlider";
-import HarvestParamterSwitch from "../HarversterParameterSwitch/HarvesterParameterSwitch";
 import { useAppSelector, useRootDispatch } from "../store/hooks";
 import { actions as action } from "../globalSlice";
 import { LanguageOptions } from "../Lang/languageSlice";
@@ -30,17 +29,12 @@ function MainViewComponent() {
 
   const dispatch = useRootDispatch();
   const {
-    soilWetnessData,
-    soilTemperatureData,
     snowHeightData,
     trafficabilityData,
     windGustData,
+    params
   } = useAppSelector((state: RootState) => state.global);
   const information = useAppSelector((state) => state.language);
-
-  const graphParameters = useAppSelector(
-    (state: RootState) => state.global.parameters
-  );
   const { markLine } = useAppSelector((state: RootState) => state.global);
   const { lang } = useAppSelector((state: RootState) => state.language);
 
@@ -51,14 +45,9 @@ function MainViewComponent() {
     dispatch({ type: constants.SNOWHEIGHT_API });
     dispatch({ type: constants.WINDGUST_API });
     dispatch({ type: constants.SETWMSLAYERINFORMATION})
-    dispatch({ type: constants.FETCH_DATA})
   }, []);
 
   useEffect(() => {
-    if (!soilWetnessData || !snowHeightData || !soilTemperatureData) {
-      return;
-    }
-
     const ensembleSnowHeight = ensembleListSmartIdx(
       snowHeightData,
       "HSNOW-M:SMARTOBS:13:4"
@@ -98,25 +87,21 @@ function MainViewComponent() {
         information.lang as keyof LanguageOptions
       ] as string,
     };
-    if (trafficabilityData || windGustData) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      const trafficabilityOption = createTrafficabilityGraphOptions(
-        graphParameters.twelveMonthParams.trafficability,
-        trafficabilityData,
-        windGustData,
-        markLine,
-        winter1series,
-        languageObject,
-        lang
-      );
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      setTrafficabilityGraphOption(trafficabilityOption);
-    }
+
+    const trafficabilityOption = createTrafficabilityGraphOptions(
+      params.trafficability,
+      trafficabilityData,
+      windGustData,
+      markLine,
+      winter1series,
+      languageObject,
+      lang
+    );
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    setTrafficabilityGraphOption(trafficabilityOption);
+ 
   }, [
     trafficabilityData,
-    soilWetnessData,
-    snowHeightData,
-    graphParameters.twelveMonthParams.trafficability,
     markLine,
     windGustData,
     information.lang,
@@ -124,11 +109,8 @@ function MainViewComponent() {
 
   return (
     <Container maxWidth="lg">
-      <Box sx={{position: "relative", top: "0rem"}} >
-        <HarvestParamterSwitch />
-      </Box>
       <Box sx={{position: "relative", bottom: "0rem", top: "0.6rem"}}>
-        {(trafficabilityData.length > 0 &&  soilWetnessData.length > 0 ) ? (
+        {(trafficabilityData.length > 0  ) ? (
           <TraficabilityGraph
             markline={markLine}
             option={trafficabilityGraphOption}
