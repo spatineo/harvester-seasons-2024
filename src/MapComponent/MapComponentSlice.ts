@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Map, WMSLayerTimeStrategy, WMSCapabilitiesLayerType } from "../types";
+import { Map, WMSLayerTimeStrategy, WMSCapabilitiesLayerType, Parameter } from "../types";
+import { RootState } from "../store/store";
 import WMSCapabilities from "ol/format/WMSCapabilities";
 
 const initialState: Map = {
@@ -33,6 +34,7 @@ const initialState: Map = {
       visible: false
     }
   ],
+  indexNumber: 0,
   WMSLayerState: [
     {
       id: 1,
@@ -86,7 +88,8 @@ const initialState: Map = {
         height: 345
       }
     }
-  ]
+  ],
+  capabilities: {},
 };
 
 const mapComponentSlice = createSlice({
@@ -113,6 +116,13 @@ const mapComponentSlice = createSlice({
       });
       return { ...state, maps: newState };
     },
+    setIndexNumbers: (state, action: PayloadAction<number>) => {
+      if(action.payload){
+        state.indexNumber = action.payload;
+      } else {
+        state.indexNumber = 0
+      }
+    },
     setWMSLayer: (state, action: PayloadAction<number>) => {
       const newState = state.WMSLayerState.map((item) => {
         if (item.id === action.payload) {
@@ -135,25 +145,34 @@ const mapComponentSlice = createSlice({
       state,
       action: PayloadAction<null | WMSCapabilities>
     ) => {
-      window.console.log(action.payload)
       state.harvesterWMSCapabilities = action.payload;
     },
-    setWMSLayerInformation: (state, action: PayloadAction<WMSCapabilitiesLayerType>) => {
+    setWMSLayerInformation: (
+      state,
+      action: PayloadAction<WMSCapabilitiesLayerType>
+    ) => {
       const foundLayer = state.WMSLayerState.find(
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         (layer) => {
-          if(action.payload && action.payload.Name){
-            return layer.layerName === action.payload.Name
+          if (action.payload && action.payload.Name) {
+            return layer.layerName === action.payload.Name;
           }
         }
       );
-      if(foundLayer !== undefined) {
+      if (foundLayer !== undefined) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        foundLayer.layerInfo = action.payload
+        foundLayer.layerInfo = action.payload;
       } else {
-        window.console.error("could not find layer")
+        window.console.error("could not find layer");
       }
-    }
+    },
+    setCapabilities: (
+      state,
+      action: PayloadAction<Record<string, string | {}>>
+    ) => {
+      window.console.log(action.payload, 'capabilities');
+      state.capabilities = action.payload;
+    },
   }
 });
 
@@ -165,4 +184,6 @@ export type ReduxActions =
   | ReturnType<typeof mapActions.setBaseLayers>
   | ReturnType<typeof mapActions.setHarvesterWMSCapabilities>
   | ReturnType<typeof mapActions.setWMSLayerInformation>
-  | ReturnType<typeof mapActions.setWMSLayer>;
+  | ReturnType<typeof mapActions.setIndexNumbers>
+  | ReturnType<typeof mapActions.setWMSLayer>
+  | ReturnType<typeof mapActions.setCapabilities>;
