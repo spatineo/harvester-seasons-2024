@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { GlobalStateProps, Smartmet } from "./types";
 import {
@@ -40,30 +42,33 @@ const initialState: GlobalStateProps = {
     snowHeight: [
       { code: "HSNOW-M:CERRA", layerName: "harvester:cerra5:HSNOW-M" },
       { code: "HSNOW-M:ERA5L", layerName: "harvester:era5l:HSNOW-M" },
-      { code: "HSNOW-M:EDTE", layerName: "harvester:edte:HSNOW-M"},
       { code: "HSNOW-M:ECBSF", layerName: "harvester:ecbsf:HSNOW-M" },
-      { code: "HSNOW-M:CDTE" }
+      { code: "HSNOW-M:EDTE", layerName: "harvester:edte:HSNOW-M" },
+      { code: "HSNOW-M:CDTE", layerName: "harvester:cdte" }
     ],
     soilTemperature: [
       { code: "TSOIL-C:CERRA-L", layerName: "harvester:cerra5:TSOIL-C" },
       { code: "SKT-C:LSASAF", layerName: "harvester:era5l:TSOIL-C" },
       { code: "TSOIL-C:EDTE", layerName: "harvester:edte:TSOIL-C" },
-      { code: "TSOIL-C:ECBSF" , layerName: "harvester:ecbsf:TSOIL-C"},
-      { code: "TSOIL-C:CDTE" }
+      { code: "TSOIL-C:ECBSF", layerName: "harvester:ecbsf:TSOIL-C" },
+      { code: "TSOIL-C:CDTE", layerName: "harvester:cdte" }
     ],
     windGust: [
       { code: "FFG-MS:CERRA", layerName: "harvester:cerra:FFG-MS" },
       { code: "FFG-MS:ERA5", layerName: "harvester:era5:FFG-MS" },
       { code: "FFG-MS:EDTE", layerName: "harvester:edte:FFG-MS" },
       { code: "FFG-MS:ECSF", layerName: "harvester:ecsf:FFG-MS" },
-      { code: "FFG-MS:CDTE" }
+      { code: "FFG-MS:CDTE", layerName: "harvester:cdte" }
     ],
     soilWetness: [
-      { code: "SWVL2-M3M3:CERRA-L-0.4", layerName: "harvester:cerra5:SWVL2-M3M3" },
+      {
+        code: "SWVL2-M3M3:CERRA-L-0.4",
+        layerName: "harvester:cerra5:SWVL2-M3M3"
+      },
       { code: "SWI2-0TO1:SWI", layerName: "harvester:era5l:SWI2-0TO1" },
-      { code: "SWI2-0TO1:EDTE", layerName: "harvester:edte:SWI2-0TO1"},
+      { code: "SWI2-0TO1:EDTE", layerName: "harvester:edte:SWI2-0TO1" },
       { code: "SWI2-0TO1:ECXSF", layerName: "harvester:ecxsf:SWI2-0TO1" },
-      { code: "SWI2-0TO1:CDTE" }
+      { code: "SWI2-0TO1:CDTE", layerName: "harvester:cdte" }
     ]
   }
 };
@@ -89,23 +94,18 @@ const globalSlice = createSlice({
       };
     },
     setTrafficabilityData: (state, action: PayloadAction<[]>) => {
-      window.console.log(action.payload, "trafficability");
       state.trafficabilityData = action.payload;
     },
     setSoilWetnessData: (state, action: PayloadAction<Smartmet[]>) => {
-      window.console.log(action.payload, "wetness");
       state.soilWetnessData = action.payload;
     },
     setSoilTemperatureData: (state, action: PayloadAction<Smartmet[]>) => {
-      window.console.log(action.payload, "temp");
       state.soilTemperatureData = action.payload;
     },
     setWindGustData: (state, action: PayloadAction<Smartmet[]>) => {
-      window.console.log(action.payload, "windGust");
       state.windGustData = action.payload;
     },
     setSnowHeightData: (state, action: PayloadAction<Smartmet[]>) => {
-      window.console.log(action.payload, "height");
       state.snowHeightData = action.payload;
     },
     setMarkLine: (state, action: PayloadAction<string | number>) => {
