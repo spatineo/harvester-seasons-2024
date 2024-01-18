@@ -23,7 +23,6 @@ import { RootState } from "../store";
 import { EnqueueSnackbar } from "../hooks";
 import { Parameter, StartEndTimeSpan } from "../../types";
 import { mapActions } from "../../MapComponent/MapComponentSlice";
-import { createGraphData } from "./config.saga"
 
 const timeSeriesServiceURL = "https://desm.harvesterseasons.com/timeseries";
 export interface TimeSpan {
@@ -108,9 +107,9 @@ function createTimeSeriesQueryParameters(
 
 export function* getCapabilitiesSaga(): SagaIterator {
   const layers = yield select(
-    (state: RootState) => state.mapState.WMSLayerState
+    (state: RootState) => state.global.params
   );
-
+  
   const parser = new WMSCapabilities();
   const capabilitiesUrl =
     "https://desm.harvesterseasons.com/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0";
@@ -119,8 +118,11 @@ export function* getCapabilitiesSaga(): SagaIterator {
     if (response.ok) {
       const responseBody = yield response.text();
       const result = yield parser.read(responseBody);
+ 
       if (result) {
+
         yield put(mapActions.setWMSLayerInformation(result));
+        yield put(mapActions.setCapabilities(result.Capability))
 
         yield all(
           layers.map((l) => {
@@ -141,6 +143,7 @@ export function* getCapabilitiesSaga(): SagaIterator {
 
             const layer = findLayer(result.Capability.Layer);
             if (layer !== null) {
+              //window.console.log('check if it returns layer info', layer)
               return put(mapActions.setWMSLayerInformation(layer));
             } else {
               window.console.error("No layers not found");
@@ -185,7 +188,6 @@ export function* fetchTrafficabilityDataSaga(): SagaIterator {
     );
 
     if (response.status === 200) {
-      window.console.log(response.data, 'Trafficablity')
       yield put(actions.setTrafficabilityData(response.data));
     }
   } catch (error) {
@@ -212,7 +214,7 @@ export function* fetchSoilTemperatureSaga() {
   const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
-  window.console.log(startEndTimeSpan, 'temperature')
+  
   try {
     const result = yield call(
       axios.get,
@@ -283,8 +285,19 @@ export function* fetchSoilWetnessSaga() {
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
 
+/* 
+    try {
+      const response = yield fetch('./data.json').then((res) => res.json()).then(result => result);
+  
+      yield put(actions.setSoilWetnessData(response));
+  
+    } catch (error) {
+      window.console.error('Error:', error);
+    }
+   */
+
   try {
-    const result = yield call(
+     const result = yield call(
       axios.get,
       timeSeriesServiceURL,
       createTimeSeriesQueryParameters(
@@ -296,7 +309,9 @@ export function* fetchSoilWetnessSaga() {
     if(result.status === 200){
       const data = result.data;
       yield put(actions.setSoilWetnessData(data))
-    }
+    } 
+   
+    
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const errorMessage: string | [] = error.message;
