@@ -6,7 +6,7 @@ export interface GraphOptions {
 
 export interface Smartmet {
   utctime: string;
-  [key: string]: string | null | number;
+  code: Record<string, string | null | number>;
 }
 
 export interface Parameter {
@@ -115,6 +115,7 @@ export interface MapsStateProps {
 export interface Map {
   harvesterWMSCapabilities: WMSCapabilities | null;
   opacityValue: number;
+  indexNumber: number;
   position: {
     lat: number | null;
     lon: number | null;
@@ -122,6 +123,7 @@ export interface Map {
   };
   maps: MapsStateProps[];
   WMSLayerState: WMSLayers[];
+  capabilities: Record<string, string | {}>
 }
 
 export interface DimensionType {
