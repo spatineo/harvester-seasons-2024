@@ -31,18 +31,12 @@ const Graphs: React.FC = () => {
 
   useEffect(() => {
     if (!soilTemperatureData) return;
-
-    /*   const snowHeightScaled: Smartmet[] = scaleEnsembleData(
-      snowHeightData,
-      "HSNOW-M:SMARTOBS:13:4"
-    ); */
-
     const soilWetness = createOptions(
       { title: "Soil Wetness (m³/m³)" },
       params.soilWetness,
       soilWetnessData,
       markLineDate,
-      [0, 0, 16, 0],
+      20,
       lang
     );
     const soilTemperature = createOptions(
@@ -50,7 +44,7 @@ const Graphs: React.FC = () => {
       params.soilTemperature,
       soilTemperatureData,
       markLineDate,
-      [0, 0, 16, 0],
+      20,
       lang
     );
     const snowHeight = createOptions(
@@ -58,7 +52,7 @@ const Graphs: React.FC = () => {
       params.snowHeight,
       snowHeightData,
       markLineDate,
-      [0, 0, 16, 0],
+      20,
       lang
     );
     setSnowHeightOption(snowHeight);
@@ -71,7 +65,7 @@ const Graphs: React.FC = () => {
     markLineDate,
     lang,
   ]);
- 
+
   return (
     <Box>
       <Box>
@@ -79,7 +73,7 @@ const Graphs: React.FC = () => {
           <Box className="loading">Loading ....</Box>
         ) : (
           <HarvesterSeasons
-            option={soilWetnessOption !== null ? soilWetnessOption : {}}
+            option={soilWetnessOption !== null && soilWetnessOption}
             height={300}
           />
         )}
@@ -89,7 +83,7 @@ const Graphs: React.FC = () => {
           <Box className="loading">Loading ....</Box>
         ) : (
           <HarvesterSeasons
-            option={soilTemperatureOption !== null ? soilTemperatureOption : {}}
+            option={soilTemperatureOption !== null && soilTemperatureOption}
             height={300}
           />
         )}
@@ -99,12 +93,11 @@ const Graphs: React.FC = () => {
           <Box className="loading">Loading ....</Box>
         ) : (
           <HarvesterSeasons
-            option={snowHeightOption !== null ? snowHeightOption : {}}
+            option={snowHeightOption !== null && snowHeightOption}
             height={300}
           />
         )}
       </Box>
-      
     </Box>
   );
 };
