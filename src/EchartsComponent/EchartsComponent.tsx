@@ -20,7 +20,7 @@ const EchartsComponent: React.FC<ChartProps> = ({ option, height }) => {
     }
 
   
-   const myChart = echarts.init(chartRef.current, undefined, );
+   const myChart = echarts.init(chartRef.current, undefined);
    window.addEventListener('resize', () => myChart.resize());
     myChart.setOption(option);
 
@@ -31,14 +31,8 @@ const EchartsComponent: React.FC<ChartProps> = ({ option, height }) => {
 
   return (
     <Box
+    style={{ width: '100%', height: `${height}px`, margin: 'auto'}}
       ref={chartRef}
-      sx={{
-        width: "96%",
-        display: "flex",
-        flex: "row",
-        alignItems: "center",
-        height: `${height}px`,
-      }}
     ></Box>
   );
 };
