@@ -22,6 +22,7 @@ const HarvesterMap: React.FC = () => {
   const [stateMap, setStateMap] = useState<MapsStateProps[]>([]);
   const [wmLayer, setWMLayer] = useState<WMSLayers[]>([]);
 
+
   useEffect(() => {
     if (!mapState.maps || !mapState.WMSLayerState) return;
     setStateMap(mapState.maps);

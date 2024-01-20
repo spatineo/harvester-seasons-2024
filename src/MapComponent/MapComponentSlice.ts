@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Map, WMSLayerTimeStrategy, WMSCapabilitiesLayerType, Parameter } from "../types";
-import { RootState } from "../store/store";
+import { Map, WMSLayerTimeStrategy, WMSCapabilitiesLayerType } from "../types";
 import WMSCapabilities from "ol/format/WMSCapabilities";
 
 const initialState: Map = {
@@ -35,6 +34,12 @@ const initialState: Map = {
     }
   ],
   indexNumber: 0,
+
+  
+  layerState: [],
+
+
+
   WMSLayerState: [
     {
       id: 1,
@@ -150,7 +155,7 @@ const mapComponentSlice = createSlice({
     setWMSLayerInformation: (
       state,
       action: PayloadAction<WMSCapabilitiesLayerType>
-    ) => {
+    ) => { 
       const foundLayer = state.WMSLayerState.find(
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         (layer) => {
@@ -173,6 +178,13 @@ const mapComponentSlice = createSlice({
       window.console.log(action.payload, 'capabilities');
       state.capabilities = action.payload;
     },
+    setLayerState: (state, action: PayloadAction<WMSCapabilitiesLayerType>) => {
+      const payload = action.payload;
+      const isDuplicate = state.layerState.some((layer) => layer.Name === payload.Name);
+      if (!isDuplicate) {
+        state.layerState.push(payload);
+      }
+    }
   }
 });
 
@@ -186,4 +198,5 @@ export type ReduxActions =
   | ReturnType<typeof mapActions.setWMSLayerInformation>
   | ReturnType<typeof mapActions.setIndexNumbers>
   | ReturnType<typeof mapActions.setWMSLayer>
-  | ReturnType<typeof mapActions.setCapabilities>;
+  | ReturnType<typeof mapActions.setCapabilities>
+  | ReturnType<typeof mapActions.setLayerState>;

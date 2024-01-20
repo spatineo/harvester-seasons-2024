@@ -8,6 +8,7 @@ import {
   reduceMonths
 } from "./utils/dateHelperFunctions";
 import { marklineStartDate } from "./utils/helpers";
+import { RootState } from "./store/store";
 
 const endDate = addMonths(new Date(), 6).toISOString();
 const startDate = reduceMonths(new Date(), 6).toISOString();
@@ -144,3 +145,47 @@ export type ReduxActions =
   | ReturnType<typeof actions.changeHideNextArrowState>
   | ReturnType<typeof actions.changeYear>
   | ReturnType<typeof actions.changeDefaultColor>;
+
+  export const getMarkLineMatch = (param: string) => (state: RootState) => {
+    const rootState = state.global[param] as Smartmet[] | undefined;
+    const markLine = new Date(state.global.markLine);
+    if (!markLine || rootState === undefined) {
+      return `check if you gave the expected string = ${param}`;
+    }
+    const foundMatch = rootState.find(
+      (item: { utctime: string | number | Date }) => {
+        const paramDate = new Date(item.utctime);
+        return (
+          paramDate.toISOString().split("T")[0] ===
+          markLine.toISOString().split("T")[0]
+        );
+      }
+    );
+    if (!foundMatch) {
+      return `No match found for markLine`;
+    }
+    return foundMatch;
+  };
+
+  export const getKeyFromFoundMatch = (foundMatch: Smartmet) => {
+    const allKeys = Object.keys(foundMatch) as (keyof Smartmet)[];
+    const keyWithValueNotNull = allKeys.find((key) => {
+      return key !== "utctime" && foundMatch[key] !== null;
+    });
+    if (keyWithValueNotNull !== undefined) {
+      const result = {
+        utctime: foundMatch.utctime,
+      };
+      result[keyWithValueNotNull] = foundMatch[keyWithValueNotNull];
+      return result;
+    }
+    const keyWithNullValue = allKeys.find((key) => key !== "utctime" && foundMatch[key] === null);
+    if (keyWithNullValue !== undefined) {
+      const result = {
+        utctime: foundMatch.utctime,
+      };
+      result[keyWithNullValue] = null;
+      return result;
+    }
+    return null
+  };

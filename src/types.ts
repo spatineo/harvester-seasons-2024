@@ -13,6 +13,8 @@ export interface Parameter {
   code: string;
   title?: string;
   layerName?: string;
+  Name?: string;
+  Title?: string;
 }
 
 export interface StartEndTimeSpan {
@@ -124,6 +126,7 @@ export interface Map {
   maps: MapsStateProps[];
   WMSLayerState: WMSLayers[];
   capabilities: Record<string, string | {}>
+  layerState: WMSCapabilitiesLayerType[]
 }
 
 export interface DimensionType {
@@ -145,6 +148,9 @@ export interface WMSCapabilitiesDimensionType {
 }
 
 export interface WMSCapabilitiesLayerType {
+  disabled?: boolean;
+  id?: number;
+  layerName?: string;
   Name: string;
   Title?: string;
   Style: WMSCapabilitiesStyleType[];

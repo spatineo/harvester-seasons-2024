@@ -63,7 +63,9 @@ export function* triggerTimeSpanChange({
     yield put(actions.setMarkLine(newDate));
     yield put(
       actions.setTimeEndStartSpan({
-        start_time: tenYearsBack(lastDayOfPreviousYear().toISOString()).toISOString(),
+        start_time: tenYearsBack(
+          lastDayOfPreviousYear().toISOString()
+        ).toISOString(),
         end_time: lastDayOfPreviousYear().toISOString(),
         time_step: 24 * 60
       })
@@ -106,10 +108,14 @@ function createTimeSeriesQueryParameters(
 }
 
 export function* getCapabilitiesSaga(): SagaIterator {
-  const layers = yield select(
-    (state: RootState) => state.global.params
-  );
-  
+  const layersParams = yield select((state: RootState) => state.global.params);
+  const layers: any = [
+    ...layersParams.snowHeight.map((layer) => layer.layerName),
+    ...layersParams.soilWetness.map((layer) => layer.layerName),
+    ...layersParams.soilTemperature.map((layer) => layer.layerName),
+    ...layersParams.windGust.map((layer) => layer.layerName)
+  ];
+
   const parser = new WMSCapabilities();
   const capabilitiesUrl =
     "https://desm.harvesterseasons.com/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0";
@@ -118,18 +124,17 @@ export function* getCapabilitiesSaga(): SagaIterator {
     if (response.ok) {
       const responseBody = yield response.text();
       const result = yield parser.read(responseBody);
- 
+      
       if (result) {
 
         yield put(mapActions.setWMSLayerInformation(result));
-        yield put(mapActions.setCapabilities(result.Capability))
-
+        yield put(mapActions.setCapabilities(result.Capability));
         yield all(
           layers.map((l) => {
             function findLayer(layer) {
               let ret = null;
               // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-              if (l.layerName === layer.Name) {
+              if (layer.Name === l) {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                 ret = layer;
               } else if (layer.Layer) {
@@ -143,13 +148,14 @@ export function* getCapabilitiesSaga(): SagaIterator {
 
             const layer = findLayer(result.Capability.Layer);
             if (layer !== null) {
-              //window.console.log('check if it returns layer info', layer)
-              return put(mapActions.setWMSLayerInformation(layer));
+              //put(mapActions.setWMSLayerInformation(layer));
+              return put(mapActions.setLayerState(layer))
             } else {
               window.console.error("No layers not found");
+              return null;//{layer: not found}
             }
           })
-        );
+        ); 
       }
     }
   } catch (error) {
@@ -175,7 +181,7 @@ export function* fetchTrafficabilityDataSaga(): SagaIterator {
   );
 
   const params = yield select((state: RootState) => state.global.params);
-  
+
   try {
     const response = yield call(
       axios.get,
@@ -214,7 +220,7 @@ export function* fetchSoilTemperatureSaga() {
   const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
-  
+
   try {
     const result = yield call(
       axios.get,
@@ -225,9 +231,9 @@ export function* fetchSoilTemperatureSaga() {
         userLocation
       )
     );
-    if(result.status === 200){
+    if (result.status === 200) {
       const data = result.data;
-      yield put(actions.setSoilTemperatureData(data))
+      yield put(actions.setSoilTemperatureData(data));
     }
   } catch (error) {
     window.console.error(error);
@@ -256,19 +262,15 @@ export function* fetchSnowHeightSaga() {
         userLocation
       )
     );
-    if(result.status === 200){
+    if (result.status === 200) {
       const data = result.data;
-      yield put(actions.setSnowHeightData(data))
+      yield put(actions.setSnowHeightData(data));
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const errorMessage: string | [] = error.message;
       window.console.error(errorMessage);
-      yield call(
-        EnqueueSnackbar,
-        "Error in network for snow height",
-        "error"
-      );
+      yield call(EnqueueSnackbar, "Error in network for snow height", "error");
     }
   }
 }
@@ -285,7 +287,7 @@ export function* fetchSoilWetnessSaga() {
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
 
-/* 
+  /* 
     try {
       const response = yield fetch('./data.json').then((res) => res.json()).then(result => result);
   
@@ -297,7 +299,7 @@ export function* fetchSoilWetnessSaga() {
    */
 
   try {
-     const result = yield call(
+    const result = yield call(
       axios.get,
       timeSeriesServiceURL,
       createTimeSeriesQueryParameters(
@@ -306,21 +308,15 @@ export function* fetchSoilWetnessSaga() {
         userLocation
       )
     );
-    if(result.status === 200){
+    if (result.status === 200) {
       const data = result.data;
-      yield put(actions.setSoilWetnessData(data))
-    } 
-   
-    
+      yield put(actions.setSoilWetnessData(data));
+    }
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const errorMessage: string | [] = error.message;
       window.console.error(errorMessage);
-      yield call(
-        EnqueueSnackbar,
-        "Error in network for soil wetness",
-        "error"
-      );
+      yield call(EnqueueSnackbar, "Error in network for soil wetness", "error");
     }
   }
 }
@@ -347,19 +343,15 @@ export function* fetchWindGustSaga() {
         userLocation
       )
     );
-    if(result.status === 200){
+    if (result.status === 200) {
       const data = result.data;
-      yield put(actions.setWindGustData(data))
+      yield put(actions.setWindGustData(data));
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const errorMessage: string | [] = error.message;
       window.console.error(errorMessage);
-      yield call(
-        EnqueueSnackbar,
-        "Error in network for soil wetness",
-        "error"
-      );
+      yield call(EnqueueSnackbar, "Error in network for soil wetness", "error");
     }
   }
 }

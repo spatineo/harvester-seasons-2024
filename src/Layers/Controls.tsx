@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable react/prop-types */
-import { useEffect, useContext, useState } from "react";
+import { useEffect, useContext, useState, Fragment } from "react";
 import { Box } from "@mui/material";
 import MapContext from "../MapComponent/MapContext";
 import LayerSeclectorComponent from "../LayerSelector/LayerSelector";
@@ -11,112 +11,32 @@ import Overlay from "../Overlay/Overlay";
 import WMSLayersComponent from "../WMSLayersInput/WMSLayersControl";
 import { useAppSelector, useRootDispatch } from "../store/hooks";
 import { RootState } from "../store/store";
-import { WMSLayers, Map, Smartmet, Parameter } from "../types";
+import { WMSLayers, Map, Smartmet } from "../types";
 import { mapActions } from "../MapComponent/MapComponentSlice";
-import {
-  getMarkLineMatch,
-  getKeyFromFoundMatch,
-  filterLayers,
-  getLayers,
-} from "../utils/map.util";
+import { getMarkLineMatch, getKeyFromFoundMatch } from "../globalSlice";
 
 const Controls = () => {
   const { baseLayers, map } = useContext(MapContext);
   const [layerForWMS, setLayersForWMS] = useState<WMSLayers[]>([]);
   const [title, setTitle] = useState<string>("Taustakartta");
   const mapState: Map = useAppSelector((state: RootState) => state.mapState);
+  const { params } = useAppSelector((state: RootState) => state.global);
 
-  const match: Parameter[] = [];
-  const {
-    soilTemperatureData,
-    snowHeightData,
-    windGustData,
-    soilWetnessData,
-    markLine,
-    params,
-  } = useAppSelector((state: RootState) => state.global);
+  const snow = useAppSelector(getMarkLineMatch("snowHeightData"));
+  const soil = useAppSelector(getMarkLineMatch("soilTemperatureData"));
+  const wetness = useAppSelector(getMarkLineMatch("soilWetnessData"));
+  const wind = useAppSelector(getMarkLineMatch("windGustData"));
+  const foundKeyForSnow =
+    typeof snow === "object" ? getKeyFromFoundMatch(snow) : null;
+  const foundKeyForSoil =
+    typeof soil === "object" ? getKeyFromFoundMatch(soil) : null;
+  const foundKeyForSoilWetness =
+    typeof wetness === "object" ? getKeyFromFoundMatch(wetness) : null;
+  const foundKeyForWindGust =
+    typeof wind === "object" ? getKeyFromFoundMatch(wind) : null;
   const dispatch = useRootDispatch();
 
-  const foundSHeight = getMarkLineMatch(snowHeightData, markLine);
-  const foundSWetness = getMarkLineMatch(soilWetnessData, markLine);
-  const foundSTemperature = getMarkLineMatch(soilTemperatureData, markLine);
-  const foundWGust = getMarkLineMatch(windGustData, markLine);
-
-  if (
-    foundSHeight &&
-    foundSWetness &&
-    foundSTemperature &&
-    foundWGust &&
-    typeof foundSHeight === "object" &&
-    typeof foundSWetness === "object" &&
-    typeof foundSTemperature === "object" &&
-    typeof foundWGust === "object"
-  ) {
-    const foundCodeHeight =
-      typeof foundSHeight === "object" && getKeyFromFoundMatch(foundSHeight);
-    const foundCodeWetness =
-      typeof foundSWetness === "object" && getKeyFromFoundMatch(foundSWetness);
-    const foundCodeTemperature =
-      typeof foundSTemperature === "object" &&
-      getKeyFromFoundMatch(foundSTemperature);
-    const foundCodeWindGust =
-      typeof foundWGust === "object" && getKeyFromFoundMatch(foundWGust);
-
-    const resultSnowHeight =
-      foundCodeHeight !== false &&
-      foundCodeHeight !== undefined &&
-      filterLayers(params.snowHeight, foundCodeHeight);
-    const resultSoilWetness =
-      foundCodeWetness !== false &&
-      foundCodeWetness !== undefined &&
-      filterLayers(params.soilWetness, foundCodeWetness);
-    const resultSoilTemperature =
-      foundCodeTemperature !== false &&
-      foundCodeTemperature !== undefined &&
-      filterLayers(params.soilTemperature, foundCodeTemperature);
-    const resultWindGust =
-      foundCodeWindGust !== false &&
-      foundCodeWindGust !== undefined &&
-      filterLayers(params.windGust, foundCodeWindGust);
-
-    if (resultSnowHeight) {
-      if (
-        !match.some(
-          (item: { code: string }) => item.code === resultSnowHeight.code
-        )
-      ) {
-        match.push(resultSnowHeight);
-      }
-    }
-    if (resultSoilWetness) {
-      if (
-        !match.some(
-          (item: { code: string }) => item.code === resultSoilWetness.code
-        )
-      ) {
-        match.push(resultSoilWetness);
-      }
-    }
-    if (resultSoilTemperature) {
-      if (
-        !match.some(
-          (item: { code: string }) => item.code === resultSoilTemperature.code
-        )
-      ) {
-        match.push(resultSoilTemperature);
-      }
-    }
-    if (resultWindGust) {
-      if (
-        !match.some(
-          (item: { code: string }) => item.code === resultWindGust.code
-        )
-      ) {
-        match.push(resultWindGust);
-      }
-    }
-  }
-
+  const getOneParamFromEach = [foundKeyForSnow, foundKeyForSoil, foundKeyForSoilWetness, foundKeyForWindGust]  
   const handleBaseLayerChange = (newValue: string) => {
     setTitle(newValue);
     dispatch(mapActions.setBaseLayers(newValue));
@@ -132,21 +52,23 @@ const Controls = () => {
     });
   }, [baseLayers, title, map, mapState.WMSLayerState]);
 
-  window.console.log(match);
-
-  const layers = getLayers(match, mapState.capabilities.Layer);
-  window.console.log(layers);
-  const newArray = match.map((obj1) => {
-    const matchingObj2 = layers.find((obj2) => obj2.Name === obj1.layerName);
+  const addDisableProp = getOneParamFromEach.map(m => {
+    if (m !== null) {
+      const keys = Object.keys(m);
+      const filteredKeys = keys.filter(key => key !== 'utctime');
+      return (filteredKeys.length > 0 && m[filteredKeys[0]] !== null) ? {
+        ...m,
+        disabled: false
+      } : {
+        ...m,
+        disabled: true
+      };
+    }
   
-    return {
-      Name: obj1.layerName,
-      Title: obj1.layerName,
-      // other properties from array1
-      show: matchingObj2 ? true : false,
-    };
+    return null;
   });
-  window.console.log(newArray);
+  window.console.log(addDisableProp, 'disabled')
+
   return (
     <Box sx={{ position: "relative", top: "-3rem" }}>
       <Overlay>
@@ -165,30 +87,27 @@ const Controls = () => {
         </Box>
         <br />
 
-        {
-          /*match.map(m => m.layerName)
-          .filter((l) => l.layerInfo) */
-         
-          newArray.map((wmsLayer, index) => {
-              window.console.log(wmsLayer.show);
-              if (!wmsLayer.Name) {
-                return <></>;
-              }
-              return (
-                <Box key={wmsLayer.Name}>
-                  <WMSLayersComponent
-                    name={wmsLayer.Name && wmsLayer.Name}
-                    checked={wmsLayer.show}
-                    disabled={wmsLayer.show}
-                    value={wmsLayer.Name}
-                    handleChange={() => {
-                      dispatch(mapActions.setWMSLayer(index));
-                    }}
-                  />
-                </Box>
-              );
-            })
-        }
+        {addDisableProp.length > 0 &&
+          addDisableProp.map((wmsLayer, index) => {
+            if (!wmsLayer || wmsLayer[0] === null) {
+              return <Fragment key={index}></Fragment>;
+            }
+            const keys = Object.keys(wmsLayer)
+            return (
+              <Box key={index}>
+                <WMSLayersComponent
+                  name={keys[1]}
+                  checked={mapState.indexNumber === index ? true : false}
+                  disabled={wmsLayer.disabled}
+                  value={wmsLayer[1] ? wmsLayer[1] : wmsLayer[1]}
+                  handleChange={() => {
+                    dispatch(mapActions.setIndexNumbers(index));
+                    window.console.log(mapState.indexNumber, index);
+                  }}
+                />
+              </Box>
+            );
+          })}
       </Overlay>
     </Box>
   );
