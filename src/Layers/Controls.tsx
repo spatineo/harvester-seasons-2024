@@ -14,6 +14,7 @@ import { RootState } from "../store/store";
 import { WMSLayers, Map, Smartmet } from "../types";
 import { mapActions } from "../MapComponent/MapComponentSlice";
 import { getMarkLineMatch, getKeyFromFoundMatch } from "../globalSlice";
+import { getLayersWithLayerInfo, getOneParamFromData } from "../utils/map.util";
 
 const Controls = () => {
   const { baseLayers, map } = useContext(MapContext);
@@ -26,17 +27,25 @@ const Controls = () => {
   const soil = useAppSelector(getMarkLineMatch("soilTemperatureData"));
   const wetness = useAppSelector(getMarkLineMatch("soilWetnessData"));
   const wind = useAppSelector(getMarkLineMatch("windGustData"));
-  const foundKeyForSnow =
-    typeof snow === "object" ? getKeyFromFoundMatch(snow) : null;
-  const foundKeyForSoil =
-    typeof soil === "object" ? getKeyFromFoundMatch(soil) : null;
-  const foundKeyForSoilWetness =
-    typeof wetness === "object" ? getKeyFromFoundMatch(wetness) : null;
-  const foundKeyForWindGust =
-    typeof wind === "object" ? getKeyFromFoundMatch(wind) : null;
+  const checkForDataStringOrObject = (value: Smartmet | string) => {
+    if (typeof value === "object") {
+      return getKeyFromFoundMatch(value);
+    } else {
+      return value;
+    }
+  };
+  const foundKeyForSnow = snow && checkForDataStringOrObject(snow);
+  const foundKeyForSoil = soil && checkForDataStringOrObject(soil);
+  const foundKeyForSoilWetness = wetness && checkForDataStringOrObject(wetness);
+  const foundKeyForWindGust = wind && checkForDataStringOrObject(wind);
   const dispatch = useRootDispatch();
 
-  const getOneParamFromEach = [foundKeyForSnow, foundKeyForSoil, foundKeyForSoilWetness, foundKeyForWindGust]  
+  const getOneParamFromEach = [
+    foundKeyForSnow,
+    foundKeyForSoil,
+    foundKeyForSoilWetness,
+    foundKeyForWindGust,
+  ];
   const handleBaseLayerChange = (newValue: string) => {
     setTitle(newValue);
     dispatch(mapActions.setBaseLayers(newValue));
@@ -52,22 +61,40 @@ const Controls = () => {
     });
   }, [baseLayers, title, map, mapState.WMSLayerState]);
 
-  const addDisableProp = getOneParamFromEach.map(m => {
-    if (m !== null) {
-      const keys = Object.keys(m);
-      const filteredKeys = keys.filter(key => key !== 'utctime');
-      return (filteredKeys.length > 0 && m[filteredKeys[0]] !== null) ? {
-        ...m,
-        disabled: false
-      } : {
-        ...m,
-        disabled: true
-      };
+  const getOneParamFromDataParams = getOneParamFromData(getOneParamFromEach)
+
+  const allLayers: any = [
+    ...params.snowHeight.map((layer) => layer),
+    ...params.soilWetness.map((layer) => layer),
+    ...params.soilTemperature.map((layer) => layer),
+    ...params.windGust.map((layer) => layer),
+  ];
+
+  const resultArray = getOneParamFromDataParams.map((obj) => {
+    if (typeof obj === "object" && obj !== null) {
+      const layerCode = Object.keys(obj)[1];
+      const matchingLayer = allLayers.find((layer) => {
+        return layer.code === layerCode;
+      });
+
+      if (matchingLayer) {
+        return {
+          ...obj,
+          layerName: matchingLayer.layerName,
+        };
+      } else {
+        return {
+          ...obj,
+          layerName: "",
+        };
+      }
     }
-  
-    return null;
   });
-  window.console.log(addDisableProp, 'disabled')
+
+  const layersWithInfo = getLayersWithLayerInfo(
+    resultArray,
+    mapState.layerState
+  );
 
   return (
     <Box sx={{ position: "relative", top: "-3rem" }}>
@@ -87,18 +114,21 @@ const Controls = () => {
         </Box>
         <br />
 
-        {addDisableProp.length > 0 &&
-          addDisableProp.map((wmsLayer, index) => {
+        {layersWithInfo.length > 0 &&
+          layersWithInfo.map((wmsLayer, index) => {
             if (!wmsLayer || wmsLayer[0] === null) {
               return <Fragment key={index}></Fragment>;
             }
-            const keys = Object.keys(wmsLayer)
+            const keys = Object.values(wmsLayer);
             return (
               <Box key={index}>
                 <WMSLayersComponent
-                  name={keys[1]}
+                  name={
+                    wmsLayer.layerInfo?.Title ??
+                    `Layer not found ${wmsLayer.layerName as string}`
+                  }
                   checked={mapState.indexNumber === index ? true : false}
-                  disabled={wmsLayer.disabled}
+                  disabled={keys[2] as boolean}
                   value={wmsLayer[1] ? wmsLayer[1] : wmsLayer[1]}
                   handleChange={() => {
                     dispatch(mapActions.setIndexNumbers(index));

@@ -287,17 +287,6 @@ export function* fetchSoilWetnessSaga() {
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
 
-  /* 
-    try {
-      const response = yield fetch('./data.json').then((res) => res.json()).then(result => result);
-  
-      yield put(actions.setSoilWetnessData(response));
-  
-    } catch (error) {
-      window.console.error('Error:', error);
-    }
-   */
-
   try {
     const result = yield call(
       axios.get,
