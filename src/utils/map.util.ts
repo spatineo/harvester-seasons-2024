@@ -1,13 +1,6 @@
 import { WMSCapabilitiesLayerType, Smartmet, Parameter } from "../types";
 import { getKeyFromFoundMatch } from "../globalSlice";
 
-interface Layer {
-  layerName: string;
-  disabled: boolean;
-  layerInfo: WMSCapabilitiesLayerType | null;
-  utctime: string;
-}
-
 export const checkForDataStringOrObject = (value: Smartmet | string) => {
   if (typeof value === "object") {
     return getKeyFromFoundMatch(value);
