@@ -11,14 +11,13 @@ import Overlay from "../Overlay/Overlay";
 import WMSLayersComponent from "../WMSLayersInput/WMSLayersControl";
 import { useAppSelector, useRootDispatch } from "../store/hooks";
 import { RootState } from "../store/store";
-import { WMSLayers, Map, Smartmet } from "../types";
+import { Map, Parameter } from "../types";
 import { mapActions } from "../MapComponent/MapComponentSlice";
-import { getMarkLineMatch, getKeyFromFoundMatch } from "../globalSlice";
-import { getLayersWithLayerInfo, getOneParamFromData } from "../utils/map.util";
+import { getMarkLineMatch } from "../globalSlice";
+import { getLayersWithLayerInfo, getOneParamFromData, checkForDataStringOrObject, findMatchingLayers } from "../utils/map.util";
 
 const Controls = () => {
   const { baseLayers, map } = useContext(MapContext);
-  const [layerForWMS, setLayersForWMS] = useState<WMSLayers[]>([]);
   const [title, setTitle] = useState<string>("Taustakartta");
   const mapState: Map = useAppSelector((state: RootState) => state.mapState);
   const { params } = useAppSelector((state: RootState) => state.global);
@@ -27,13 +26,7 @@ const Controls = () => {
   const soil = useAppSelector(getMarkLineMatch("soilTemperatureData"));
   const wetness = useAppSelector(getMarkLineMatch("soilWetnessData"));
   const wind = useAppSelector(getMarkLineMatch("windGustData"));
-  const checkForDataStringOrObject = (value: Smartmet | string) => {
-    if (typeof value === "object") {
-      return getKeyFromFoundMatch(value);
-    } else {
-      return value;
-    }
-  };
+ 
   const foundKeyForSnow = snow && checkForDataStringOrObject(snow);
   const foundKeyForSoil = soil && checkForDataStringOrObject(soil);
   const foundKeyForSoilWetness = wetness && checkForDataStringOrObject(wetness);
@@ -52,47 +45,26 @@ const Controls = () => {
   };
 
   useEffect(() => {
-    if (!map || !baseLayers || !mapState.WMSLayerState) return;
-    setLayersForWMS(mapState.WMSLayerState);
+    if (!map || !baseLayers) return;
     const layers = baseLayers.getLayers();
     layers.forEach((layer) => {
       const mapTitle = layer.get("title");
       layer.setVisible(mapTitle === title);
     });
-  }, [baseLayers, title, map, mapState.WMSLayerState]);
+  }, [baseLayers, title, map ]);
 
   const getOneParamFromDataParams = getOneParamFromData(getOneParamFromEach)
 
-  const allLayers: any = [
+  const allLayers: Parameter[] = [
     ...params.snowHeight.map((layer) => layer),
     ...params.soilWetness.map((layer) => layer),
     ...params.soilTemperature.map((layer) => layer),
     ...params.windGust.map((layer) => layer),
   ];
 
-  const resultArray = getOneParamFromDataParams.map((obj) => {
-    if (typeof obj === "object" && obj !== null) {
-      const layerCode = Object.keys(obj)[1];
-      const matchingLayer = allLayers.find((layer) => {
-        return layer.code === layerCode;
-      });
-
-      if (matchingLayer) {
-        return {
-          ...obj,
-          layerName: matchingLayer.layerName,
-        };
-      } else {
-        return {
-          ...obj,
-          layerName: "",
-        };
-      }
-    }
-  });
-
+  const result = findMatchingLayers(getOneParamFromDataParams, allLayers)
   const layersWithInfo = getLayersWithLayerInfo(
-    resultArray,
+    result,
     mapState.layerState
   );
 
@@ -125,7 +97,7 @@ const Controls = () => {
                 <WMSLayersComponent
                   name={
                     wmsLayer.layerInfo?.Title ??
-                    `Layer not found ${wmsLayer.layerName as string}`
+                    `Data or Layer missing ${wmsLayer.layerName as string}`
                   }
                   checked={mapState.indexNumber === index ? true : false}
                   disabled={keys[2] as boolean}
