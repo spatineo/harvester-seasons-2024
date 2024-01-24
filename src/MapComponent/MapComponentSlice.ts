@@ -34,67 +34,8 @@ const initialState: Map = {
     }
   ],
   indexNumber: 0,
-
-  
   layerState: [],
-
-
-
-  WMSLayerState: [
-    {
-      id: 1,
-      visible: false,
-      layerName: "gui:isobands:CERRA_FFG-MS",
-      opacity: 0.5,
-      layerInfo: null,
-      WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate,
-      legend: {
-        enabled: false,
-        width: 20,
-        height: 345
-      }
-    },
-    {
-      id: 2,
-      visible: false,
-      layerName: "gui:isobands:SWI_SWI2",
-      opacity: 0.5,
-      layerInfo: null,
-      WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate,
-      legend: {
-        enabled: false,
-        width: 65,
-        height: 345
-      }
-    },
-    {
-      id: 3,
-      visible: false,
-      layerName: "gui:isobands:ERA5L_TSOIL-K",
-      opacity: 0.5,
-      layerInfo: null,
-      WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate,
-      legend: {
-        enabled: false,
-        width: 100,
-        height: 400
-      }
-    },
-    {
-      id: 4,
-      visible: true,
-      layerName: "harvester:ecsf:HSNOW-M",
-      opacity: 0.5,
-      layerInfo: null,
-      WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate,
-      legend: {
-        enabled: true,
-        width: 10,
-        height: 345
-      }
-    }
-  ],
-  capabilities: {},
+  capabilities: {}
 };
 
 const mapComponentSlice = createSlice({
@@ -122,29 +63,7 @@ const mapComponentSlice = createSlice({
       return { ...state, maps: newState };
     },
     setIndexNumbers: (state, action: PayloadAction<number>) => {
-      if(action.payload){
-        state.indexNumber = action.payload;
-      } else {
-        state.indexNumber = 0
-      }
-    },
-    setWMSLayer: (state, action: PayloadAction<number>) => {
-      const newState = state.WMSLayerState.map((item) => {
-        if (item.id === action.payload) {
-          return {
-            ...item,
-            visible: true,
-            legend: { ...item.legend, enabled: true }
-          };
-        } else {
-          return {
-            ...item,
-            visible: false,
-            legend: { ...item.legend, enabled: false }
-          };
-        }
-      });
-      return { ...state, WMSLayerState: newState };
+      state.indexNumber = action.payload;
     },
     setHarvesterWMSCapabilities: (
       state,
@@ -152,35 +71,17 @@ const mapComponentSlice = createSlice({
     ) => {
       state.harvesterWMSCapabilities = action.payload;
     },
-    setWMSLayerInformation: (
-      state,
-      action: PayloadAction<WMSCapabilitiesLayerType>
-    ) => { 
-      const foundLayer = state.WMSLayerState.find(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        (layer) => {
-          if (action.payload && action.payload.Name) {
-            return layer.layerName === action.payload.Name;
-          }
-        }
-      );
-      if (foundLayer !== undefined) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        foundLayer.layerInfo = action.payload;
-      } else {
-        window.console.error("could not find layer");
-      }
-    },
     setCapabilities: (
       state,
       action: PayloadAction<Record<string, string | {}>>
     ) => {
-      window.console.log(action.payload, 'capabilities');
       state.capabilities = action.payload;
     },
     setLayerState: (state, action: PayloadAction<WMSCapabilitiesLayerType>) => {
       const payload = action.payload;
-      const isDuplicate = state.layerState.some((layer) => layer.Name === payload.Name);
+      const isDuplicate = state.layerState.some(
+        (layer) => layer.Name === payload.Name
+      );
       if (!isDuplicate) {
         state.layerState.push(payload);
       }
@@ -195,8 +96,6 @@ export type ReduxActions =
   | ReturnType<typeof mapActions.setOpacity>
   | ReturnType<typeof mapActions.setBaseLayers>
   | ReturnType<typeof mapActions.setHarvesterWMSCapabilities>
-  | ReturnType<typeof mapActions.setWMSLayerInformation>
   | ReturnType<typeof mapActions.setIndexNumbers>
-  | ReturnType<typeof mapActions.setWMSLayer>
   | ReturnType<typeof mapActions.setCapabilities>
   | ReturnType<typeof mapActions.setLayerState>;
