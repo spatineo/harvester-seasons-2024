@@ -13,8 +13,13 @@ import { useAppSelector, useRootDispatch } from "../store/hooks";
 import { RootState } from "../store/store";
 import { Map, Parameter } from "../types";
 import { mapActions } from "../MapComponent/MapComponentSlice";
-import { getMarkLineMatch } from "../globalSlice";
-import { getLayersWithLayerInfo, getOneParamFromData, checkForDataStringOrObject, findMatchingLayers } from "../utils/map.util";
+import {
+  getLayersWithLayerInfo,
+  getOneParamFromData,
+  checkForDataStringOrObject,
+  findMatchingLayers,
+  getMarkLineMatch,
+} from "../utils/map.util";
 
 const Controls = () => {
   const { baseLayers, map } = useContext(MapContext);
@@ -26,7 +31,7 @@ const Controls = () => {
   const soil = useAppSelector(getMarkLineMatch("soilTemperatureData"));
   const wetness = useAppSelector(getMarkLineMatch("soilWetnessData"));
   const wind = useAppSelector(getMarkLineMatch("windGustData"));
- 
+
   const foundKeyForSnow = snow && checkForDataStringOrObject(snow);
   const foundKeyForSoil = soil && checkForDataStringOrObject(soil);
   const foundKeyForSoilWetness = wetness && checkForDataStringOrObject(wetness);
@@ -51,22 +56,17 @@ const Controls = () => {
       const mapTitle = layer.get("title");
       layer.setVisible(mapTitle === title);
     });
-  }, [baseLayers, title, map ]);
+  }, [baseLayers, title, map]);
 
-  const getOneParamFromDataParams = getOneParamFromData(getOneParamFromEach)
-
+  const getOneParamFromDataParams = getOneParamFromData(getOneParamFromEach);
   const allLayers: Parameter[] = [
     ...params.snowHeight.map((layer) => layer),
     ...params.soilWetness.map((layer) => layer),
     ...params.soilTemperature.map((layer) => layer),
     ...params.windGust.map((layer) => layer),
   ];
-
-  const result = findMatchingLayers(getOneParamFromDataParams, allLayers)
-  const layersWithInfo = getLayersWithLayerInfo(
-    result,
-    mapState.layerState
-  );
+  const result = findMatchingLayers(getOneParamFromDataParams, allLayers);
+  const layersWithInfo = getLayersWithLayerInfo(result, mapState.layerState);
 
   return (
     <Box sx={{ position: "relative", top: "-3rem" }}>
@@ -99,12 +99,15 @@ const Controls = () => {
                     wmsLayer.layerInfo?.Title ??
                     `Data or Layer missing ${wmsLayer.layerName as string}`
                   }
-                  checked={mapState.indexNumber === index ? true : false}
+                  checked={
+                    wmsLayer.disabled === true
+                      ? false
+                      : wmsLayer.id === mapState.indexNumber
+                  }
                   disabled={keys[2] as boolean}
                   value={wmsLayer[1] ? wmsLayer[1] : wmsLayer[1]}
                   handleChange={() => {
-                    dispatch(mapActions.setIndexNumbers(index));
-                    window.console.log(mapState.indexNumber, index);
+                    dispatch(mapActions.setIndexNumbers(wmsLayer.id));
                   }}
                 />
               </Box>
