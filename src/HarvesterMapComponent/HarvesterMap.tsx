@@ -4,13 +4,20 @@
 import React, { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import MapComponent from "../MapComponent/MapComponent";
+import { getMarkLineMatch } from "../utils/map.util";
 import Layers from "../Layers/Layers";
 import BaseMap from "../Layers/BaseMap";
 import LocationMarkerLayer from "../Layers/LocationMarker";
 import WMSLayer from "../Layers/WMSLayer";
-import { MapsStateProps, WMSLayers, Map } from "../types";
+import { MapsStateProps, Map, Parameter } from "../types";
 import TrafficabilityTIFFLayer from "../Layers/TrafficabilityTIFFLayer";
 import { useAppSelector } from "../store/hooks";
+import {
+  getLayersWithLayerInfo,
+  getOneParamFromData,
+  checkForDataStringOrObject,
+  findMatchingLayers,
+} from "../utils/map.util";
 import { RootState } from "../store/store";
 //import WMSCapabilities from "ol/format/WMSCapabilities";
 import Controls from "../Layers/Controls";
@@ -19,14 +26,42 @@ import "../Map.css";
 const HarvesterMap: React.FC = () => {
   const markLine = useAppSelector((state: RootState) => state.global.markLine);
   const mapState: Map = useAppSelector((state: RootState) => state.mapState);
+  const { params } = useAppSelector((state: RootState) => state.global);
   const [stateMap, setStateMap] = useState<MapsStateProps[]>([]);
-  const [wmLayer, setWMLayer] = useState<WMSLayers[]>([]);
 
   useEffect(() => {
-    if (!mapState.maps || !mapState.WMSLayerState) return;
+    if (!mapState.maps) return;
     setStateMap(mapState.maps);
-    setWMLayer(mapState.WMSLayerState);
-  }, [mapState.maps, mapState.WMSLayerState]);
+  }, [mapState.maps]);
+
+  const snow = useAppSelector(getMarkLineMatch("snowHeightData"));
+  const soil = useAppSelector(getMarkLineMatch("soilTemperatureData"));
+  const wetness = useAppSelector(getMarkLineMatch("soilWetnessData"));
+  const wind = useAppSelector(getMarkLineMatch("windGustData"));
+
+  const foundKeyForSnow = snow && checkForDataStringOrObject(snow);
+  const foundKeyForSoil = soil && checkForDataStringOrObject(soil);
+  const foundKeyForSoilWetness = wetness && checkForDataStringOrObject(wetness);
+  const foundKeyForWindGust = wind && checkForDataStringOrObject(wind);
+
+  const getOneParamFromEach = [
+    foundKeyForSnow,
+    foundKeyForSoil,
+    foundKeyForSoilWetness,
+    foundKeyForWindGust,
+  ];
+
+  const getOneParamFromDataParams = getOneParamFromData(getOneParamFromEach);
+
+  const allLayers: Parameter[] = [
+    ...params.snowHeight.map((layer) => layer),
+    ...params.soilWetness.map((layer) => layer),
+    ...params.soilTemperature.map((layer) => layer),
+    ...params.windGust.map((layer) => layer),
+  ];
+
+  const result = findMatchingLayers(getOneParamFromDataParams, allLayers);
+  const layersWithInfo = getLayersWithLayerInfo(result, mapState.layerState);
 
   return (
     <Box sx={{ clear: "both" }}>
@@ -46,28 +81,27 @@ const HarvesterMap: React.FC = () => {
                 </Box>
               );
             })}
-          {wmLayer.map((l) => {
-            if (!l.layerInfo) {
-              return <Box key={l.layerName}></Box>;
+          {layersWithInfo && layersWithInfo.map((l) => {
+            if (l === undefined || !l.layerInfo) {
+              return <Box key={l?.layerName}></Box>;
             }
-
+            const { layerInfo, layerName, WMSTimeStrategy, id } = l;
             return (
               <Box key={l.layerName}>
                 <WMSLayer
-                  strategy={l.WMSTimeStrategy}
+                  strategy={WMSTimeStrategy}
                   date={markLine}
                   title={
-                    l.layerInfo && l.layerInfo.Title
-                      ? l.layerInfo.Title
-                      : l.layerName
+                    layerInfo.Title ? layerInfo.Title : (layerName as string)
                   }
                   layerInfo={l.layerInfo}
-                  opacity={l.opacity}
+                  opacity={0.5}
                   visible={l.visible}
                   url={"https://desm.harvesterseasons.com/wms"}
                 />
-                {l.legend.enabled &&
-                  l.layerInfo?.Style.map(
+
+                {id === mapState.indexNumber &&
+                  layerInfo?.Style.map(
                     (
                       legends: {
                         LegendURL: {
@@ -81,7 +115,6 @@ const HarvesterMap: React.FC = () => {
                       const legendURL = legends.LegendURL;
                       let width = 0;
                       let height = 0;
-
                       if (Array.isArray(legendURL)) {
                         legendURL.forEach((lg) => {
                           width = lg.size[0];
@@ -92,7 +125,7 @@ const HarvesterMap: React.FC = () => {
                         <Box
                           key={i}
                           sx={{
-                            maxWidth: l.layerName === "gui:isobands:ERA5L_TSOIL-K" ? "110px" : "70px",
+                            maxWidth: "100px",
                             background: "transparent",
                             zIndex: "100",
                             position: "absolute",
@@ -105,15 +138,17 @@ const HarvesterMap: React.FC = () => {
                           <Box
                             sx={{
                               position: "relative",
-                              left: l.layerName === "gui:isobands:SWI_SWI2" ? "-0.8rem" : "-1.4rem",
-                              height: "90%",
-                              top: l.layerName === "gui:isobands:SWI_SWI2" ? "" : "-2rem",
+                              left: "0rem",
+                              height: "100%",
+                              top: "0rem",
                               zIndex: "100",
                               margin: "auto",
                               background: "rgba(255, 255, 255, 0.5)",
                             }}
                             component="img"
-                            src={`https://desm.harvesterseasons.com/wms?REQUEST=GetLegendGraphic&VERSION=1.3.0&LAYER=${l.layerName}&sld_version=1.1.0&style=&FORMAT=image/png&WIDTH=${width}&HEIGHT=${height}`}
+                            src={`https://desm.harvesterseasons.com/wms?REQUEST=GetLegendGraphic&VERSION=1.3.0&LAYER=${
+                              layerInfo.Name
+                            }&sld_version=1.1.0&style=&FORMAT=image/png&WIDTH=${width}&HEIGHT=${height}`}
                           />
                         </Box>
                       );

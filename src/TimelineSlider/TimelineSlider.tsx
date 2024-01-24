@@ -9,6 +9,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Box } from "@mui/material";
 import * as echarts from "echarts";
 import { useAppSelector, useRootDispatch } from "../store/hooks";
+import { mapActions } from "../MapComponent/MapComponentSlice";
 import { RootState } from "../store/store";
 import { getDatesForTimelineDuration } from "../utils/helpers";
 import { actions } from "../globalSlice";
@@ -53,6 +54,7 @@ const TimelineSlider: React.FC = () => {
       });
       setTimelineCurrentIndex(index);
     }
+    dispatch(mapActions.setIndexNumbers(0))
   }, [markLine]);
 
   useEffect(() => {

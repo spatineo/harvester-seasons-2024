@@ -5,6 +5,7 @@ interface WMSLayersComponentProps {
   name: string;
   value: string;
   handleChange: () => void;
+  disabled: boolean;
   checked: boolean;
 }
 const WMSLayersComponent: FC<WMSLayersComponentProps> = ({
@@ -12,6 +13,7 @@ const WMSLayersComponent: FC<WMSLayersComponentProps> = ({
   checked,
   handleChange,
   value,
+  disabled
 }) => {
   return (
     <FormControl size="small" >
@@ -27,6 +29,7 @@ const WMSLayersComponent: FC<WMSLayersComponentProps> = ({
           control={
             <Radio
               checked={checked}
+              disabled={disabled}
               sx={{ padding: "0rem"}}
               size="small"
             />

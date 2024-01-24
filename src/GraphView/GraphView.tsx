@@ -16,14 +16,10 @@ export interface Time {
 }
 
 const Graphs: React.FC = () => {
-  const { soilWetnessData, soilTemperatureData, snowHeightData, checked } =
+  const { soilWetnessData, soilTemperatureData, snowHeightData, params } =
     useAppSelector((state: RootState) => state.global);
 
   const { lang } = useAppSelector((state: RootState) => state.language);
-
-  const graphParameters = useAppSelector(
-    (state: RootState) => state.global.parameters
-  );
   const markLineDate = useAppSelector(
     (state: RootState) => state.global.markLine
   );
@@ -34,97 +30,38 @@ const Graphs: React.FC = () => {
   const [snowHeightOption, setSnowHeightOption] = useState<null | {}>(null);
 
   useEffect(() => {
-    if (!soilWetnessData || !soilTemperatureData || !snowHeightData) return;
-
-    /*   const snowHeightScaled: Smartmet[] = scaleEnsembleData(
+    if (!soilTemperatureData) return;
+    const soilWetness = createOptions(
+      { title: "Soil Wetness (m³/m³)" },
+      params.soilWetness,
+      soilWetnessData,
+      markLineDate,
+      20,
+      lang
+    );
+    const soilTemperature = createOptions(
+      { title: "Soil Temperature (°C)" },
+      params.soilTemperature,
+      soilTemperatureData,
+      markLineDate,
+      20,
+      lang
+    );
+    const snowHeight = createOptions(
+      { title: "Snow Height (m)" },
+      params.snowHeight,
       snowHeightData,
-      "HSNOW-M:SMARTOBS:13:4"
-    ); */
-    if (!checked) {
-      const soilWetness = createOptions(
-        soilWetnessData,
-        { title: "Soil Wetness (m³/m³)" },
-        graphParameters.twelveMonthParams.soilWetness,
-        soilWetnessData,
-        markLineDate,
-        [0, 0, 16, 0],
-        lang,
-        1,
-        0
-      );
-      const soilTemperature = createOptions(
-        soilTemperatureData,
-        { title: "Soil Temperature (°C)" },
-        graphParameters.twelveMonthParams.soilTemperature,
-        soilTemperatureData,
-        markLineDate,
-        [0, 0, 16, 0],
-        lang,
-        30,
-        -30
-      );
-      const snowHeight = createOptions(
-        snowHeightData,
-        { title: "Snow Height (m)" },
-        graphParameters.twelveMonthParams.snowHeight,
-        snowHeightData,
-        markLineDate,
-        [0, 0, 16, 0],
-        lang,
-        1.5,
-        0
-      );
-      setSoilWetnessOption(soilWetness);
-      setSnowHeightOption(snowHeight);
-      setSoilTemperatureOption(soilTemperature);
-    } else {
-      const soilWetness = createOptions(
-        soilWetnessData,
-        { title: "Soil Wetness (m³/m³)" },
-        graphParameters.tenYearParams.soilWetness,
-        soilWetnessData,
-        markLineDate,
-        [0, 0, 16, 0],
-        lang,
-        1,
-        0
-      );
-      const soilTemperature = createOptions(
-        soilTemperatureData,
-        { title: "Soil Temperature (°C)" },
-        graphParameters.tenYearParams.soilTemperature,
-        soilTemperatureData,
-        markLineDate,
-        [0, 0, 16, 0],
-        lang,
-        30,
-        -30
-      );
-      const snowHeight = createOptions(
-        snowHeightData,
-        { title: "Snow Height (m)" },
-        graphParameters.tenYearParams.snowHeight,
-        snowHeightData,
-        markLineDate,
-        [0, 0, 16, 0],
-        lang,
-        1.5,
-        0
-      );
-      setSnowHeightOption(snowHeight);
-      setSoilTemperatureOption(soilTemperature);
-      setSoilWetnessOption(soilWetness);
-    }
+      markLineDate,
+      20,
+      lang
+    );
+    setSnowHeightOption(snowHeight);
+    setSoilTemperatureOption(soilTemperature);
+    setSoilWetnessOption(soilWetness);
   }, [
     soilWetnessData,
     snowHeightData,
     soilTemperatureData,
-    graphParameters.twelveMonthParams.soilWetness,
-    graphParameters.twelveMonthParams.soilTemperature,
-    graphParameters.twelveMonthParams.snowHeight,
-    graphParameters.tenYearParams.soilTemperature,
-    graphParameters.tenYearParams.snowHeight,
-    graphParameters.tenYearParams.soilWetness,
     markLineDate,
     lang,
   ]);
@@ -136,7 +73,7 @@ const Graphs: React.FC = () => {
           <Box className="loading">Loading ....</Box>
         ) : (
           <HarvesterSeasons
-            option={soilWetnessOption !== null ? soilWetnessOption : {}}
+            option={soilWetnessOption !== null && soilWetnessOption}
             height={300}
           />
         )}
@@ -146,7 +83,7 @@ const Graphs: React.FC = () => {
           <Box className="loading">Loading ....</Box>
         ) : (
           <HarvesterSeasons
-            option={soilTemperatureOption !== null ? soilTemperatureOption : {}}
+            option={soilTemperatureOption !== null && soilTemperatureOption}
             height={300}
           />
         )}
@@ -156,7 +93,7 @@ const Graphs: React.FC = () => {
           <Box className="loading">Loading ....</Box>
         ) : (
           <HarvesterSeasons
-            option={snowHeightOption !== null ? snowHeightOption : {}}
+            option={snowHeightOption !== null && snowHeightOption}
             height={300}
           />
         )}

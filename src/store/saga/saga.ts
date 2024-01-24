@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
@@ -13,18 +14,15 @@ import WMSCapabilities from "ol/format/WMSCapabilities";
 import { actions } from "../../globalSlice";
 import * as constants from "../constants";
 import {
-  tenYearsForward,
-  getStartSearchDate,
-  addMonths,
   oneYearForward,
-  oneYearBackward
+  tenYearsBack,
+  lastDayOfPreviousYear
 } from "../../utils/dateHelperFunctions";
 import { asStartEndTimeSpan } from "../../utils/helpers";
-import { RootState, store } from "../store";
+import { RootState } from "../store";
 import { EnqueueSnackbar } from "../hooks";
 import { Parameter, StartEndTimeSpan } from "../../types";
 import { mapActions } from "../../MapComponent/MapComponentSlice";
-import { createGraphData } from "./config.saga";
 
 const timeSeriesServiceURL = "https://desm.harvesterseasons.com/timeseries";
 export interface TimeSpan {
@@ -39,43 +37,6 @@ export function* setUserLocation(): SagaIterator {
   yield put({ type: constants.SOILWETNESS_API });
   yield put({ type: constants.SNOWHEIGHT_API });
   yield put({ type: constants.WINDGUST_API });
-  yield put({ type: constants.FETCH_DATA });
-}
-
-export function* triggerCheckUpdate({
-  payload
-}: ReturnType<typeof actions.setCheckedButton>): SagaIterator {
-  if (payload !== false) {
-    const tenYearsTimeSpan = tenYearsForward(new Date(), 10).toISOString();
-    yield put(
-      actions.setTimeEndStartSpan({
-        start_time: getStartSearchDate().toISOString(),
-        end_time: tenYearsTimeSpan,
-        time_step: 1440 // one week
-      })
-    );
-    yield put({ type: constants.TRAFFICABILITY_API });
-    yield put({ type: constants.SOILTEMPERATUE_API });
-    yield put({ type: constants.SOILWETNESS_API });
-    yield put({ type: constants.SNOWHEIGHT_API });
-    yield put({ type: constants.WINDGUST_API });
-    yield put({ type: constants.SETWMSLAYERINFORMATION });
-  } else {
-    const oneYear = addMonths(getStartSearchDate(), 12).toISOString();
-    yield put(
-      actions.setTimeEndStartSpan({
-        start_time: getStartSearchDate().toISOString(),
-        end_time: oneYear,
-        time_step: 24 * 60 // 24 hours
-      })
-    );
-    yield put({ type: constants.TRAFFICABILITY_API });
-    yield put({ type: constants.SOILTEMPERATUE_API });
-    yield put({ type: constants.SOILWETNESS_API });
-    yield put({ type: constants.SNOWHEIGHT_API });
-    yield put({ type: constants.WINDGUST_API });
-    yield put({ type: constants.FETCH_DATA });
-  }
 }
 
 export function* triggerTimeSpanChange({
@@ -98,12 +59,14 @@ export function* triggerTimeSpanChange({
       })
     );
   } else if (payload === "previous") {
-    const newDate = new Date(oneYearBackward(markline)).toISOString();
+    const newDate = new Date(tenYearsBack(markline)).toISOString();
     yield put(actions.setMarkLine(newDate));
     yield put(
       actions.setTimeEndStartSpan({
-        start_time: oneYearBackward(new Date(start.start_time)).toISOString(),
-        end_time: oneYearBackward(new Date(start.end_time)).toISOString(),
+        start_time: tenYearsBack(
+          lastDayOfPreviousYear().toISOString()
+        ).toISOString(),
+        end_time: lastDayOfPreviousYear().toISOString(),
         time_step: 24 * 60
       })
     );
@@ -113,6 +76,7 @@ export function* triggerTimeSpanChange({
   yield put({ type: constants.SOILWETNESS_API });
   yield put({ type: constants.SNOWHEIGHT_API });
   yield put({ type: constants.WINDGUST_API });
+  yield put({ type: constants.SETWMSLAYERINFORMATION });
 }
 
 function createTimeSeriesQueryParameters(
@@ -126,7 +90,6 @@ function createTimeSeriesQueryParameters(
 ) {
   const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
   const modifiedEndDate = new Date(startEndTimeSpan.end_time).toISOString();
-
   const lonlat = `${userLocation.lat || "N/A"},${userLocation.lon || "N/A"}`;
   return {
     params: {
@@ -144,42 +107,14 @@ function createTimeSeriesQueryParameters(
   };
 }
 
-export function* fetchWindSpeedData(): SagaIterator {
-  const userLocation = yield select(
-    (state: RootState) => state.mapState.position
-  );
-
-  if (userLocation.lon === null || userLocation.lon === undefined) {
-    return;
-  }
-
-  const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
-    yield select((state: RootState) => state.global.startEndTimeSpan)
-  );
-  const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
-  const modifiedEndDate = new Date(startEndTimeSpan.end_time).toISOString();
-  const lonlat = `${userLocation.lat},${userLocation.lon}`;
-  const url = `https://desm.harvesterseasons.com/timeseries?latlon=${lonlat}&param=utctime,FFG-MS:CERRA:5057:6:10:0&starttime=${modifiedStartDate}&endtime=${modifiedEndDate}&timestep=1440&format=json&source=grid&tz=utc&timeformat=xml&precision=full`;
-  try {
-    const response = yield call(axios.get, url);
-    if (response.status === 200) {
-      const tmp = response.data;
-      //yield put(actions.setWindSpeedData(tmp));
-    }
-  } catch (e) {
-    window.console.error(e);
-    yield call(
-      EnqueueSnackbar,
-      "Error in network for Wind gust server",
-      "error"
-    );
-  }
-}
-
 export function* getCapabilitiesSaga(): SagaIterator {
-  const layers = yield select(
-    (state: RootState) => state.mapState.WMSLayerState
-  );
+  const layersParams = yield select((state: RootState) => state.global.params);
+  const layers: any = [
+    ...layersParams.snowHeight.map((layer) => layer.layerName),
+    ...layersParams.soilWetness.map((layer) => layer.layerName),
+    ...layersParams.soilTemperature.map((layer) => layer.layerName),
+    ...layersParams.windGust.map((layer) => layer.layerName)
+  ] as string[];
 
   const parser = new WMSCapabilities();
   const capabilitiesUrl =
@@ -190,14 +125,13 @@ export function* getCapabilitiesSaga(): SagaIterator {
       const responseBody = yield response.text();
       const result = yield parser.read(responseBody);
       if (result) {
-        yield put(mapActions.setWMSLayerInformation(result));
-
+        yield put(mapActions.setCapabilities(result.Capability));
         yield all(
           layers.map((l) => {
             function findLayer(layer) {
               let ret = null;
               // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-              if (l.layerName === layer.Name) {
+              if (layer.Name === l) {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
                 ret = layer;
               } else if (layer.Layer) {
@@ -211,9 +145,11 @@ export function* getCapabilitiesSaga(): SagaIterator {
 
             const layer = findLayer(result.Capability.Layer);
             if (layer !== null) {
-              return put(mapActions.setWMSLayerInformation(layer));
+              window.console.log(layer);
+              return put(mapActions.setLayerState(layer));
             } else {
               window.console.error("No layers not found");
+              return null; //{layer: not found}
             }
           })
         );
@@ -241,23 +177,15 @@ export function* fetchTrafficabilityDataSaga(): SagaIterator {
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
 
-  const checked = yield select((state: RootState) => state.global.checked);
-  const parameters = checked
-    ? yield select(
-        (state: RootState) =>
-          state.global.parameters.tenYearParams.trafficability
-      )
-    : yield select(
-        (state: RootState) =>
-          state.global.parameters.twelveMonthParams.trafficability
-      );
+  const params = yield select((state: RootState) => state.global.params);
+
   try {
     const response = yield call(
       axios.get,
       timeSeriesServiceURL,
       createTimeSeriesQueryParameters(
         startEndTimeSpan,
-        parameters,
+        params.trafficability,
         userLocation
       )
     );
@@ -278,122 +206,62 @@ export function* fetchTrafficabilityDataSaga(): SagaIterator {
   }
 }
 
-export function* soilTemperatureDataSaga(): SagaIterator {
-  const userLocation = store.getState().mapState.position;
+export function* fetchSoilTemperatureSaga() {
+  const userLocation = yield select(
+    (state: RootState) => state.mapState.position
+  );
   if (userLocation.lon === null || userLocation.lon === undefined) {
     return;
   }
+  const params = yield select((state: RootState) => state.global.params);
   const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
-  const checked = yield select((state: RootState) => state.global.checked);
-  const parameters = checked
-    ? yield select(
-        (state: RootState) =>
-          state.global.parameters.tenYearParams.soilTemperature
-      )
-    : yield select(
-        (state: RootState) =>
-          state.global.parameters.twelveMonthParams.soilTemperature
-      );
+
   try {
-    const response = yield call(
+    const result = yield call(
       axios.get,
       timeSeriesServiceURL,
       createTimeSeriesQueryParameters(
         startEndTimeSpan,
-        parameters,
+        params.soilTemperature,
         userLocation
       )
     );
-    if (response.status === 200) {
-      //const tmp = response.data;
-      //yield put(actions.setSoilTemperatureData(tmp));
+    if (result.status === 200) {
+      const data = result.data;
+      yield put(actions.setSoilTemperatureData(data));
     }
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      const errorMessage: string | [] = error.message;
-      window.console.error(errorMessage);
-      yield call(
-        EnqueueSnackbar,
-        "Error in network for soil temperature",
-        "error"
-      );
-    }
+    window.console.error(error);
   }
 }
 
-export function* fetchSoilWetnessDataSaga(): SagaIterator {
-  const userLocation = store.getState().mapState.position;
+export function* fetchSnowHeightSaga() {
+  const userLocation = yield select(
+    (state: RootState) => state.mapState.position
+  );
   if (userLocation.lon === null || userLocation.lon === undefined) {
     return;
   }
-  const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
-    yield select((state: RootState) => state.global.startEndTimeSpan)
-  );
-  const checked = yield select((state: RootState) => state.global.checked);
-  const parameters = checked
-    ? yield select(
-        (state: RootState) => state.global.parameters.tenYearParams.soilWetness
-      )
-    : yield select(
-        (state: RootState) =>
-          state.global.parameters.twelveMonthParams.soilWetness
-      );
-  try {
-    const response = yield call(
-      axios.get,
-      timeSeriesServiceURL,
-      createTimeSeriesQueryParameters(
-        startEndTimeSpan,
-        parameters,
-        userLocation
-      )
-    );
-
-    if (response.status === 200) {
-      const data = response.data;
-      //yield put(actions.setSoilWetnessData(data));
-    }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      const errorMessage: string | [] = error.message;
-      window.console.error(errorMessage);
-      yield call(EnqueueSnackbar, "Error in network for soil wetness", "error");
-    }
-  }
-}
-
-export function* fetchSnowHeightDataSaga(): SagaIterator {
-  const userLocation = store.getState().mapState.position;
-  if (userLocation.lon === null || userLocation.lon === undefined) return;
-
+  const params = yield select((state: RootState) => state.global.params);
   const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
 
-  const checked = yield select((state: RootState) => state.global.checked);
-  const parameters = checked
-    ? yield select(
-        (state: RootState) => state.global.parameters.tenYearParams.snowHeight
-      )
-    : yield select(
-        (state: RootState) =>
-          state.global.parameters.twelveMonthParams.snowHeight
-      );
-
   try {
-    const response = yield call(
+    const result = yield call(
       axios.get,
       timeSeriesServiceURL,
       createTimeSeriesQueryParameters(
         startEndTimeSpan,
-        parameters,
+        params.snowHeight,
         userLocation
       )
     );
-    if (response.status === 200) {
-      //yield put(actions.setSnowHeightData(response.data));
+    if (result.status === 200) {
+      const data = result.data;
+      yield put(actions.setSnowHeightData(data));
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -404,92 +272,83 @@ export function* fetchSnowHeightDataSaga(): SagaIterator {
   }
 }
 
-export function* fetchData() {
-  const searchParam = yield select(
-    (state: RootState) => state.global.searchParams
+export function* fetchSoilWetnessSaga() {
+  const userLocation = yield select(
+    (state: RootState) => state.mapState.position
   );
-  const config = yield select(
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    (state: RootState) => state.global.params[searchParam]
-  );
-  const userLocation = store.getState().mapState.position;
-
-  if (userLocation.lon === null || userLocation.lon === undefined) return;
-
+  if (userLocation.lon === null || userLocation.lon === undefined) {
+    return;
+  }
+  const params = yield select((state: RootState) => state.global.params);
   const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
 
-  const lonlat = `${userLocation.lat},${userLocation.lon}`;
   try {
-    if (config) {
-      const fetchDataForParamter = function* (params) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        return yield call(axios.get, timeSeriesServiceURL, {
-          params: {
-            latlon: `${lonlat}`,
-            param: `utctime,${config.parameters[params]
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-              .map((p) => p.code)
-              .join(",")}`,
-            starttime: config.parameters.startEndTimeSpan.start_time,
-            endtime: config.parameters.startEndTimeSpan.end_time,
-            timestep: startEndTimeSpan.time_step,
-            format: "json",
-            source: "grid",
-            tz: "utc",
-            timeformat: "xml",
-            precision: "full"
-          }
-        });
-      };
-
-      const [soilTemp, soilWetness, snowHeight, windGust] = yield all([
-        call(fetchDataForParamter, "soilTemperature"),
-        call(fetchDataForParamter, "soilWetness"),
-        call(fetchDataForParamter, "snowHeight"),
-        call(fetchDataForParamter, "windGust")
-      ]);
-
-      // short prediction 3kk tästä eteenpäin
-
-      /*  const filteredArray = configFile.filterFirstDayOfMonth(snowHeight.data);
-      const snow = configFile.mapArray(snowHeight.data, '') */
-
-      const snowHeightData: (string | number)[][] = createGraphData(
-        snowHeight.data
-      );
-      const soilWetnessData = createGraphData(soilWetness.data);
-      const soilTemperatureData = createGraphData(soilTemp.data);
-      const windGustData = createGraphData(windGust.data);
-
-      window.console.log(snowHeight);
-      yield put(actions.setSnowHeightData(snowHeightData));
-      yield put(actions.setSoilTemperatureData(soilTemperatureData));
-      yield put(actions.setSoilWetnessData(soilWetnessData));
-      yield put(actions.setWindSpeedData(windGustData));
+    const result = yield call(
+      axios.get,
+      timeSeriesServiceURL,
+      createTimeSeriesQueryParameters(
+        startEndTimeSpan,
+        params.soilWetness,
+        userLocation
+      )
+    );
+    if (result.status === 200) {
+      const data = result.data;
+      yield put(actions.setSoilWetnessData(data));
     }
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const errorMessage: string | [] = error.message;
       window.console.error(errorMessage);
-      yield call(
-        EnqueueSnackbar,
-        `Error in network for ${searchParam}`,
-        "error"
-      );
+      yield call(EnqueueSnackbar, "Error in network for soil wetness", "error");
     }
   }
 }
+
+export function* fetchWindGustSaga() {
+  const userLocation = yield select(
+    (state: RootState) => state.mapState.position
+  );
+  if (userLocation.lon === null || userLocation.lon === undefined) {
+    return;
+  }
+  const params = yield select((state: RootState) => state.global.params);
+  const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
+    yield select((state: RootState) => state.global.startEndTimeSpan)
+  );
+
+  try {
+    const result = yield call(
+      axios.get,
+      timeSeriesServiceURL,
+      createTimeSeriesQueryParameters(
+        startEndTimeSpan,
+        params.windGust,
+        userLocation
+      )
+    );
+    if (result.status === 200) {
+      const data = result.data;
+      yield put(actions.setWindGustData(data));
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const errorMessage: string | [] = error.message;
+      window.console.error(errorMessage);
+      yield call(EnqueueSnackbar, "Error in network for soil wetness", "error");
+    }
+  }
+}
+
 export function* watchHarvesterRequests(): SagaIterator {
   yield takeLatest(constants.POSITION, setUserLocation);
-  yield takeLatest(actions.setCheckedButton.type, triggerCheckUpdate);
   yield takeLatest(constants.TRAFFICABILITY_API, fetchTrafficabilityDataSaga);
-  yield takeLatest(constants.WINDGUST_API, fetchWindSpeedData);
-  yield takeLatest(constants.SOILWETNESS_API, fetchSoilWetnessDataSaga);
-  yield takeLatest(constants.SOILTEMPERATUE_API, soilTemperatureDataSaga);
-  yield takeLatest(constants.SNOWHEIGHT_API, fetchSnowHeightDataSaga);
   yield takeLatest(actions.changeYear.type, triggerTimeSpanChange);
   yield takeLatest(constants.SETWMSLAYERINFORMATION, getCapabilitiesSaga);
-  yield takeLatest(constants.FETCH_DATA, fetchData);
+  yield takeLatest(constants.SOILTEMPERATUE_API, fetchSoilTemperatureSaga);
+  yield takeLatest(constants.SNOWHEIGHT_API, fetchSnowHeightSaga);
+  yield takeLatest(constants.SOILWETNESS_API, fetchSoilWetnessSaga);
+  yield takeLatest(constants.WINDGUST_API, fetchWindGustSaga);
 }
