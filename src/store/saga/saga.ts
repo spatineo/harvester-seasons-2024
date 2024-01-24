@@ -76,6 +76,7 @@ export function* triggerTimeSpanChange({
   yield put({ type: constants.SOILWETNESS_API });
   yield put({ type: constants.SNOWHEIGHT_API });
   yield put({ type: constants.WINDGUST_API });
+  yield put({ type: constants.SETWMSLAYERINFORMATION });
 }
 
 function createTimeSeriesQueryParameters(
@@ -89,7 +90,6 @@ function createTimeSeriesQueryParameters(
 ) {
   const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
   const modifiedEndDate = new Date(startEndTimeSpan.end_time).toISOString();
-
   const lonlat = `${userLocation.lat || "N/A"},${userLocation.lon || "N/A"}`;
   return {
     params: {
@@ -114,7 +114,7 @@ export function* getCapabilitiesSaga(): SagaIterator {
     ...layersParams.soilWetness.map((layer) => layer.layerName),
     ...layersParams.soilTemperature.map((layer) => layer.layerName),
     ...layersParams.windGust.map((layer) => layer.layerName)
-  ];
+  ] as string[];
 
   const parser = new WMSCapabilities();
   const capabilitiesUrl =
@@ -124,10 +124,7 @@ export function* getCapabilitiesSaga(): SagaIterator {
     if (response.ok) {
       const responseBody = yield response.text();
       const result = yield parser.read(responseBody);
-      
       if (result) {
-
-        yield put(mapActions.setWMSLayerInformation(result));
         yield put(mapActions.setCapabilities(result.Capability));
         yield all(
           layers.map((l) => {
@@ -148,14 +145,14 @@ export function* getCapabilitiesSaga(): SagaIterator {
 
             const layer = findLayer(result.Capability.Layer);
             if (layer !== null) {
-              //put(mapActions.setWMSLayerInformation(layer));
-              return put(mapActions.setLayerState(layer))
+              window.console.log(layer);
+              return put(mapActions.setLayerState(layer));
             } else {
               window.console.error("No layers not found");
-              return null;//{layer: not found}
+              return null; //{layer: not found}
             }
           })
-        ); 
+        );
       }
     }
   } catch (error) {
