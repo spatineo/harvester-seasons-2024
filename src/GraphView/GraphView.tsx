@@ -30,7 +30,7 @@ const Graphs: React.FC = () => {
   const [snowHeightOption, setSnowHeightOption] = useState<null | {}>(null);
 
   useEffect(() => {
-    if (!soilTemperatureData) return;
+    if (!soilTemperatureData || !snowHeightData || !soilWetnessData) return;
     const soilWetness = createOptions(
       { title: "Soil Wetness (m³/m³)" },
       params.soilWetness,
