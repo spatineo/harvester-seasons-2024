@@ -145,7 +145,6 @@ export function* getCapabilitiesSaga(): SagaIterator {
 
             const layer = findLayer(result.Capability.Layer);
             if (layer !== null) {
-              window.console.log(layer);
               return put(mapActions.setLayerState(layer));
             } else {
               window.console.error("No layers not found");
