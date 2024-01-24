@@ -6,7 +6,7 @@ export interface GraphOptions {
 
 export interface Smartmet {
   utctime: string;
-  code: Record<string, string | null | number>;
+  code?: Record<string, string | null | number>;
 }
 
 export interface Parameter {
