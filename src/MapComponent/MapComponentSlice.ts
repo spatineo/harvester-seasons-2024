@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Map, WMSLayerTimeStrategy, WMSCapabilitiesLayerType } from "../types";
+import { Map, WMSCapabilitiesLayerType } from "../types";
 import WMSCapabilities from "ol/format/WMSCapabilities";
 
 const initialState: Map = {
