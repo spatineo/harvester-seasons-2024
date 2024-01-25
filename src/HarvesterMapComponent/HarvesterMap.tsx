@@ -81,82 +81,81 @@ const HarvesterMap: React.FC = () => {
                 </Box>
               );
             })}
-          {layersWithInfo && layersWithInfo.map((l) => {
-            if (l === undefined || !l.layerInfo) {
-              return <Box key={l?.layerName}></Box>;
-            }
-            const { layerInfo, layerName, WMSTimeStrategy, id } = l;
-            return (
-              <Box key={l.layerName}>
-                <WMSLayer
-                  strategy={WMSTimeStrategy}
-                  date={markLine}
-                  title={
-                    layerInfo.Title ? layerInfo.Title : (layerName as string)
-                  }
-                  layerInfo={l.layerInfo}
-                  opacity={0.5}
-                  visible={l.visible}
-                  url={"https://desm.harvesterseasons.com/wms"}
-                />
-
-                {id === mapState.indexNumber &&
-                  layerInfo?.Style.map(
-                    (
-                      legends: {
-                        LegendURL: {
-                          Format: string;
-                          OnlineResource: string;
-                          size: Array<number>;
-                        };
-                      },
-                      i
-                    ) => {
-                      const legendURL = legends.LegendURL;
-                      let width = 0;
-                      let height = 0;
-                      if (Array.isArray(legendURL)) {
-                        legendURL.forEach((lg) => {
-                          width = lg.size[0];
-                          height = lg.size[1];
-                        });
-                      }
-                      return (
-                        <Box
-                          key={i}
-                          sx={{
-                            maxWidth: "100px",
-                            background: "transparent",
-                            zIndex: "100",
-                            position: "absolute",
-                            bottom: "4rem",
-                            right: "0.6rem",
-                            overflowY: "hidden",
-                            overflowX: "hidden",
-                          }}
-                        >
-                          <Box
-                            sx={{
-                              position: "relative",
-                              left: "0rem",
-                              height: "100%",
-                              top: "0rem",
-                              zIndex: "100",
-                              margin: "auto",
-                              background: "rgba(255, 255, 255, 0.5)",
-                            }}
-                            component="img"
-                            src={`https://desm.harvesterseasons.com/wms?REQUEST=GetLegendGraphic&VERSION=1.3.0&LAYER=${
-                              layerInfo.Name
-                            }&sld_version=1.1.0&style=&FORMAT=image/png&WIDTH=${width}&HEIGHT=${height}`}
-                          />
-                        </Box>
-                      );
+          {layersWithInfo &&
+            layersWithInfo.map((l) => {
+              if (l === undefined || !l.layerInfo) {
+                return <Box key={l?.layerName}></Box>;
+              }
+              const { layerInfo, layerName, WMSTimeStrategy, id } = l;
+              return (
+                <Box key={id}>
+                  <WMSLayer
+                    strategy={WMSTimeStrategy}
+                    date={markLine}
+                    title={
+                      layerInfo.Title ? layerInfo.Title : (layerName as string)
                     }
-                  )}
-              </Box>
-            );
-          })}
+                    layerInfo={l.layerInfo}
+                    opacity={0.5}
+                    visible={l.visible}
+                    url={"https://desm.harvesterseasons.com/wms"}
+                  />
+
+                  {id === mapState.indexNumber &&
+                    layerInfo?.Style.map(
+                      (
+                        legends: {
+                          LegendURL: {
+                            Format: string;
+                            OnlineResource: string;
+                            size: Array<number>;
+                          };
+                        },
+                        i
+                      ) => {
+                        const legendURL = legends.LegendURL;
+                        let width = 0;
+                        let height = 0;
+                        if (Array.isArray(legendURL)) {
+                          legendURL.forEach((lg) => {
+                            width = lg.size[0];
+                            height = lg.size[1];
+                          });
+                        }
+                        return (
+                          <Box
+                            key={i}
+                            sx={{
+                              maxWidth: "100px",
+                              background: "transparent",
+                              zIndex: "100",
+                              position: "absolute",
+                              bottom: "4rem",
+                              right: "0.6rem",
+                              overflowY: "hidden",
+                              overflowX: "hidden",
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                position: "relative",
+                                left: "0rem",
+                                height: "100%",
+                                top: "0rem",
+                                zIndex: "100",
+                                margin: "auto",
+                                background: "rgba(255, 255, 255, 0.5)",
+                              }}
+                              component="img"
+                              src={`https://desm.harvesterseasons.com/wms?REQUEST=GetLegendGraphic&VERSION=1.3.0&LAYER=${layerInfo.Name}&sld_version=1.1.0&style=&FORMAT=image/png&WIDTH=${width}&HEIGHT=${height}`}
+                            />
+                          </Box>
+                        );
+                      }
+                    )}
+                </Box>
+              );
+            })}
           {/*
 					<STACLayers 
 						title='Latvuskorkeusmalli'
@@ -168,11 +167,13 @@ const HarvesterMap: React.FC = () => {
             title="Trafficability Finland"
             url="https://pta.data.lit.fmi.fi/geo/harvestability/KKL_SMK_Suomi_2021_06_01-UTM35.tif"
             zIndex={1}
+            visible={mapState.showTrafficabilityLayer}
           />
           <TrafficabilityTIFFLayer
             zIndex={0}
             title="Trafficability Europe"
             url="https://copernicus.data.lit.fmi.fi/trafficability/Europe-2023-trfy-r30m.tif"
+            visible={mapState.showTrafficabilityLayer}
           />
           <LocationMarkerLayer title="Location Marker" />
         </Layers>
