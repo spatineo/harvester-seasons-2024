@@ -7,6 +7,7 @@ import { useEffect, useContext, useState, Fragment } from "react";
 import { Box } from "@mui/material";
 import MapContext from "../MapComponent/MapContext";
 import LayerSeclectorComponent from "../LayerSelector/LayerSelector";
+import ShowTrafficabilityComponent from "../ShowTrafficabilityComponent/ShowTrafficabilityComponent";
 import Overlay from "../Overlay/Overlay";
 import WMSLayersComponent from "../WMSLayersInput/WMSLayersControl";
 import { useAppSelector, useRootDispatch } from "../store/hooks";
@@ -68,6 +69,7 @@ const Controls = () => {
   const result = findMatchingLayers(getOneParamFromDataParams, allLayers);
   const layersWithInfo = getLayersWithLayerInfo(result, mapState.layerState);
 
+
   return (
     <Box sx={{ position: "relative", top: "-3rem" }}>
       <Overlay>
@@ -113,6 +115,13 @@ const Controls = () => {
               </Box>
             );
           })}
+        <Box>
+          <ShowTrafficabilityComponent
+            text={"Trafficability"}
+            show={mapState.showTrafficabilityLayer}
+            handleChange={() => dispatch(mapActions.setShowTrafficabilityLayer(!mapState.showTrafficabilityLayer))}
+          />
+        </Box>
       </Overlay>
     </Box>
   );
