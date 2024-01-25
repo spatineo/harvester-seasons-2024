@@ -14,28 +14,26 @@ const initialState: Map = {
     {
       title: "Taustakartta",
       visible: true,
-      attributions:
-        'Tausta <a href="https://www.maanmittauslaitos.fi/karttakuvapalvelu/tekninen-kuvaus-wmts" target="_blank">Maanmittauslaitoksen avoin data</a>',
+      attributions: 'Tausta <a href="https://www.maanmittauslaitos.fi/karttakuvapalvelu/tekninen-kuvaus-wmts" target="_blank">Maanmittauslaitoksen avoin data</a>',
       url: "https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/taustakartta/default/WGS84_Pseudo-Mercator/{z}/{y}/{x}.png?api-key=45deef08-fd2f-42ae-9953-5550fff43b17"
     },
     {
       title: "Maastokartta",
       visible: false,
       url: "https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/maastokartta/default/WGS84_Pseudo-Mercator/{z}/{y}/{x}.png?api-key=45deef08-fd2f-42ae-9953-5550fff43b17",
-      attributions:
-        '<a href="https://www.maanmittauslaitos.fi/karttakuvapalvelu/tekninen-kuvaus-wmts" target="_blank">Maanmittauslaitoksen avoin data</a>'
+      attributions: '<a href="https://www.maanmittauslaitos.fi/karttakuvapalvelu/tekninen-kuvaus-wmts" target="_blank">Maanmittauslaitoksen avoin data</a>'
     },
     {
       title: "Thunderforest",
       url: "https://{a-c}.tile.opentopomap.org/{z}/{x}/{y}.png",
-      attributions:
-        '<a href="https://www.thunderforest.com/" target="_blank">Thunderforest</a> Data by <a href="https://www.fmi.fi/">Finnish Meteorological Institute</a>',
+      attributions: '<a href="https://www.thunderforest.com/" target="_blank">Thunderforest</a> Data by <a href="https://www.fmi.fi/">Finnish Meteorological Institute</a>',
       visible: false
     }
   ],
   indexNumber: 0,
   layerState: [],
-  capabilities: {}
+  capabilities: {},
+  showTrafficabilityLayer: true
 };
 
 const mapComponentSlice = createSlice({
@@ -85,6 +83,9 @@ const mapComponentSlice = createSlice({
       if (!isDuplicate) {
         state.layerState.push(payload);
       }
+    },
+    setShowTrafficabilityLayer: (state, action: PayloadAction<boolean>) => {
+      state.showTrafficabilityLayer = action.payload
     }
   }
 });
@@ -98,4 +99,5 @@ export type ReduxActions =
   | ReturnType<typeof mapActions.setHarvesterWMSCapabilities>
   | ReturnType<typeof mapActions.setIndexNumbers>
   | ReturnType<typeof mapActions.setCapabilities>
-  | ReturnType<typeof mapActions.setLayerState>;
+  | ReturnType<typeof mapActions.setLayerState>
+  | ReturnType<typeof mapActions.setShowTrafficabilityLayer>;
