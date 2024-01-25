@@ -14,9 +14,10 @@ import WMSCapabilities from "ol/format/WMSCapabilities";
 import { actions } from "../../globalSlice";
 import * as constants from "../constants";
 import {
-  oneYearForward,
   tenYearsBack,
-  lastDayOfPreviousYear
+  lastDayOfPreviousYear,
+  addMonths,
+  reduceMonths
 } from "../../utils/dateHelperFunctions";
 import { asStartEndTimeSpan } from "../../utils/helpers";
 import { RootState } from "../store";
@@ -37,24 +38,26 @@ export function* setUserLocation(): SagaIterator {
   yield put({ type: constants.SOILWETNESS_API });
   yield put({ type: constants.SNOWHEIGHT_API });
   yield put({ type: constants.WINDGUST_API });
+  yield put({ type: constants.SETWMSLAYERINFORMATION });
 }
 
 export function* triggerTimeSpanChange({
   payload
 }: ReturnType<typeof actions.changeYear>): SagaIterator {
   //const previousOrNext = yield select((state: RootState) => state.global.sta)
-  const start = yield select(
-    (state: RootState) => state.global.startEndTimeSpan
-  );
   const markline = yield select((state: RootState) => state.global.markLine);
+  const endDate = addMonths(new Date(), 6).toISOString();
+  const startDate = reduceMonths(new Date(), 6).toISOString();
 
   if (payload === "next") {
-    const newDate = new Date(oneYearForward(markline)).toISOString();
+    const markLine = reduceMonths(new Date(), 6);
+    markLine.setDate(markLine.getDate() + 4);
+    const newDate = markLine.toISOString();
     yield put(actions.setMarkLine(newDate));
     yield put(
       actions.setTimeEndStartSpan({
-        start_time: oneYearForward(new Date(start.start_time)).toISOString(),
-        end_time: oneYearForward(new Date(start.end_time)).toISOString(),
+        start_time: startDate,
+        end_time: endDate,
         time_step: 24 * 60
       })
     );
@@ -217,6 +220,7 @@ export function* fetchSoilTemperatureSaga() {
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
 
+  yield put(actions.setSoilTemperatureData([]));
   try {
     const result = yield call(
       axios.get,
@@ -247,7 +251,7 @@ export function* fetchSnowHeightSaga() {
   const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
-
+  yield put(actions.setSnowHeightData([]));
   try {
     const result = yield call(
       axios.get,
@@ -284,6 +288,7 @@ export function* fetchSoilWetnessSaga() {
   );
 
   try {
+    yield put(actions.setSoilWetnessData([]));
     const result = yield call(
       axios.get,
       timeSeriesServiceURL,
@@ -296,7 +301,7 @@ export function* fetchSoilWetnessSaga() {
     if (result.status === 200) {
       const data = result.data;
       yield put(actions.setSoilWetnessData(data));
-    }
+    } 
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const errorMessage: string | [] = error.message;
@@ -317,7 +322,7 @@ export function* fetchWindGustSaga() {
   const startEndTimeSpan: StartEndTimeSpan = asStartEndTimeSpan(
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
-
+  yield put(actions.setWindGustData([]));
   try {
     const result = yield call(
       axios.get,

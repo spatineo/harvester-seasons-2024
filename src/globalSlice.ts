@@ -85,7 +85,6 @@ const globalSlice = createSlice({
         time_step: number;
       }>
     ) => {
-      window.console.log(action.payload);
       state.startEndTimeSpan = {
         ...state.startEndTimeSpan,
         start_time: action.payload.start_time,
