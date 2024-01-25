@@ -139,7 +139,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url, zIndex, visible }) =>
     return () => {
       map.removeLayer(newLayer);
     };
-  }, [map, url, title]);
+  }, [map, url, title, visible]);
 
   return null;
 };
