@@ -17,6 +17,7 @@ interface TIFFLayerProps {
   title: string;
   url: string;
   zIndex: number;
+  visible: boolean;
 }
 
 function colorExpression(palette) {
@@ -35,7 +36,7 @@ function colorExpression(palette) {
   return ["array", process("r"), process("g"), process("b"), process("a")];
 }
 
-const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url, zIndex }) => {
+const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url, zIndex, visible }) => {
   const { map } = useContext(MapContext);
   const { opacityValue } = useAppSelector(
     (state: RootState) => state.mapState
@@ -109,7 +110,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url, zIndex }) => {
     if (!map || !url) return;
     const newLayer = new TileLayer({
       title,
-      visible: true,
+      visible,
       opacity:  getOpacityFromPercentage(opacityValue),
       className: "class",
       zIndex,
