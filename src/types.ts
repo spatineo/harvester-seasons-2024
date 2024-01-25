@@ -124,7 +124,7 @@ export interface Map {
     resolution: number;
   };
   maps: MapsStateProps[];
- // WMSLayerState: WMSLayers[];
+ showTrafficabilityLayer: boolean;
   capabilities: Record<string, string | {}>
   layerState: WMSCapabilitiesLayerType[]
 }
