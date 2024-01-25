@@ -91,7 +91,7 @@ export const getOneParamFromData = (
 ) => {
   return arr1.map((m, index) => {
     if (typeof m === "string") {
-      window.console.error(m);
+      window.console.log(m);
     }
     if (m !== null && typeof m === "object") {
       const keys = Object.keys(m);
