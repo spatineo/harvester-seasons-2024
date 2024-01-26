@@ -24,7 +24,6 @@ const TimelineSlider: React.FC = () => {
     (state: RootState) => state.global
   );
   const { markLine } = useAppSelector((state: RootState) => state.global);
-
   const [timelineCurrentIndex, setTimelineCurrentIndex] = useState<
     number | null
   >(null);
@@ -34,26 +33,26 @@ const TimelineSlider: React.FC = () => {
 
   useEffect(() => {
     const result = new Date(new Date(startEndTimeSpan.start_time));
-    const dateValue: Array<string | Date> = getDatesForTimelineDuration(result);
+    const dateValue: Array<string | Date> = getDatesForTimelineDuration(result, startEndTimeSpan.end_time);
     setTimelineData(dateValue);
   }, []);
 
   useEffect(() => {
-    if (markLine) {
+    if(!markLine) return;
       const result = new Date(new Date(startEndTimeSpan.start_time));
       result.setDate(result.getDate() + 2);
       const dateValue: Array<string | Date> =
-        getDatesForTimelineDuration(result);
+        getDatesForTimelineDuration(result, startEndTimeSpan.end_time);
 
       const index = dateValue.findIndex((date) => {
         if (markLine !== "") {
           const dateInArray = new Date(date).toISOString().split("T")[0];
+         
           const searchDate = new Date(markLine).toISOString().split("T")[0];
           return dateInArray === searchDate;
         }
       });
-      setTimelineCurrentIndex(index);
-    }
+    setTimelineCurrentIndex(index);
     dispatch(mapActions.setIndexNumbers(0))
   }, [markLine]);
 
@@ -83,7 +82,7 @@ const TimelineSlider: React.FC = () => {
           showPlayBtn: true,
           position: "left",
         },
-        currentIndex: 5,
+        currentIndex: timelineCurrentIndex,
         realtime: true,
         lineStyle: {
           type: "solid",

@@ -2,25 +2,21 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { GlobalStateProps, Smartmet } from "./types";
-import {
-  getFirstDayOfTheYear,
-  addMonths,
-  reduceMonths
-} from "./utils/dateHelperFunctions";
-import { marklineStartDate } from "./utils/helpers";
+import { addMonths, reduceMonths } from "./utils/dateHelperFunctions";
 
 const endDate = addMonths(new Date(), 6).toISOString();
 const startDate = reduceMonths(new Date(), 6).toISOString();
-const marked = new Date(
-  marklineStartDate(new Date(getFirstDayOfTheYear()))
-).toISOString();
+const mark = reduceMonths(new Date(), 6).setDate(
+  reduceMonths(new Date(), 6).getDate() + 4
+);
+const newMarkLineDate = new Date(mark).toISOString();
 
 const initialState: GlobalStateProps = {
   defaultColorSwitch: true,
   trafficabilityIndexColor: null,
   hideNext: false,
   changeYear: "",
-  markLine: marked,
+  markLine: newMarkLineDate,
   startEndTimeSpan: {
     start_time: startDate,
     end_time: endDate,
@@ -144,30 +140,31 @@ export type ReduxActions =
   | ReturnType<typeof actions.changeYear>
   | ReturnType<typeof actions.changeDefaultColor>;
 
-  export const getKeyFromFoundMatch = (foundMatch: Smartmet | string) => {
-  
-    const allKeys = Object.keys(foundMatch) as (keyof Smartmet)[];
-   if(typeof foundMatch === 'object') { 
+export const getKeyFromFoundMatch = (foundMatch: Smartmet | string) => {
+  const allKeys = Object.keys(foundMatch) as (keyof Smartmet)[];
+  if (typeof foundMatch === "object") {
     const keyWithValueNotNull = allKeys.find((key) => {
-        return key !== "utctime" && foundMatch[key] !== null;
+      return key !== "utctime" && foundMatch[key] !== null;
     });
     if (keyWithValueNotNull !== undefined) {
-        const result = {
-            utctime: foundMatch.utctime,
-        };
-        result[keyWithValueNotNull] = foundMatch[keyWithValueNotNull];
-        return result;
+      const result = {
+        utctime: foundMatch.utctime
+      };
+      result[keyWithValueNotNull] = foundMatch[keyWithValueNotNull];
+      return result;
     }
-    const keyWithNullValue = allKeys.find((key) => key !== "utctime" && foundMatch[key] === null);
+    const keyWithNullValue = allKeys.find(
+      (key) => key !== "utctime" && foundMatch[key] === null
+    );
     if (keyWithNullValue !== undefined) {
-        const result = {
-            utctime: foundMatch.utctime,
-        };
-        result[keyWithNullValue] = null;
-        return result;
+      const result = {
+        utctime: foundMatch.utctime
+      };
+      result[keyWithNullValue] = null;
+      return result;
     }
   } else {
     return foundMatch;
   }
-    return null;
+  return null;
 };

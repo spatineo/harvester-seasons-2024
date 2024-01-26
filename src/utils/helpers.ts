@@ -15,12 +15,11 @@ export function asStartEndTimeSpan(value: StartEndTimeSpan): StartEndTimeSpan {
   return startEndTimeSpan;
 }
 
-export function getDatesForTimelineDuration(startDate: Date) {
+export function getDatesForTimelineDuration(startDate: Date, endDate: Date | string) {
   const result: Date[] = [];
-  const currentDate = new Date(startDate.getFullYear(), 0, 1);
-  const endDate = new Date(startDate.getFullYear(), 11, 31);
-
-  while (currentDate <= endDate) {
+  const currentDate = new Date(new Date(startDate));
+  const dateEnd = new Date(new Date(endDate));
+  while (currentDate <= dateEnd) {
     result.push(new Date(currentDate));
     currentDate.setDate(currentDate.getDate() + 1);
   }

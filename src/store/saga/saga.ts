@@ -44,14 +44,12 @@ export function* setUserLocation(): SagaIterator {
 export function* triggerTimeSpanChange({
   payload
 }: ReturnType<typeof actions.changeYear>): SagaIterator {
-  //const previousOrNext = yield select((state: RootState) => state.global.sta)
-  const markline = yield select((state: RootState) => state.global.markLine);
   const endDate = addMonths(new Date(), 6).toISOString();
   const startDate = reduceMonths(new Date(), 6).toISOString();
 
   if (payload === "next") {
     const markLine = reduceMonths(new Date(), 6);
-    markLine.setDate(markLine.getDate() + 4);
+    markLine.setDate(markLine.getDate() + 10);
     const newDate = markLine.toISOString();
     yield put(actions.setMarkLine(newDate));
     yield put(
@@ -62,8 +60,6 @@ export function* triggerTimeSpanChange({
       })
     );
   } else if (payload === "previous") {
-    const newDate = new Date(tenYearsBack(markline)).toISOString();
-    yield put(actions.setMarkLine(newDate));
     yield put(
       actions.setTimeEndStartSpan({
         start_time: tenYearsBack(
@@ -74,6 +70,12 @@ export function* triggerTimeSpanChange({
       })
     );
   }
+  const newMarkLineDate = new Date(
+    tenYearsBack(lastDayOfPreviousYear().toISOString()).toISOString()
+  );
+  newMarkLineDate.setDate(newMarkLineDate.getDate() + 10);
+  const newDate = newMarkLineDate.toISOString();
+  yield put(actions.setMarkLine(newDate));
   yield put({ type: constants.TRAFFICABILITY_API });
   yield put({ type: constants.SOILTEMPERATUE_API });
   yield put({ type: constants.SOILWETNESS_API });
@@ -301,7 +303,7 @@ export function* fetchSoilWetnessSaga() {
     if (result.status === 200) {
       const data = result.data;
       yield put(actions.setSoilWetnessData(data));
-    } 
+    }
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const errorMessage: string | [] = error.message;
