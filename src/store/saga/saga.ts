@@ -72,11 +72,9 @@ export function* triggerTimeSpanChange({
     const newMarkLineDate = new Date(
       tenYearsBack(lastDayOfPreviousYear().toISOString()).toISOString()
     );
-    window.console.log(newMarkLineDate);
     newMarkLineDate.setMonth(newMarkLineDate.getMonth() + 1);
     const newDate = newMarkLineDate.toISOString();
     yield put(actions.setMarkLine(newDate));
-    window.console.log("previous", newDate)
   }
   yield put({ type: constants.TRAFFICABILITY_API });
   yield put({ type: constants.SOILTEMPERATUE_API });
