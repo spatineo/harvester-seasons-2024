@@ -15,6 +15,7 @@ const initialState: GlobalStateProps = {
   defaultColorSwitch: true,
   trafficabilityIndexColor: null,
   hideNext: true,
+  hideArrowPrevious: false,
   changeYear: "",
   markLine: newMarkLineDate,
   startEndTimeSpan: {
@@ -122,6 +123,9 @@ const globalSlice = createSlice({
     },
     changeDefaultColor: (state, action: PayloadAction<boolean>) => {
       state.defaultColorSwitch = action.payload;
+    },
+    setHideArrowPreviousState: (state, action: PayloadAction<boolean>) => {
+      state.hideArrowPrevious = action.payload;
     }
   }
 });
@@ -138,6 +142,7 @@ export type ReduxActions =
   | ReturnType<typeof actions.setMarkLine>
   | ReturnType<typeof actions.changeHideNextArrowState>
   | ReturnType<typeof actions.changeYear>
+  | ReturnType<typeof actions.setHideArrowPreviousState>
   | ReturnType<typeof actions.changeDefaultColor>;
 
 export const getKeyFromFoundMatch = (foundMatch: Smartmet | string) => {
