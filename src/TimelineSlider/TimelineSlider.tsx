@@ -35,7 +35,7 @@ const TimelineSlider: React.FC = () => {
     const result = new Date(new Date(startEndTimeSpan.start_time));
     const dateValue: Array<string | Date> = getDatesForTimelineDuration(result, startEndTimeSpan.end_time);
     setTimelineData(dateValue);
-  }, []);
+  }, [startEndTimeSpan]);
 
   useEffect(() => {
     if(!markLine) return;
@@ -46,8 +46,7 @@ const TimelineSlider: React.FC = () => {
 
       const index = dateValue.findIndex((date) => {
         if (markLine !== "") {
-          const dateInArray = new Date(date).toISOString().split("T")[0];
-         
+          const dateInArray = new Date(date).toISOString().split("T")[0];   
           const searchDate = new Date(markLine).toISOString().split("T")[0];
           return dateInArray === searchDate;
         }
@@ -57,10 +56,9 @@ const TimelineSlider: React.FC = () => {
   }, [markLine]);
 
   useEffect(() => {
-    if (!timelineRef.current) {
+    if (!timelineRef.current || !timelineData) {
       return;
     }
-
     const chart = echarts.init(timelineRef.current);
     setTimelineChart(chart);
     const baseOption = {
@@ -103,7 +101,7 @@ const TimelineSlider: React.FC = () => {
     return () => {
       chart.dispose();
     };
-  }, [timelineRef.current]);
+  }, [timelineRef.current, timelineData]);
 
   useEffect(() => {
     if (!timelineChart) return;
