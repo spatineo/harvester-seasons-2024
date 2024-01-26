@@ -25,6 +25,7 @@ export interface StartEndTimeSpan {
 
 export interface GlobalStateProps {
   defaultColorSwitch: boolean;
+  hideArrowPrevious: boolean;
   trafficabilityIndexColor: number | null;
   hideNext: boolean;
   changeYear: string;

@@ -9,7 +9,7 @@ import React, { useState, useEffect, useRef } from "react";
 import * as echarts from "echarts";
 // eslint-disable-next-line import/named
 import { EChartOption } from "echarts";
-import { Box } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
 import { useAppSelector, useRootDispatch } from "../store/hooks";
 import { actions } from "../globalSlice";
@@ -28,16 +28,20 @@ const TraficabilityGraphComponent: React.FC<
   const [arrowColor, setArrowColor] = useState<"primary" | "secondary">(
     "primary"
   );
-  const { hideNext } = useAppSelector((state: RootState) => state.global);
+  const { hideNext, hideArrowPrevious } = useAppSelector(
+    (state: RootState) => state.global
+  );
   const dispatch = useRootDispatch();
 
   const handleDoubleClick = (direction: string) => {
     if (direction === "prev") {
       dispatch(actions.changeYear("previous"));
-      //dispatch(actions.setMarkLine(newDateForMarkline));
-      dispatch(actions.changeHideNextArrowState(true));
+      dispatch(actions.changeHideNextArrowState(false));
+      dispatch(actions.setHideArrowPreviousState(true));
     } else if (direction === "next") {
       dispatch(actions.changeYear("next"));
+      dispatch(actions.changeHideNextArrowState(true));
+      dispatch(actions.setHideArrowPreviousState(false));
     }
   };
 
@@ -81,7 +85,6 @@ const TraficabilityGraphComponent: React.FC<
         const formattedXAxisValue = formatDateWithoutTime(new Date(xAxisValue));
         const timestampXAxisValue = formattedXAxisValue.getTime();
         const timestampDataPoint = formattedDataPoint.getTime();
-
         if (timestampDataPoint === timestampXAxisValue) {
           return i;
         }
@@ -150,29 +153,33 @@ const TraficabilityGraphComponent: React.FC<
 
   return (
     <Box
-      sx={{ width: "96%", display: "flex", flex: "row", alignItems: "center" }}
+      sx={{ width: "100%", display: "flex", flex: "row", alignItems: "center" }}
     >
-      <ArrowBackIos
+      <IconButton
         onMouseOut={handleArrowMouseout}
         onMouseOver={handleArrowMouseover}
+        disabled={hideArrowPrevious}
         onClick={() => handleDoubleClick("prev")}
         color={arrowColor}
-        fontSize="large"
-      />
+      >
+        <ArrowBackIos fontSize="large" />
+      </IconButton>
       <Box
         ref={graphRef}
         style={{ width: "100%", margin: "auto" }}
         component="div"
       ></Box>
-      {hideNext && (
-        <ArrowForwardIos
+      {
+        <IconButton
           color={arrowColor}
-          fontSize="large"
           onMouseOut={handleArrowMouseout}
           onMouseOver={handleArrowMouseover}
           onClick={() => handleDoubleClick("next")}
-        />
-      )}
+          disabled={hideNext}
+        >
+          <ArrowForwardIos fontSize="large" />
+        </IconButton>
+      }
     </Box>
   );
 };

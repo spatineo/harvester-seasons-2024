@@ -44,14 +44,14 @@ export function* setUserLocation(): SagaIterator {
 export function* triggerTimeSpanChange({
   payload
 }: ReturnType<typeof actions.changeYear>): SagaIterator {
-  const endDate = addMonths(new Date(), 6).toISOString();
-  const startDate = reduceMonths(new Date(), 6).toISOString();
-
   if (payload === "next") {
-    const markLine = reduceMonths(new Date(), 6);
-    markLine.setDate(markLine.getDate() + 10);
-    const newDate = markLine.toISOString();
-    yield put(actions.setMarkLine(newDate));
+    const endDate = addMonths(new Date(), 6).toISOString();
+    const startDate = reduceMonths(new Date(), 6).toISOString();
+    const mark = reduceMonths(new Date(), 6).setDate(
+      reduceMonths(new Date(), 6).getDate() + 14
+    );
+    const newMarkLineDate = new Date(mark).toISOString();
+    yield put(actions.setMarkLine(newMarkLineDate));
     yield put(
       actions.setTimeEndStartSpan({
         start_time: startDate,
@@ -69,13 +69,13 @@ export function* triggerTimeSpanChange({
         time_step: 24 * 60
       })
     );
+    const newMarkLineDate = new Date(
+      tenYearsBack(lastDayOfPreviousYear().toISOString()).toISOString()
+    );
+    newMarkLineDate.setMonth(newMarkLineDate.getMonth() + 1);
+    const newDate = newMarkLineDate.toISOString();
+    yield put(actions.setMarkLine(newDate));
   }
-  const newMarkLineDate = new Date(
-    tenYearsBack(lastDayOfPreviousYear().toISOString()).toISOString()
-  );
-  newMarkLineDate.setDate(newMarkLineDate.getDate() + 10);
-  const newDate = newMarkLineDate.toISOString();
-  yield put(actions.setMarkLine(newDate));
   yield put({ type: constants.TRAFFICABILITY_API });
   yield put({ type: constants.SOILTEMPERATUE_API });
   yield put({ type: constants.SOILWETNESS_API });

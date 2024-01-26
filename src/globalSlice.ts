@@ -7,14 +7,15 @@ import { addMonths, reduceMonths } from "./utils/dateHelperFunctions";
 const endDate = addMonths(new Date(), 6).toISOString();
 const startDate = reduceMonths(new Date(), 6).toISOString();
 const mark = reduceMonths(new Date(), 6).setDate(
-  reduceMonths(new Date(), 6).getDate() + 4
+  reduceMonths(new Date(), 6).getDate() + 14
 );
 const newMarkLineDate = new Date(mark).toISOString();
 
 const initialState: GlobalStateProps = {
   defaultColorSwitch: true,
   trafficabilityIndexColor: null,
-  hideNext: false,
+  hideNext: true,
+  hideArrowPrevious: false,
   changeYear: "",
   markLine: newMarkLineDate,
   startEndTimeSpan: {
@@ -122,6 +123,9 @@ const globalSlice = createSlice({
     },
     changeDefaultColor: (state, action: PayloadAction<boolean>) => {
       state.defaultColorSwitch = action.payload;
+    },
+    setHideArrowPreviousState: (state, action: PayloadAction<boolean>) => {
+      state.hideArrowPrevious = action.payload;
     }
   }
 });
@@ -138,6 +142,7 @@ export type ReduxActions =
   | ReturnType<typeof actions.setMarkLine>
   | ReturnType<typeof actions.changeHideNextArrowState>
   | ReturnType<typeof actions.changeYear>
+  | ReturnType<typeof actions.setHideArrowPreviousState>
   | ReturnType<typeof actions.changeDefaultColor>;
 
 export const getKeyFromFoundMatch = (foundMatch: Smartmet | string) => {
