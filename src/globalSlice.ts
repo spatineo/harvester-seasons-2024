@@ -14,7 +14,7 @@ const newMarkLineDate = new Date(mark).toISOString();
 const initialState: GlobalStateProps = {
   defaultColorSwitch: true,
   trafficabilityIndexColor: null,
-  hideNext: false,
+  hideNext: true,
   changeYear: "",
   markLine: newMarkLineDate,
   startEndTimeSpan: {
