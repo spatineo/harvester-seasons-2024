@@ -15,6 +15,7 @@ interface LayersWithLayerInfo {
   WMSTimeStrategy: WMSLayerTimeStrategy;
   id: number;
   visible: boolean;
+  dataFound?: string | null;
 }
 
 interface FindOneDataFromParamsData {
@@ -55,6 +56,41 @@ export const checkForDataStringOrObject = (value: Smartmet | string) => {
   }
 };
 
+export const getOneParamFromData = (
+  arr1: (FindOneDataFromParamsData | string | null | undefined)[]
+) => {
+  return arr1.map((m, index) => {
+    if (typeof m === "string") {
+      window.console.log(m);
+    }
+    if (m !== null && typeof m === "object") {
+      const keys = Object.keys(m);
+      const filteredKeys = keys.filter((key) => key !== "utctime");
+      return filteredKeys.length > 0 && m[filteredKeys[0]] !== null
+        ? {
+            ...m,
+            disabled: false,
+            layerInfo: null,
+            layerName: "",
+            dataFound: "Data found",
+            WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate,
+            id: index,
+            visible: true
+          }
+        : {
+            ...m,
+            disabled: true,
+            layerInfo: null,
+            layerName: "",
+            dataFound: null,
+            WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate,
+            id: index,
+            visible: false
+          };
+    }
+  });
+};
+
 export const getLayersWithLayerInfo = (
   array1: (LayersWithLayerInfo | undefined)[],
   mapStateArray: WMSCapabilitiesLayerType[]
@@ -82,39 +118,6 @@ export const getLayersWithLayerInfo = (
           visible: false
         };
       }
-    }
-  });
-};
-
-export const getOneParamFromData = (
-  arr1: (FindOneDataFromParamsData | string | null | undefined)[]
-) => {
-  return arr1.map((m, index) => {
-    if (typeof m === "string") {
-      window.console.log(m);
-    }
-    if (m !== null && typeof m === "object") {
-      const keys = Object.keys(m);
-      const filteredKeys = keys.filter((key) => key !== "utctime");
-      return filteredKeys.length > 0 && m[filteredKeys[0]] !== null
-        ? {
-            ...m,
-            disabled: false,
-            layerInfo: null,
-            layerName: "",
-            WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate,
-            id: index,
-            visible: true
-          }
-        : {
-            ...m,
-            disabled: true,
-            layerInfo: null,
-            layerName: "",
-            WMSTimeStrategy: WMSLayerTimeStrategy.ForceSelectedDate,
-            id: index,
-            visible: false
-          };
     }
   });
 };
