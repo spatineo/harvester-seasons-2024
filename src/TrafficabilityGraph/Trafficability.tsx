@@ -1,10 +1,8 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable import/namespace */
-/* eslint-disable import/default */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React, { useState, useEffect, useRef } from "react";
 import * as echarts from "echarts";
 // eslint-disable-next-line import/named
@@ -64,9 +62,9 @@ const TraficabilityGraphComponent: React.FC<
     if (option !== null) {
       newChart.setOption(option, { notMerge: true, lazyUpdate: false });
     }
-    const calculateDataIndex = (seriesData, xAxisValue) => {
+    const calculateDataIndex = (seriesData: [], xAxisValue) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
-      const formatDateWithoutTime = (dateString) => {
+      const formatDateWithoutTime = (dateString: Date) => {
         const dateWithTime = new Date(dateString);
         const dateWithoutTime = new Date(
           dateWithTime.getFullYear(),
