@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -98,6 +94,7 @@ const TimelineSlider: React.FC = () => {
       },
     };
     chart.setOption(baseOption);
+    window.addEventListener("resize", () => chart.resize())
     return () => {
       chart.dispose();
     };
@@ -132,7 +129,7 @@ const TimelineSlider: React.FC = () => {
           },
         });
       }
-      const index = params.dataIndex;
+      const index: string | number = params.dataIndex;
       dispatch(actions.setMarkLine(index));
     });
   }, [timelineChart]);
