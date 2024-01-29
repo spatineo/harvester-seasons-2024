@@ -98,8 +98,11 @@ const Controls = () => {
               <Box key={index}>
                 <WMSLayersComponent
                   name={
-                    wmsLayer.layerInfo?.Title ??
-                    `Data or Layer missing ${wmsLayer.layerName as string}`
+                    wmsLayer.dataFound === null
+                    ? "No data to display"
+                    : wmsLayer.layerInfo?.Title
+                      ? wmsLayer.layerInfo.Title
+                      : `Layer missing ${wmsLayer.layerName as string}`
                   }
                   checked={
                     wmsLayer.disabled === true

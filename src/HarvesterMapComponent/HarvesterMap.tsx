@@ -86,23 +86,26 @@ const HarvesterMap: React.FC = () => {
               if (l === undefined || !l.layerInfo) {
                 return <Box key={l?.layerName}></Box>;
               }
-              const { layerInfo, layerName, WMSTimeStrategy, id } = l;
               return (
-                <Box key={id}>
-                  <WMSLayer
-                    strategy={WMSTimeStrategy}
-                    date={markLine}
-                    title={
-                      layerInfo.Title ? layerInfo.Title : (layerName as string)
-                    }
-                    layerInfo={l.layerInfo}
-                    opacity={0.5}
-                    visible={l.visible}
-                    url={"https://desm.harvesterseasons.com/wms"}
-                  />
-
-                  {id === mapState.indexNumber &&
-                    layerInfo?.Style.map(
+                <Box key={l.id}>
+                  {l.id === mapState.indexNumber && (
+                    <WMSLayer
+                      layerInfo={l.layerInfo}
+                      strategy={l.WMSTimeStrategy}
+                      date={markLine}
+                      opacity={0.5}
+                      visible={true}
+                      title={
+                        l.layerInfo.Title
+                          ? l.layerInfo.Title
+                          : (l.layerName as string)
+                      }
+                      url={"https://desm.harvesterseasons.com/wms"}
+                    />
+                  )}
+                  {l.id === mapState.indexNumber &&
+                    l.layerInfo !== null &&
+                    l.layerInfo?.Style.map(
                       (
                         legends: {
                           LegendURL: {
@@ -147,7 +150,9 @@ const HarvesterMap: React.FC = () => {
                                 background: "rgba(255, 255, 255, 0.5)",
                               }}
                               component="img"
-                              src={`https://desm.harvesterseasons.com/wms?REQUEST=GetLegendGraphic&VERSION=1.3.0&LAYER=${layerInfo.Name}&sld_version=1.1.0&style=&FORMAT=image/png&WIDTH=${width}&HEIGHT=${height}`}
+                              src={`https://desm.harvesterseasons.com/wms?REQUEST=GetLegendGraphic&VERSION=1.3.0&LAYER=${
+                                l.layerInfo?.Name as string
+                              }&sld_version=1.1.0&style=&FORMAT=image/png&WIDTH=${width}&HEIGHT=${height}`}
                             />
                           </Box>
                         );
