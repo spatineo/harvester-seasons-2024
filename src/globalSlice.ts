@@ -9,15 +9,16 @@ const startDate = reduceMonths(new Date(), 6).toISOString();
 const mark = reduceMonths(new Date(), 6).setDate(
   reduceMonths(new Date(), 6).getDate() + 14
 );
-const newMarkLineDate = new Date(mark).toISOString();
+const newMarkLineDate = new Date(mark).toUTCString();
 
+window.console.log(new Date(newMarkLineDate).toISOString().split('T')[0])
 const initialState: GlobalStateProps = {
   defaultColorSwitch: true,
   trafficabilityIndexColor: null,
   hideNext: true,
   hideArrowPrevious: false,
   changeYear: "",
-  markLine: newMarkLineDate,
+  markLine: new Date(newMarkLineDate).toISOString().split('T')[0],
   startEndTimeSpan: {
     start_time: startDate,
     end_time: endDate,
@@ -105,7 +106,7 @@ const globalSlice = createSlice({
       state.snowHeightData = action.payload;
     },
     setMarkLine: (state, action: PayloadAction<string | number>) => {
-      const modifyDate = new Date(action.payload).toISOString();
+      const modifyDate = new Date(action.payload).toISOString().split('T')[0];
       state.markLine = modifyDate;
     },
     changeYear: (state, action: PayloadAction<string>) => {
