@@ -25,26 +25,44 @@ interface FindOneDataFromParamsData {
 export const getMarkLineMatch = (param: string) => (state: RootState) => {
   const rootState = state.global[param] as Smartmet[] | undefined;
   const markLine = new Date(state.global.markLine);
-  if (!markLine) {
-    window.console.error(`check if you gave the expected string = ${param}`);
+  
+  if (isNaN(markLine.getTime())) {
+    window.console.error(`Invalid date format for markLine = ${param}`);
     return;
   }
+
+  // Ensure markLine is in UTC
+  const markLineUTC = new Date(markLine.toISOString());
+
   if (rootState === undefined || rootState.length === 0) {
     return `${param} array is empty`;
   }
+
   const foundMatch = rootState.find(
     (item: { utctime: string | number | Date }) => {
       const paramDate = new Date(item.utctime);
+      
+      // Ensure paramDate is in UTC
+      const paramDateUTC = new Date(paramDate.toISOString());
+
+      window.console.log(
+        paramDateUTC.toISOString().split("T")[0],
+        markLineUTC.toISOString().split("T")[0],
+        "checking dates"
+      );
 
       return (
-        paramDate.toISOString().split("T")[0] ===
-        markLine.toISOString().split("T")[0]
+        paramDateUTC.toISOString().split("T")[0] ===
+        markLineUTC.toISOString().split("T")[0]
       );
     }
   );
+
   if (!foundMatch) {
     return `No match found for markLine`;
   }
+
+  window.console.log(foundMatch);
   return foundMatch;
 };
 
