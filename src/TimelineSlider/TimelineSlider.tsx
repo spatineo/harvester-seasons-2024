@@ -15,47 +15,26 @@ export interface Time {
 }
 
 const TimelineSlider: React.FC = () => {
-  const [timelineData, setTimelineData] = useState<Array<string | Date>>([]);
   const { startEndTimeSpan } = useAppSelector(
     (state: RootState) => state.global
   );
   const { markLine } = useAppSelector((state: RootState) => state.global);
-  const [timelineCurrentIndex, setTimelineCurrentIndex] = useState<
-    number | null
-  >(null);
-  const [timelineChart, setTimelineChart] = useState<any | null>(null);
+  const [timelineChart, setTimelineChart] = useState<echarts.EChartsType | null>(null);
   const timelineRef = useRef(null);
   const dispatch = useRootDispatch();
 
   useEffect(() => {
-    const result = new Date(new Date(startEndTimeSpan.start_time));
-    const dateValue: Array<string | Date> = getDatesForTimelineDuration(result, startEndTimeSpan.end_time);
-    setTimelineData(dateValue);
-  }, [startEndTimeSpan]);
-
-  useEffect(() => {
-    if(!markLine) return;
-      const result = new Date(new Date(startEndTimeSpan.start_time));
-      result.setDate(result.getDate() + 2);
-      const dateValue: Array<string | Date> =
-        getDatesForTimelineDuration(result, startEndTimeSpan.end_time);
-
-      const index = dateValue.findIndex((date) => {
-        if (markLine !== "") {
-          const dateInArray = new Date(date).toISOString().split("T")[0];   
-          const searchDate = new Date(markLine).toISOString().split("T")[0];
-          return dateInArray === searchDate;
-        }
-      });
-    setTimelineCurrentIndex(index);
-    dispatch(mapActions.setIndexNumbers(0))
-  }, [markLine]);
-
-  useEffect(() => {
-    if (!timelineRef.current || !timelineData) {
+    if (!timelineRef.current) {
       return;
     }
-    const chart = echarts.init(timelineRef.current);
+    const start = new Date(new Date(startEndTimeSpan.start_time));
+    const end = new Date(new Date(startEndTimeSpan.end_time));
+    const dateValue: Array<string | Date> = getDatesForTimelineDuration(
+      start,
+      end
+    );
+
+    const chart: echarts.EChartsType = echarts.init(timelineRef.current);
     setTimelineChart(chart);
     const baseOption = {
       timeline: {
@@ -67,7 +46,7 @@ const TimelineSlider: React.FC = () => {
         bottom: 0,
         width: "100%",
         height: "50%",
-        data: timelineData,
+        data: dateValue,
         symbolSize: 5,
         controlStyle: {
           showPrevBtn: true,
@@ -76,7 +55,7 @@ const TimelineSlider: React.FC = () => {
           showPlayBtn: true,
           position: "left",
         },
-        currentIndex: timelineCurrentIndex,
+        currentIndex: 10,
         realtime: true,
         lineStyle: {
           type: "solid",
@@ -94,45 +73,82 @@ const TimelineSlider: React.FC = () => {
       },
     };
     chart.setOption(baseOption);
-    window.addEventListener("resize", () => chart.resize())
+    window.addEventListener("resize", () => chart.resize());
     return () => {
       chart.dispose();
     };
-  }, [timelineRef.current, timelineData]);
+  }, [
+    timelineRef.current,
+    startEndTimeSpan.end_time,
+    startEndTimeSpan.start_time,
+  ]);
 
   useEffect(() => {
     if (!timelineChart) return;
-    const updateOptions = {
-      timeline: {
-        currentIndex: timelineCurrentIndex && timelineCurrentIndex,
-      },
-    };
-    timelineChart.setOption(updateOptions);
-  }, [timelineCurrentIndex]);
-
-  useEffect(() => {
-    if (!timelineChart) return;
+    const result = new Date(new Date(startEndTimeSpan.start_time));
+    result.setDate(result.getDate() + 2);
+    const dateValue: Array<string | Date> = getDatesForTimelineDuration(
+      result,
+      startEndTimeSpan.end_time
+    );
     timelineChart.on("timelinechanged", (params) => {
-      const value = params.currentIndex;
-      const chartOptions = timelineChart.getOption();
-      const selectedTimelineValue =
-        (chartOptions?.timeline?.[0]?.data as string[]) || [];
-      if (selectedTimelineValue[value]) {
-        dispatch(actions.setMarkLine(`${selectedTimelineValue[value]}`));
+      const timelineCurrentValue = new Date(
+        dateValue[params.currentIndex]
+      ).toISOString();
+      dispatch(actions.setMarkLine(timelineCurrentValue));
+    });
+
+    timelineChart.on("click", (params) => {
+      window.console.log(
+        new Date(params.dataIndex as number).toISOString().split("T")[0],
+        "params during click"
+      );
+      const newMarkline = new Date(params.dataIndex as number).toISOString();
+      const clickedDate =  new Date(params.dataIndex as number).toISOString().split("T")[0];
+      const index = dateValue.findIndex((date) => {
+        const dateInArray = new Date(date).toISOString().split("T")[0];
+        return dateInArray === clickedDate;
+      });
+      const option = timelineChart.getOption()
+      timelineChart.setOption({
+        ...option,
+        timeline: {
+          currentIndex: index,
+        }
+      })
+       window.console.log(timelineChart.getOption());
+       dispatch(actions.setMarkLine(newMarkline));
+    });
+   
+    dispatch(mapActions.setIndexNumbers(0));
+  }, [timelineChart, startEndTimeSpan.end_time, startEndTimeSpan.start_time]);
+
+
+  useEffect(() => {
+    if(!timelineChart) return;
+    const result = new Date(new Date(startEndTimeSpan.start_time));
+    result.setDate(result.getDate() + 2);
+    const dateValue: Array<string | Date> = getDatesForTimelineDuration(
+      result,
+      startEndTimeSpan.end_time
+    );
+
+    const index = dateValue.findIndex((date) => {
+      if (markLine !== "") {
+        const dateInArray = new Date(date).toISOString().split("T")[0];
+        const searchDate = new Date(markLine).toISOString().split("T")[0];
+        return dateInArray === searchDate;
       }
     });
-    timelineChart.on("click", function (params) {
-      if (params.componentType === "timeline") {
-        timelineChart.setOption({
-          timeline: {
-            currentIndex: params.timelineIndex,
-          },
-        });
+    const option = timelineChart.getOption()
+    timelineChart.setOption({
+      ...option,
+      timeline: {
+        currentIndex: index,
       }
-      const index: string | number = params.dataIndex;
-      dispatch(actions.setMarkLine(index));
-    });
-  }, [timelineChart]);
+    })
+    dispatch(mapActions.setIndexNumbers(0));
+  }, [markLine]);
 
   return (
     <Box>
