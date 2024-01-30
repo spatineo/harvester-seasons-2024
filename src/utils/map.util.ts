@@ -25,38 +25,28 @@ interface FindOneDataFromParamsData {
 export const getMarkLineMatch = (param: string) => (state: RootState) => {
   const rootState = state.global[param] as Smartmet[] | undefined;
   const markLine = new Date(state.global.markLine);
-  
+
   if (isNaN(markLine.getTime())) {
     window.console.error(`Invalid date format for markLine = ${param}`);
     return;
   }
 
-  // Ensure markLine is in UTC
-  const markLineUTC = new Date(markLine.toISOString());
-
   if (rootState === undefined || rootState.length === 0) {
     return `${param} array is empty`;
   }
 
-  const foundMatch = rootState.find(
-    (item: { utctime: string | number | Date }) => {
-      const paramDate = new Date(item.utctime);
-      
-      // Ensure paramDate is in UTC
-      const paramDateUTC = new Date(paramDate.toISOString());
+  const marked = markLine.toLocaleDateString('en-US');
 
-      window.console.log(
-        paramDateUTC.toISOString().split("T")[0],
-        markLineUTC.toISOString().split("T")[0],
-        "checking dates"
-      );
+  const foundMatch = rootState.find((item: { utctime: string | number | Date }) => {
+    const dateFromParams = new Date(item.utctime);
+    const formattedDateFromParams = dateFromParams.toLocaleDateString('en-US');
 
-      return (
-        paramDateUTC.toISOString().split("T")[0] ===
-        markLineUTC.toISOString().split("T")[0]
-      );
+    if (formattedDateFromParams === marked) {
+      return item;
     }
-  );
+
+    return false;
+  });
 
   if (!foundMatch) {
     return `No match found for markLine`;
@@ -141,10 +131,7 @@ export const getLayersWithLayerInfo = (
 };
 
 export const findMatchingLayers = (
-  dataFromParams: (
-    LayersWithLayerInfo
-    | undefined
-  )[],
+  dataFromParams: (LayersWithLayerInfo | undefined)[],
   layersArray: Parameter[]
 ) => {
   return dataFromParams.map((obj) => {
@@ -157,14 +144,12 @@ export const findMatchingLayers = (
       if (matchingLayer) {
         return {
           ...obj,
-          layerName: matchingLayer.layerName,
-          
+          layerName: matchingLayer.layerName
         };
       } else {
         return {
           ...obj,
-          layerName: "",
-          
+          layerName: ""
         };
       }
     }
