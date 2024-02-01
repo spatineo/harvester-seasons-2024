@@ -11,7 +11,6 @@ const mark = reduceMonths(new Date(), 6).setDate(
 );
 const newMarkLineDate = new Date(mark).toUTCString();
 
-window.console.log(new Date(newMarkLineDate).toISOString().split('T')[0])
 const initialState: GlobalStateProps = {
   defaultColorSwitch: true,
   trafficabilityIndexColor: null,
