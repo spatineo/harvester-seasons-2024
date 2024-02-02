@@ -16,7 +16,11 @@ import { actions as action } from "../globalSlice";
 import { LanguageOptions } from "../Lang/languageSlice";
 import { languages } from "../Lang/languages";
 import { RootState } from "../store/store";
-import { createTrafficabilityGraphOptions } from "../utils/graphHelpers";
+import {
+  createTrafficabilityGraphOptions,
+  calculateTrafficability,
+  getWindGustParam
+} from "../utils/graphHelpers";
 import {
   ensembleListSmartIdx,
   scalingFunction,
@@ -26,14 +30,10 @@ import {
 function MainViewComponent() {
   const [trafficabilityGraphOption, setTrafficabilityGraphOption] =
     useState<EChartOption | null>(null);
-
   const dispatch = useRootDispatch();
-  const {
-    snowHeightData,
-    trafficabilityData,
-    windGustData,
-    params
-  } = useAppSelector((state: RootState) => state.global);
+  const { snowHeightData, trafficabilityData, windGustData } = useAppSelector(
+    (state: RootState) => state.global
+  );
   const information = useAppSelector((state) => state.language);
   const { markLine } = useAppSelector((state: RootState) => state.global);
   const { lang } = useAppSelector((state: RootState) => state.language);
@@ -44,15 +44,16 @@ function MainViewComponent() {
     dispatch({ type: constants.SOILTEMPERATUE_API });
     dispatch({ type: constants.SNOWHEIGHT_API });
     dispatch({ type: constants.WINDGUST_API });
-    dispatch({ type: constants.SETWMSLAYERINFORMATION})
+    dispatch({ type: constants.SETWMSLAYERINFORMATION });
   }, []);
 
   useEffect(() => {
+    if(!trafficabilityData || !windGustData) return;
     const ensembleSnowHeight = ensembleListSmartIdx(
       snowHeightData,
       "HSNOW-M:SMARTOBS:13:4"
     );
-   
+
     const dataSHscaled = scalingFunction(
       snowHeightData,
       ensembleSnowHeight.ensembleList,
@@ -70,6 +71,7 @@ function MainViewComponent() {
       50,
       "HSNOW-M:SMARTOBS:13:4"
     );
+
     const languageObject = {
       summerIndex: languages.summmerIndex[
         information.lang as keyof LanguageOptions
@@ -80,37 +82,29 @@ function MainViewComponent() {
       windGust: languages.WindGust[
         information.lang as keyof LanguageOptions
       ] as string,
-      winterTenDays: languages.summerTenDays[
+      winterTenDays: languages.winterTenDays[
         information.lang as keyof LanguageOptions
       ] as string,
-      summerTenDays: languages.winterTenDays[
+      summerTenDays: languages.summerTenDays[
         information.lang as keyof LanguageOptions
       ] as string,
     };
 
     const trafficabilityOption = createTrafficabilityGraphOptions(
-      params.windGust,
-      windGustData,
-      trafficabilityData,
+      calculateTrafficability(trafficabilityData, winter1series),
+      getWindGustParam(windGustData),
       markLine,
-      winter1series,
       languageObject,
       lang
     );
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     setTrafficabilityGraphOption(trafficabilityOption);
- 
-  }, [
-    trafficabilityData,
-    markLine,
-    windGustData,
-    information.lang,
-  ]);
+  }, [trafficabilityData, markLine, windGustData, information.lang]);
 
   return (
     <Container maxWidth="lg">
-      <Box sx={{position: "relative", bottom: "0rem", top: "0.6rem"}}>
-        {(windGustData.length > 0  ) ? (
+      <Box sx={{ position: "relative", bottom: "0rem", top: "0.6rem" }}>
+        {trafficabilityData.length > 0 ? (
           <TraficabilityGraph
             markline={markLine}
             option={trafficabilityGraphOption}
@@ -122,13 +116,13 @@ function MainViewComponent() {
           <Box className="loading"> Loading ....</Box>
         )}
       </Box>
-      <Box sx={{position: "relative", bottom: "0rem"}}>
+      <Box sx={{ position: "relative", bottom: "0rem" }}>
         <TimelineSlider />
       </Box>
-      <Box sx={{ position: "relative", top: "0rem"}}>
+      <Box sx={{ position: "relative", top: "0rem" }}>
         <HarvesterMap />
       </Box>
-      <Box sx={{ position: "relative", top: "0rem"}}>
+      <Box sx={{ position: "relative", top: "0rem" }}>
         <OpacityComponent />
       </Box>
       <Box sx={{ position: "relative", top: "1.4rem" }}>

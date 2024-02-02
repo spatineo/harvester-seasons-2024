@@ -25,34 +25,26 @@ interface FindOneDataFromParamsData {
 export const getMarkLineMatch = (param: string) => (state: RootState) => {
   const rootState = state.global[param] as Smartmet[] | undefined;
   const markLine = new Date(state.global.markLine);
-
   if (isNaN(markLine.getTime())) {
     window.console.error(`Invalid date format for markLine = ${param}`);
     return;
   }
-
   if (rootState === undefined || rootState.length === 0) {
     return `${param} array is empty`;
   }
-
   const marked = markLine.toLocaleDateString('en-US');
-
   const foundMatch = rootState.find((item: { utctime: string | number | Date }) => {
     const dateFromParams = new Date(item.utctime);
     const formattedDateFromParams = dateFromParams.toLocaleDateString('en-US');
-
     if (formattedDateFromParams === marked) {
       return item;
     }
-
     return false;
   });
 
   if (!foundMatch) {
     return `No match found for markLine`;
   }
-
-  window.console.log(foundMatch);
   return foundMatch;
 };
 

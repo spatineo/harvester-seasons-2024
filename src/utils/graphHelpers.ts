@@ -1,8 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Parameter, GraphOptions, Smartmet } from "../types";
+import { GraphOptions, Smartmet } from "../types";
 import { EChartOption } from "echarts";
+
+const param2 = "HARVIDX{55;SWI2:ECXSF:5062:1:0:0:0-50}";
+const param3 = "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}";
+const param5 = "HARVIDX{0.55;SWI2-0TO1:SWI}";
+const param7 = "ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}";
+const param8 = "ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}";
 
 const monthFI = [
   "Tammi",
@@ -46,11 +53,9 @@ const enFormat = (value: Date) => {
 };
 
 export function createTrafficabilityGraphOptions(
-  parameters: Parameter[],
+  values: (string | number)[][],
   windGustArray: Smartmet[],
-  values: [],
   mark,
-  winterSeries: (string | number)[],
   languageObject: {
     summerIndex: string;
     winterIndex: string;
@@ -77,6 +82,18 @@ export function createTrafficabilityGraphOptions(
       {
         name: "Traficability",
         nameLocation: "middle",
+        min: 0,
+        max: 2,
+        splitNumber: 1,
+        nameTextStyle: {
+          padding: 8
+        }
+      },
+      {
+        name: "Wind Gust",
+        nameLocation: "middle",
+        min: 0,
+        max: 28,
         splitNumber: 1,
         nameTextStyle: {
           padding: 8
@@ -93,6 +110,7 @@ export function createTrafficabilityGraphOptions(
     },
     series: [
       {
+        symbol: "none",
         label: {
           show: false
         },
@@ -109,30 +127,99 @@ export function createTrafficabilityGraphOptions(
           ],
           symbol: "none",
           lineStyle: {
-            width: 2,
             type: "solid",
-            color: "green"
+            width: 3,
+            color: "#666362"
           }
         }
       },
-
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      ...parameters.map((p: { code: string }) => {
-        const codes = p.code;
-        return {
-          type: "line",
-          symbolSize: 1,
-          name: `SH-${codes}`,
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-          data: windGustArray.map((d: { utctime: string }) => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-            return [
-              new Date(d.utctime).toISOString(),
-              d[codes] ? d[codes] : "nan"
-            ];
-          })
-        };
-      })
+      {
+        name: `${languageObject.summerIndex}`,
+        type: "line",
+        symbol: "none",
+        itemStyle: {
+          color: "#0073CF"
+        },
+        lineStyle: {
+          type: "solid",
+          width: 2
+        },
+        areaStyle: {
+          color: "rgba(0,115,207, 0.3)"
+        },
+        yAxisIndex: 0,
+        data: values.map((t) => {
+          return [t[0], t[1]];
+        })
+      },
+      {
+        symbol: "none",
+        name: `${languageObject.winterIndex}`,
+        itemStyle: {
+          color: "green"
+        },
+        lineStyle: {
+          type: "solid",
+          width: 1.5
+        },
+        areaStyle: {
+          color: "rgba(2, 138, 15, 0.5)"
+        },
+        yAxisIndex: 0,
+        type: "line",
+        data: values.map((item) => [item[0], item[2]])
+      },
+      {
+        type: "line",
+        name: `${languageObject.summerTenDays}`,
+        symbol: "none",
+        itemStyle: {
+          color: "#BA60FC"
+        },
+        lineStyle: {
+          type: "solid",
+          width: 2
+        },
+        areaStyle: {
+          color: "rgba(97,12,4, 0.3)"
+        },
+        yAxisIndex: 0,
+        data: values.map((item) => [item[0], item[3]])
+      },
+      {
+        type: "line",
+        name: `${languageObject.winterTenDays}`,
+        symbol: "none",
+        itemStyle: {
+          color: "#C70039"
+        },
+        lineStyle: {
+          type: "solid",
+          width: 2
+        },
+        areaStyle: {
+          color: "rgba(50,50,50, 0.3)"
+        },
+        yAxisIndex: 0,
+        data: values.map((item) => [item[0], item[4]])
+      },
+     {
+        type: "line",
+        name: `${languageObject.windGust}`,
+        symbol: "none",
+        itemStyle: {
+          color: "#03241b"
+        },
+        lineStyle: {
+          type: "solid",
+          width: 2
+        },
+        yAxisIndex: 1,
+        data: windGustArray.map((item) => {
+         const value = Object.values(item)
+          return [item.utctime, value[1]]
+        })
+      } 
     ]
   };
   return trafficabilityOptionData;
@@ -150,7 +237,7 @@ export function createOptions(
     animation: false,
     animationThreshold: 1,
     grid: {
-      width: "auto",
+      width: "auto"
     },
     tooltip: {
       show: true,
@@ -216,39 +303,55 @@ export function createOptions(
   };
 }
 
-const s: string[] = [];
-for (let i = 0; i < 10; i++) {
-  const date = new Date();
-  date.setDate(date.getDate() + i);
-  s.push(date.toISOString());
+export function calculateTrafficability(
+  arr: Smartmet[],
+  winterSeries: number[]
+) {
+  return arr.map((t: { utctime: string }) => {
+    const summer1 = t[param2] !== null ? t[param2] : "nan";
+    const allValuesNotNaN = winterSeries.every((value) => !isNaN(value));
+
+    const winter1 =
+      t[param8] !== null
+        ? Math.max(Number(t[param3]), Number(t[param8]))
+        : t[param3] !== null ||
+          (allValuesNotNaN && winterSeries.length === arr.length)
+        ? Math.max(Number(t[param3]), ...winterSeries)
+        : "nan";
+    const winterTenDays =
+      t[param8] !== null
+        ? Math.max(Number(t[param3]), Number(t[param8]))
+        : t[param7] !== null
+        ? Math.max(Number(t[param7]), Number(t[param3]))
+        : "nan";
+
+    const summerTenDays = t[param5] !== null ? t[param5] : "nan";
+
+    return [
+      new Date(t.utctime),
+      summer1,
+      winter1,
+      summerTenDays,
+      winterTenDays
+    ];
+  });
 }
 
-export function graphOption(data: (string | number | Date)[][]) {
-  const d: string[] = [];
-  for (let i = 0; i < 10; i++) {
-    const date = new Date();
-    date.setDate(date.getDate() + i);
-    d.push(date.toISOString());
-  }
+export function getWindGustParam(arr: Smartmet[]) {
+  return arr.map((gust: { utctime: string }) => {
+    const keys = Object.keys(gust);
+    const foundKeys = keys.find(key => key !== "utctime" && gust[key] !== null);
 
-  return {
-    tooltip: {
-      show: true,
-      trigger: "axis"
-    },
-    xAxis: {
-      type: "time"
-    },
-    yAxis: {},
-    series: data.map((item) => {
+    if (foundKeys) {
       return {
-        type: "line",
-        data: item.map((value, i) => [d[i], value])
+        utctime: gust.utctime,
+        [foundKeys]: gust[foundKeys],
       };
-    })
-  };
+    } else {
+      return {
+        utctime: gust.utctime,
+        [keys[1]]: gust[keys[1]],
+      };
+    }
+  });
 }
-
-/* 
-_SPATINEO_ID=165159&BBOX=11.051469386771252%2C38.813252479428314%2C11.869753176035994%2C39.631536268693054&CRS=CRS%3A27&customer=gui&EXCEPTIONS=XML&LAYERS=gui%3Aisobands%3ACERRA_FFG-MS&projection.bbox=11.051469386771252%2C38.813252479428314%2C11.869753176035994%2C39.631536268693054&projection.crs=NAD27&projection.xsize=256&projection.ysize=256&REQUEST=GetMap&SERVICE=WMS&STYLES=&type=png&VERSION=1.3.0
-*/
