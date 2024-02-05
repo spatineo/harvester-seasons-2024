@@ -18,7 +18,6 @@ export interface Time {
 const Graphs: React.FC = () => {
   const { soilWetnessData, soilTemperatureData, snowHeightData, params } =
     useAppSelector((state: RootState) => state.global);
-
   const { lang } = useAppSelector((state: RootState) => state.language);
   const markLineDate = useAppSelector(
     (state: RootState) => state.global.markLine
@@ -28,7 +27,31 @@ const Graphs: React.FC = () => {
     null
   );
   const [snowHeightOption, setSnowHeightOption] = useState<null | {}>(null);
+  const [selectedYValues, setSelectedYValues] = useState<any>([]);
+  const [tooltipData, setTooltipData] = useState<
+    Record<string, string | number>[] | null
+  >(null);
 
+  function initialLabels() {
+    const obj: { [key: string]: string } = {};
+    for (let i = 1; i <= 50; i++) {
+      obj[`SH-${i}`] = "";
+    }
+    return obj;
+  }
+
+  const handleSetValuesProps = (data: [string | null, ...number[]]) => {
+    setSelectedYValues(data);
+  };
+
+  const handleTooltip = (param) => {
+    setTooltipData(param);
+  };
+
+  const handleGlobalMousOut = (param) => {
+    window.console.log(param, "Global mouse out");
+    setTooltipData(null);
+  };
   useEffect(() => {
     if (!soilTemperatureData || !snowHeightData || !soilWetnessData) return;
     const soilWetness = createOptions(
@@ -37,7 +60,8 @@ const Graphs: React.FC = () => {
       soilWetnessData,
       markLineDate,
       20,
-      lang
+      lang,
+      handleTooltip
     );
     const soilTemperature = createOptions(
       { title: "Soil Temperature (°C)" },
@@ -45,7 +69,8 @@ const Graphs: React.FC = () => {
       soilTemperatureData,
       markLineDate,
       20,
-      lang
+      lang,
+      handleTooltip
     );
     const snowHeight = createOptions(
       { title: "Snow Height (m)" },
@@ -53,7 +78,8 @@ const Graphs: React.FC = () => {
       snowHeightData,
       markLineDate,
       20,
-      lang
+      lang,
+      handleTooltip
     );
     setSnowHeightOption(snowHeight);
     setSoilTemperatureOption(soilTemperature);
@@ -66,8 +92,44 @@ const Graphs: React.FC = () => {
     lang,
   ]);
 
+  const graphLabels = () => {
+    if (tooltipData && tooltipData.length > 0) {
+      const date = tooltipData[0].value[0]
+      return (
+        <Box>
+          {tooltipData.map((tooltip) => {
+              window.console.log(tooltip.seriesName,date, tooltip.value[1]);
+            return <Box key={tooltip.seriesName}>
+              {}
+            </Box>;
+          })}
+        </Box>
+      );
+    } else {
+      const initialLabelValues = initialLabels();
+      return (
+        <span>
+          {Object.keys(initialLabelValues).map((key: string, index: number) => (
+            <Box
+              component="span"
+              key={index}
+              sx={{
+                fontFamily: "Helvetica, monospace",
+                fontWeight: "200",
+                fontSize: "0.8rem",
+              }}
+            >
+              {`${key}: ${initialLabelValues[key]} `}
+            </Box>
+          ))}
+        </span>
+      );
+    }
+  };
+
   return (
     <Box>
+      <Box sx={{ width: "80%", margin: "auto" }}>{graphLabels()}</Box>
       <Box>
         {soilWetnessData && soilWetnessData.length === 0 ? (
           <Box className="loading">Loading ....</Box>
@@ -75,6 +137,9 @@ const Graphs: React.FC = () => {
           <HarvesterSeasons
             option={soilWetnessOption !== null && soilWetnessOption}
             height={300}
+            handleOnmouseEnter={handleSetValuesProps}
+            setMouseOver={handleTooltip}
+            setMouseOut={handleGlobalMousOut}
           />
         )}
       </Box>
@@ -85,6 +150,9 @@ const Graphs: React.FC = () => {
           <HarvesterSeasons
             option={soilTemperatureOption !== null && soilTemperatureOption}
             height={300}
+            handleOnmouseEnter={handleSetValuesProps}
+            setMouseOut={handleGlobalMousOut}
+            setMouseOver={handleTooltip}
           />
         )}
       </Box>
@@ -95,6 +163,9 @@ const Graphs: React.FC = () => {
           <HarvesterSeasons
             option={snowHeightOption !== null && snowHeightOption}
             height={300}
+            handleOnmouseEnter={handleSetValuesProps}
+            setMouseOver={handleTooltip}
+            setMouseOut={handleGlobalMousOut}
           />
         )}
       </Box>
