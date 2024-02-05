@@ -74,7 +74,7 @@ export function soilWetnesstApiParams() {
 
 export function scaleEnsembleData(arr: Smartmet[], parameters: Parameter[]) {
   let ensembleOffset : Map<string,number> | null = null;
-  let prevValue = null;
+  let prevValue: Smartmet | null = null;
   let lastNonEnsembleValue = 0;
   return arr.map(value => {
     // 1) find values for all non-ensemble parameters and add those to ret
@@ -95,7 +95,9 @@ export function scaleEnsembleData(arr: Smartmet[], parameters: Parameter[]) {
       // .. calculate offset to each ensemble value
       ensembleOffset = new Map()
       parameters.filter(p => p.ensemble).forEach(p => {
-        ensembleOffset[p.code] = prevValue[p.code] - lastNonEnsembleValue;
+        if(ensembleOffset !== null){
+          ensembleOffset[p.code] = prevValue !== null &&  prevValue[p.code] - lastNonEnsembleValue;
+        }
       });  
     }
 
