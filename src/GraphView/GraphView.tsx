@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Box } from "@mui/material";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
@@ -27,9 +27,8 @@ const Graphs: React.FC = () => {
     null
   );
   const [snowHeightOption, setSnowHeightOption] = useState<null | {}>(null);
-  const [selectedYValues, setSelectedYValues] = useState<any>([]);
-  const [tooltipData, setTooltipData] = useState<
-    Record<string, string | number>[] | null
+  const [selectedYValues, setSelectedYValues] = useState<
+    null | Record<string, number | string>[]
   >(null);
 
   function initialLabels() {
@@ -40,18 +39,19 @@ const Graphs: React.FC = () => {
     return obj;
   }
 
-  const handleSetValuesProps = (data: [string | null, ...number[]]) => {
-    setSelectedYValues(data);
-  };
+  const handleTooltip = useCallback(
+    (param) => {
+      const date = param[0].value[0];
+      const n = param.map((p) => ({ name: p.seriesName, value: p.data[1] }));
+      setSelectedYValues([date, ...n]);
+    },
+    [selectedYValues]
+  );
 
-  const handleTooltip = (param) => {
-    setTooltipData(param);
-  };
+  const emptyToolTip = useCallback(() => {
+    setSelectedYValues(null);
+  }, [selectedYValues]);
 
-  const handleGlobalMousOut = (param) => {
-    window.console.log(param, "Global mouse out");
-    setTooltipData(null);
-  };
   useEffect(() => {
     if (!soilTemperatureData || !snowHeightData || !soilWetnessData) return;
     const soilWetness = createOptions(
@@ -92,82 +92,85 @@ const Graphs: React.FC = () => {
     lang,
   ]);
 
-  const graphLabels = () => {
-    if (tooltipData && tooltipData.length > 0) {
-      const date = tooltipData[0].value[0]
-      return (
-        <Box>
-          {tooltipData.map((tooltip) => {
-              window.console.log(tooltip.seriesName,date, tooltip.value[1]);
-            return <Box key={tooltip.seriesName}>
-              {}
-            </Box>;
-          })}
-        </Box>
-      );
-    } else {
+  const g = () => {
+    if (selectedYValues === null) {
       const initialLabelValues = initialLabels();
       return (
-        <span>
+        <Box component="span">
           {Object.keys(initialLabelValues).map((key: string, index: number) => (
-            <Box
-              component="span"
-              key={index}
-              sx={{
-                fontFamily: "Helvetica, monospace",
-                fontWeight: "200",
-                fontSize: "0.8rem",
-              }}
-            >
+            <Box component="span" key={index}>
               {`${key}: ${initialLabelValues[key]} `}
             </Box>
           ))}
-        </span>
+        </Box>
+      );
+    } else {
+      return (
+        <Box>
+          {selectedYValues.map((value) => {
+            return (
+              <Box component="span" key={value.name}>
+                {typeof value === "string" &&
+                  `${(value as string).split("T")[0]}`}
+                {value.value !== "nan" &&
+                  value.value !== undefined &&
+                  ` ${value.name} ${Number(value.value).toFixed(2)} `}
+              </Box>
+            );
+          })}
+        </Box>
       );
     }
   };
 
   return (
     <Box>
-      <Box sx={{ width: "80%", margin: "auto" }}>{graphLabels()}</Box>
+      <Box
+        sx={{
+          height: "180px",
+          display: "flex",
+          alignItems: "center",
+          fontFamily: "Helvetica, monospace",
+          fontWeight: "300",
+          fontSize: "0.7rem",
+        }}
+      >
+        {g()}
+      </Box>
       <Box>
-        {soilWetnessData && soilWetnessData.length === 0 ? (
-          <Box className="loading">Loading ....</Box>
-        ) : (
+        {soilTemperatureOption !== null && (
           <HarvesterSeasons
             option={soilWetnessOption !== null && soilWetnessOption}
             height={300}
-            handleOnmouseEnter={handleSetValuesProps}
-            setMouseOver={handleTooltip}
-            setMouseOut={handleGlobalMousOut}
+            data={soilWetnessData}
+            onEvents={{
+              mouseout: emptyToolTip,
+            }}
+            mousedown={emptyToolTip}
           />
         )}
       </Box>
       <Box>
-        {soilTemperatureData && soilTemperatureData.length === 0 ? (
-          <Box className="loading">Loading ....</Box>
-        ) : (
-          <HarvesterSeasons
-            option={soilTemperatureOption !== null && soilTemperatureOption}
-            height={300}
-            handleOnmouseEnter={handleSetValuesProps}
-            setMouseOut={handleGlobalMousOut}
-            setMouseOver={handleTooltip}
-          />
-        )}
+        <HarvesterSeasons
+          option={soilTemperatureOption !== null && soilTemperatureOption}
+          height={300}
+          data={soilTemperatureData}
+          onEvents={{
+            mouseout: emptyToolTip,
+          }}
+          mousedown={emptyToolTip}
+        />
       </Box>
       <Box>
-        {snowHeightData && snowHeightData.length === 0 ? (
-          <Box className="loading">Loading ....</Box>
-        ) : (
-          <HarvesterSeasons
-            option={snowHeightOption !== null && snowHeightOption}
-            height={300}
-            handleOnmouseEnter={handleSetValuesProps}
-            setMouseOver={handleTooltip}
-            setMouseOut={handleGlobalMousOut}
-          />
-        )}
+        <HarvesterSeasons
+          option={snowHeightOption !== null && snowHeightOption}
+          height={300}
+          data={snowHeightData}
+          onEvents={{
+            globalout: () => window.console.log("Global"),
+          }}
+          mousedown={emptyToolTip}
+        />
       </Box>
     </Box>
   );
