@@ -19,7 +19,7 @@ import {
   addMonths,
   reduceMonths
 } from "../../utils/dateHelperFunctions";
-import { asStartEndTimeSpan } from "../../utils/helpers";
+import { asStartEndTimeSpan, scaleEnsembleData } from "../../utils/helpers";
 import { RootState } from "../store";
 import { EnqueueSnackbar } from "../hooks";
 import { Parameter, StartEndTimeSpan } from "../../types";
@@ -234,7 +234,7 @@ export function* fetchSoilTemperatureSaga() {
       )
     );
     if (result.status === 200) {
-      const data = result.data;
+      const data = scaleEnsembleData(result.data, params.soilTemperature);
       yield put(actions.setSoilTemperatureData(data));
     }
   } catch (error) {
@@ -265,7 +265,7 @@ export function* fetchSnowHeightSaga() {
       )
     );
     if (result.status === 200) {
-      const data = result.data;
+      const data = scaleEnsembleData(result.data, params.snowHeight);
       yield put(actions.setSnowHeightData(data));
     }
   } catch (error) {
@@ -301,7 +301,7 @@ export function* fetchSoilWetnessSaga() {
       )
     );
     if (result.status === 200) {
-      const data = result.data;
+      const data = scaleEnsembleData(result.data, params.soilWetness);
       yield put(actions.setSoilWetnessData(data));
     }
   } catch (error) {

@@ -1,21 +1,31 @@
 import React from "react";
 import { Box } from "@mui/material";
 import EchartsComponent from "../EchartsComponent/EchartsComponent";
+import { Smartmet } from "../types";
 
 interface HarvesterChartProps {
-  option: {},
-  height: number
+  option: {};
+  data: Smartmet[];
+  height: number;
+  mousedown: () => void;
+  onEvents?: {
+    [key: string]: (params: any, echartsInstance: echarts.ECharts) => void;
+  };
 }
 const HarvesterSeasons: React.FC<HarvesterChartProps> = ({
   option,
   height,
+  data,
+  onEvents,
+  mousedown
 }) => {
   return (
     <Box>
-      {option ? (
-        <EchartsComponent option={option} height={height} />
+      {(data && data.length === 0) ||
+      (option && Object.keys(option).length === 0) ? (
+        <Box className="loading">Loading ....</Box>
       ) : (
-        <Box>No data</Box>
+        <EchartsComponent option={option} height={height} onEvents={onEvents} mousedown={mousedown}/>
       )}
     </Box>
   );

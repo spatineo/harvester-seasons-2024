@@ -15,6 +15,7 @@ export interface Parameter {
   layerName?: string;
   Name?: string;
   Title?: string;
+  ensemble?: boolean;
 }
 
 export interface StartEndTimeSpan {

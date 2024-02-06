@@ -231,7 +231,8 @@ export function createOptions(
   values,
   mark: string,
   padding: number,
-  locale: string
+  locale: string,
+  toolTipFormatter: (param) => void
 ) {
   return {
     animation: false,
@@ -242,7 +243,7 @@ export function createOptions(
     tooltip: {
       show: true,
       trigger: "axis",
-      borderWidth: 10
+      formatter: toolTipFormatter
     },
     yAxis: {
       name: opts.title,

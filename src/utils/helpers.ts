@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { MapEvent } from "ol";
 import { Parameter, StartEndTimeSpan, Smartmet } from "../types";
 
 export function getValueFromRedux(value: StartEndTimeSpan): StartEndTimeSpan {
@@ -71,48 +72,54 @@ export function soilWetnesstApiParams() {
   return arr;
 }
 
-export function scaleEnsembleData(arr: Smartmet[], smartmet: string) {
-  const lastNonNull: Smartmet | undefined = arr.findLast(
-    (obj) => obj[smartmet] !== null
-  );
+export function scaleEnsembleData(arr: Smartmet[], parameters: Parameter[]) {
+  let ensembleOffset : Map<string,number> | null = null;
+  let prevValue: Smartmet | null = null;
+  let lastNonEnsembleValue = 0;
+  return arr.map(value => {
+    // 1) find values for all non-ensemble parameters and add those to ret
+    const ret = { "utctime": value.utctime };
 
-  const newArr: Smartmet[] = [];
-  for (let i = 0; i < arr.length; i++) {
-    const obj = arr[i];
+    let nonEnsembleValueFound = false;
+    parameters.filter(p => !p.ensemble).forEach(p => {
+      ret[p.code] = value[p.code];
+      if (ret[p.code] !== null && ret[p.code] !== undefined) {
+        lastNonEnsembleValue = ret[p.code];
+        nonEnsembleValueFound = true;
+      }
+    });
 
-    if (obj[smartmet] !== null) {
-      const smartMetValue = obj[smartmet];
-      const newObj = { utctime: obj.utctime };
-      Object.keys(obj).forEach((key) => {
-        if (key !== "utctime") {
-          newObj[key] = smartMetValue;
+    if (nonEnsembleValueFound) {
+      ensembleOffset = null;
+    } else if (ensembleOffset === null && prevValue !== null) {
+      // .. calculate offset to each ensemble value
+      ensembleOffset = new Map()
+      parameters.filter(p => p.ensemble).forEach(p => {
+        if(ensembleOffset !== null){
+          ensembleOffset[p.code] = prevValue !== null &&  prevValue[p.code] - lastNonEnsembleValue;
         }
-      });
-      newArr.push(newObj);
-    } else if (!lastNonNull) {
-      newArr.push(obj);
-    } else {
-      const smartmetKey: string | null = smartmet;
-      const newObj: Smartmet = { utctime: obj.utctime, [smartmetKey]: null };
-      for (const key in obj) {
-        if (key === smartmet) {
-          newObj[key] = null;
-        } else if (key !== "utctime") {
-          const key1 = lastNonNull[key] as number;
-          const key2 = lastNonNull[smartmet] as number;
-          const currentObjValue = obj[key];
-          newObj[key] =
-            currentObjValue !== null && lastNonNull !== null
-              ? Number(currentObjValue) - (key1 - key2)
-              : null;
+      });  
+    }
+
+    parameters.filter(p => p.ensemble).forEach(p => {
+      if (nonEnsembleValueFound || value[p.code] === null  || value[p.code] === undefined) {
+        // 2) if non-ensemble values found, fill ensemble values with nulls
+        ret[p.code] = null;
+      } else {
+        // 3) if only ensemble values found, scale ensemble values accordingly
+        if (ensembleOffset == null) {
+          //  .. no scaling can be done, as there is no offset available => use values as is
+          ret[p.code] = value[p.code];
         } else {
-          newObj[key] = obj[key];
+          ret[p.code] = (value[p.code] as number) - (ensembleOffset[p.code] as number);
         }
       }
-      newArr.push(newObj);
-    }
-  }
-  return newArr;
+    });
+
+    prevValue = value;
+
+    return ret;
+  });
 }
 
 export function getOpacityFromPercentage(percentage: number): number {
