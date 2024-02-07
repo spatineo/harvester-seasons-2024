@@ -10,7 +10,10 @@ interface ChartProps {
   option: EChartOption;
   height: number;
   onEvents?: {
-    [key: string]: (params: any, echartsInstance: echarts.ECharts) => void;
+    [key: string]: (
+      params: Record<string, string>,
+      echartsInstance: echarts.ECharts
+    ) => void;
   };
   mousedown: () => void;
 }
@@ -31,16 +34,24 @@ const EchartsComponent: React.FC<ChartProps> = ({
 
     const myChart = echarts.init(chartRef.current, undefined);
     window.addEventListener("resize", () => myChart.resize());
+
     setChart(myChart);
-    
-  }, [chartRef.current]);
+    return () => {
+      if (myChart) {
+        myChart.dispose();
+      }
+    };
+  }, []);
 
   useEffect(() => {
-    if(!chart) return;
-    chart.on('globalout', mousedown);
-    chart.setOption(option)
-  }, [chart, option, onEvents])
+    if (!chart) return;
+    chart.setOption(option);
+  }, [option, chart]);
 
+  useEffect(() => {
+    if (!chart) return;
+    chart.on("globalout", mousedown);
+  }, [chart, onEvents]);
 
   return (
     <Box
