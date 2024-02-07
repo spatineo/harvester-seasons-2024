@@ -28,8 +28,14 @@ const TimelineSlider: React.FC = () => {
       return;
     }
     const chart: echarts.EChartsType = echarts.init(timelineRef.current);
-    setTimelineChart(chart);
-    window.addEventListener("resize", () => chart.resize());
+    if (!chart.isDisposed()) {
+      setTimelineChart(chart);
+    }
+    window.addEventListener("resize", () => {
+      if (chart && !chart.isDisposed()) {
+        chart.resize();
+      }
+    });
     return () => {
       chart.dispose();
     }
