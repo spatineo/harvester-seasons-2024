@@ -9,7 +9,10 @@ interface HarvesterChartProps {
   height: number;
   mousedown: () => void;
   onEvents?: {
-    [key: string]: (params: any, echartsInstance: echarts.ECharts) => void;
+    [key: string]: (
+      params: Record<string, string>,
+      echartsInstance: echarts.ECharts
+    ) => void;
   };
 }
 const HarvesterSeasons: React.FC<HarvesterChartProps> = ({
@@ -17,7 +20,7 @@ const HarvesterSeasons: React.FC<HarvesterChartProps> = ({
   height,
   data,
   onEvents,
-  mousedown
+  mousedown,
 }) => {
   return (
     <Box>
@@ -25,7 +28,12 @@ const HarvesterSeasons: React.FC<HarvesterChartProps> = ({
       (option && Object.keys(option).length === 0) ? (
         <Box className="loading">Loading ....</Box>
       ) : (
-        <EchartsComponent option={option} height={height} onEvents={onEvents} mousedown={mousedown}/>
+        <EchartsComponent
+          option={option}
+          height={height}
+          onEvents={onEvents}
+          mousedown={mousedown}
+        />
       )}
     </Box>
   );
