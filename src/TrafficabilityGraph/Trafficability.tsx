@@ -23,6 +23,7 @@ const TraficabilityGraphComponent: React.FC<
   TraficabilityGraphComponentProp
 > = ({ option, onGraphClick, markline }) => {
   const graphRef = useRef<HTMLDivElement>(null);
+  const [graphChart, setGraphChart] = useState<echarts.ECharts | null>(null);
   const [arrowColor, setArrowColor] = useState<"primary" | "secondary">(
     "primary"
   );
@@ -57,11 +58,37 @@ const TraficabilityGraphComponent: React.FC<
       height: "200",
       useCoarsePointer: undefined,
     });
-
-    window.addEventListener("resize", () => newChart.resize({}));
-    if (option !== null) {
-      newChart.setOption(option, { notMerge: true, lazyUpdate: false });
+    if (!newChart.isDisposed()) {
+      setGraphChart(newChart);
     }
+
+    const handleResize = () => {
+      if (newChart && !newChart.isDisposed()) {
+        newChart.resize();
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      newChart.dispose();
+    }
+  }, [])
+
+  useEffect(() => {
+    if(!graphChart || option === null) return;
+    graphChart.setOption(option, { notMerge: true, lazyUpdate: false });
+  },[option])
+
+  useEffect(() => {
+    if (!graphChart) return;
+   /*  const newChart = echarts.init(graphRef.current, undefined, {
+      height: "200",
+      useCoarsePointer: undefined,
+    }); */
+
+   /*  window.addEventListener("resize", () => newChart.resize({})); */
+   /*  if (option !== null) {
+      
+    } */
     const calculateDataIndex = (seriesData: [], xAxisValue) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
       const formatDateWithoutTime = (dateString: Date) => {
@@ -89,12 +116,12 @@ const TraficabilityGraphComponent: React.FC<
       }
       return undefined;
     };
-    if (newChart !== null) {
+    if (graphChart !== null || option !== null) {
       const finals: number[] = [];
 
-      if (newChart.getOption() !== undefined) {
+      if (graphChart.getOption() !== undefined) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const options = newChart.getOption() as any;
+        const options = graphChart.getOption() as any;
         options?.series?.forEach((series) => {
           if (series.data) {
             const date = new Date(markline);
@@ -121,12 +148,12 @@ const TraficabilityGraphComponent: React.FC<
           }
         });
       }
-      newChart.getZr().on("click", (params) => {
+      graphChart.getZr().on("click", (params) => {
         const pointInPixel = [params.offsetX, params.offsetY];
 
-        if (newChart.getOption() !== undefined) {
-          newChart.getOption().series?.forEach((series, seriesIndex) => {
-            const xAxisData = newChart.convertFromPixel(
+        if (graphChart.getOption() !== undefined) {
+          graphChart.getOption().series?.forEach((series, seriesIndex) => {
+            const xAxisData = graphChart.convertFromPixel(
               { seriesIndex },
               pointInPixel
             )[0] as number;
@@ -143,11 +170,7 @@ const TraficabilityGraphComponent: React.FC<
       dispatch(actions.changeTrafficabilityIndexColor(max));
     }
 
-    return () => {
-      newChart.dispose();
-      window.removeEventListener("resize", () => newChart.resize());
-    };
-  }, [graphRef.current, option, markline]);
+  }, [markline, option]);
 
   return (
     <Box
