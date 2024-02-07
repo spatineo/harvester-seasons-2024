@@ -27,6 +27,18 @@ const TimelineSlider: React.FC = () => {
     if (!timelineRef.current) {
       return;
     }
+    const chart: echarts.EChartsType = echarts.init(timelineRef.current);
+    setTimelineChart(chart);
+    window.addEventListener("resize", () => chart.resize());
+    return () => {
+      chart.dispose();
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!timelineChart) {
+      return;
+    }
     const start = new Date(new Date(startEndTimeSpan.start_time));
     const end = new Date(new Date(startEndTimeSpan.end_time));
     const dateValue: Array<string | Date> = getDatesForTimelineDuration(
@@ -34,8 +46,6 @@ const TimelineSlider: React.FC = () => {
       end
     );
 
-    const chart: echarts.EChartsType = echarts.init(timelineRef.current);
-    setTimelineChart(chart);
     const baseOption = {
       timeline: {
         animationDuration: 0,
@@ -72,13 +82,9 @@ const TimelineSlider: React.FC = () => {
         },
       },
     };
-    chart.setOption(baseOption);
-    window.addEventListener("resize", () => chart.resize());
-    return () => {
-      chart.dispose();
-    };
+    timelineChart.setOption(baseOption);
   }, [
-    timelineRef.current,
+    timelineChart,
     startEndTimeSpan.end_time,
     startEndTimeSpan.start_time,
   ]);
@@ -99,10 +105,6 @@ const TimelineSlider: React.FC = () => {
     });
 
     timelineChart.on("click", (params) => {
-      window.console.log(
-        new Date(params.dataIndex as number).toISOString().split("T")[0],
-        "params during click"
-      );
       const newMarkline = new Date(params.dataIndex as number).toISOString();
       const clickedDate =  new Date(params.dataIndex as number).toISOString().split("T")[0];
       const index = dateValue.findIndex((date) => {
@@ -116,7 +118,6 @@ const TimelineSlider: React.FC = () => {
           currentIndex: index,
         }
       })
-       window.console.log(timelineChart.getOption());
        dispatch(actions.setMarkLine(newMarkline));
     });
    
