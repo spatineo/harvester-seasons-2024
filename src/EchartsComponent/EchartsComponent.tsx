@@ -1,7 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as echarts from "echarts";
 import { Box } from "@mui/material";
 import { EChartOption } from "echarts";
@@ -25,33 +22,45 @@ const EchartsComponent: React.FC<ChartProps> = ({
   mousedown,
 }) => {
   const chartRef = useRef<HTMLDivElement>(null);
-  const [chart, setChart] = useState<echarts.ECharts | null>(null);
+  const [graphChart, setGraphChart] = useState<echarts.ECharts | null>(null);
 
   useEffect(() => {
     if (!chartRef.current) {
       return;
     }
 
-    const myChart = echarts.init(chartRef.current, undefined);
-    window.addEventListener("resize", () => myChart.resize());
+    const chart = echarts.init(chartRef.current);
 
-    setChart(myChart);
+    if (!chart.isDisposed()) {
+      setGraphChart(chart);
+    }
+
+    const handleResize = () => {
+      if (chart && !chart.isDisposed()) {
+        chart.resize();
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
     return () => {
-      if (myChart) {
-        myChart.dispose();
+      window.removeEventListener("resize", handleResize);
+
+      if (chart) {
+        chart.dispose();
       }
     };
   }, []);
 
   useEffect(() => {
-    if (!chart) return;
-    chart.setOption(option);
-  }, [option, chart]);
+    if (!graphChart) return;
+    graphChart.setOption(option);
+  }, [option, graphChart]);
 
   useEffect(() => {
-    if (!chart) return;
-    chart.on("globalout", mousedown);
-  }, [chart, onEvents]);
+    if (!graphChart) return;
+    graphChart.on("globalout", mousedown);
+  }, [graphChart, onEvents]);
 
   return (
     <Box
