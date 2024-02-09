@@ -203,7 +203,7 @@ export function createTrafficabilityGraphOptions(
         yAxisIndex: 0,
         data: values.map((item) => [item[0], item[4]])
       },
-     {
+      {
         type: "line",
         name: `${languageObject.windGust}`,
         symbol: "none",
@@ -216,10 +216,10 @@ export function createTrafficabilityGraphOptions(
         },
         yAxisIndex: 1,
         data: windGustArray.map((item) => {
-         const value = Object.values(item)
-          return [item.utctime, value[1]]
+          const value = Object.values(item);
+          return [item.utctime, value[1]];
         })
-      } 
+      }
     ]
   };
   return trafficabilityOptionData;
@@ -308,17 +308,18 @@ export function calculateTrafficability(
   arr: Smartmet[],
   winterSeries: number[]
 ) {
-  return arr.map((t: { utctime: string }) => {
+  const graphData: any[] = [];
+  arr.forEach((t: { utctime: string }, i) => {
     const summer1 = t[param2] !== null ? t[param2] : "nan";
-    const allValuesNotNaN = winterSeries.every((value) => !isNaN(value));
 
     const winter1 =
       t[param8] !== null
-        ? Math.max(Number(t[param3]), Number(t[param8]))
+        ? Math.max(t[param3] as number, t[param8] as number)
         : t[param3] !== null ||
-          (allValuesNotNaN && winterSeries.length === arr.length)
-        ? Math.max(Number(t[param3]), ...winterSeries)
+          (winterSeries[i] !== null && winterSeries.length == arr.length)
+        ? Math.max(t[param3] as number, winterSeries[i])
         : "nan";
+
     const winterTenDays =
       t[param8] !== null
         ? Math.max(Number(t[param3]), Number(t[param8]))
@@ -328,30 +329,33 @@ export function calculateTrafficability(
 
     const summerTenDays = t[param5] !== null ? t[param5] : "nan";
 
-    return [
+    graphData.push([
       new Date(t.utctime),
       summer1,
       winter1,
       summerTenDays,
       winterTenDays
-    ];
+    ]);
   });
+  return graphData;
 }
 
 export function getWindGustParam(arr: Smartmet[]) {
   return arr.map((gust: { utctime: string }) => {
     const keys = Object.keys(gust);
-    const foundKeys = keys.find(key => key !== "utctime" && gust[key] !== null);
+    const foundKeys = keys.find(
+      (key) => key !== "utctime" && gust[key] !== null
+    );
 
     if (foundKeys) {
       return {
         utctime: gust.utctime,
-        [foundKeys]: gust[foundKeys],
+        [foundKeys]: gust[foundKeys]
       };
     } else {
       return {
         utctime: gust.utctime,
-        [keys[1]]: gust[keys[1]],
+        [keys[1]]: gust[keys[1]]
       };
     }
   });
