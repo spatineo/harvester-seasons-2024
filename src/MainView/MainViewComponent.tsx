@@ -19,7 +19,7 @@ import { RootState } from "../store/store";
 import {
   createTrafficabilityGraphOptions,
   calculateTrafficability,
-  getWindGustParam
+  getWindGustParam,
 } from "../utils/graphHelpers";
 import {
   ensembleListSmartIdx,
@@ -47,30 +47,31 @@ function MainViewComponent() {
     dispatch({ type: constants.SETWMSLAYERINFORMATION });
   }, []);
 
+  const ensembleSnowHeight = ensembleListSmartIdx(
+    snowHeightData,
+    "HSNOW-M:SMARTOBS:13:4"
+  );
+
+  const dataSHscaled = scalingFunction(
+    snowHeightData,
+    ensembleSnowHeight.ensembleList,
+    ensembleSnowHeight.smartId,
+    50,
+    "HSNOW-M:SMARTOBS:13:4",
+    "HSNOW-M:SMARTMET:5027"
+  );
+
+  const winter1series = ensover(
+    0.4,
+    0.9,
+    dataSHscaled,
+    ensembleSnowHeight.ensembleList,
+    50,
+    "HSNOW-M:SMARTOBS:13:4"
+  );
+
   useEffect(() => {
-    if(!trafficabilityData || !windGustData) return;
-    const ensembleSnowHeight = ensembleListSmartIdx(
-      snowHeightData,
-      "HSNOW-M:SMARTOBS:13:4"
-    );
-
-    const dataSHscaled = scalingFunction(
-      snowHeightData,
-      ensembleSnowHeight.ensembleList,
-      ensembleSnowHeight.smartId,
-      50,
-      "HSNOW-M:SMARTOBS:13:4",
-      "HSNOW-M:SMARTMET:5027"
-    );
-
-    const winter1series = ensover(
-      0.4,
-      0.9,
-      dataSHscaled,
-      ensembleSnowHeight.ensembleList,
-      50,
-      "HSNOW-M:SMARTOBS:13:4"
-    );
+    if (!trafficabilityData || !windGustData) return;
 
     const languageObject = {
       summerIndex: languages.summmerIndex[
@@ -90,16 +91,21 @@ function MainViewComponent() {
       ] as string,
     };
 
+    const trafficability = calculateTrafficability(
+      trafficabilityData,
+      winter1series
+    );
+    const gustData = getWindGustParam(windGustData);
     const trafficabilityOption = createTrafficabilityGraphOptions(
-      calculateTrafficability(trafficabilityData, winter1series),
-      getWindGustParam(windGustData),
+      trafficability,
+      gustData,
       markLine,
       languageObject,
       lang
     );
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     setTrafficabilityGraphOption(trafficabilityOption);
-  }, [trafficabilityData, markLine, windGustData, information.lang]);
+  }, [trafficabilityData, windGustData, information.lang, markLine]);
 
   return (
     <Container maxWidth="lg">
@@ -107,7 +113,7 @@ function MainViewComponent() {
         {trafficabilityData.length > 0 ? (
           <TraficabilityGraph
             markline={markLine}
-            option={trafficabilityGraphOption}
+            option={trafficabilityGraphOption && trafficabilityGraphOption}
             onGraphClick={function (xAxisData: string): void {
               dispatch(action.setMarkLine(xAxisData));
             }}
