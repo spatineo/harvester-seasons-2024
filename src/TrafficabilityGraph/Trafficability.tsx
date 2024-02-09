@@ -80,15 +80,6 @@ const TraficabilityGraphComponent: React.FC<
 
   useEffect(() => {
     if (!graphChart) return;
-   /*  const newChart = echarts.init(graphRef.current, undefined, {
-      height: "200",
-      useCoarsePointer: undefined,
-    }); */
-
-   /*  window.addEventListener("resize", () => newChart.resize({})); */
-   /*  if (option !== null) {
-      
-    } */
     const calculateDataIndex = (seriesData: [], xAxisValue) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
       const formatDateWithoutTime = (dateString: Date) => {
@@ -170,7 +161,7 @@ const TraficabilityGraphComponent: React.FC<
       dispatch(actions.changeTrafficabilityIndexColor(max));
     }
 
-  }, [markline, option]);
+  }, [markline, graphChart]);
 
   return (
     <Box
