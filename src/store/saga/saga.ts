@@ -182,6 +182,7 @@ export function* fetchTrafficabilityDataSaga(): SagaIterator {
   );
 
   const params = yield select((state: RootState) => state.global.params);
+  yield put(actions.setTrafficabilityData([]));
 
   try {
     const response = yield call(
