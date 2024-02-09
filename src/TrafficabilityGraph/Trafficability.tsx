@@ -79,7 +79,7 @@ const TraficabilityGraphComponent: React.FC<
   },[option])
 
   useEffect(() => {
-    if (!graphChart) return;
+    if (!graphChart || !markline) return;
     const calculateDataIndex = (seriesData: [], xAxisValue) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
       const formatDateWithoutTime = (dateString: Date) => {
