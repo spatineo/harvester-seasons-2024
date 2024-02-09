@@ -70,16 +70,17 @@ const TraficabilityGraphComponent: React.FC<
     window.addEventListener("resize", handleResize);
     return () => {
       newChart.dispose();
-    }
-  }, [])
+    };
+  }, []);
 
   useEffect(() => {
-    if(!graphChart || option === null) return;
+    if (!graphChart || option === null) return;
     graphChart.setOption(option, { notMerge: true, lazyUpdate: false });
-  },[option])
+  }, [option]);
 
   useEffect(() => {
     if (!graphChart || !markline) return;
+    let val: number | undefined;
     const calculateDataIndex = (seriesData: [], xAxisValue) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
       const formatDateWithoutTime = (dateString: Date) => {
@@ -107,7 +108,7 @@ const TraficabilityGraphComponent: React.FC<
       }
       return undefined;
     };
-    if (graphChart !== null || option !== null) {
+    if (graphChart !== null || option !== null || !markline) {
       const finals: number[] = [];
 
       if (graphChart.getOption() !== undefined) {
@@ -149,6 +150,7 @@ const TraficabilityGraphComponent: React.FC<
               pointInPixel
             )[0] as number;
 
+            window.console.log("xAxisData", xAxisData);
             if (xAxisData !== null) {
               const date = new Date(xAxisData);
               const formattedDate = date.toISOString();
@@ -157,10 +159,20 @@ const TraficabilityGraphComponent: React.FC<
           });
         }
       });
-      const max = Math.max(...finals);
-      dispatch(actions.changeTrafficabilityIndexColor(max));
+      const numbersOnly = finals.filter((value) => !isNaN(value));
+      window.console.log(numbersOnly)
+      if (numbersOnly.length === 1) {
+        const result = numbersOnly[0];
+        val = result
+      } else {
+        const max = Math.max(...numbersOnly);
+        val = max
+      }
     }
-
+    if (val !== undefined) {
+      dispatch(actions.changeTrafficabilityIndexColor(val));
+    }
+    window.console.log(val)
   }, [markline, graphChart]);
 
   return (
