@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useDeferredValue } from "react";
 import { Box } from "@mui/material";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
@@ -31,6 +31,8 @@ const Graphs: React.FC = () => {
     null | Record<string, number | string>[]
   >(null);
 
+  const deferredSelectedYValues = useDeferredValue(selectedYValues);
+
   function initialLabels() {
     const obj: { [key: string]: string } = {};
     for (let i = 1; i <= 50; i++) {
@@ -39,18 +41,15 @@ const Graphs: React.FC = () => {
     return obj;
   }
 
-  const handleTooltip = useCallback(
-    (param) => {
+  const handleTooltip = (param) => {
       const date = param[0].value[0];
       const n = param.map((p) => ({ name: p.seriesName, value: p.data[1] }));
       setSelectedYValues([date, ...n]);
-    },
-    [selectedYValues]
-  );
+  }
 
-  const emptyToolTip = useCallback(() => {
+  const emptyToolTip = () => {
     setSelectedYValues(null);
-  }, [selectedYValues]);
+  }
 
   useEffect(() => {
     if (!soilTemperatureData || !snowHeightData || !soilWetnessData) return;
@@ -93,7 +92,7 @@ const Graphs: React.FC = () => {
   ]);
 
   const g = () => {
-    if (selectedYValues === null) {
+    if (deferredSelectedYValues === null) {
       const initialLabelValues = initialLabels();
       return (
         <Box component="span">
@@ -107,7 +106,7 @@ const Graphs: React.FC = () => {
     } else {
       return (
         <Box>
-          {selectedYValues.map((value, index) => {
+          {deferredSelectedYValues.map((value, index) => {
             return (
               <Box component="span" key={index}>
                 {typeof value === "string" &&
