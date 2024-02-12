@@ -107,9 +107,9 @@ const Graphs: React.FC = () => {
     } else {
       return (
         <Box>
-          {selectedYValues.map((value) => {
+          {selectedYValues.map((value, index) => {
             return (
-              <Box component="span" key={value.name}>
+              <Box component="span" key={index}>
                 {typeof value === "string" &&
                   `${(value as string).split("T")[0]}`}
                 {value.value !== "nan" &&
