@@ -18,7 +18,7 @@ export function tenYearsBack(): Date {
 
 export function tenYearsLater(date: Date) {
   const newDate = new Date(date);
-  newDate.setUTCFullYear(newDate.getUTCFullYear() + 10);
+  newDate.setUTCFullYear(newDate.getUTCFullYear() + 9);
   newDate.setUTCMonth(11);
   newDate.setUTCDate(31);
   newDate.setUTCHours(0, 0, 0, 0);
