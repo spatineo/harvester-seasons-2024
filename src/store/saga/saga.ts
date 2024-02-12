@@ -16,7 +16,6 @@ import * as constants from "../constants";
 import {
   tenYearsBack,
   tenYearsLater,
-  lastDayOfPreviousYear,
   addMonths,
   reduceMonths
 } from "../../utils/dateHelperFunctions";
