@@ -69,9 +69,9 @@ const HarvesterMap: React.FC = () => {
         <Controls />
         <Layers>
           {stateMap &&
-            stateMap.map((mapArray) => {
+            stateMap.map((mapArray, index) => {
               return (
-                <Box key={mapArray.title}>
+                <Box key={index}>
                   <BaseMap
                     url={mapArray.url}
                     title={mapArray.title}

@@ -15,7 +15,7 @@ import { actions } from "../../globalSlice";
 import * as constants from "../constants";
 import {
   tenYearsBack,
-  lastDayOfPreviousYear,
+  tenYearsLater,
   addMonths,
   reduceMonths
 } from "../../utils/dateHelperFunctions";
@@ -60,17 +60,18 @@ export function* triggerTimeSpanChange({
       })
     );
   } else if (payload === "previous") {
+    const startDate = tenYearsBack()
+    const dateEnd = tenYearsLater(startDate).toISOString()
     yield put(
       actions.setTimeEndStartSpan({
         start_time: tenYearsBack(
-          lastDayOfPreviousYear().toISOString()
         ).toISOString(),
-        end_time: lastDayOfPreviousYear().toISOString(),
+        end_time: dateEnd,
         time_step: 24 * 60
       })
     );
     const newMarkLineDate = new Date(
-      tenYearsBack(lastDayOfPreviousYear().toISOString()).toISOString()
+      tenYearsBack().toISOString()
     );
     newMarkLineDate.setMonth(newMarkLineDate.getMonth() + 1);
     const newDate = newMarkLineDate.toISOString();

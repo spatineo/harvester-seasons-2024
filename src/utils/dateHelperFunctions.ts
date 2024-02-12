@@ -7,13 +7,8 @@ export function oneMonthForward(today: Date) {
   return oneMonth;
 } 
 
-export function tenYearsForward(date: Date, years: number) {
-  const tenYears = new Date(date.setFullYear(date.getFullYear() + years));
-  return tenYears;
-}
-
-export function tenYearsBack(dateString: string): Date {
-  const newDate = new Date(dateString);
+export function tenYearsBack(): Date {
+  const newDate = new Date();
   newDate.setUTCFullYear(newDate.getUTCFullYear() - 10);
   newDate.setUTCMonth(0);
   newDate.setUTCDate(1);
@@ -21,9 +16,18 @@ export function tenYearsBack(dateString: string): Date {
   return newDate;
 }
 
-export function lastDayOfPreviousYear(): Date {
+export function tenYearsLater(date: Date) {
+  const newDate = new Date(date);
+  newDate.setUTCFullYear(newDate.getUTCFullYear() + 9);
+  newDate.setUTCMonth(11);
+  newDate.setUTCDate(31);
+  newDate.setUTCHours(0, 0, 0, 0);
+  return newDate;
+}
+
+export function lastDayOfPreviousYear() {
   const today = new Date();
-  const lastDay = new Date(today.getFullYear() - 1, 11, 31);
+  const lastDay = new Date(today.getFullYear() - 1, 11, 31, 23, 59, 59, 999);
   return lastDay;
 }
 

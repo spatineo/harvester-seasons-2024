@@ -110,7 +110,7 @@ function MainViewComponent() {
   return (
     <Container maxWidth="lg">
       <Box sx={{ position: "relative", bottom: "0rem", top: "0.6rem" }}>
-        {trafficabilityData.length > 0 ? (
+        {(windGustData.length > 0 || trafficabilityData.length > 0) ? (
           <TraficabilityGraph
             markline={markLine}
             option={trafficabilityGraphOption && trafficabilityGraphOption}

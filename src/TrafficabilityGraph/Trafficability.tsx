@@ -160,7 +160,6 @@ const TraficabilityGraphComponent: React.FC<
         }
       });
       const numbersOnly = finals.filter((value) => !isNaN(value));
-      window.console.log(numbersOnly)
       if (numbersOnly.length === 1) {
         const result = numbersOnly[0];
         val = result
@@ -172,7 +171,6 @@ const TraficabilityGraphComponent: React.FC<
     if (val !== undefined) {
       dispatch(actions.changeTrafficabilityIndexColor(val));
     }
-    window.console.log(val)
   }, [markline, graphChart]);
 
   return (
