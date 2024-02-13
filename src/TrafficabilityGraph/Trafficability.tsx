@@ -150,7 +150,6 @@ const TraficabilityGraphComponent: React.FC<
               pointInPixel
             )[0] as number;
 
-            window.console.log("xAxisData", xAxisData);
             if (xAxisData !== null) {
               const date = new Date(xAxisData);
               const formattedDate = date.toISOString();
