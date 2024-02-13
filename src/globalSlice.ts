@@ -17,7 +17,7 @@ const initialState: GlobalStateProps = {
   hideNext: true,
   hideArrowPrevious: false,
   changeYear: "",
-  markLine: new Date(newMarkLineDate).toISOString().split('T')[0],
+  markLine: new Date(newMarkLineDate).toISOString().split("T")[0],
   startEndTimeSpan: {
     start_time: startDate,
     end_time: endDate,
@@ -39,10 +39,16 @@ const initialState: GlobalStateProps = {
     snowHeight: [
       { code: "HSNOW-M:CERRA", layerName: "harvester:cerra5:HSNOW-M" },
       { code: "HSNOW-M:ERA5L", layerName: "harvester:era5l:HSNOW-M" },
-
-      { code: "HSNOW-M:ECBSF::1:0:1:0", layerName: "harvester:ecbsf:HSNOW-M", ensemble: true },
-      ...[...Array(50).keys()].map((n) => ({ code: `HSNOW-M:ECBSF::1:0:3:${n+1}`, layerName: "harvester:ecbsf:HSNOW-M", ensemble: true })),
-      
+      {
+        code: "HSNOW-M:ECBSF::1:0:1:0",
+        layerName: "harvester:ecbsf:HSNOW-M",
+        ensemble: true
+      },
+      ...[...Array(50).keys()].map((n) => ({
+        code: `HSNOW-M:ECBSF::1:0:3:${n + 1}`,
+        layerName: "harvester:ecbsf:HSNOW-M",
+        ensemble: true
+      })),
       { code: "HSNOW-M:EDTE", layerName: "harvester:edte:HSNOW-M" },
       { code: "HSNOW-M:CDTE", layerName: "harvester:cdte" }
     ],
@@ -50,10 +56,16 @@ const initialState: GlobalStateProps = {
       { code: "TSOIL-C:CERRA-L", layerName: "harvester:cerra5:TSOIL-C" },
       { code: "SKT-C:LSASAF", layerName: "harvester:era5l:TSOIL-C" },
       { code: "TSOIL-C:EDTE", layerName: "harvester:edte:TSOIL-C" },
-
-      { code: "TSOIL-C:ECBSF:::7:1:0", layerName: "harvester:ecbsf:TSOIL-C", ensemble: true },
-      ...[...Array(50).keys()].map((n) => ({ code: `TSOIL-C:ECBSF:::7:3:${n+1}`, layerName: "harvester:ecbsf:TSOIL-C", ensemble: true })),
-      
+      {
+        code: "TSOIL-C:ECBSF:::7:1:0",
+        layerName: "harvester:ecbsf:TSOIL-C",
+        ensemble: true
+      },
+      ...[...Array(50).keys()].map((n) => ({
+        code: `TSOIL-C:ECBSF:::7:3:${n + 1}`,
+        layerName: "harvester:ecbsf:TSOIL-C",
+        ensemble: true
+      })),
       { code: "TSOIL-C:CDTE", layerName: "harvester:cdte" }
     ],
     windGust: [
@@ -70,8 +82,11 @@ const initialState: GlobalStateProps = {
       },
       { code: "SWI2-0TO1:SWI", layerName: "harvester:era5l:SWI2-0TO1" },
       { code: "SWI2-0TO1:EDTE", layerName: "harvester:edte:SWI2-0TO1" },
-      ...[...Array(51).keys()].map((n) => ({ code: `SWI2-0TO1:ECXSF:5062:1:0:0:${n}`, layerName: "harvester:ecxsf:SWI2-0TO1", ensemble: true })),
-
+      ...[...Array(51).keys()].map((n) => ({
+        code: `SWI2-0TO1:ECXSF:5062:1:0:0:${n}`,
+        layerName: "harvester:ecxsf:SWI2-0TO1",
+        ensemble: true
+      })),
       { code: "SWI2-0TO1:CDTE", layerName: "harvester:cdte" }
     ]
   }
@@ -112,7 +127,7 @@ const globalSlice = createSlice({
       state.snowHeightData = action.payload;
     },
     setMarkLine: (state, action: PayloadAction<string | number>) => {
-      const modifyDate = new Date(action.payload).toISOString().split('T')[0];
+      const modifyDate = new Date(action.payload).toISOString().split("T")[0];
       state.markLine = modifyDate;
     },
     changeYear: (state, action: PayloadAction<string>) => {
