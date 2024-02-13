@@ -16,7 +16,10 @@ export function asStartEndTimeSpan(value: StartEndTimeSpan): StartEndTimeSpan {
   return startEndTimeSpan;
 }
 
-export function getDatesForTimelineDuration(startDate: Date, endDate: Date | string) {
+export function getDatesForTimelineDuration(
+  startDate: Date,
+  endDate: Date | string
+) {
   const result: Date[] = [];
   const currentDate = new Date(new Date(startDate));
   const dateEnd = new Date(new Date(endDate));
@@ -73,48 +76,74 @@ export function soilWetnesstApiParams() {
 }
 
 export function scaleEnsembleData(arr: Smartmet[], parameters: Parameter[]) {
-  let ensembleOffset : Map<string,number> | null = null;
+  let ensembleOffset: Map<string, number> | null = null;
   let prevValue: Smartmet | null = null;
   let lastNonEnsembleValue = 0;
-  return arr.map(value => {
+
+  const lastDayOfNonEnsembleValue = arr.reduce((lastDay, value) => {
+    const nonEnsembleParam = parameters.find((p) => !p.ensemble);
+    if (nonEnsembleParam) {
+      const nonEnsembleValue = value[nonEnsembleParam.code];
+      if (nonEnsembleValue !== null && nonEnsembleValue !== undefined) {
+        lastNonEnsembleValue = nonEnsembleValue;
+        return value.utctime;
+      }
+    }
+    return lastDay;
+  }, "");
+ 
+  return arr.map((value) => {
     // 1) find values for all non-ensemble parameters and add those to ret
-    const ret = { "utctime": value.utctime };
+    const ret = { utctime: value.utctime };
 
     let nonEnsembleValueFound = false;
-    parameters.filter(p => !p.ensemble).forEach(p => {
-      ret[p.code] = value[p.code];
-      if (ret[p.code] !== null && ret[p.code] !== undefined) {
-        lastNonEnsembleValue = ret[p.code];
-        nonEnsembleValueFound = true;
-      }
-    });
+    parameters
+      .filter((p) => !p.ensemble)
+      .forEach((p) => {
+        ret[p.code] = value[p.code];
+        if (ret[p.code] !== null && ret[p.code] !== undefined) {
+          lastNonEnsembleValue = ret[p.code];
+          nonEnsembleValueFound = true;
+        }
+      });
 
     if (nonEnsembleValueFound) {
       ensembleOffset = null;
     } else if (ensembleOffset === null && prevValue !== null) {
       // .. calculate offset to each ensemble value
-      ensembleOffset = new Map()
-      parameters.filter(p => p.ensemble).forEach(p => {
-        if(ensembleOffset !== null){
-          ensembleOffset[p.code] = prevValue !== null &&  prevValue[p.code] - lastNonEnsembleValue;
-        }
-      });  
+      ensembleOffset = new Map();
+      parameters
+        .filter((p) => p.ensemble)
+        .forEach((p) => {
+          if (ensembleOffset !== null) {
+            ensembleOffset[p.code] =
+              prevValue !== null && prevValue[p.code] - lastNonEnsembleValue;
+          }
+        });
     }
 
-    parameters.filter(p => p.ensemble).forEach(p => {
-      if (nonEnsembleValueFound || value[p.code] === null  || value[p.code] === undefined) {
-        // 2) if non-ensemble values found, fill ensemble values with nulls
-        ret[p.code] = null;
-      } else {
-        // 3) if only ensemble values found, scale ensemble values accordingly
-        if (ensembleOffset == null) {
-          //  .. no scaling can be done, as there is no offset available => use values as is
-          ret[p.code] = value[p.code];
+    parameters
+      .filter((p) => p.ensemble)
+      .forEach((p) => {
+        if (
+          nonEnsembleValueFound ||
+          value[p.code] === null ||
+          value[p.code] === undefined ||
+          ret.utctime < lastDayOfNonEnsembleValue
+        ) {
+          // 2) if non-ensemble values found, fill ensemble values with nulls
+          ret[p.code] = null;
         } else {
-          ret[p.code] = (value[p.code] as number) - (ensembleOffset[p.code] as number);
+          // 3) if only ensemble values found, scale ensemble values accordingly
+          if (ensembleOffset == null) {
+            //  .. no scaling can be done, as there is no offset available => use values as is
+            ret[p.code] = value[p.code];
+          } else {
+            ret[p.code] =
+              (value[p.code] as number) - (ensembleOffset[p.code] as number);
+          }
         }
-      }
-    });
+      });
 
     prevValue = value;
 
@@ -132,10 +161,7 @@ export function getOpacityFromPercentage(percentage: number): number {
   }
 }
 
-export function ensembleListSmartIdx(
-  scaledData,
-  smartmet: string
-) {
+export function ensembleListSmartIdx(scaledData, smartmet: string) {
   const ensembleList: string[] = [];
   const smartId: number = scaledData.findLastIndex(
     (obj) => obj[smartmet] !== null

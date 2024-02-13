@@ -8,18 +8,11 @@ interface HarvesterChartProps {
   data: Smartmet[];
   height: number;
   mousedown: () => void;
-  onEvents?: {
-    [key: string]: (
-      params: Record<string, string>,
-      echartsInstance: echarts.ECharts
-    ) => void;
-  };
 }
 const HarvesterSeasons: React.FC<HarvesterChartProps> = ({
   option,
   height,
   data,
-  onEvents,
   mousedown,
 }) => {
   return (
@@ -31,7 +24,6 @@ const HarvesterSeasons: React.FC<HarvesterChartProps> = ({
         <EchartsComponent
           option={option}
           height={height}
-          onEvents={onEvents}
           mousedown={mousedown}
         />
       )}

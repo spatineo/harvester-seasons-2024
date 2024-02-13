@@ -6,19 +6,12 @@ import { EChartOption } from "echarts";
 interface ChartProps {
   option: EChartOption;
   height: number;
-  onEvents?: {
-    [key: string]: (
-      params: Record<string, string>,
-      echartsInstance: echarts.ECharts
-    ) => void;
-  };
   mousedown: () => void;
 }
 
 const EchartsComponent: React.FC<ChartProps> = ({
   option,
   height,
-  onEvents,
   mousedown,
 }) => {
   const chartRef = useRef<HTMLDivElement>(null);
@@ -60,7 +53,7 @@ const EchartsComponent: React.FC<ChartProps> = ({
   useEffect(() => {
     if (!graphChart) return;
     graphChart.on("globalout", mousedown);
-  }, [graphChart, onEvents]);
+  }, [graphChart]);
 
   return (
     <Box
