@@ -142,9 +142,6 @@ const Graphs: React.FC = () => {
             option={soilWetnessOption !== null && soilWetnessOption}
             height={300}
             data={soilWetnessData}
-            onEvents={{
-              mouseout: emptyToolTip,
-            }}
             mousedown={emptyToolTip}
           />
         )}
@@ -154,9 +151,6 @@ const Graphs: React.FC = () => {
           option={soilTemperatureOption !== null && soilTemperatureOption}
           height={300}
           data={soilTemperatureData}
-          onEvents={{
-            mouseout: emptyToolTip,
-          }}
           mousedown={emptyToolTip}
         />
       </Box>
@@ -165,9 +159,6 @@ const Graphs: React.FC = () => {
           option={snowHeightOption !== null && snowHeightOption}
           height={300}
           data={snowHeightData}
-          onEvents={{
-            globalout: () => window.console.log("Global"),
-          }}
           mousedown={emptyToolTip}
         />
       </Box>
