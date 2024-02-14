@@ -85,7 +85,6 @@ export function scaleEnsembleData(arr: Smartmet[], parameters: Parameter[]) {
     if (nonEnsembleParam) {
       const nonEnsembleValue = value[nonEnsembleParam.code];
       if (nonEnsembleValue !== null && nonEnsembleValue !== undefined) {
-        lastNonEnsembleValue = nonEnsembleValue;
         return value.utctime;
       }
     }
