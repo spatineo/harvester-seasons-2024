@@ -167,7 +167,7 @@ export function createTrafficabilityGraphOptions(
         },
         yAxisIndex: 0,
         type: "line",
-        data: values.map((item) => [item[0], item[2]])
+        data: values.map((item) => [item[0], isNaN(Number(item[2])) ? "nan" : item[2]])
       },
       {
         type: "line",
@@ -217,7 +217,7 @@ export function createTrafficabilityGraphOptions(
         yAxisIndex: 1,
         data: windGustArray.map((item) => {
           const value = Object.values(item);
-          return [item.utctime, value[1]];
+          return [item.utctime, value[1] === null ? "nan" : value[1]];
         })
       }
     ]
@@ -311,7 +311,6 @@ export function calculateTrafficability(
   const graphData: any[] = [];
   arr.forEach((t: { utctime: string }, i) => {
     const summer1 = t[param2] !== null ? t[param2] : "nan";
-
     const winter1 =
       t[param8] !== null
         ? Math.max(t[param3] as number, t[param8] as number)
