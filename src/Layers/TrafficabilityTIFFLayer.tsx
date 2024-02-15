@@ -12,6 +12,7 @@ import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
 import { createColorPalette } from "../utils/colors_palette";
 import { ColorPalette } from "../types";
+import tr from "date-fns/locale/tr";
 
 interface TIFFLayerProps {
   title: string;
@@ -36,17 +37,19 @@ function colorExpression(palette) {
   return ["array", process("r"), process("g"), process("b"), process("a")];
 }
 
-const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url, zIndex, visible }) => {
+const TIFFLayer: React.FC<TIFFLayerProps> = ({
+  title,
+  url,
+  zIndex,
+  visible,
+}) => {
   const { map } = useContext(MapContext);
-  const { opacityValue } = useAppSelector(
-    (state: RootState) => state.mapState
-  );
-  const { trafficabilityIndexColor, defaultColorSwitch, markLine } = useAppSelector(
-    (state: RootState) => state.global
-  );
+  const { opacityValue } = useAppSelector((state: RootState) => state.mapState);
+  const { trafficabilityIndexColor, defaultColorSwitch, markLine, itIsWinter } =
+    useAppSelector((state: RootState) => state.global);
   const [layer, setLayer] = useState<TileLayer | null>(null);
   const [colorPalette, setColorPalette] = useState<ColorPalette | null>(null);
-  const [ summerState, setSummerState] = useState<boolean>(false)
+  const [summerState, setSummerState] = useState<boolean>(false);
 
   useEffect(() => {
     const result = createColorPalette(defaultColorSwitch);
@@ -54,14 +57,15 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url, zIndex, visible }) =>
   }, [defaultColorSwitch]);
 
   useEffect(() => {
-    const checkSummer = new Date(markLine)
-    const month = checkSummer.getMonth()
-    if(month >= 5 && month < 7) {
-      setSummerState(true)
+    if(!markLine) return;
+    if(itIsWinter === false ) {
+      if(trafficabilityIndexColor === 2){
+        setSummerState(true)
+      }
     } else {
       setSummerState(false)
     }
-  }, [markLine])
+  }, [markLine, itIsWinter]);
 
   useEffect(() => {
     if (!layer) return;
@@ -73,7 +77,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url, zIndex, visible }) =>
     if (!layer) {
       return;
     }
-
+   
     let palette:
       | Array<{ r: number; g: number; b: number; a?: number }>
       | undefined;
@@ -85,7 +89,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url, zIndex, visible }) =>
         palette = colorPalette?.palette_epavarma_kesa_keli;
         break;
       case 2:
-        if (summerState) {
+        if (summerState === true) {
           palette = colorPalette?.palette_hyva_kesa_keli;
         } else {
           palette = colorPalette?.palette_hyva_talvi_keli;
@@ -95,7 +99,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url, zIndex, visible }) =>
         window.console.error(
           "tuntematon indeksiarvo, ei voida piirtää trafficabilityä"
         );
-       palette = colorPalette?.palette_base_color
+        palette = colorPalette?.palette_base_color;
     }
 
     if (palette) {
@@ -103,7 +107,6 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url, zIndex, visible }) =>
         color: colorExpression(palette),
       });
     }
-
   }, [trafficabilityIndexColor, colorPalette, summerState]);
 
   useEffect(() => {
@@ -111,7 +114,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url, zIndex, visible }) =>
     const newLayer = new TileLayer({
       title,
       visible,
-      opacity:  getOpacityFromPercentage(opacityValue),
+      opacity: getOpacityFromPercentage(opacityValue),
       className: "class",
       zIndex,
       maxResolution: 150,
@@ -144,6 +147,5 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({ title, url, zIndex, visible }) =>
   return null;
 };
 
-const MemoizedTIFFLayer = React.memo(TIFFLayer)
+const MemoizedTIFFLayer = React.memo(TIFFLayer);
 export default MemoizedTIFFLayer;
-
