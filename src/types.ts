@@ -28,6 +28,7 @@ export interface GlobalStateProps {
   defaultColorSwitch: boolean;
   hideArrowPrevious: boolean;
   trafficabilityIndexColor: number | null;
+  itIsWinter: boolean;
   hideNext: boolean;
   changeYear: string;
   markLine: string;
