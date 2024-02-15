@@ -291,6 +291,7 @@ export function* fetchSoilWetnessSaga() {
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
 
+  //omit ensemble values
   try {
     yield put(actions.setSoilWetnessData([]));
     const result = yield call(
