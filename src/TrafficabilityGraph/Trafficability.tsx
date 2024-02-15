@@ -80,7 +80,6 @@ const TraficabilityGraphComponent: React.FC<
 
   useEffect(() => {
     if (!graphChart || !markline) return;
-    let val: number | undefined;
     const calculateDataIndex = (seriesData: [], xAxisValue) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
       const formatDateWithoutTime = (dateString: Date) => {
@@ -109,7 +108,7 @@ const TraficabilityGraphComponent: React.FC<
       return undefined;
     };
     if (graphChart !== null || option !== null || !markline) {
-      const finals: number[] = [];
+      const allYValues: (string | number)[] = [];
 
       if (graphChart.getOption() !== undefined) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -122,55 +121,69 @@ const TraficabilityGraphComponent: React.FC<
 
             if (dataIndex !== undefined) {
               const yValue: unknown = series.data[dataIndex];
-
               if (Array.isArray(yValue)) {
-                const numericValues = yValue
-                  .filter((value) => typeof value === "number")
-                  .map((value) => Number(value));
-                if (numericValues.length === 0) {
-                  finals.push(0);
-                } else if (numericValues.length > 0) {
-                  const uniqueNumericValues = Array.from(
-                    new Set([...numericValues])
-                  );
-                  finals.push(...uniqueNumericValues);
+                const extractedValue = yValue[1];
+                if (
+                  typeof extractedValue === "number" ||
+                  extractedValue === "nan"
+                ) {
+                  allYValues.push(extractedValue);
                 }
+              } else if (typeof yValue === "number" || yValue === "nan") {
+                allYValues.push(yValue);
               }
             }
           }
+
+          let summer;
+          const summerYValues = (allYValues[0] !== 'nan' && allYValues[0] !== undefined) ? allYValues[0] : 0
+          const winterYValue = (allYValues[1] !== 'nan' && allYValues[1] !== undefined) ? allYValues[1] : 0
+         if(winterYValue === 2 || winterYValue > summerYValues) {
+          summer = false
+         } else {
+          summer = true
+         }
+
+         if(summer){
+          dispatch(actions.changeTrafficabilityIndexColor({
+            winterOrSummerValue: summerYValues,
+            winterOrSummer: summer
+          }))
+         } else {
+          dispatch(actions.changeTrafficabilityIndexColor({
+            winterOrSummerValue: winterYValue,
+            winterOrSummer: summer
+          }))
+         }
         });
       }
-      graphChart.getZr().on("click", (params) => {
-        const pointInPixel = [params.offsetX, params.offsetY];
-
-        if (graphChart.getOption() !== undefined) {
-          graphChart.getOption().series?.forEach((series, seriesIndex) => {
-            const xAxisData = graphChart.convertFromPixel(
-              { seriesIndex },
-              pointInPixel
-            )[0] as number;
-
-            if (xAxisData !== null) {
-              const date = new Date(xAxisData);
-              const formattedDate = date.toISOString();
-              onGraphClick(formattedDate);
-            }
-          });
-        }
-      });
-      const numbersOnly = finals.filter((value) => !isNaN(value));
-      if (numbersOnly.length === 1) {
-        const result = numbersOnly[0];
-        val = result
-      } else {
-        const max = Math.max(...numbersOnly);
-        val = max
-      }
-    }
-    if (val !== undefined) {
-      dispatch(actions.changeTrafficabilityIndexColor(val));
     }
   }, [markline, graphChart]);
+
+
+
+
+  useEffect(() => {
+    if (!graphChart) return;
+    graphChart.getZr()?.on("click", (params) => {
+      const pointInPixel = [params.offsetX, params.offsetY];
+
+      if (graphChart.getOption() !== undefined) {
+        graphChart.getOption().series?.forEach((series, seriesIndex) => {
+          const xAxisData = graphChart.convertFromPixel(
+            { seriesIndex },
+            pointInPixel
+          )[0] as number;
+
+          if (xAxisData !== null) {
+            const date = new Date(xAxisData);
+            const formattedDate = date.toISOString();
+            onGraphClick(formattedDate);
+          }
+        });
+      }
+    });
+  }, [graphChart]);
 
   return (
     <Box
