@@ -16,6 +16,7 @@ const initialState: GlobalStateProps = {
   trafficabilityIndexColor: null,
   hideNext: true,
   hideArrowPrevious: false,
+  itIsWinter: false,
   changeYear: "",
   markLine: new Date(newMarkLineDate).toISOString().split("T")[0],
   startEndTimeSpan: {
@@ -136,8 +137,10 @@ const globalSlice = createSlice({
     changeHideNextArrowState: (state, action: PayloadAction<boolean>) => {
       state.hideNext = action.payload;
     },
-    changeTrafficabilityIndexColor: (state, action: PayloadAction<number>) => {
-      state.trafficabilityIndexColor = action.payload;
+    changeTrafficabilityIndexColor: (state, action) => {
+      const {  winterOrSummerValue, winterOrSummer } = action.payload;
+      state.trafficabilityIndexColor = winterOrSummerValue;
+      state.itIsWinter = winterOrSummer
     },
     changeDefaultColor: (state, action: PayloadAction<boolean>) => {
       state.defaultColorSwitch = action.payload;
