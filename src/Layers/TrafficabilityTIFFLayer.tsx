@@ -49,7 +49,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({
     useAppSelector((state: RootState) => state.global);
   const [layer, setLayer] = useState<TileLayer | null>(null);
   const [colorPalette, setColorPalette] = useState<ColorPalette | null>(null);
-  const [summerState, setSummerState] = useState<boolean>(false);
+  const [winterState, setWinterState] = useState<boolean>(false);
 
   useEffect(() => {
     const result = createColorPalette(defaultColorSwitch);
@@ -57,13 +57,13 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({
   }, [defaultColorSwitch]);
 
   useEffect(() => {
-    if(!markLine) return;
-    if(itIsWinter === false ) {
-      if(trafficabilityIndexColor === 2){
-        setSummerState(true)
+    if (!markLine) return;
+    if (itIsWinter === false) {
+      if (trafficabilityIndexColor === 2) {
+        setWinterState(true);
       }
     } else {
-      setSummerState(false)
+      setWinterState(false);
     }
   }, [markLine, itIsWinter]);
 
@@ -77,7 +77,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({
     if (!layer) {
       return;
     }
-   
+
     let palette:
       | Array<{ r: number; g: number; b: number; a?: number }>
       | undefined;
@@ -89,10 +89,10 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({
         palette = colorPalette?.palette_epavarma_kesa_keli;
         break;
       case 2:
-        if (summerState === true) {
-          palette = colorPalette?.palette_hyva_kesa_keli;
-        } else {
+        if (winterState === true) {
           palette = colorPalette?.palette_hyva_talvi_keli;
+        } else {
+          palette = colorPalette?.palette_hyva_kesa_keli;
         }
         break;
       default:
@@ -107,7 +107,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({
         color: colorExpression(palette),
       });
     }
-  }, [trafficabilityIndexColor, colorPalette, summerState]);
+  }, [trafficabilityIndexColor, colorPalette, winterState]);
 
   useEffect(() => {
     if (!map || !url) return;
