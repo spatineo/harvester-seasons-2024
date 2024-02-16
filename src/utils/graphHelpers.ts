@@ -138,15 +138,16 @@ export function createTrafficabilityGraphOptions(
         type: "line",
         symbol: "none",
         itemStyle: {
-          color: "#0073CF"
+          color: "green"
         },
         lineStyle: {
           type: "solid",
           width: 2
         },
         areaStyle: {
-          color: "rgba(0,115,207, 0.3)"
+          color: "rgba(2, 138, 15, 0.5)"
         },
+
         yAxisIndex: 0,
         data: values.map((t) => {
           return [t[0], t[1]];
@@ -156,25 +157,29 @@ export function createTrafficabilityGraphOptions(
         symbol: "none",
         name: `${languageObject.winterIndex}`,
         itemStyle: {
-          color: "green"
+          color: "#0073CF"
+        },
+        areaStyle: {
+          color: "rgba(0,115,207, 0.3)"
         },
         lineStyle: {
           type: "solid",
           width: 1.5
         },
-        areaStyle: {
-          color: "rgba(2, 138, 15, 0.5)"
-        },
+
         yAxisIndex: 0,
         type: "line",
-        data: values.map((item) => [item[0], isNaN(Number(item[2])) ? "nan" : item[2]])
+        data: values.map((item) => [
+          item[0],
+          isNaN(Number(item[2])) ? "nan" : item[2]
+        ])
       },
       {
         type: "line",
         name: `${languageObject.summerTenDays}`,
         symbol: "none",
         itemStyle: {
-          color: "#BA60FC"
+          color: "#03241b"
         },
         lineStyle: {
           type: "solid",
@@ -202,7 +207,7 @@ export function createTrafficabilityGraphOptions(
         name: `${languageObject.windGust}`,
         symbol: "none",
         itemStyle: {
-          color: "#03241b"
+          color: "#BA60FC"
         },
         lineStyle: {
           type: "solid",
