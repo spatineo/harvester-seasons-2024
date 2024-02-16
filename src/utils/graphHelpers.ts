@@ -180,9 +180,6 @@ export function createTrafficabilityGraphOptions(
           type: "solid",
           width: 2
         },
-        areaStyle: {
-          color: "rgba(97,12,4, 0.3)"
-        },
         yAxisIndex: 0,
         data: values.map((item) => [item[0], item[3]])
       },
@@ -196,9 +193,6 @@ export function createTrafficabilityGraphOptions(
         lineStyle: {
           type: "solid",
           width: 2
-        },
-        areaStyle: {
-          color: "rgba(50,50,50, 0.3)"
         },
         yAxisIndex: 0,
         data: values.map((item) => [item[0], item[4]])
