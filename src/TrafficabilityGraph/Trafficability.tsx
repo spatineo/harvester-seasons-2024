@@ -135,15 +135,10 @@ const TraficabilityGraphComponent: React.FC<
             }
           }
 
-          let summer;
+         
           const summerYValues = (allYValues[0] !== 'nan' && allYValues[0] !== undefined) ? allYValues[0] : 0
           const winterYValue = (allYValues[1] !== 'nan' && allYValues[1] !== undefined) ? allYValues[1] : 0
-         if(winterYValue === 2 || winterYValue > summerYValues) {
-          summer = false
-         } else {
-          summer = true
-         }
-
+          const summer = (winterYValue === 2 || winterYValue > summerYValues) ? false : true;
          if(summer){
           dispatch(actions.changeTrafficabilityIndexColor({
             winterOrSummerValue: summerYValues,
