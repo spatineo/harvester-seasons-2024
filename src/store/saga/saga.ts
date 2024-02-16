@@ -17,7 +17,8 @@ import {
   tenYearsBack,
   tenYearsLater,
   addMonths,
-  reduceMonths
+  reduceMonths,
+  lastDayOfPreviousYear
 } from "../../utils/dateHelperFunctions";
 import { asStartEndTimeSpan, scaleEnsembleData } from "../../utils/helpers";
 import { RootState } from "../store";
@@ -60,19 +61,16 @@ export function* triggerTimeSpanChange({
       })
     );
   } else if (payload === "previous") {
-    const startDate = tenYearsBack()
-    const dateEnd = tenYearsLater(startDate).toISOString()
+    const startDate = tenYearsBack();
+    const dateEnd = tenYearsLater(startDate).toISOString();
     yield put(
       actions.setTimeEndStartSpan({
-        start_time: tenYearsBack(
-        ).toISOString(),
+        start_time: tenYearsBack().toISOString(),
         end_time: dateEnd,
         time_step: 24 * 60
       })
     );
-    const newMarkLineDate = new Date(
-      tenYearsBack().toISOString()
-    );
+    const newMarkLineDate = new Date(tenYearsBack().toISOString());
     newMarkLineDate.setMonth(newMarkLineDate.getMonth() + 1);
     const newDate = newMarkLineDate.toISOString();
     yield put(actions.setMarkLine(newDate));
@@ -97,10 +95,16 @@ function createTimeSeriesQueryParameters(
   const modifiedStartDate = new Date(startEndTimeSpan.start_time).toISOString();
   const modifiedEndDate = new Date(startEndTimeSpan.end_time).toISOString();
   const lonlat = `${userLocation.lat || "N/A"},${userLocation.lon || "N/A"}`;
+  const currentDate = new Date();
+  const isInPast = new Date(modifiedEndDate).getTime() < currentDate.getTime();
+  const paramater = parameters
+    .filter((item) => (isInPast ? !item.ensemble : true))
+    .map((p) => p.code)
+    .join(",");
   return {
     params: {
       latlon: `${lonlat}`,
-      param: "utctime," + parameters.map((p) => p.code).join(","),
+      param: "utctime," + paramater,
       starttime: modifiedStartDate,
       endtime: modifiedEndDate,
       timestep: startEndTimeSpan.time_step,
