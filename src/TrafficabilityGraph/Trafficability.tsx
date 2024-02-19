@@ -163,20 +163,17 @@ const TraficabilityGraphComponent: React.FC<
     graphChart.getZr()?.on("click", (params) => {
       const pointInPixel = [params.offsetX, params.offsetY];
 
-      if (graphChart.getOption() !== undefined) {
-        graphChart.getOption().series?.forEach((series, seriesIndex) => {
-          const xAxisData = graphChart.convertFromPixel(
-            { seriesIndex },
-            pointInPixel
-          )[0] as number;
+      const [xAxisData, yAxisData ] = graphChart.convertFromPixel(
+        { seriesIndex: 0 },
+        pointInPixel
+      ) as number[];
 
-          if (xAxisData !== null) {
-            const date = new Date(xAxisData);
-            const formattedDate = date.toISOString();
-            onGraphClick(formattedDate);
-          }
-        });
+      if (xAxisData !== null && 0 <= yAxisData && yAxisData <= 2) {
+        const date = new Date(xAxisData);
+        const formattedDate = date.toISOString();
+        onGraphClick(formattedDate);
       }
+
     });
   }, [graphChart]);
 
