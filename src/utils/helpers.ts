@@ -80,17 +80,17 @@ export function scaleEnsembleData(arr: Smartmet[], parameters: Parameter[]) {
   let prevValue: Smartmet | null = null;
   let lastNonEnsembleValue = 0;
 
-  const lastDayOfNonEnsembleValue = arr.reduce((lastDay, value) => {
-    const nonEnsembleParam = parameters.find((p) => !p.ensemble);
-    if (nonEnsembleParam) {
-      const nonEnsembleValue = value[nonEnsembleParam.code];
-      if (nonEnsembleValue !== null && nonEnsembleValue !== undefined) {
-        return value.utctime;
-      }
-    }
-    return lastDay;
-  }, "");
+
+
+  const lastDayOfNonEnsembleValue = arr.findLast((value) => {
+    const nonEnsembleParams = parameters.filter(p => !p.ensemble);
+    const firstNonNullValue = nonEnsembleParams.find(p => value[p.code] !== null && value[p.code] !== undefined && value[p.code] !== "nan");
+    return firstNonNullValue 
+  });
  
+
+
+
   return arr.map((value) => {
     // 1) find values for all non-ensemble parameters and add those to ret
     const ret = { utctime: value.utctime };
@@ -124,11 +124,8 @@ export function scaleEnsembleData(arr: Smartmet[], parameters: Parameter[]) {
     parameters
       .filter((p) => p.ensemble)
       .forEach((p) => {
-        if (
-          nonEnsembleValueFound ||
-          value[p.code] === null ||
-          value[p.code] === undefined ||
-          ret.utctime < lastDayOfNonEnsembleValue
+        
+        if (nonEnsembleValueFound || value[p.code] === null || value[p.code] === undefined || (lastDayOfNonEnsembleValue && ret.utctime < lastDayOfNonEnsembleValue?.utctime)
         ) {
           // 2) if non-ensemble values found, fill ensemble values with nulls
           ret[p.code] = null;
@@ -145,7 +142,6 @@ export function scaleEnsembleData(arr: Smartmet[], parameters: Parameter[]) {
       });
 
     prevValue = value;
-
     return ret;
   });
 }
