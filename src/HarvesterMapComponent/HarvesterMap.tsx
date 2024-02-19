@@ -82,9 +82,9 @@ const HarvesterMap: React.FC = () => {
               );
             })}
           {layersWithInfo &&
-            layersWithInfo.map((l) => {
+            layersWithInfo.map((l, index) => {
               if (l === undefined || !l.layerInfo) {
-                return <Box key={l?.layerName}></Box>;
+                return <Box key={index}></Box>;
               }
               return (
                 <Box key={l.id}>
