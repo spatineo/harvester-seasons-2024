@@ -25,6 +25,7 @@ export interface StartEndTimeSpan {
 }
 
 export interface GlobalStateProps {
+  nonScaledDataSnowHieght: Smartmet[];
   defaultColorSwitch: boolean;
   hideArrowPrevious: boolean;
   trafficabilityIndexColor: number | null;
