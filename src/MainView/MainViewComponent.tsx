@@ -22,7 +22,7 @@ import {
   getWindGustParam,
 } from "../utils/graphHelpers";
 import {
-  ensembleListSmartIdx,
+  ensembleListSmartIDX,
   scalingFunction,
   ensover,
 } from "../utils/helpers";
@@ -31,9 +31,8 @@ function MainViewComponent() {
   const [trafficabilityGraphOption, setTrafficabilityGraphOption] =
     useState<EChartOption | null>(null);
   const dispatch = useRootDispatch();
-  const { snowHeightData, trafficabilityData, windGustData } = useAppSelector(
-    (state: RootState) => state.global
-  );
+  const { trafficabilityData, windGustData, nonScaledDataSnowHieght } =
+    useAppSelector((state: RootState) => state.global);
   const information = useAppSelector((state) => state.language);
   const { markLine } = useAppSelector((state: RootState) => state.global);
   const { lang } = useAppSelector((state: RootState) => state.language);
@@ -47,31 +46,30 @@ function MainViewComponent() {
     dispatch({ type: constants.SETWMSLAYERINFORMATION });
   }, []);
 
-  const ensembleSnowHeight = ensembleListSmartIdx(
-    snowHeightData,
-    "HSNOW-M:SMARTOBS:13:4"
-  );
-
-  const dataSHscaled = scalingFunction(
-    snowHeightData,
-    ensembleSnowHeight.ensembleList,
-    ensembleSnowHeight.smartId,
-    50,
-    "HSNOW-M:SMARTOBS:13:4",
-    "HSNOW-M:SMARTMET:5027"
-  );
-
-  const winter1series = ensover(
-    0.4,
-    0.9,
-    dataSHscaled,
-    ensembleSnowHeight.ensembleList,
-    50,
-    "HSNOW-M:SMARTOBS:13:4"
-  );
-
   useEffect(() => {
-    if (!trafficabilityData || !windGustData) return;
+    if (!trafficabilityData || !windGustData || !nonScaledDataSnowHieght) return;
+    const ensembleList = ensembleListSmartIDX(
+      nonScaledDataSnowHieght,
+      "HSNOW-M:SMARTOBS:13:4"
+    );
+
+    const dataSHscaled = scalingFunction(
+      nonScaledDataSnowHieght,
+      ensembleList.ensembleListArray,
+      ensembleList.smartmetIdx,
+      50,
+      "HSNOW-M:SMARTOBS:13:4",
+      "HSNOW-M:SMARTMET:5027"
+    );
+
+    const winter1series = ensover(
+      0.4,
+      0.9,
+      dataSHscaled,
+      ensembleList.ensembleListArray,
+      50,
+      "HSNOW-M:SMARTOBS:13:4"
+    );
 
     const languageObject = {
       summerIndex: languages.summmerIndex[
@@ -105,12 +103,18 @@ function MainViewComponent() {
     );
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     setTrafficabilityGraphOption(trafficabilityOption);
-  }, [trafficabilityData, windGustData, information.lang, markLine]);
+  }, [
+    trafficabilityData,
+    windGustData,
+    information.lang,
+    markLine,
+    nonScaledDataSnowHieght,
+  ]);
 
   return (
     <Container maxWidth="lg">
       <Box sx={{ position: "relative", bottom: "0rem", top: "0.6rem" }}>
-        {(windGustData.length > 0 || trafficabilityData.length > 0) ? (
+        {windGustData.length > 0 || trafficabilityData.length > 0 ? (
           <TraficabilityGraph
             markline={markLine}
             option={trafficabilityGraphOption && trafficabilityGraphOption}
