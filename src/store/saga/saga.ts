@@ -18,7 +18,6 @@ import {
   tenYearsLater,
   addMonths,
   reduceMonths,
-  lastDayOfPreviousYear
 } from "../../utils/dateHelperFunctions";
 import { asStartEndTimeSpan, scaleEnsembleData } from "../../utils/helpers";
 import { RootState } from "../store";
@@ -272,6 +271,7 @@ export function* fetchSnowHeightSaga() {
     );
     if (result.status === 200) {
       const data = scaleEnsembleData(result.data, params.snowHeight);
+      yield put(actions.setNonScaledDataSnowHeight(result.data));
       yield put(actions.setSnowHeightData(data));
     }
   } catch (error) {
