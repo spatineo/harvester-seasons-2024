@@ -3,7 +3,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { MapEvent } from "ol";
 import { Parameter, StartEndTimeSpan, Smartmet } from "../types";
 
 export function getValueFromRedux(value: StartEndTimeSpan): StartEndTimeSpan {
@@ -156,28 +155,26 @@ export function getOpacityFromPercentage(percentage: number): number {
   }
 }
 
-export function ensembleListSmartIdx(scaledData, smartmet: string) {
-  const ensembleList: string[] = [];
-  const smartId: number = scaledData.findLastIndex(
-    (obj) => obj[smartmet] !== null
-  );
-  const foundObject = scaledData.findLast((obj) => obj[smartmet] !== null);
+export function ensembleListSmartIDX(data, smartmetString: string) {
+  const ensembleListArray: string[] = [];
 
-  const smartmetValue: number | null =
-    foundObject !== undefined ? (foundObject[smartmet] as number) : null;
-  if (foundObject !== undefined) {
-    for (const key in foundObject) {
-      if (Object.prototype.hasOwnProperty.call(foundObject, key)) {
-        if (key !== smartmet && key !== "utctime" && smartmetValue !== null) {
-          ensembleList.push(key);
-        }
-      }
-    }
+  let smartmetIdx = -1;
+  for (let i = 0; i < data.length; i++) {
+    if (data[i][smartmetString] !== null) {
+        smartmetIdx = i;
+    } 
   }
+
+  const foundObject: Record<string, number | string> = data.findLast((obj) => obj[smartmetString] !== null);
+    if(foundObject !== undefined) {
+      const list = Object.keys(foundObject).filter(key => key !== 'utctime' && key !== smartmetString && key !== "HSNOW-M:CDTE" && key !== "HSNOW-M:CERRA" && key !== "HSNOW-M:EDTE" && key !== "HSNOW-M:ERA5L"
+    
+      );
+      ensembleListArray.push(...list)
+    }
   return {
-    ensembleList,
-    smartId
-  };
+    ensembleListArray,
+    smartmetIdx};
 }
 
 export function harvidx(
