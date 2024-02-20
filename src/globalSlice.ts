@@ -29,6 +29,7 @@ const initialState: GlobalStateProps = {
   soilWetnessData: [],
   soilTemperatureData: [],
   snowHeightData: [],
+  nonScaledDataSnowHieght: [],
   params: {
     trafficability: [
       { code: "HARVIDX{55;SWI2:ECXSF:5062:1:0:0:0-50}" },
@@ -36,6 +37,13 @@ const initialState: GlobalStateProps = {
       { code: "HARVIDX{0.55;SWI2-0TO1:SWI}" },
       { code: "ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}" },
       { code: "ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}" }
+    ],
+    windGust: [
+      { code: "FFG-MS:CERRA", layerName: "harvester:cerra:FFG-MS" },
+      { code: "FFG-MS:ERA5", layerName: "harvester:era5:FFG-MS" },
+      { code: "FFG-MS:EDTE", layerName: "harvester:edte:FFG-MS" },
+      { code: "FFG-MS:ECSF", layerName: "harvester:ecsf:FFG-MS" },
+      { code: "FFG-MS:CDTE", layerName: "harvester:cdte" }
     ],
     snowHeight: [
       { code: "HSNOW-M:CERRA", layerName: "harvester:cerra5:HSNOW-M" },
@@ -45,6 +53,7 @@ const initialState: GlobalStateProps = {
         layerName: "harvester:ecbsf:HSNOW-M",
         ensemble: true
       },
+      {code: "HSNOW-M:SMARTOBS:13:4"},
       ...[...Array(50).keys()].map((n) => ({
         code: `HSNOW-M:ECBSF::1:0:3:${n + 1}`,
         layerName: "harvester:ecbsf:HSNOW-M",
@@ -69,14 +78,8 @@ const initialState: GlobalStateProps = {
       })),
       { code: "TSOIL-C:CDTE", layerName: "harvester:cdte" }
     ],
-    windGust: [
-      { code: "FFG-MS:CERRA", layerName: "harvester:cerra:FFG-MS" },
-      { code: "FFG-MS:ERA5", layerName: "harvester:era5:FFG-MS" },
-      { code: "FFG-MS:EDTE", layerName: "harvester:edte:FFG-MS" },
-      { code: "FFG-MS:ECSF", layerName: "harvester:ecsf:FFG-MS" },
-      { code: "FFG-MS:CDTE", layerName: "harvester:cdte" }
-    ],
     soilWetness: [
+      {code: "SWVL2-M3M3:SMARTMET:5015"},
       {
         code: "SWVL2-M3M3:CERRA-L-0.4",
         layerName: "harvester:cerra5:SWVL2-M3M3"
@@ -147,6 +150,9 @@ const globalSlice = createSlice({
     },
     setHideArrowPreviousState: (state, action: PayloadAction<boolean>) => {
       state.hideArrowPrevious = action.payload;
+    },
+    setNonScaledDataSnowHeight: (state, action: PayloadAction<Smartmet[]>) => {
+      state.nonScaledDataSnowHieght = action.payload;
     }
   }
 });
@@ -164,6 +170,7 @@ export type ReduxActions =
   | ReturnType<typeof actions.changeHideNextArrowState>
   | ReturnType<typeof actions.changeYear>
   | ReturnType<typeof actions.setHideArrowPreviousState>
+  | ReturnType<typeof actions.setNonScaledDataSnowHeight>
   | ReturnType<typeof actions.changeDefaultColor>;
 
 export const getKeyFromFoundMatch = (foundMatch: Smartmet | string) => {
