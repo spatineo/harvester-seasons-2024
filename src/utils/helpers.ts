@@ -29,12 +29,6 @@ export function getDatesForTimelineDuration(
   return result;
 }
 
-export function marklineStartDate(current: Date) {
-  const currentDate = new Date(current);
-  currentDate.setDate(currentDate.getDate() + 7);
-  return currentDate.toISOString().split("T")[0];
-}
-
 export function soilTemperatureParams(arr: Parameter[]) {
   for (let i = 1; i <= 50; i++) {
     arr.push({
