@@ -84,7 +84,7 @@ const HarvesterMap: React.FC = () => {
           {layersWithInfo &&
             layersWithInfo.map((l, index) => {
               if (l === undefined || !l.layerInfo) {
-                return <Box key={index}></Box>;
+                return <Box key={`undefined_${index}`}></Box>;
               }
               return (
                 <Box key={l.id}>
@@ -104,7 +104,7 @@ const HarvesterMap: React.FC = () => {
                     />
                   )}
                   {l.id === mapState.indexNumber &&
-                    l.layerInfo !== null &&
+                    (l.layerInfo !== null && l.layerInfo.Style !== undefined) &&
                     l.layerInfo?.Style.map(
                       (
                         legends: {
