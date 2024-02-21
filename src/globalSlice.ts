@@ -6,9 +6,7 @@ import { addMonths, reduceMonths } from "./utils/dateHelperFunctions";
 
 const endDate = addMonths(new Date(), 6).toISOString();
 const startDate = reduceMonths(new Date(), 6).toISOString();
-const mark = reduceMonths(new Date(), 6).setDate(
-  reduceMonths(new Date(), 6).getDate() + 14
-);
+const mark = new Date();
 const newMarkLineDate = new Date(mark).toUTCString();
 
 const initialState: GlobalStateProps = {
