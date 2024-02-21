@@ -52,6 +52,14 @@ const TimelineSlider: React.FC = () => {
       end
     );
 
+    const index = dateValue.findIndex((date) => {
+      if (markLine !== "") {
+        const dateInArray = new Date(date).toISOString().split("T")[0];
+        const searchDate = new Date(markLine).toISOString().split("T")[0];
+        return dateInArray === searchDate;
+      }
+    });
+
     const baseOption = {
       timeline: {
         animationDuration: 0,
@@ -71,7 +79,7 @@ const TimelineSlider: React.FC = () => {
           showPlayBtn: true,
           position: "left",
         },
-        currentIndex: 10,
+        currentIndex: index,
         realtime: true,
         lineStyle: {
           type: "solid",
