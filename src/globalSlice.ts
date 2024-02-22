@@ -139,9 +139,13 @@ const globalSlice = createSlice({
       state.hideNext = action.payload;
     },
     changeTrafficabilityIndexColor: (state, action) => {
-      const {  winterOrSummerValue, winterOrSummer } = action.payload;
-      state.trafficabilityIndexColor = winterOrSummerValue;
-      state.itIsWinter = winterOrSummer
+      const { winterOrSummerValue, winterOrSummer } = action.payload;
+      if (winterOrSummerValue !== undefined && winterOrSummer !== undefined) {
+        state.trafficabilityIndexColor = winterOrSummerValue;
+        state.itIsWinter = winterOrSummer;
+      } else {
+        window.console.error('Invalid payload for changeTrafficabilityIndexColor reducer');
+      }
     },
     changeDefaultColor: (state, action: PayloadAction<boolean>) => {
       state.defaultColorSwitch = action.payload;
