@@ -199,7 +199,6 @@ export function* fetchTrafficabilityDataSaga(): SagaIterator {
     );
 
     if (response.status === 200) {
-      window.console.log(response.data)
       yield put(actions.setTrafficabilityData(response.data));
     }
   } catch (error) {
