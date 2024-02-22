@@ -12,7 +12,6 @@ import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
 import { createColorPalette } from "../utils/colors_palette";
 import { ColorPalette } from "../types";
-import tr from "date-fns/locale/tr";
 
 interface TIFFLayerProps {
   title: string;
@@ -55,17 +54,17 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({
     const result = createColorPalette(defaultColorSwitch);
     setColorPalette(result);
   }, [defaultColorSwitch]);
-
+window.console.log("trafficabilityIndexColor",trafficabilityIndexColor, itIsWinter)
   useEffect(() => {
     if (!markLine) return;
-    if (itIsWinter === false) {
-      if (trafficabilityIndexColor === 2) {
+    if (trafficabilityIndexColor === 2) {
+      if (itIsWinter === true)  {
         setWinterState(true);
       }
     } else {
       setWinterState(false);
     }
-  }, [markLine, itIsWinter]);
+  }, [markLine]);
 
   useEffect(() => {
     if (!layer) return;
@@ -89,7 +88,7 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({
         palette = colorPalette?.palette_epavarma_kesa_keli;
         break;
       case 2:
-        if (winterState === true) {
+        if (winterState === false) {
           palette = colorPalette?.palette_hyva_talvi_keli;
         } else {
           palette = colorPalette?.palette_hyva_kesa_keli;
