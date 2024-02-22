@@ -38,7 +38,6 @@ export function* setUserLocation(): SagaIterator {
   yield put({ type: constants.SOILWETNESS_API });
   yield put({ type: constants.SNOWHEIGHT_API });
   yield put({ type: constants.WINDGUST_API });
-  yield put({ type: constants.SETWMSLAYERINFORMATION });
 }
 
 export function* triggerTimeSpanChange({
@@ -200,6 +199,7 @@ export function* fetchTrafficabilityDataSaga(): SagaIterator {
     );
 
     if (response.status === 200) {
+      window.console.log(response.data)
       yield put(actions.setTrafficabilityData(response.data));
     }
   } catch (error) {
