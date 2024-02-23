@@ -78,102 +78,115 @@ const TraficabilityGraphComponent: React.FC<
     graphChart.setOption(option, { notMerge: true, lazyUpdate: false });
   }, [option]);
 
-  useEffect(() => {
-    if (!graphChart || !markline) return;
-    const calculateDataIndex = (seriesData: [], xAxisValue) => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
-      const formatDateWithoutTime = (dateString: Date) => {
-        const dateWithTime = new Date(dateString);
-        const dateWithoutTime = new Date(
-          dateWithTime.getFullYear(),
-          dateWithTime.getMonth(),
-          dateWithTime.getDate()
-        );
-        return dateWithoutTime;
-      };
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
-
-      for (let i = 0; i < seriesData.length; i++) {
-        const dataPoint = seriesData[i];
-        const formattedDataPoint = formatDateWithoutTime(
-          new Date(dataPoint[0])
-        );
-        const formattedXAxisValue = formatDateWithoutTime(new Date(xAxisValue));
-        const timestampXAxisValue = formattedXAxisValue.getTime();
-        const timestampDataPoint = formattedDataPoint.getTime();
-        if (timestampDataPoint === timestampXAxisValue) {
-          return i;
-        }
-      }
-      return undefined;
+  const calculateDataIndex = (seriesData: [], xAxisValue) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
+    const formatDateWithoutTime = (dateString: Date) => {
+      const dateWithTime = new Date(dateString);
+      const dateWithoutTime = new Date(
+        dateWithTime.getFullYear(),
+        dateWithTime.getMonth(),
+        dateWithTime.getDate()
+      );
+      return dateWithoutTime;
     };
-    if (graphChart !== null || option !== null || !markline) {
-      const allYValues: (string | number)[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
+    for (let i = 0; i < seriesData.length; i++) {
+      const dataPoint = seriesData[i];
+      const formattedDataPoint = formatDateWithoutTime(new Date(dataPoint[0]));
+      const formattedXAxisValue = formatDateWithoutTime(new Date(xAxisValue));
+      const timestampXAxisValue = formattedXAxisValue.getTime();
+      const timestampDataPoint = formattedDataPoint.getTime();
+      if (timestampDataPoint === timestampXAxisValue) {
+        return i;
+      }
+    }
+    return undefined;
+  };
 
+  useEffect(() => {
+    if (!graphChart && !markline) return;
+    window.console.log(markline);
+    if (graphChart !== null && option !== null && markline !== "") {
+      const allYValues: (string | number)[] = [];
       if (graphChart.getOption() !== undefined) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const options = graphChart.getOption() as any;
-        options?.series?.forEach((series) => {
-          if (series.data) {
-            const date = new Date(markline);
-            const formattedDate = date.toISOString();
-            const dataIndex = calculateDataIndex(series.data, formattedDate);
+        if (markline) {
+          options?.series?.forEach((series) => {
+            //
+            if (series.data) {
+              const date = new Date(markline);
+              const formattedDate = date.toISOString();
+              const dataIndex = calculateDataIndex(series.data, formattedDate);
 
-            if (dataIndex !== undefined) {
-              const yValue: unknown = series.data[dataIndex];
-              if (Array.isArray(yValue)) {
-                const extractedValue = yValue[1];
-                if (
-                  typeof extractedValue === "number" ||
-                  extractedValue === "nan"
-                ) {
-                  allYValues.push(extractedValue);
+              if (dataIndex !== undefined) {
+                const yValue: unknown = series.data[dataIndex];
+                if (Array.isArray(yValue)) {
+                  if (yValue.length === 0) return;
+                  const extractedValue = yValue[1];
+                  if (
+                    typeof extractedValue === "number" ||
+                    extractedValue === "nan"
+                  ) {
+                    allYValues.push(extractedValue);
+                  }
+                } else if (typeof yValue === "number" || yValue === "nan") {
+                  allYValues.push(yValue);
                 }
-              } else if (typeof yValue === "number" || yValue === "nan") {
-                allYValues.push(yValue);
               }
             }
-          }
 
-         
-          const summerYValues = (allYValues[0] !== 'nan' && allYValues[0] !== undefined) ? allYValues[0] : 0
-          const winterYValue = (allYValues[1] !== 'nan' && allYValues[1] !== undefined) ? allYValues[1] : 0
-          const summer = (winterYValue === 2 || winterYValue > summerYValues) ? false : true;
-         if(summer){
-          dispatch(actions.changeTrafficabilityIndexColor({
-            winterOrSummerValue: summerYValues,
-            winterOrSummer: summer
-          }))
-         } else {
-          dispatch(actions.changeTrafficabilityIndexColor({
-            winterOrSummerValue: winterYValue,
-            winterOrSummer: summer
-          }))
-         }
-        });
+            const summerYValues =
+              allYValues.length > 1 &&
+              allYValues[0] !== "nan" &&
+              allYValues[0] !== undefined
+                ? allYValues[0]
+                : 0;
+            const winterYValue =
+              allYValues.length > 1 &&
+              allYValues[1] !== "nan" &&
+              allYValues[1] !== undefined
+                ? allYValues[1]
+                : 0;
+            const summer =
+              winterYValue === 2 || winterYValue > summerYValues ? false : true;
+            if (markline !== "") {
+              if (summer) {
+                dispatch(
+                  actions.changeTrafficabilityIndexColor({
+                    winterOrSummerValue: summerYValues,
+                    winterOrSummer: summer,
+                  })
+                );
+              } else {
+                dispatch(
+                  actions.changeTrafficabilityIndexColor({
+                    winterOrSummerValue: winterYValue,
+                    winterOrSummer: summer,
+                  })
+                );
+              }
+            }
+          });
+        }
       }
     }
-  }, [markline, graphChart]);
-
-
-
+  }, [markline]);
 
   useEffect(() => {
     if (!graphChart) return;
     graphChart.getZr()?.on("click", (params) => {
       const pointInPixel = [params.offsetX, params.offsetY];
 
-      const [xAxisData, yAxisData ] = graphChart.convertFromPixel(
+      const [xAxisData, yAxisData] = graphChart.convertFromPixel(
         { seriesIndex: 0 },
         pointInPixel
       ) as number[];
-
-      if (xAxisData !== null && 0 <= yAxisData && yAxisData <= 2) {
+      if (xAxisData !== null && yAxisData !== null) {
         const date = new Date(xAxisData);
         const formattedDate = date.toISOString();
         onGraphClick(formattedDate);
       }
-
     });
   }, [graphChart]);
 
