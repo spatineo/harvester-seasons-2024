@@ -6,7 +6,6 @@ import { Container, Box } from "@mui/material";
 import { EChartOption } from "echarts";
 import TraficabilityGraph from "../TrafficabilityGraph/Trafficability";
 import GraphView from "../GraphView/GraphView";
-import * as constants from "../store/constants";
 import HarvesterMap from "../HarvesterMapComponent/HarvesterMap";
 import OpacityComponent from "../Opacity/OpacityComponent";
 import CarbonText from "../CarbonText/CarbonText";
@@ -36,15 +35,6 @@ function MainViewComponent() {
   const information = useAppSelector((state) => state.language);
   const { markLine } = useAppSelector((state: RootState) => state.global);
   const { lang } = useAppSelector((state: RootState) => state.language);
-
-  useEffect(() => {
-    dispatch({ type: constants.TRAFFICABILITY_API });
-    dispatch({ type: constants.SOILWETNESS_API });
-    dispatch({ type: constants.SOILTEMPERATUE_API });
-    dispatch({ type: constants.SNOWHEIGHT_API });
-    dispatch({ type: constants.WINDGUST_API });
-    dispatch({ type: constants.SETWMSLAYERINFORMATION });
-  }, []);
 
   useEffect(() => {
     if (!trafficabilityData || !windGustData || !nonScaledDataSnowHieght) return;
