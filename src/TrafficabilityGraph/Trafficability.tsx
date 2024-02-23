@@ -105,7 +105,6 @@ const TraficabilityGraphComponent: React.FC<
 
   useEffect(() => {
     if (!graphChart && !markline) return;
-    window.console.log(markline);
     if (graphChart !== null && option !== null && markline !== "") {
       const allYValues: (string | number)[] = [];
       if (graphChart.getOption() !== undefined) {
