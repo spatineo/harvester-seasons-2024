@@ -140,6 +140,7 @@ const globalSlice = createSlice({
     },
     changeTrafficabilityIndexColor: (state, action) => {
       const { winterOrSummerValue, winterOrSummer } = action.payload;
+      window.console.log(winterOrSummer, winterOrSummerValue)
       if (winterOrSummerValue !== undefined && winterOrSummer !== undefined) {
         state.trafficabilityIndexColor = winterOrSummerValue;
         state.itIsWinter = winterOrSummer;

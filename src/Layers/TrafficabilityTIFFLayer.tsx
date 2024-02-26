@@ -54,11 +54,11 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({
     const result = createColorPalette(defaultColorSwitch);
     setColorPalette(result);
   }, [defaultColorSwitch]);
-window.console.log("trafficabilityIndexColor",trafficabilityIndexColor, itIsWinter)
+
   useEffect(() => {
     if (!markLine) return;
     if (trafficabilityIndexColor === 2) {
-      if (itIsWinter === true)  {
+      if (itIsWinter === true) {
         setWinterState(true);
       }
     } else {
@@ -71,7 +71,7 @@ window.console.log("trafficabilityIndexColor",trafficabilityIndexColor, itIsWint
     const opacity = getOpacityFromPercentage(opacityValue);
     layer.setOpacity(opacity);
   }, [opacityValue]);
-
+  
   useEffect(() => {
     if (!layer) {
       return;

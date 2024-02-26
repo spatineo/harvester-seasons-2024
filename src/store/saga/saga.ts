@@ -25,9 +25,6 @@ import { EnqueueSnackbar } from "../hooks";
 import { Parameter, StartEndTimeSpan } from "../../types";
 import { mapActions } from "../../MapComponent/MapComponentSlice";
 
-const parser = new WMSCapabilities();
-const capabilitiesUrl = "https://desm.harvesterseasons.com/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0";
-
 const timeSeriesServiceURL = "https://desm.harvesterseasons.com/timeseries";
 export interface TimeSpan {
   start_time: string;
@@ -127,9 +124,10 @@ export function* getCapabilitiesSaga(): SagaIterator {
     ...layersParams.windGust.map((layer) => layer.layerName)
   ] as string[];
 
-  
-  if(capabilitiesUrl){
-    try {
+  const parser = new WMSCapabilities();
+  const capabilitiesUrl =
+    "https://desm.harvesterseasons.com/wms?SERVICE=WMS&REQUEST=GetCapabilities&VERSION=1.3.0";
+  try {
     const response = yield call(fetch, capabilitiesUrl);
     if (response.ok) {
       const responseBody = yield response.text();
@@ -172,7 +170,7 @@ export function* getCapabilitiesSaga(): SagaIterator {
         "error"
       );
     }
-  }}
+  }
 }
 
 export function* fetchTrafficabilityDataSaga(): SagaIterator {
