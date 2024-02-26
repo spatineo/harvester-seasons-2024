@@ -170,14 +170,9 @@ const HarvesterMap: React.FC = () => {
 					*/}
           <TrafficabilityTIFFLayer
             title="Trafficability Finland"
-            url="https://pta.data.lit.fmi.fi/geo/harvestability/KKL_SMK_Suomi_2021_06_01-UTM35.tif"
+            finlandUrl="https://pta.data.lit.fmi.fi/geo/harvestability/KKL_SMK_Suomi_2021_06_01-UTM35.tif"
+            europeUrl="https://copernicus.data.lit.fmi.fi/trafficability/Europe-2023-trfy-r30m.tif"
             zIndex={1}
-            visible={mapState.showTrafficabilityLayer}
-          />
-          <TrafficabilityTIFFLayer
-            zIndex={0}
-            title="Trafficability Europe"
-            url="https://copernicus.data.lit.fmi.fi/trafficability/Europe-2023-trfy-r30m.tif"
             visible={mapState.showTrafficabilityLayer}
           />
           <LocationMarkerLayer title="Location Marker" />

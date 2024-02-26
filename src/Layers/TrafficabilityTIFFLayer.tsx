@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable react/prop-types */
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext, useState, useCallback } from "react";
 import MapContext from "../MapComponent/MapContext";
 import { BaseLayerOptions } from "ol-layerswitcher";
 import GeoTIFF from "ol/source/GeoTIFF";
@@ -12,10 +12,12 @@ import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
 import { createColorPalette } from "../utils/colors_palette";
 import { ColorPalette } from "../types";
+import { unByKey } from "ol/Observable";
 
 interface TIFFLayerProps {
   title: string;
-  url: string;
+  finlandUrl: string;
+  europeUrl: string;
   zIndex: number;
   visible: boolean;
 }
@@ -38,7 +40,8 @@ function colorExpression(palette) {
 
 const TIFFLayer: React.FC<TIFFLayerProps> = ({
   title,
-  url,
+  finlandUrl,
+  europeUrl,
   zIndex,
   visible,
 }) => {
@@ -49,6 +52,8 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({
   const [layer, setLayer] = useState<TileLayer | null>(null);
   const [colorPalette, setColorPalette] = useState<ColorPalette | null>(null);
   const [winterState, setWinterState] = useState<boolean>(false);
+
+  const [url, setUrl] = useState<string>('');
 
   useEffect(() => {
     const result = createColorPalette(defaultColorSwitch);
@@ -107,6 +112,30 @@ const TIFFLayer: React.FC<TIFFLayerProps> = ({
       });
     }
   }, [trafficabilityIndexColor, colorPalette, winterState]);
+
+  const moveEndCallback = React.useCallback(() => {
+    if (!map) return;
+    const center = map.getView().getCenter();
+
+    if (!center) return;
+    let u = finlandUrl;
+
+    if (center[1] < 8147907.612348467 || center[0] < 2071060.6272984652) {
+      u = europeUrl;
+    }
+    
+    setUrl(u);
+  }, [map, finlandUrl, europeUrl]);
+
+  useEffect(() => {
+    if (!map) return;
+
+    const eventsKey = map.on('moveend', moveEndCallback);
+
+    return () => {
+      unByKey(eventsKey);
+    }
+  }, [map])
 
   useEffect(() => {
     if (!map || !url) return;
