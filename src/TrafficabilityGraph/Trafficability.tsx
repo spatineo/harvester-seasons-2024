@@ -27,7 +27,7 @@ const TraficabilityGraphComponent: React.FC<
   const [arrowColor, setArrowColor] = useState<"primary" | "secondary">(
     "primary"
   );
-  const { hideNext, hideArrowPrevious, trafficabilityIndexColor } =
+  const { hideNext, hideArrowPrevious } =
     useAppSelector((state: RootState) => state.global);
   const dispatch = useRootDispatch();
 
@@ -188,19 +188,6 @@ const TraficabilityGraphComponent: React.FC<
       }
     });
   }, [graphChart]);
-
-  useEffect(() => {
-    // Dispatch a custom event on trafficabilityIndexColor change
-    const customEvent = new CustomEvent("customClickEvent", {
-      detail: {
-        // You can include additional details in the event if needed
-        // For example, you might want to pass some data related to the click event
-      },
-    });
-    if(trafficabilityIndexColor === null){
-      window.dispatchEvent(customEvent);
-    }
-  }, [trafficabilityIndexColor]);
 
   return (
     <Box
