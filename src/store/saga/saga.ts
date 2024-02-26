@@ -184,8 +184,12 @@ export function* fetchTrafficabilityDataSaga(): SagaIterator {
     yield select((state: RootState) => state.global.startEndTimeSpan)
   );
 
-  const params = yield select((state: RootState) => state.global.params);
+  const { params, trafficabilityIndexColor, markLine} = yield select((state: RootState) => state.global);
   yield put(actions.setTrafficabilityData([]));
+  const param2 = "HARVIDX{55;SWI2:ECXSF:5062:1:0:0:0-50}";
+const param3 = "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}";
+const param7 = "ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}";
+const param8 = "ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}";
 
   try {
     const response = yield call(
@@ -199,6 +203,33 @@ export function* fetchTrafficabilityDataSaga(): SagaIterator {
     );
 
     if (response.status === 200) {
+      if(trafficabilityIndexColor === null){
+        const match = response.data.find((d) => {
+          return new Date(d.utctime).toISOString().split('T')[0] === new Date(markLine).toISOString().split('T')[0]
+        })
+        const summer1 = match[param2] !== null ? match[param2] : "nan";
+        const winterValue = match[param8] !== null && match[param3] !== null 
+        ? Math.max(match[param3] as number, match[param8] as number) 
+        : match[param8] !== null ? match[param8] 
+        : match[param3] !== null ? match[param3] 
+        : match[param7]; 
+        const summerYValues = summer1 !== "nan" &&
+        summer1 !== undefined
+          ? summer1
+          : 0;
+      const winterYValue = winterValue !== "nan" &&
+        winterValue !== undefined
+          ? winterValue
+          : 0;
+      const summer = winterYValue === 2 || winterYValue > summerYValues ? false : true;
+      const value = summer ? { winterOrSummerValue: summerYValues,
+        winterOrSummer: summer,
+      }: {
+        winterOrSummerValue: winterYValue,
+        winterOrSummer: summer
+      }
+      yield put(actions.changeTrafficabilityIndexColor(value))
+      }
       yield put(actions.setTrafficabilityData(response.data));
     }
   } catch (error) {
