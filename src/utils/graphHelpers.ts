@@ -319,14 +319,12 @@ export function calculateTrafficability(
           (winterSeries[i] !== null && winterSeries.length == arr.length)
         ? Math.max(t[param3] as number, winterSeries[i])
         : "nan";
-
     const winterTenDays =
       t[param8] !== null
         ? Math.max(Number(t[param3]), Number(t[param8]))
         : t[param7] !== null
         ? Math.max(Number(t[param7]), Number(t[param3]))
         : "nan";
-
     const summerTenDays = t[param5] !== null ? t[param5] : "nan";
 
     graphData.push([
