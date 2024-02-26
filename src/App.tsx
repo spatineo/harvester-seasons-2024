@@ -15,18 +15,12 @@ function App() {
   const dispatch = useRootDispatch();
  
   useEffect(() => {
-    const dispatchConstants = () => {
-      dispatch({ type: constants.TRAFFICABILITY_API });
-      dispatch({ type: constants.SOILWETNESS_API });
-      dispatch({ type: constants.SOILTEMPERATUE_API });
-      dispatch({ type: constants.SNOWHEIGHT_API });
-      dispatch({ type: constants.WINDGUST_API });
-      dispatch({ type: constants.SETWMSLAYERINFORMATION });
-    }
-    window.addEventListener("load", dispatchConstants)    
-    return () => {
-      window.removeEventListener('load', dispatchConstants)
-    }
+    dispatch({ type: constants.TRAFFICABILITY_API });
+    dispatch({ type: constants.SOILWETNESS_API });
+    dispatch({ type: constants.SOILTEMPERATUE_API });
+    dispatch({ type: constants.SNOWHEIGHT_API });
+    dispatch({ type: constants.WINDGUST_API });
+    dispatch({ type: constants.SETWMSLAYERINFORMATION });
   }, []);
   return (
     <div className="App">

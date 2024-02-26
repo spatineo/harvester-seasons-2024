@@ -60,9 +60,6 @@ export const getOneParamFromData = (
   arr1: (FindOneDataFromParamsData | string | null | undefined)[]
 ) => {
   return arr1.map((m, index) => {
-    if (typeof m === "string") {
-      window.console.info(m);
-    }
     if (m !== null && typeof m === "object") {
       const keys = Object.keys(m);
       const filteredKeys = keys.filter((key) => key !== "utctime");
