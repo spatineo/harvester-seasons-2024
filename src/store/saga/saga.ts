@@ -38,7 +38,6 @@ export function* setUserLocation(): SagaIterator {
   yield put({ type: constants.SOILWETNESS_API });
   yield put({ type: constants.SNOWHEIGHT_API });
   yield put({ type: constants.WINDGUST_API });
-  yield put({ type: constants.SETWMSLAYERINFORMATION });
 }
 
 export function* triggerTimeSpanChange({

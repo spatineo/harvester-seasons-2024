@@ -27,9 +27,8 @@ const TraficabilityGraphComponent: React.FC<
   const [arrowColor, setArrowColor] = useState<"primary" | "secondary">(
     "primary"
   );
-  const { hideNext, hideArrowPrevious } = useAppSelector(
-    (state: RootState) => state.global
-  );
+  const { hideNext, hideArrowPrevious, trafficabilityIndexColor } =
+    useAppSelector((state: RootState) => state.global);
   const dispatch = useRootDispatch();
 
   const handleDoubleClick = (direction: string) => {
@@ -50,6 +49,31 @@ const TraficabilityGraphComponent: React.FC<
 
   const handleArrowMouseout = () => {
     setArrowColor("primary");
+  };
+
+  const calculateDataIndex = (seriesData: [], xAxisValue) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
+    const formatDateWithoutTime = (dateString: Date) => {
+      const dateWithTime = new Date(dateString);
+      const dateWithoutTime = new Date(
+        dateWithTime.getFullYear(),
+        dateWithTime.getMonth(),
+        dateWithTime.getDate()
+      );
+      return dateWithoutTime;
+    };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
+    for (let i = 0; i < seriesData.length; i++) {
+      const dataPoint = seriesData[i];
+      const formattedDataPoint = formatDateWithoutTime(new Date(dataPoint[0]));
+      const formattedXAxisValue = formatDateWithoutTime(new Date(xAxisValue));
+      const timestampXAxisValue = formattedXAxisValue.getTime();
+      const timestampDataPoint = formattedDataPoint.getTime();
+      if (timestampDataPoint === timestampXAxisValue) {
+        return i;
+      }
+    }
+    return undefined;
   };
 
   useEffect(() => {
@@ -77,31 +101,6 @@ const TraficabilityGraphComponent: React.FC<
     if (!graphChart || option === null) return;
     graphChart.setOption(option, { notMerge: true, lazyUpdate: false });
   }, [option]);
-
-  const calculateDataIndex = (seriesData: [], xAxisValue) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
-    const formatDateWithoutTime = (dateString: Date) => {
-      const dateWithTime = new Date(dateString);
-      const dateWithoutTime = new Date(
-        dateWithTime.getFullYear(),
-        dateWithTime.getMonth(),
-        dateWithTime.getDate()
-      );
-      return dateWithoutTime;
-    };
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
-    for (let i = 0; i < seriesData.length; i++) {
-      const dataPoint = seriesData[i];
-      const formattedDataPoint = formatDateWithoutTime(new Date(dataPoint[0]));
-      const formattedXAxisValue = formatDateWithoutTime(new Date(xAxisValue));
-      const timestampXAxisValue = formattedXAxisValue.getTime();
-      const timestampDataPoint = formattedDataPoint.getTime();
-      if (timestampDataPoint === timestampXAxisValue) {
-        return i;
-      }
-    }
-    return undefined;
-  };
 
   useEffect(() => {
     if (!graphChart && !markline) return;
@@ -149,6 +148,7 @@ const TraficabilityGraphComponent: React.FC<
                 : 0;
             const summer =
               winterYValue === 2 || winterYValue > summerYValues ? false : true;
+
             if (markline !== "") {
               if (summer) {
                 dispatch(
@@ -188,6 +188,19 @@ const TraficabilityGraphComponent: React.FC<
       }
     });
   }, [graphChart]);
+
+  useEffect(() => {
+    // Dispatch a custom event on trafficabilityIndexColor change
+    const customEvent = new CustomEvent("customClickEvent", {
+      detail: {
+        // You can include additional details in the event if needed
+        // For example, you might want to pass some data related to the click event
+      },
+    });
+    if(trafficabilityIndexColor === null){
+      window.dispatchEvent(customEvent);
+    }
+  }, [trafficabilityIndexColor]);
 
   return (
     <Box
