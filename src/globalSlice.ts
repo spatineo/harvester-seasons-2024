@@ -30,11 +30,11 @@ const initialState: GlobalStateProps = {
   nonScaledDataSnowHieght: [],
   params: {
     trafficability: [
-      { code: "HARVIDX{55;SWI2:ECXSF:5062:1:0:0:0-50}" },
+      { code: "HARVIDX{0.55;SWI2-0TO1:ECXSF:5062:1:0:0:0-50}" },
+      { code: "HARVIDX{0.55;SWI2-0TO1:EDTE:5068}"},
       { code: "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}" },
-      { code: "HARVIDX{0.55;SWI2-0TO1:SWI}" },
       { code: "ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}" },
-      { code: "ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}" }
+      { code: "ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}" },
     ],
     windGust: [
       { code: "FFG-MS:CERRA", layerName: "harvester:cerra:FFG-MS" },
