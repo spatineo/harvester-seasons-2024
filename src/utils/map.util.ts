@@ -96,7 +96,7 @@ export const getLayersWithLayerInfo = (
     if (typeof res === "object") {
       const layerCode = res.layerName;
       const matchingLayer = mapStateArray.find((layer) => {
-        return layer && layer.Name === layerCode;
+        return layerCode && layer && layer.Name === layerCode;
       });
       if (matchingLayer) {
         return {
