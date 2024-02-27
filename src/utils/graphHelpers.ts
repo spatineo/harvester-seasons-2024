@@ -333,7 +333,6 @@ export function calculateTrafficability(
       winterTenDays
     ]);
   });
-  window.console.log(graphData);
   return graphData;
 }
 
