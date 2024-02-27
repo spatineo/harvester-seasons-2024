@@ -5,11 +5,9 @@
 import { GraphOptions, Smartmet } from "../types";
 import { EChartOption } from "echarts";
 
-const param2 = "HARVIDX{55;SWI2:ECXSF:5062:1:0:0:0-50}";
+const param2 = "HARVIDX{0.55;SWI2-0TO1:ECXSF:5062:1:0:0:0-50}";
 const param3 = "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}";
-const param5 = "HARVIDX{0.55;SWI2-0TO1:SWI}";
- // const param5 = "HARVIDX{0.55;SWI2-0TO1:EDTE:5068}";
- //const param5 = "HARVIDX{0.4;SWVL2-M3M3:SMARTMET:5015}"; Latest
+const param5 = "HARVIDX{0.55;SWI2-0TO1:EDTE:5068}";
 const param7 = "ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}";
 const param8 = "ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}";
 
@@ -335,6 +333,7 @@ export function calculateTrafficability(
       winterTenDays
     ]);
   });
+  window.console.log(graphData);
   return graphData;
 }
 
