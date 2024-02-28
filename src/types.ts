@@ -160,3 +160,14 @@ export interface WMSCapabilitiesLayerType {
   Style: WMSCapabilitiesStyleType[];
   Dimension: WMSCapabilitiesDimensionType[];
 }
+
+export interface LayersWithLayerInfo {
+  layerName: string | undefined;
+  disabled: boolean;
+  layerInfo: null | WMSCapabilitiesLayerType;
+  utctime: string;
+  WMSTimeStrategy: WMSLayerTimeStrategy;
+  id: number;
+  visible: boolean;
+  dataFound?: string | null;
+}
