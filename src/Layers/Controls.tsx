@@ -12,7 +12,7 @@ import Overlay from "../Overlay/Overlay";
 import WMSLayersComponent from "../WMSLayersInput/WMSLayersControl";
 import { useAppSelector, useRootDispatch } from "../store/hooks";
 import { RootState } from "../store/store";
-import { Map, Parameter } from "../types";
+import { Map, Parameter, LayersWithLayerInfo } from "../types";
 import { mapActions } from "../MapComponent/MapComponentSlice";
 import {
   getLayersWithLayerInfo,
@@ -27,24 +27,15 @@ const Controls = () => {
   const [title, setTitle] = useState<string>("Taustakartta");
   const mapState: Map = useAppSelector((state: RootState) => state.mapState);
   const { params } = useAppSelector((state: RootState) => state.global);
-
+  const [controlLayers, setControlLayers] = useState<
+    (LayersWithLayerInfo | undefined)[]
+  >([]);
+  const dispatch = useRootDispatch();
   const snow = useAppSelector(getMarkLineMatch("snowHeightData"));
   const soil = useAppSelector(getMarkLineMatch("soilTemperatureData"));
   const wetness = useAppSelector(getMarkLineMatch("soilWetnessData"));
   const wind = useAppSelector(getMarkLineMatch("windGustData"));
 
-  const foundKeyForSnow = snow && checkForDataStringOrObject(snow);
-  const foundKeyForSoil = soil && checkForDataStringOrObject(soil);
-  const foundKeyForSoilWetness = wetness && checkForDataStringOrObject(wetness);
-  const foundKeyForWindGust = wind && checkForDataStringOrObject(wind);
-  const dispatch = useRootDispatch();
-
-  const getOneParamFromEach = [
-    foundKeyForSnow,
-    foundKeyForSoil,
-    foundKeyForSoilWetness,
-    foundKeyForWindGust,
-  ];
   const handleBaseLayerChange = (newValue: string) => {
     setTitle(newValue);
     dispatch(mapActions.setBaseLayers(newValue));
@@ -58,17 +49,31 @@ const Controls = () => {
       layer.setVisible(mapTitle === title);
     });
   }, [baseLayers, title, map]);
+  useEffect(() => {
+    const foundKeyForSnow = snow && checkForDataStringOrObject(snow);
+    const foundKeyForSoil = soil && checkForDataStringOrObject(soil);
+    const foundKeyForSoilWetness =
+      wetness && checkForDataStringOrObject(wetness);
+    const foundKeyForWindGust = wind && checkForDataStringOrObject(wind);
 
-  const getOneParamFromDataParams = getOneParamFromData(getOneParamFromEach);
-  const allLayers: Parameter[] = [
-    ...params.snowHeight.map((layer) => layer),
-    ...params.soilWetness.map((layer) => layer),
-    ...params.soilTemperature.map((layer) => layer),
-    ...params.windGust.map((layer) => layer),
-  ];
-  const result = findMatchingLayers(getOneParamFromDataParams, allLayers);
-  const layersWithInfo = getLayersWithLayerInfo(result, mapState.layerState);
+    const getOneParamFromEach = [
+      foundKeyForSnow,
+      foundKeyForSoil,
+      foundKeyForSoilWetness,
+      foundKeyForWindGust,
+    ];
+    const getOneParamFromDataParams = getOneParamFromData(getOneParamFromEach);
+    const allLayers: Parameter[] = [
+      ...params.snowHeight.map((layer) => layer),
+      ...params.soilWetness.map((layer) => layer),
+      ...params.soilTemperature.map((layer) => layer),
+      ...params.windGust.map((layer) => layer),
+    ];
+    const result = findMatchingLayers(getOneParamFromDataParams, allLayers);
+    const layersWithInfo = getLayersWithLayerInfo(result, mapState.layerState);
 
+    setControlLayers(layersWithInfo);
+  }, [snow, soil, wetness, wind]);
 
   return (
     <Box sx={{ position: "relative", top: "-3rem" }}>
@@ -88,8 +93,8 @@ const Controls = () => {
         </Box>
         <br />
 
-        {layersWithInfo.length > 0 &&
-          layersWithInfo.map((wmsLayer, index) => {
+        {controlLayers.length > 0 &&
+          controlLayers.map((wmsLayer, index) => {
             if (!wmsLayer || wmsLayer[0] === null) {
               return <Fragment key={index}></Fragment>;
             }
@@ -99,8 +104,8 @@ const Controls = () => {
                 <WMSLayersComponent
                   name={
                     wmsLayer.dataFound === null
-                    ? "No data to display"
-                    : wmsLayer.layerInfo?.Title
+                      ? "No data to display"
+                      : wmsLayer.layerInfo?.Title
                       ? wmsLayer.layerInfo.Title
                       : `Layer missing ${wmsLayer.layerName as string}`
                   }
@@ -122,7 +127,13 @@ const Controls = () => {
           <ShowTrafficabilityComponent
             text={"Trafficability"}
             show={mapState.showTrafficabilityLayer}
-            handleChange={() => dispatch(mapActions.setShowTrafficabilityLayer(!mapState.showTrafficabilityLayer))}
+            handleChange={() =>
+              dispatch(
+                mapActions.setShowTrafficabilityLayer(
+                  !mapState.showTrafficabilityLayer
+                )
+              )
+            }
           />
         </Box>
       </Overlay>
