@@ -2,21 +2,11 @@ import {
   WMSCapabilitiesLayerType,
   Smartmet,
   Parameter,
-  WMSLayerTimeStrategy
+  WMSLayerTimeStrategy,
+  LayersWithLayerInfo
 } from "../types";
 import { getKeyFromFoundMatch } from "../globalSlice";
 import { RootState } from "../store/store";
-
-interface LayersWithLayerInfo {
-  layerName: string | undefined;
-  disabled: boolean;
-  layerInfo: null | WMSCapabilitiesLayerType;
-  utctime: string;
-  WMSTimeStrategy: WMSLayerTimeStrategy;
-  id: number;
-  visible: boolean;
-  dataFound?: string | null;
-}
 
 interface FindOneDataFromParamsData {
   utctime: string;

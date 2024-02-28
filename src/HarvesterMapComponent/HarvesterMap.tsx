@@ -9,7 +9,7 @@ import Layers from "../Layers/Layers";
 import BaseMap from "../Layers/BaseMap";
 import LocationMarkerLayer from "../Layers/LocationMarker";
 import WMSLayer from "../Layers/WMSLayer";
-import { MapsStateProps, Map, Parameter } from "../types";
+import { MapsStateProps, Map, Parameter, LayersWithLayerInfo } from "../types";
 import TrafficabilityTIFFLayer from "../Layers/TrafficabilityTIFFLayer";
 import { useAppSelector } from "../store/hooks";
 import {
@@ -28,40 +28,43 @@ const HarvesterMap: React.FC = () => {
   const mapState: Map = useAppSelector((state: RootState) => state.mapState);
   const { params } = useAppSelector((state: RootState) => state.global);
   const [stateMap, setStateMap] = useState<MapsStateProps[]>([]);
-
+  const [controlLayers, setControlLayers] = useState<
+    (LayersWithLayerInfo | undefined)[]
+  >([]);
+  const snow = useAppSelector(getMarkLineMatch("snowHeightData"));
+  const soil = useAppSelector(getMarkLineMatch("soilTemperatureData"));
+  const wetness = useAppSelector(getMarkLineMatch("soilWetnessData"));
+  const wind = useAppSelector(getMarkLineMatch("windGustData"));
   useEffect(() => {
     if (!mapState.maps) return;
     setStateMap(mapState.maps);
   }, [mapState.maps]);
 
-  const snow = useAppSelector(getMarkLineMatch("snowHeightData"));
-  const soil = useAppSelector(getMarkLineMatch("soilTemperatureData"));
-  const wetness = useAppSelector(getMarkLineMatch("soilWetnessData"));
-  const wind = useAppSelector(getMarkLineMatch("windGustData"));
+  useEffect(() => {
+    const foundKeyForSnow = snow && checkForDataStringOrObject(snow);
+    const foundKeyForSoil = soil && checkForDataStringOrObject(soil);
+    const foundKeyForSoilWetness =
+      wetness && checkForDataStringOrObject(wetness);
+    const foundKeyForWindGust = wind && checkForDataStringOrObject(wind);
 
-  const foundKeyForSnow = snow && checkForDataStringOrObject(snow);
-  const foundKeyForSoil = soil && checkForDataStringOrObject(soil);
-  const foundKeyForSoilWetness = wetness && checkForDataStringOrObject(wetness);
-  const foundKeyForWindGust = wind && checkForDataStringOrObject(wind);
+    const getOneParamFromEach = [
+      foundKeyForSnow,
+      foundKeyForSoil,
+      foundKeyForSoilWetness,
+      foundKeyForWindGust,
+    ];
+    const getOneParamFromDataParams = getOneParamFromData(getOneParamFromEach);
+    const allLayers: Parameter[] = [
+      ...params.snowHeight.map((layer) => layer),
+      ...params.soilWetness.map((layer) => layer),
+      ...params.soilTemperature.map((layer) => layer),
+      ...params.windGust.map((layer) => layer),
+    ];
+    const result = findMatchingLayers(getOneParamFromDataParams, allLayers);
+    const layersWithInfo = getLayersWithLayerInfo(result, mapState.layerState);
 
-  const getOneParamFromEach = [
-    foundKeyForSnow,
-    foundKeyForSoil,
-    foundKeyForSoilWetness,
-    foundKeyForWindGust,
-  ];
-
-  const getOneParamFromDataParams = getOneParamFromData(getOneParamFromEach);
-
-  const allLayers: Parameter[] = [
-    ...params.snowHeight.map((layer) => layer),
-    ...params.soilWetness.map((layer) => layer),
-    ...params.soilTemperature.map((layer) => layer),
-    ...params.windGust.map((layer) => layer),
-  ];
-
-  const result = findMatchingLayers(getOneParamFromDataParams, allLayers);
-  const layersWithInfo = getLayersWithLayerInfo(result, mapState.layerState);
+    setControlLayers(layersWithInfo);
+  }, [snow, soil, wetness, wind]);
 
   return (
     <Box sx={{ clear: "both" }}>
@@ -81,8 +84,8 @@ const HarvesterMap: React.FC = () => {
                 </Box>
               );
             })}
-          {layersWithInfo &&
-            layersWithInfo.map((l, index) => {
+          {controlLayers &&
+            controlLayers.map((l, index) => {
               if (l === undefined || !l.layerInfo) {
                 return <Box key={`undefined_${index}`}></Box>;
               }
@@ -104,7 +107,8 @@ const HarvesterMap: React.FC = () => {
                     />
                   )}
                   {l.id === mapState.indexNumber &&
-                    (l.layerInfo !== null && l.layerInfo.Style !== undefined) &&
+                    l.layerInfo !== null &&
+                    l.layerInfo.Style !== undefined &&
                     l.layerInfo?.Style.map(
                       (
                         legends: {
