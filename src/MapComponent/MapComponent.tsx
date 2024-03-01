@@ -124,17 +124,12 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
         (pos) => {
           const lon = pos.coords.longitude;
           const lat = pos.coords.latitude;
-
           dispatch(mapActions.setPosition({ lat, lon }));
         },
         (error) => {
          if(error.code === error.PERMISSION_DENIED || error.code === error.POSITION_UNAVAILABLE){ 
           dispatch(mapActions.setPosition({ lat: 64.00, lon: 25.00 }));
-          window.console.error(
-            error.code,
-            "error from geolocation",
-            error.message
-          );}
+         }
         }
       );
     } else {
