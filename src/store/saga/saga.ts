@@ -186,10 +186,10 @@ export function* fetchTrafficabilityDataSaga(): SagaIterator {
 
   const { params, trafficabilityIndexColor, markLine} = yield select((state: RootState) => state.global);
   yield put(actions.setTrafficabilityData([]));
-  const param2 = "HARVIDX{55;SWI2:ECXSF:5062:1:0:0:0-50}";
-const param3 = "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}";
-const param7 = "ensover{0.4;0.9;HSNOW-M:SMARTMET:5027}";
-const param8 = "ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}";
+  
+  const param2 = "HARVIDX{0.55;SWI2-0TO1:ECXSF:5062:1:0:0:0-50}";
+  const param3 = "HARVIDX{273;TSOIL-K:ECBSF:::7:3:1-50;TSOIL-K:ECBSF:::7:1:0}";
+  const param8 = "ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}";
 
   try {
     const response = yield call(
@@ -208,19 +208,25 @@ const param8 = "ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}";
           return new Date(d.utctime).toISOString().split('T')[0] === new Date(markLine).toISOString().split('T')[0]
         })
         const summer1 = match[param2] !== null ? match[param2] : "nan";
-        const winterValue = match[param8] !== null && match[param3] !== null 
-        ? Math.max(match[param3] as number, match[param8] as number) 
-        : match[param8] !== null ? match[param8] 
-        : match[param3] !== null ? match[param3] 
-        : match[param7]; 
+        let winter1: number | "nan";
+        if(match[param8] !== null){
+          winter1 = Math.max(match[param3] as number, match[param8] as number) 
+        } else if(match[param3] !== null) {
+          winter1 = match[param3] as number
+        }else {
+          winter1 = "nan";
+        }
+        
         const summerYValues = summer1 !== "nan" &&
         summer1 !== undefined
           ? summer1
           : 0;
-      const winterYValue = winterValue !== "nan" &&
-        winterValue !== undefined
-          ? winterValue
+        const winterYValue = winter1 !== "nan" &&
+        winter1 !== undefined
+          ? winter1
           : 0;
+          window.console.log("winter 1: ",winter1, "winter value: ",winterYValue)
+          window.console.log(match)
       const summer = winterYValue === 2 || winterYValue > summerYValues ? false : true;
       const value = summer ? { winterOrSummerValue: summerYValues,
         winterOrSummer: summer,
@@ -228,6 +234,7 @@ const param8 = "ensover{0.4;0.9;HSNOW-M:SMARTOBS:13:4}";
         winterOrSummerValue: winterYValue,
         winterOrSummer: summer
       }
+      window.console.log(value);
       yield put(actions.changeTrafficabilityIndexColor(value))
       }
       yield put(actions.setTrafficabilityData(response.data));
