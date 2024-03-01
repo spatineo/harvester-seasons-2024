@@ -225,8 +225,7 @@ export function* fetchTrafficabilityDataSaga(): SagaIterator {
         winter1 !== undefined
           ? winter1
           : 0;
-          window.console.log("winter 1: ",winter1, "winter value: ",winterYValue)
-          window.console.log(match)
+        
       const summer = winterYValue === 2 || winterYValue > summerYValues ? false : true;
       const value = summer ? { winterOrSummerValue: summerYValues,
         winterOrSummer: summer,
@@ -234,7 +233,6 @@ export function* fetchTrafficabilityDataSaga(): SagaIterator {
         winterOrSummerValue: winterYValue,
         winterOrSummer: summer
       }
-      window.console.log(value);
       yield put(actions.changeTrafficabilityIndexColor(value))
       }
       yield put(actions.setTrafficabilityData(response.data));
