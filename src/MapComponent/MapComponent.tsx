@@ -88,6 +88,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
     mapObject.setTarget(mapRef.current);
 
     mapObject.on("click", (e: ol.MapBrowserEvent<MouseEvent>) => {
+      window.console.log(e.coordinate)
       const coord = proj4("EPSG:3857", "EPSG:4326", e.coordinate);
       dispatch(mapActions.setPosition({ lat: coord[1], lon: coord[0] }));
     });
@@ -127,11 +128,13 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
           dispatch(mapActions.setPosition({ lat, lon }));
         },
         (error) => {
+         if(error.code === error.PERMISSION_DENIED || error.code === error.POSITION_UNAVAILABLE){ 
+          dispatch(mapActions.setPosition({ lat: 64.00, lon: 25.00 }));
           window.console.error(
             error.code,
             "error from geolocation",
             error.message
-          );
+          );}
         }
       );
     } else {
