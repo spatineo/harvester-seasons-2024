@@ -305,18 +305,21 @@ export function createOptions(
 
 export function calculateTrafficability(
   arr: Smartmet[],
-  winterSeries: number[]
+  winterSeries: (number | "nan")[]
 ) {
   const graphData: any[] = [];
   arr.forEach((t: { utctime: string }, i) => {
     const summer1 = t[param2] !== null ? t[param2] : "nan";
-    const winter1 =
-      t[param8] !== null
-        ? Math.max(t[param3] as number, t[param8] as number)
-        : t[param3] !== null ||
-          (winterSeries[i] !== null && winterSeries.length == arr.length)
-        ? Math.max(t[param3] as number, winterSeries[i])
-        : "nan";
+    let winter1: number | "nan";
+  
+    if (t[param8] !== null) { 
+      winter1 = Math.max(t[param3] as number, t[param8] as number); }
+    else if (t[param3] !== null || winterSeries[i] !== null && winterSeries.length == arr.length) { 
+      winter1 = Math.max(t[param3] as number, winterSeries[i] as number); 
+    } else { 
+      winter1 = 'nan'; 
+    }
+
     const winterTenDays =
       t[param8] !== null
         ? Math.max(Number(t[param3]), Number(t[param8]))
