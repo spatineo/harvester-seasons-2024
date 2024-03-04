@@ -7,6 +7,7 @@ import MapComponent from "../MapComponent/MapComponent";
 import { getMarkLineMatch } from "../utils/map.util";
 import Layers from "../Layers/Layers";
 import BaseMap from "../Layers/BaseMap";
+import MapLayers from "../Layers/MapLayers";
 import LocationMarkerLayer from "../Layers/LocationMarker";
 import WMSLayer from "../Layers/WMSLayer";
 import { MapsStateProps, Map, Parameter, LayersWithLayerInfo } from "../types";
@@ -71,11 +72,14 @@ const HarvesterMap: React.FC = () => {
       <MapComponent>
         <Controls />
         <Layers>
-          {stateMap &&
+          <BaseMap url="https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/kiinteistojaotus/default/WGS84_Pseudo-Mercator/{z}/{y}/{x}.png?api-key=45deef08-fd2f-42ae-9953-5550fff43b17" 
+            visible={true}
+            zIndex={20}/>
+            {stateMap &&
             stateMap.map((mapArray, index) => {
               return (
                 <Box key={index}>
-                  <BaseMap
+                  <MapLayers
                     url={mapArray.url}
                     title={mapArray.title}
                     visible={mapArray.visible}
