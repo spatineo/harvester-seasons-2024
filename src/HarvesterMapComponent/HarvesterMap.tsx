@@ -100,7 +100,6 @@ const HarvesterMap: React.FC = () => {
                       layerInfo={l.layerInfo}
                       strategy={l.WMSTimeStrategy}
                       date={markLine}
-                      opacity={0.5}
                       visible={true}
                       title={
                         l.layerInfo.Title
