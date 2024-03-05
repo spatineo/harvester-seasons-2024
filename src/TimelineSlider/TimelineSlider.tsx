@@ -187,7 +187,7 @@ const TimelineSlider: React.FC = () => {
           <Box sx={{ flex: 2 }}>
             {location.lat !== null &&
               location.lon !== null &&
-              `${location.lat}, ${location.lon}`}
+              `${location.lat.toFixed(2)}, ${location.lon.toFixed(2)}`}
           </Box>
         </Box>
       </Box>
