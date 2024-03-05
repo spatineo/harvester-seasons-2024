@@ -20,7 +20,6 @@ const TileLayer: React.FC<TileLayerProps> = ({ url, visible, zIndex }) => {
   const { map } = useContext(MapContext);
 
   useEffect(() => {
-    window.console.log("checking for maps");
     if (!map) return;
     const tileLayer = new LayerTile({
       title: "base",
