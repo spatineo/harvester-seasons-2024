@@ -5,223 +5,267 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable react/prop-types */
-import { useEffect, useContext, useState } from 'react';
-import MapContext from '../MapComponent/MapContext';
-import TileLayer from 'ol/layer/Tile';
-import { TileWMS } from 'ol/source';
-import { BaseLayerOptions } from 'ol-layerswitcher';
-import add from 'date-fns/add';
-import { Duration } from 'date-fns';
-import { WMSLayerTimeStrategy, WMSCapabilitiesLayerType } from '../types'
+import { useEffect, useContext, useState } from "react";
+import MapContext from "../MapComponent/MapContext";
+import TileLayer from "ol/layer/Tile";
+import { TileWMS } from "ol/source";
+import { BaseLayerOptions } from "ol-layerswitcher";
+import add from "date-fns/add";
+import { Duration } from "date-fns";
+import { WMSLayerTimeStrategy, WMSCapabilitiesLayerType } from "../types";
+import { useAppSelector } from "../store/hooks";
+import { RootState } from "../store/store";
+import { getOpacityFromPercentage } from "../utils/helpers";
 
 interface WMSLayerProps {
-	layerInfo: WMSCapabilitiesLayerType,
-	strategy: WMSLayerTimeStrategy,
-	date?: string,
-	opacity: number,
-	visible: boolean,
-	title: string,
-	url: string,
-};
+  layerInfo: WMSCapabilitiesLayerType;
+  strategy: WMSLayerTimeStrategy;
+  date?: string;
+  visible: boolean;
+  title: string;
+  url: string;
+}
 
-
-const TIME_DIMENSION_PERIOD_MATCHER = /([0-9-T:Z]+)\/([0-9-T:Z]+)\/(P.*)/
+const TIME_DIMENSION_PERIOD_MATCHER = /([0-9-T:Z]+)\/([0-9-T:Z]+)\/(P.*)/;
 
 // https://stackoverflow.com/a/69295907, modified to work with date-fns (types, plural names in output dict)
-function parseISODuration(s) : Duration {
+function parseISODuration(s): Duration {
+  // QnD validation of string, need something smarter
+  // Should check tokens, order and values
+  // e.g. decimals only in smallest unit, W excludes other date parts
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  if (!/^P/.test(s)) return {};
 
-	// QnD validation of string, need something smarter
-	// Should check tokens, order and values
-	// e.g. decimals only in smallest unit, W excludes other date parts
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-	if (!/^P/.test(s)) return {};
+  // Split into parts
+  const parts = s.match(/\d+(\.\d+)?[a-z]|T/gi);
 
-	// Split into parts
-	const parts = s.match(/\d+(\.\d+)?[a-z]|T/gi);
+  // Flag for date and time parts, used to disambiguate month and minute
+  let inDate = true;
 
-	// Flag for date and time parts, used to disambiguate month and minute
-	let inDate = true;
+  // Map of part tokens to words
+  const partMap = {
+    Y: "years",
+    M: "months",
+    W: "weeks",
+    D: "days",
+    h: "hours",
+    m: "minutes",
+    s: "seconds",
+  };
 
-	// Map of part tokens to words
-	const partMap = {Y:'years',M:'months',W:'weeks',D:'days',h:'hours',m:'minutes',s:'seconds'}
+  return parts.reduce((acc, part) => {
+    // Set flag if reached a time part
+    if (part == "T") {
+      inDate = false;
+      return acc;
+    }
 
-	return parts.reduce((acc, part) => {
+    // Disambiguate time parts (month/minute)
+    if (!inDate) {
+      part = part.toLowerCase();
+    }
 
-		// Set flag if reached a time part
-		if (part == 'T') {
-			inDate = false;
-			return acc;
-		}
-		
-		// Disambiguate time parts (month/minute)
-		if (!inDate) {
-			part = part.toLowerCase();
-		}
-		
-		// Add part name and value as a number
-		acc[partMap[part.slice(-1)]] = +part.slice(0,-1);
-		return acc;
-	}, {});
-
+    // Add part name and value as a number
+    acc[partMap[part.slice(-1)]] = +part.slice(0, -1);
+    return acc;
+  }, {});
 }
 
-function getLatestTimestamp(layerInfo : WMSCapabilitiesLayerType) : Date | null {
-	const values = layerInfo.Dimension.find((d) => d.name === 'time')?.values
+function getLatestTimestamp(layerInfo: WMSCapabilitiesLayerType): Date | null {
+  const values = layerInfo.Dimension.find((d) => d.name === "time")?.values;
 
-	if (!values) {
-		window.console.error('No time dimension values in layer', layerInfo);
-		return null
-	}
+  if (!values) {
+    window.console.error("No time dimension values in layer", layerInfo);
+    return null;
+  }
 
-	const periodMatch = TIME_DIMENSION_PERIOD_MATCHER.exec(values)
-	if (periodMatch) {
-		return new Date(periodMatch[2]) // latest date = end of period
-	}
+  const periodMatch = TIME_DIMENSION_PERIOD_MATCHER.exec(values);
+  if (periodMatch) {
+    return new Date(periodMatch[2]); // latest date = end of period
+  }
 
-	const availableTimestamps = values.split(',').map((timeStr) => new Date(timeStr));
+  const availableTimestamps = values
+    .split(",")
+    .map((timeStr) => new Date(timeStr));
 
-	if (availableTimestamps.length === 0) {
-		window.console.error('No values for time dimension in layer', layerInfo);
-		return null
-	}
+  if (availableTimestamps.length === 0) {
+    window.console.error("No values for time dimension in layer", layerInfo);
+    return null;
+  }
 
-	availableTimestamps.sort((a, b) => a.getTime()- b.getTime() );
+  availableTimestamps.sort((a, b) => a.getTime() - b.getTime());
 
-	return availableTimestamps[availableTimestamps.length-1]
+  return availableTimestamps[availableTimestamps.length - 1];
 }
 
-function getNearestTimestamps(layerInfo: WMSCapabilitiesLayerType, date : Date) : (null | Date)[] | undefined {
-	const values = layerInfo.Dimension.find((d) => d.name === 'time')?.values
+function getNearestTimestamps(
+  layerInfo: WMSCapabilitiesLayerType,
+  date: Date
+): (null | Date)[] | undefined {
+  const values = layerInfo.Dimension.find((d) => d.name === "time")?.values;
 
-	if (!values) {
-		window.console.error('No time dimension values in layer', layerInfo);
-		return;
-	}
+  if (!values) {
+    window.console.error("No time dimension values in layer", layerInfo);
+    return;
+  }
 
-	const periodMatch = TIME_DIMENSION_PERIOD_MATCHER.exec(values)
-	if (periodMatch) {
-		const duration = parseISODuration(periodMatch[3])
+  const periodMatch = TIME_DIMENSION_PERIOD_MATCHER.exec(values);
+  if (periodMatch) {
+    const duration = parseISODuration(periodMatch[3]);
 
-		let iter = new Date(periodMatch[1]);
-		let prev : null | Date = null;
-		const last = new Date(periodMatch[2]);
+    let iter = new Date(periodMatch[1]);
+    let prev: null | Date = null;
+    const last = new Date(periodMatch[2]);
 
-		for (; iter <= last; prev = iter, iter = add(iter, duration)) {
-			if (iter === date) {
-				return [date, date];
-			}
-			if (iter >= date) {
-				return [prev, iter];
-			}
-			if (prev !== null && iter <= prev) {
-				window.console.error('error in loop, the iterator going the wrong way in time, there is probably something wonky with the duration:', duration)
-				return;
-			}
-		}
-		return [prev, null];
-	}
+    for (; iter <= last; prev = iter, iter = add(iter, duration)) {
+      if (iter === date) {
+        return [date, date];
+      }
+      if (iter >= date) {
+        return [prev, iter];
+      }
+      if (prev !== null && iter <= prev) {
+        window.console.error(
+          "error in loop, the iterator going the wrong way in time, there is probably something wonky with the duration:",
+          duration
+        );
+        return;
+      }
+    }
+    return [prev, null];
+  }
 
-	const availableTimestamps = values.split(',').map((timeStr) => new Date(timeStr));
+  const availableTimestamps = values
+    .split(",")
+    .map((timeStr) => new Date(timeStr));
 
-	if (availableTimestamps.length === 0) {
-		window.console.error('No values for time dimension in layer', layerInfo);
-		return;
-	}
+  if (availableTimestamps.length === 0) {
+    window.console.error("No values for time dimension in layer", layerInfo);
+    return;
+  }
 
-	availableTimestamps.sort((a, b) => a.getTime()- b.getTime() );
+  availableTimestamps.sort((a, b) => a.getTime() - b.getTime());
 
-	for (let i = 0; i < availableTimestamps.length; i++) {
-		// Special case: we found the exact timestamp => return the same timestamp as both "previous" and "next"
-		if (availableTimestamps[i] == date) {
-			return [date, date];
-		}
+  for (let i = 0; i < availableTimestamps.length; i++) {
+    // Special case: we found the exact timestamp => return the same timestamp as both "previous" and "next"
+    if (availableTimestamps[i] == date) {
+      return [date, date];
+    }
 
-		if (availableTimestamps[i] >= date) {
-			return [i > 0 ? availableTimestamps[i-1] : null, availableTimestamps[i]];
-		}
-	}
-	// otherwise, return the last timestamp and null
-	return [availableTimestamps[availableTimestamps.length-1], null];
+    if (availableTimestamps[i] >= date) {
+      return [
+        i > 0 ? availableTimestamps[i - 1] : null,
+        availableTimestamps[i],
+      ];
+    }
+  }
+  // otherwise, return the last timestamp and null
+  return [availableTimestamps[availableTimestamps.length - 1], null];
 }
 
-const WMSLayer: React.FC<WMSLayerProps> = ({strategy, date, opacity, visible, layerInfo, url}) => {
-	const { map, WMSLayerGroup } = useContext(MapContext);
-	const [ time, setTime ] = useState<string>("");
-	
-	useEffect(() => {
-		if (!map || !layerInfo) return;
-		
-		let timeStamp : Date | null = null;
+const WMSLayer: React.FC<WMSLayerProps> = ({
+  strategy,
+  date,
+  visible,
+  layerInfo,
+  url,
+}) => {
+  const { map, WMSLayerGroup } = useContext(MapContext);
+  const [time, setTime] = useState<string>("");
+  const [layer, setLayer] = useState<TileLayer<TileWMS> | null>(null);
+  const { opacityValue } = useAppSelector((state: RootState) => state.mapState);
 
-		if (strategy === WMSLayerTimeStrategy.ForceSelectedDate) {
-			timeStamp = new Date(date ? (date.substring(0,10)+"T00:00:00Z") : new Date());
+  useEffect(() => {
+    if (!map || !layerInfo) return;
 
-		} else if (strategy === WMSLayerTimeStrategy.Latest) {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-			timeStamp = getLatestTimestamp(layerInfo);
+    let timeStamp: Date | null = null;
 
-		} else if (strategy !== WMSLayerTimeStrategy.NoTimeDimesion) {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-			const nearest = getNearestTimestamps(layerInfo, new Date(date || new Date()));
+    if (strategy === WMSLayerTimeStrategy.ForceSelectedDate) {
+      timeStamp = new Date(
+        date ? date.substring(0, 10) + "T00:00:00Z" : new Date()
+      );
+    } else if (strategy === WMSLayerTimeStrategy.Latest) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      timeStamp = getLatestTimestamp(layerInfo);
+    } else if (strategy !== WMSLayerTimeStrategy.NoTimeDimesion) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      const nearest = getNearestTimestamps(
+        layerInfo,
+        new Date(date || new Date())
+      );
 
-			if (nearest) {
-				if (strategy === WMSLayerTimeStrategy.LatestBeforeNow) {
-					timeStamp = nearest[0];
-				} else if (strategy === WMSLayerTimeStrategy.EarliestAfterNow) {
-					timeStamp = nearest[1];
-				}
-			}
-		}
+      if (nearest) {
+        if (strategy === WMSLayerTimeStrategy.LatestBeforeNow) {
+          timeStamp = nearest[0];
+        } else if (strategy === WMSLayerTimeStrategy.EarliestAfterNow) {
+          timeStamp = nearest[1];
+        }
+      }
+    }
 
-		if (!timeStamp) {
-			setTime("");
-			return;
-		}
+    if (!timeStamp) {
+      setTime("");
+      return;
+    }
 
-		const tmp = timeStamp.toISOString();
-		setTime(tmp)
-	}, [layerInfo, strategy, date])
+    const tmp = timeStamp.toISOString();
+    setTime(tmp);
+  }, [layerInfo, strategy, date]);
 
-	useEffect(() => {
-		// add try catch
-		try {
-			if (!map || !layerInfo || !WMSLayerGroup) return;
+  useEffect(() => {
+    if (!layer) return;
+    const opac = getOpacityFromPercentage(opacityValue);
+    layer.setOpacity(opac);
+  }, [opacityValue]);
 
-			if (time === "" && strategy !== WMSLayerTimeStrategy.NoTimeDimesion) return;
+  useEffect(() => {
+    // add try catch
+    try {
+      if (!map || !layerInfo || !WMSLayerGroup) return;
 
-			const params : Record<string, string | boolean> = {
-				'LAYERS': layerInfo.Name,
-				'TILED': true,
-				'VERSION': '1.3.0',
-				'TRANSPARENT': true
-			}
+      if (time === "" && strategy !== WMSLayerTimeStrategy.NoTimeDimesion)
+        return;
 
-			if (strategy !== WMSLayerTimeStrategy.NoTimeDimesion) {
-				params.TIME = time;
-			}
+      const params: Record<string, string | boolean> = {
+        LAYERS: layerInfo.Name,
+        TILED: true,
+        VERSION: "1.3.0",
+        TRANSPARENT: true,
+      };
 
-			const layer = new TileLayer({
-				opacity: (opacity !== null && opacity !== undefined) ? opacity : 0.5,
-				title: layerInfo?.Title,
-				visible,
-				source: new TileWMS({
-					url,
-					params
-				}),
-			} as BaseLayerOptions);
+      if (strategy !== WMSLayerTimeStrategy.NoTimeDimesion) {
+        params.TIME = time;
+      }
 
-			WMSLayerGroup.getLayers().push(layer)
-			return () => {
-				if(WMSLayerGroup){
-					WMSLayerGroup.getLayers().remove(layer);
-				}
-			};
-		} catch (error){
-			window.console.error(error)
-		}
-	}, [map, layerInfo, time, strategy, opacity, visible, WMSLayerGroup]);
+      const newLayer: TileLayer<TileWMS> = new TileLayer({
+        opacity: getOpacityFromPercentage(opacityValue),
+        title: layerInfo?.Title,
+        visible,
+        source: new TileWMS({
+          url,
+          params,
+        }),
+      } as BaseLayerOptions);
 
-	return null;
+      if (layer) {
+        window.console.log(WMSLayerGroup.getLayers());
+        WMSLayerGroup.getLayers().remove(layer);
+      }
+
+      WMSLayerGroup.getLayers().push(newLayer);
+      setLayer(newLayer);
+
+      return () => {
+        if (WMSLayerGroup) {
+          WMSLayerGroup.getLayers().remove(newLayer);
+        }
+      };
+    } catch (error) {
+      window.console.error(error);
+    }
+  }, [map, layerInfo, time, strategy, visible, WMSLayerGroup]);
+
+  return null;
 };
 
 export default WMSLayer;
