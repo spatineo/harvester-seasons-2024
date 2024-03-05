@@ -6,6 +6,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable import/default */
 import React, { useRef, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import * as ol from "ol";
 import LayerGroup from 'ol/layer/Group'; 
 import { register } from "ol/proj/proj4";
@@ -74,6 +75,7 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
     (state: RootState) => state.global
   );
   const information = useAppSelector((state: RootState) => state.language);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const options = {
@@ -86,10 +88,9 @@ const MapComponent: React.FC<MapProps> = ({ children }) => {
 
     const mapObject: ol.Map = new ol.Map(options);
     mapObject.setTarget(mapRef.current);
-
     mapObject.on("click", (e: ol.MapBrowserEvent<MouseEvent>) => {
-      window.console.log(e.coordinate)
       const coord = proj4("EPSG:3857", "EPSG:4326", e.coordinate);
+      navigate(`/${coord[1]},${coord[0]}`);
       dispatch(mapActions.setPosition({ lat: coord[1], lon: coord[0] }));
     });
 
