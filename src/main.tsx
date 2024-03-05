@@ -2,7 +2,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { BrowserRouter } from "react-router-dom";
+import { HashRouter } from "react-router-dom";
 import { SnackbarProvider } from "notistack";
 import { SnackbarUtilsConfigurator } from "./store/hooks";
 import { Provider } from "react-redux";
@@ -19,9 +19,9 @@ createRoot(document.getElementById("root") as HTMLElement).render(
         anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
       >
         <SnackbarUtilsConfigurator />
-        <BrowserRouter>
+        <HashRouter>
           <App />
-        </BrowserRouter>
+        </HashRouter>
       </SnackbarProvider>
     </Provider>
   </React.StrictMode>
