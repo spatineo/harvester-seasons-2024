@@ -15,11 +15,16 @@ export interface Time {
 }
 
 const TimelineSlider: React.FC = () => {
-  const { startEndTimeSpan } = useAppSelector(
+  const { position } = useAppSelector((state: RootState) => state.mapState);
+  const { markLine, startEndTimeSpan } = useAppSelector(
     (state: RootState) => state.global
   );
-  const { markLine } = useAppSelector((state: RootState) => state.global);
-  const [timelineChart, setTimelineChart] = useState<echarts.EChartsType | null>(null);
+  const [timelineChart, setTimelineChart] =
+    useState<echarts.EChartsType | null>(null);
+  const [location, setLocation] = useState<{
+    lat: number | null;
+    lon: number | null;
+  }>({ lat: null, lon: null });
   const timelineRef = useRef(null);
   const dispatch = useRootDispatch();
 
@@ -38,8 +43,13 @@ const TimelineSlider: React.FC = () => {
     });
     return () => {
       chart.dispose();
-    }
-  }, [])
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!position) return;
+    setLocation({ lat: position.lat, lon: position.lon });
+  }, [position]);
 
   useEffect(() => {
     if (!timelineChart) {
@@ -97,11 +107,7 @@ const TimelineSlider: React.FC = () => {
       },
     };
     timelineChart.setOption(baseOption);
-  }, [
-    timelineChart,
-    startEndTimeSpan.end_time,
-    startEndTimeSpan.start_time,
-  ]);
+  }, [timelineChart, startEndTimeSpan.end_time, startEndTimeSpan.start_time]);
 
   useEffect(() => {
     if (!timelineChart) return;
@@ -120,27 +126,28 @@ const TimelineSlider: React.FC = () => {
 
     timelineChart.on("click", (params) => {
       const newMarkline = new Date(params.dataIndex as number).toISOString();
-      const clickedDate =  new Date(params.dataIndex as number).toISOString().split("T")[0];
+      const clickedDate = new Date(params.dataIndex as number)
+        .toISOString()
+        .split("T")[0];
       const index = dateValue.findIndex((date) => {
         const dateInArray = new Date(date).toISOString().split("T")[0];
         return dateInArray === clickedDate;
       });
-      const option = timelineChart.getOption()
+      const option = timelineChart.getOption();
       timelineChart.setOption({
         ...option,
         timeline: {
           currentIndex: index,
-        }
-      })
-       dispatch(actions.setMarkLine(newMarkline));
+        },
+      });
+      dispatch(actions.setMarkLine(newMarkline));
     });
-   
+
     dispatch(mapActions.setIndexNumbers(0));
   }, [timelineChart, startEndTimeSpan.end_time, startEndTimeSpan.start_time]);
 
-
   useEffect(() => {
-    if(!timelineChart) return;
+    if (!timelineChart) return;
     const result = new Date(new Date(startEndTimeSpan.start_time));
     result.setDate(result.getDate() + 2);
     const dateValue: Array<string | Date> = getDatesForTimelineDuration(
@@ -155,20 +162,34 @@ const TimelineSlider: React.FC = () => {
         return dateInArray === searchDate;
       }
     });
-    const option = timelineChart.getOption()
+    const option = timelineChart.getOption();
     timelineChart.setOption({
       ...option,
       timeline: {
         currentIndex: index,
-      }
-    })
+      },
+    });
     dispatch(mapActions.setIndexNumbers(0));
   }, [markLine]);
 
   return (
     <Box>
       <Box sx={{ fontFamily: "Lato" }}>
-        {new Date(markLine).toISOString().split("T")[0]}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+          }}
+        >
+          <Box sx={{ flex: 1 }}>
+            {new Date(markLine).toISOString().split("T")[0]}
+          </Box>
+          <Box sx={{ flex: 2 }}>
+            {location.lat !== null &&
+              location.lon !== null &&
+              `${location.lat}, ${location.lon}`}
+          </Box>
+        </Box>
       </Box>
       <Box ref={timelineRef} sx={{ height: "70px" }}></Box>
     </Box>
