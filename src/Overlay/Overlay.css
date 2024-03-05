@@ -5,7 +5,6 @@
   padding: 0rem;
   margin: 0.2rem auto;
   padding: auto;
-
 }
 
 .none {
@@ -18,11 +17,23 @@
   border: none;
   padding: 0.6rem 0.4rem 1rem;
   display: block;
-  right: 0rem;
+  right: -2rem;
   top: -1rem;
-  min-width: 450px;
+  width: 250px;
   z-index: 999;
   border: 1px solid #ccc;
   background-color: white;
   border-radius: 3px;
+}
+
+@media screen and (min-width: 768px) {
+  .layer {
+    width: 300px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .layer {
+    width: 450px;
+  }
 }
