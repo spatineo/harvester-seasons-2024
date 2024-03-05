@@ -181,7 +181,7 @@ const TimelineSlider: React.FC = () => {
             flexDirection: "row",
           }}
         >
-          <Box sx={{ flex: 1 }}>
+          <Box sx={{ flex: 2 }}>
             {new Date(markLine).toISOString().split("T")[0]}
           </Box>
           <Box sx={{ flex: 2 }}>
